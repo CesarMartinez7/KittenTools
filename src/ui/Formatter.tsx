@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Icon } from "@iconify/react";
 // Aqui estan mis tipados
 type JsonValue = string | number | boolean | null | JsonObject | JsonArray;
 type JsonObject = { [key: string]: JsonValue };
@@ -12,17 +13,17 @@ interface JsonNodeProps {
 
 const FormatDataLabel = ({ data }: { data: JsonValue }) => {
   if (data === null) {
-    return <span className="text-kanagawa-green">null</span>;
+    return <span className="text-kanagawa-green text-wrap">null</span>;
   }
 
   if ((typeof data === 'string' && data.length === 0) || data === '') {
-    return <span> {" ' ' "}</span>;
+    return <span className='text-wrap'> {" ' ' "}</span>;
   }
 
 
 
   if (data) {
-    return <>{data}</>;
+    return <span className='text-wrap'>{data}</span>;
   }
 };
 
@@ -45,7 +46,7 @@ const JsonNode: React.FC<JsonNodeProps> = ({ data, name, depth = 0 }) => {
       )}
       {isObject ? (
         <>
-          <span className="text-kanagawa-accent font-black" onClick={toggle}>
+          <span className="text-kanagawa-accent font-black text-wrap" onClick={toggle}>
             {isArray ? '[...]' : '{...}'}
           </span>
           {!collapsed && (
@@ -92,7 +93,7 @@ const JsonViewer: React.FC<{ data: JsonValue }> = ({ data }) => {
   };
 
   return (
-    <div className="w-full bg-kanagawa-surface rounded-md overflow-auto">
+    <div className="w-full bg-kanagawa-surface rounded-md overflow-y-auto  relative text-wrap">
       <div className="backdrop-blur-2xl  text-white border-black/20 p-4 rounded-md">
         {typeof data === 'string' ? (
           (() => {
@@ -108,10 +109,10 @@ const JsonViewer: React.FC<{ data: JsonValue }> = ({ data }) => {
         )}
       </div>
       <button
-        className="btn bg-kanagawa-bg cursor-pointer btn-xs p-2 border rounded-md border-kanagawa-bg shadow-sm"
+        className="btn absolute right-4 top-2 bg-kanagawa-bg cursor-pointer btn-xs p-2 border rounded-md border-kanagawa-bg shadow-sm"
         onClick={handleCopyClipBoard}
       >
-        Copiar
+        <Icon icon="mynaui:copy" width="24" height="24"   />
       </button>
     </div>
   );
