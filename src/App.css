@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+
+#root {
+  @apply bg-kanagawa-bg
+}
+
+
+@theme{
+  --color-kanagawa-bg: #1f1f28;
+  --color-kanagawa-surface:  #2a2a37;
+  --color-kanagawa-overlay: #3a3a4a;
+  --color-kanagawa-red: #e46876;
+  --color-kanagawa-orange: #ffa066;
+  --color-kanagawa-yellow: #dca561;
+  --color-kanagawa-green: #98bb6c;
+  --color-kanagawa-cyan: #7fb4ca;
+  --color-kanagawa-blue: #7e9cd8;
+  --color-kanagawa-purple: #957fb8;
+  --color-kanagawa-pink: #d27e99;
+
+  /* Tonos especiales */
+  --color-kanagawa-accent: #c34043;
+  --color-kanagawa-muted: #727169;
+  --color-kanagawa-comment: #727169;
+}
