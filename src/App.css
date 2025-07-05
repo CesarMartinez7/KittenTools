@@ -1,14 +1,11 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+
+#root1
 
 
-#root {
-  @apply bg-kanagawa-bg
-}
-
-
-@theme{
+@theme {
   --color-kanagawa-bg: #1f1f28;
-  --color-kanagawa-surface:  #2a2a37;
+  --color-kanagawa-surface: #2a2a37;
   --color-kanagawa-overlay: #3a3a4a;
   --color-kanagawa-red: #e46876;
   --color-kanagawa-orange: #ffa066;
@@ -24,4 +21,3 @@
   --color-kanagawa-muted: #727169;
   --color-kanagawa-comment: #727169;
 }
-

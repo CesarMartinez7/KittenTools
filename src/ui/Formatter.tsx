@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Icon } from "@iconify/react";
-// Aqui estan mis tipados
+import { Icon } from '@iconify/react';
+
 type JsonValue = string | number | boolean | null | JsonObject | JsonArray;
 type JsonObject = { [key: string]: JsonValue };
 type JsonArray = JsonValue[];
@@ -13,24 +13,28 @@ interface JsonNodeProps {
 
 const FormatDataLabel = ({ data }: { data: JsonValue }) => {
   if (data === null) {
-    return <span className="text-kanagawa-green text-wrap">null</span>;
+    return <span className="text-green-500">null</span>;
   }
 
   if ((typeof data === 'string' && data.length === 0) || data === '') {
-    return <span className='text-wrap'> {" ' ' "}</span>;
+    return <span className="text-slate-400">{'" "'}</span>;
   }
 
-
-
-  if (data) {
-    return <span className='text-wrap'>{data}</span>;
+  if (typeof data === 'string') {
+    return <span className="text-blue-400">"{data}"</span>;
   }
+
+  if (typeof data === 'boolean') {
+    return <span className="text-cyan-500">{String(data)}</span>;
+  }
+
+  return <span className="text-green-500">{data}</span>;
 };
 
-const INDENT = 10;
+const INDENT = 12;
 
 const JsonNode: React.FC<JsonNodeProps> = ({ data, name, depth = 0 }) => {
-  const [collapsed, setCollapsed] = useState(true);
+  const [collapsed, setCollapsed] = useState(false);
   const isObject = typeof data === 'object' && data !== null;
   const isArray = Array.isArray(data);
 
@@ -38,19 +42,27 @@ const JsonNode: React.FC<JsonNodeProps> = ({ data, name, depth = 0 }) => {
 
   return (
     <div
-      className="text-sm flex text-kanagawa-blue"
+      className="text-sm text-slate-800 font-mono leading-relaxed"
       style={{ marginLeft: depth * INDENT }}
     >
       {name !== undefined && (
-        <strong className="text-kanagawa-yellow mr-2">{name}: </strong>
+        <strong
+          className="text-slate-500 mr-1"
+          title={`${name} : ${typeof name}`}
+        >
+          "{name}":
+        </strong>
       )}
       {isObject ? (
         <>
-          <span className="text-kanagawa-accent font-black text-wrap" onClick={toggle}>
+          <span
+            className="text-slate-400 cursor-pointer select-none hover:text-slate-600 transition"
+            onClick={toggle}
+          >
             {isArray ? '[...]' : '{...}'}
           </span>
           {!collapsed && (
-            <div>
+            <div className="ml-4 mt-1 space-y-1">
               {isArray
                 ? (data as JsonArray).map((item, i) => (
                     <JsonNode key={i} data={item} depth={depth + 1} />
@@ -67,9 +79,7 @@ const JsonNode: React.FC<JsonNodeProps> = ({ data, name, depth = 0 }) => {
           )}
         </>
       ) : (
-        <>
-          <FormatDataLabel data={data} />
-        </>
+        <FormatDataLabel data={data} />
       )}
     </div>
   );
@@ -93,26 +103,27 @@ const JsonViewer: React.FC<{ data: JsonValue }> = ({ data }) => {
   };
 
   return (
-    <div className="w-full bg-kanagawa-surface rounded-md overflow-y-auto  relative text-wrap">
-      <div className="backdrop-blur-2xl  text-white border-black/20 p-4 rounded-md">
+    <div className="relative w-full bg-slate-100 rounded-xl border border-slate-300 p-4 shadow-sm">
+      <div className="text-slate-800 text-sm font-mono whitespace-pre-wrap">
         {typeof data === 'string' ? (
           (() => {
             try {
               const parsed = JSON.parse(data);
               return <JsonNode data={parsed} />;
             } catch (err) {
-              return <div className="text-red-400">❌ JSON inválido</div>;
+              return <div className="text-red-500">❌ JSON inválido</div>;
             }
           })()
         ) : (
           <JsonNode data={data} />
         )}
       </div>
+
       <button
-        className="btn absolute right-4 top-2 bg-kanagawa-bg cursor-pointer btn-xs p-2 border rounded-md border-kanagawa-bg shadow-sm"
         onClick={handleCopyClipBoard}
+        className="absolute top-3 right-3 bg-white hover:bg-slate-100 p-2 rounded-md border border-slate-300 text-slate-700 transition"
       >
-        <Icon icon="mynaui:copy" width="24" height="24"   />
+        <Icon icon="mynaui:copy" width="20" height="20" />
       </button>
     </div>
   );
