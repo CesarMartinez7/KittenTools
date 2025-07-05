@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import { Icon } from '@iconify/react';
+import MOCK from '../mockjson.json';
 
 type JsonValue = string | number | boolean | null | JsonObject | JsonArray;
 type JsonObject = { [key: string]: JsonValue };
@@ -14,28 +15,33 @@ interface JsonNodeProps {
 
 const FormatDataLabel = ({ data }: { data: JsonValue }) => {
   if (data === null) {
-    return <span className="text-green-500">null</span>;
+    return <span className="text-[#c678dd]">null</span>; // morado
   }
 
   if ((typeof data === 'string' && data.length === 0) || data === '') {
-    return <span className="text-slate-400">{'" "'}</span>;
+    return <span className="text-[#5c6370]">""</span>; // gris apagado
   }
 
   if (typeof data === 'string') {
-    return <span className="text-blue-400">"{data}"</span>;
+    return <span className="text-[#98c379]">"{data}"</span>; // verde
   }
 
   if (typeof data === 'boolean') {
-    return <span className="text-cyan-500">{String(data)}</span>;
+    return <span className="text-[#56b6c2]">{String(data)}</span>; // celeste
   }
 
-  return <span className="text-green-500">{data}</span>;
+  return <span className="text-[#d19a66]">{data}</span>; // naranja
 };
 
 const INDENT = 12;
 
-const JsonNode: React.FC<JsonNodeProps> = ({ data, name, open, depth = 0 }) => {
-  const [collapsed, setCollapsed] = useState(open);
+const JsonNode: React.FC<JsonNodeProps> = ({
+  data = MOCK,
+  name,
+  open,
+  depth = 0,
+}) => {
+  const [collapsed, setCollapsed] = useState<boolean>(open);
   const isObject = typeof data === 'object' && data !== null;
   const isArray = Array.isArray(data);
 
@@ -43,12 +49,12 @@ const JsonNode: React.FC<JsonNodeProps> = ({ data, name, open, depth = 0 }) => {
 
   return (
     <div
-      className="text-sm  font-mono leading-relaxed"
+      className="text-sm whitespace-break-spaces"
       style={{ marginLeft: depth * INDENT }}
     >
       {name !== undefined && (
         <strong
-          className="text-slate-500 mr-1"
+          className="text-[#e06c75] mr-1" // rojo Atom para claves
           title={`${name} : ${typeof name}`}
         >
           "{name}":
@@ -57,10 +63,22 @@ const JsonNode: React.FC<JsonNodeProps> = ({ data, name, open, depth = 0 }) => {
       {isObject ? (
         <>
           <span
-            className="text-slate-400 cursor-pointer select-none hover:text-slate-600 transition"
+            className="text-[#5c6370] cursor-pointer select-none hover:text-[#abb2bf] transition"
             onClick={toggle}
           >
-            {isArray ? '[...]' : '{...}'}
+            {isArray ? (
+              <Icon
+                icon="material-symbols-light:data-array"
+                width="20"
+                height="20"
+              />
+            ) : (
+              <Icon
+                icon="material-symbols-light:data-object-sharp"
+                width="20"
+                height="20"
+              />
+            )}
           </span>
           {!collapsed && (
             <div className="ml-4 mt-1 space-y-1">
@@ -96,9 +114,7 @@ const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean }> = ({
   data,
   isOpen,
 }) => {
-  useEffect(() => {
-    console.log('La data es:', data);
-  }, [data]);
+  const [arrayEntries, setArrayEntries] = useState([]);
 
   const handleCopyClipBoard = () => {
     try {
@@ -112,9 +128,24 @@ const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean }> = ({
     }
   };
 
+  useEffect(() => {
+    const dataJson = typeof data === 'string' ? JSON.parse(data) : data;
+
+    if (typeof data === 'object' || data === null || undefined) {
+      Object.keys(dataJson).forEach((key) => {
+        setArrayEntries((prev) => {
+          if (Array.isArray(dataJson[key])) {
+            return [...prev, { key, value: dataJson[key] }];
+          }
+          return prev;
+        });
+      });
+    }
+  }, [data]);
+
   return (
-    <div className="relative w-full bg-slate-100 rounded-xl border border-slate-300 p-4 shadow-sm">
-      <div className="text-slate-800 text-sm font-mono whitespace-pre-wrap">
+    <div className="relative w-full bg-[#282c34] text-[#abb2bf] rounded-xl border border-[#3e4451] p-4 shadow-sm">
+      <div className="text-sm font-mono whitespace-pre-wrap">
         {typeof data === 'string' ? (
           (() => {
             try {
@@ -130,11 +161,16 @@ const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean }> = ({
       </div>
 
       <button
+        title="button"
         onClick={handleCopyClipBoard}
-        className="absolute top-3 right-3 bg-white hover:bg-slate-100 p-2 rounded-md border border-slate-300 text-slate-700 transition"
+        className="absolute top-3 right-3 bg-[#3e4451] hover:bg-[#4b5263] p-2 rounded-md border border-[#5c6370] text-[#abb2bf] transition"
       >
         <Icon icon="mynaui:copy" width="20" height="20" />
       </button>
+
+      <div className="">
+        <p>Intefaz Typescript</p>
+      </div>
     </div>
   );
 };
