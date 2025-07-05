@@ -15,24 +15,22 @@ interface JsonNodeProps {
 
 const FormatDataLabel = ({ data }: { data: JsonValue }) => {
   if (data === null) {
-    return <span className="text-[var(--color-kanagawa-purple)]">null</span>;
+    return <span className="text-purple-400">null</span>;
   }
 
   if ((typeof data === 'string' && data.length === 0) || data === '') {
-    return <span className="text-[var(--color-kanagawa-muted)]">""</span>;
+    return <span className="text-zinc-500">""</span>;
   }
 
   if (typeof data === 'string') {
-    return <span className="text-[var(--color-kanagawa-green)]">"{data}"</span>;
+    return <span className="text-emerald-400">"{data}"</span>;
   }
 
   if (typeof data === 'boolean') {
-    return (
-      <span className="text-[var(--color-kanagawa-cyan)]">{String(data)}</span>
-    );
+    return <span className="text-sky-400">{String(data)}</span>;
   }
 
-  return <span className="text-[var(--color-kanagawa-yellow)]">{data}</span>;
+  return <span className="text-yellow-400">{data}</span>;
 };
 
 const INDENT = 12;
@@ -56,7 +54,7 @@ const JsonNode: React.FC<JsonNodeProps> = ({
     >
       {name !== undefined && (
         <strong
-          className="text-[var(--color-kanagawa-red)] mr-1"
+          className="text-red-400 mr-1"
           title={`${name} : ${typeof name}`}
         >
           "{name}":
@@ -65,7 +63,7 @@ const JsonNode: React.FC<JsonNodeProps> = ({
       {isObject ? (
         <>
           <span
-            className="text-[var(--color-kanagawa-muted)] cursor-pointer select-none hover:text-[var(--color-kanagawa-overlay)] transition"
+            className="text-zinc-500 cursor-pointer select-none hover:text-zinc-300 transition"
             onClick={toggle}
           >
             {isArray ? (
@@ -129,7 +127,7 @@ const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean }> = ({
   };
 
   return (
-    <div className="relative w-full bg-[var(--color-kanagawa-surface)] text-[var(--color-kanagawa-comment)] rounded-xl border border-[var(--color-kanagawa-overlay)] p-4 shadow-sm">
+    <div className="relative w-full bg-zinc-900 text-zinc-400 rounded-xl border border-zinc-800 p-4 shadow-sm">
       <div className="text-sm font-mono whitespace-pre-wrap">
         {typeof data === 'string' ? (
           (() => {
@@ -137,11 +135,7 @@ const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean }> = ({
               const parsed = JSON.parse(data);
               return <JsonNode open={isOpen} data={parsed} />;
             } catch (err) {
-              return (
-                <div className="text-[var(--color-kanagawa-red)]">
-                  ❌ JSON inválido
-                </div>
-              );
+              return <div className="text-red-400">❌ JSON inválido</div>;
             }
           })()
         ) : (
@@ -152,7 +146,7 @@ const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean }> = ({
       <button
         title="Copiar JSON"
         onClick={handleCopyClipBoard}
-        className="absolute top-3 right-3 bg-[var(--color-kanagawa-overlay)] hover:bg-[var(--color-kanagawa-comment)] p-2 rounded-md border border-[var(--color-kanagawa-overlay)] text-[var(--color-kanagawa-muted)] transition"
+        className="fixed top-3 right-3 bg-zinc-800 hover:bg-zinc-700 p-2 rounded-md border border-zinc-700 text-zinc-400 transition"
       >
         <Icon icon="mynaui:copy" width="20" height="20" />
       </button>
