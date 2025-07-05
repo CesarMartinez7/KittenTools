@@ -9,6 +9,7 @@ interface JsonNodeProps {
   data: JsonValue;
   name?: string;
   depth?: number;
+  collapsedProp?: boolean;
 }
 
 const FormatDataLabel = ({ data }: { data: JsonValue }) => {
@@ -33,8 +34,13 @@ const FormatDataLabel = ({ data }: { data: JsonValue }) => {
 
 const INDENT = 12;
 
-const JsonNode: React.FC<JsonNodeProps> = ({ data, name, depth = 0 }) => {
-  const [collapsed, setCollapsed] = useState(false);
+const JsonNode: React.FC<JsonNodeProps> = ({
+  data,
+  name,
+  collapsedProp,
+  depth = 0,
+}) => {
+  const [collapsed, setCollapsed] = useState<boolean>(collapsedProp || false);
   const isObject = typeof data === 'object' && data !== null;
   const isArray = Array.isArray(data);
 
@@ -42,7 +48,7 @@ const JsonNode: React.FC<JsonNodeProps> = ({ data, name, depth = 0 }) => {
 
   return (
     <div
-      className="text-sm text-slate-800 font-mono leading-relaxed"
+      className="text-sm  font-mono leading-relaxed"
       style={{ marginLeft: depth * INDENT }}
     >
       {name !== undefined && (
@@ -85,11 +91,9 @@ const JsonNode: React.FC<JsonNodeProps> = ({ data, name, depth = 0 }) => {
   );
 };
 
-const JsonViewer: React.FC<{ data: JsonValue }> = ({ data }) => {
-  useEffect(() => {
-    console.log('La data es:', data);
-  }, [data]);
-
+const JsonViewer: React.FC<{ data: JsonValue; isColle: boolean }> = ({
+  data,
+}) => {
   const handleCopyClipBoard = () => {
     try {
       const toCopy =
@@ -109,7 +113,7 @@ const JsonViewer: React.FC<{ data: JsonValue }> = ({ data }) => {
           (() => {
             try {
               const parsed = JSON.parse(data);
-              return <JsonNode data={parsed} />;
+              return <JsonNode data={parsed} collapsedProp={isColle} />;
             } catch (err) {
               return <div className="text-red-500">❌ JSON inválido</div>;
             }
