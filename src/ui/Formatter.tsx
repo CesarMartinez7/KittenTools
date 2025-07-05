@@ -1,4 +1,4 @@
-import React, { use, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Icon } from '@iconify/react';
 import MOCK from '../mockjson.json';
 
@@ -15,22 +15,24 @@ interface JsonNodeProps {
 
 const FormatDataLabel = ({ data }: { data: JsonValue }) => {
   if (data === null) {
-    return <span className="text-[#c678dd]">null</span>; // morado
+    return <span className="text-[var(--color-kanagawa-purple)]">null</span>;
   }
 
   if ((typeof data === 'string' && data.length === 0) || data === '') {
-    return <span className="text-[#5c6370]">""</span>; // gris apagado
+    return <span className="text-[var(--color-kanagawa-muted)]">""</span>;
   }
 
   if (typeof data === 'string') {
-    return <span className="text-[#98c379]">"{data}"</span>; // verde
+    return <span className="text-[var(--color-kanagawa-green)]">"{data}"</span>;
   }
 
   if (typeof data === 'boolean') {
-    return <span className="text-[#56b6c2]">{String(data)}</span>; // celeste
+    return (
+      <span className="text-[var(--color-kanagawa-cyan)]">{String(data)}</span>
+    );
   }
 
-  return <span className="text-[#d19a66]">{data}</span>; // naranja
+  return <span className="text-[var(--color-kanagawa-yellow)]">{data}</span>;
 };
 
 const INDENT = 12;
@@ -54,7 +56,7 @@ const JsonNode: React.FC<JsonNodeProps> = ({
     >
       {name !== undefined && (
         <strong
-          className="text-[#e06c75] mr-1" // rojo Atom para claves
+          className="text-[var(--color-kanagawa-red)] mr-1"
           title={`${name} : ${typeof name}`}
         >
           "{name}":
@@ -63,7 +65,7 @@ const JsonNode: React.FC<JsonNodeProps> = ({
       {isObject ? (
         <>
           <span
-            className="text-[#5c6370] cursor-pointer select-none hover:text-[#abb2bf] transition"
+            className="text-[var(--color-kanagawa-muted)] cursor-pointer select-none hover:text-[var(--color-kanagawa-overlay)] transition"
             onClick={toggle}
           >
             {isArray ? (
@@ -114,8 +116,6 @@ const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean }> = ({
   data,
   isOpen,
 }) => {
-  const [arrayEntries, setArrayEntries] = useState([]);
-
   const handleCopyClipBoard = () => {
     try {
       const toCopy =
@@ -128,23 +128,8 @@ const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean }> = ({
     }
   };
 
-  useEffect(() => {
-    const dataJson = typeof data === 'string' ? JSON.parse(data) : data;
-
-    if (typeof data === 'object' || data === null || undefined) {
-      Object.keys(dataJson).forEach((key) => {
-        setArrayEntries((prev) => {
-          if (Array.isArray(dataJson[key])) {
-            return [...prev, { key, value: dataJson[key] }];
-          }
-          return prev;
-        });
-      });
-    }
-  }, [data]);
-
   return (
-    <div className="relative w-full bg-[#282c34] text-[#abb2bf] rounded-xl border border-[#3e4451] p-4 shadow-sm">
+    <div className="relative w-full bg-[var(--color-kanagawa-surface)] text-[var(--color-kanagawa-comment)] rounded-xl border border-[var(--color-kanagawa-overlay)] p-4 shadow-sm">
       <div className="text-sm font-mono whitespace-pre-wrap">
         {typeof data === 'string' ? (
           (() => {
@@ -152,7 +137,11 @@ const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean }> = ({
               const parsed = JSON.parse(data);
               return <JsonNode open={isOpen} data={parsed} />;
             } catch (err) {
-              return <div className="text-red-500">❌ JSON inválido</div>;
+              return (
+                <div className="text-[var(--color-kanagawa-red)]">
+                  ❌ JSON inválido
+                </div>
+              );
             }
           })()
         ) : (
@@ -161,16 +150,12 @@ const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean }> = ({
       </div>
 
       <button
-        title="button"
+        title="Copiar JSON"
         onClick={handleCopyClipBoard}
-        className="absolute top-3 right-3 bg-[#3e4451] hover:bg-[#4b5263] p-2 rounded-md border border-[#5c6370] text-[#abb2bf] transition"
+        className="absolute top-3 right-3 bg-[var(--color-kanagawa-overlay)] hover:bg-[var(--color-kanagawa-comment)] p-2 rounded-md border border-[var(--color-kanagawa-overlay)] text-[var(--color-kanagawa-muted)] transition"
       >
         <Icon icon="mynaui:copy" width="20" height="20" />
       </button>
-
-      <div className="">
-        <p>Intefaz Typescript</p>
-      </div>
     </div>
   );
 };
