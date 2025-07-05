@@ -87,7 +87,7 @@ const App = () => {
               Resultado Formateado
             </label>
             <div className="text-sm font-mono text-slate-800 whitespace-pre-wrap">
-              <JsonViewer data={value} co />
+              <JsonViewer data={value} isOpen={true} />
             </div>
             {isValid && (
               <p className="text-green-600 text-xs font-medium">

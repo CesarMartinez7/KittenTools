@@ -9,7 +9,7 @@ interface JsonNodeProps {
   data: JsonValue;
   name?: string;
   depth?: number;
-  collapsedProp?: boolean;
+  open: boolean;
 }
 
 const FormatDataLabel = ({ data }: { data: JsonValue }) => {
@@ -34,13 +34,8 @@ const FormatDataLabel = ({ data }: { data: JsonValue }) => {
 
 const INDENT = 12;
 
-const JsonNode: React.FC<JsonNodeProps> = ({
-  data,
-  name,
-  collapsedProp,
-  depth = 0,
-}) => {
-  const [collapsed, setCollapsed] = useState<boolean>(collapsedProp || false);
+const JsonNode: React.FC<JsonNodeProps> = ({ data, name, open, depth = 0 }) => {
+  const [collapsed, setCollapsed] = useState(open);
   const isObject = typeof data === 'object' && data !== null;
   const isArray = Array.isArray(data);
 
@@ -71,10 +66,16 @@ const JsonNode: React.FC<JsonNodeProps> = ({
             <div className="ml-4 mt-1 space-y-1">
               {isArray
                 ? (data as JsonArray).map((item, i) => (
-                    <JsonNode key={i} data={item} depth={depth + 1} />
+                    <JsonNode
+                      open={collapsed}
+                      key={i}
+                      data={item}
+                      depth={depth + 1}
+                    />
                   ))
                 : Object.entries(data as JsonObject).map(([key, val]) => (
                     <JsonNode
+                      open={collapsed}
                       key={key}
                       name={key}
                       data={val}
@@ -91,9 +92,14 @@ const JsonNode: React.FC<JsonNodeProps> = ({
   );
 };
 
-const JsonViewer: React.FC<{ data: JsonValue; isColle: boolean }> = ({
+const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean }> = ({
   data,
+  isOpen,
 }) => {
+  useEffect(() => {
+    console.log('La data es:', data);
+  }, [data]);
+
   const handleCopyClipBoard = () => {
     try {
       const toCopy =
@@ -113,13 +119,13 @@ const JsonViewer: React.FC<{ data: JsonValue; isColle: boolean }> = ({
           (() => {
             try {
               const parsed = JSON.parse(data);
-              return <JsonNode data={parsed} collapsedProp={isColle} />;
+              return <JsonNode open={isOpen} data={parsed} />;
             } catch (err) {
               return <div className="text-red-500">❌ JSON inválido</div>;
             }
           })()
         ) : (
-          <JsonNode data={data} />
+          <JsonNode open={isOpen} data={data} />
         )}
       </div>
 
