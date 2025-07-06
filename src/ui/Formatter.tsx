@@ -122,6 +122,7 @@ const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean }> = ({
   isOpen,
 }) => {
   const [size, setSize] = useState<string>('0.00 KB');
+  const [isOpenJsonViewer, setIsOpenJsonViewer] = useState<boolean>(false);
   const [INDENT, setIdent] = useState<number>(12);
   const [interfaceGen, setInterfaceGen] = useState<unknown[]>([]);
 
@@ -131,35 +132,55 @@ const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean }> = ({
     let formatData =
       typeof data === 'string' ? data : JSON.parse(data, null, 2);
 
-    console.log(formatData);
-
     if (typeof data === 'string') {
       try {
         formatData = JSON.parse(data);
-        const entriesObject = Object.entries(formatData);
-        const interfaceList = entriesObject.map(([key, value]) => {
-          if (typeof value === 'object' && value !== null) {
-            if (Array.isArray(value)) {
-              // Si es un array, obtenemos el tipo del primer elemento si existe
-              const firstElementType =
-                value.length > 0 ? typeof value[0] : 'unknown';
-              console.log(firstElementType);
-              return { key, type: 'Arrayy' };
-            } else {
-              return { key, type: 'Object' };
-            }
-          } else {
-            return { key, type: typeof value };
-          }
-        });
 
-        setInterfaceGen(interfaceList);
+        // If es empieza como matriz o array entonces tomamos el primer elemento y sacamos las keys el resultado Data[]
+
+        if (Array.isArray(formatData) && formatData.length > 0) {
+          formatData = formatData[0]; // Tomamos el primer elemento del array
+          console.log('EL primer elemento del array:', formatData);
+          const entriesArrayObject = Object.entries(formatData);
+          // Aqui hacemos el proceso de obtencion de keys y tipos, podrias arrhora codigo si hacemos una funcion que se encargue de esto
+          const interfaceList = entriesArrayObject.map(([key, value]) => {
+            console.log(key, value);
+            return { key, type: typeof value };
+          });
+
+          console.log('INTEFAZ GENERADO ARRAY:', interfaceList);
+          setInterfaceGen(interfaceList);
+          return;
+        } else {
+          // Si no empieza como array entonces es un obejto y podemos obtener sus keys
+          const entriesObject = Object.entries(formatData);
+          const interfaceList = entriesObject.map(([key, value]) => {
+            if (
+              typeof value === 'object' &&
+              value !== null &&
+              !Array.isArray(value)
+            ) {
+              if (Array.isArray(value)) {
+                // Si es un array, obtenemos el tipo del primer elemento si existe
+                const firstElementType =
+                  value.length > 0 ? typeof value[0] : 'unknown';
+                console.log(firstElementType);
+                return { key, type: 'Arrayy' };
+              } else {
+                return { key, type: 'Object' };
+              }
+            } else {
+              return { key, type: typeof value };
+            }
+          });
+          setInterfaceGen(interfaceList);
+        }
       } catch {
         console.error('❌ JSON inválido');
         return;
       }
+      console.log('INTEFAZ GENERADO FINAL:', interfaceGen);
     }
-    console.log('Interface Generada:', interfaceGen);
   };
 
   const handleCopyClipBoard = () => {
@@ -178,6 +199,7 @@ const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean }> = ({
     const raw = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
     const bytes = new Blob([raw]).size / 1024;
     setSize(bytes.toFixed(2) + ' KB');
+    handleGetInterface();
   }, [data]);
 
   return (
@@ -185,10 +207,24 @@ const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean }> = ({
       <div className="flex gap-2 py-2 px-4 items-center justify-between border-b border-zinc-800 rounded-t-xl">
         <button
           className="px-2 py-1 rounded-lg text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2"
-          onClick={handleGetInterface}
+          onClick={() => {
+            setIsOpenJsonViewer(!isOpenJsonViewer);
+            if (isOpenJsonViewer) {
+              handleGetInterface();
+            }
+          }}
         >
-          <Icon icon="logos:typescript-icon" width="12" height="12" />
-          <span>Crear interfaz</span>
+          {isOpenJsonViewer ? (
+            <>
+              <Icon icon="logos:typescript-icon" width="12" height="12" />
+              <span>Generar interfaz</span>
+            </>
+          ) : (
+            <>
+              <Icon icon="logos:json" width="12" height="12" />
+              <span>Ver JSON</span>
+            </>
+          )}
         </button>
 
         <div className="flex gap-1">
@@ -212,20 +248,46 @@ const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean }> = ({
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-4 py-4 text-sm font-mono whitespace-pre-wrap break-words">
-        {typeof data === 'string' ? (
-          (() => {
-            try {
-              const parsed = JSON.parse(data);
-              return <JsonNode INDENT={INDENT} open={isOpen} data={parsed} />;
-            } catch (err) {
-              return <div className="text-red-400">❌ JSON inválido</div>;
-            }
-          })()
-        ) : (
-          <JsonNode INDENT={INDENT} open={isOpen} data={data} />
-        )}
-      </div>
+      {/* JSON CONTENT */}
+
+      {isOpenJsonViewer && (
+        <div className="flex-1 overflow-y-auto px-4 py-4 text-sm font-mono whitespace-pre-wrap break-words">
+          {typeof data === 'string' ? (
+            (() => {
+              try {
+                const parsed = JSON.parse(data);
+                return <JsonNode INDENT={INDENT} open={isOpen} data={parsed} />;
+              } catch (err) {
+                return <div className="text-red-400">❌ JSON inválido</div>;
+              }
+            })()
+          ) : (
+            <JsonNode INDENT={INDENT} open={isOpen} data={data} />
+          )}
+        </div>
+      )}
+
+      {!isOpenJsonViewer && (
+        <div className="flex-1 overflow-y-auto px-4 py-4 text-sm font-mono whitespace-pre-wrap break-words">
+          {interfaceGen.length > 0 ? (
+            <div className="space-y-2">
+              <h3 className="text-zinc-300 font-semibold mb-2">
+                Interfaz Generada:
+              </h3>
+              <pre className="bg-zinc-800 p-4 rounded-lg">
+                {interfaceGen.map((item, index) => (
+                  <div key={index}>
+                    <span className="text-purple-400">{item.key}</span>:{' '}
+                    <span className="text-yellow-400">{item.type}</span>
+                  </div>
+                ))}
+              </pre>
+            </div>
+          ) : (
+            <div className="text-red-400">No se pudo generar la interfaz</div>
+          )}
+        </div>
+      )}
 
       {/* ACTIONS */}
       <div className="flex justify-between items-center gap-2 px-4 py-1 border-t border-zinc-800 rounded-b-xl">

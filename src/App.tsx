@@ -67,7 +67,8 @@ const App = () => {
           </div>
 
           <footer className="text-xs  pt-6 rounded-2xl p-6 flex justify-start shadow-2xl backdrop-blur-2xl text-zinc-500 items-end border-zinc-800">
-            ReactMatter - <b className="text-orange-400 ml-1">@CesarMartinez</b>
+            <p></p>ReactMatter -{' '}
+            <b className="text-orange-400 ml-1">@CesarMartinez</b>
           </footer>
         </aside>
 
@@ -93,7 +94,7 @@ const App = () => {
             />
           </section>
 
-          <section className=" rounded-xl shadow-2xl border border-zinc-800  p-6 space-y-4 max-h-[60vh]">
+          <section className=" rounded-xl shadow-2xl border border-zinc-800  p-6 space-y-4 max-h-[60vh] min-h-[60vh]">
             <div className="p-2 flex justify-between">
               <label className="text-sm font-semibold text-zinc-400">
                 Resultado Formateado
