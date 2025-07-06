@@ -91,24 +91,26 @@ body {
   --sb-size: 8px;
 }
 
-body::-webkit-scrollbar {
-  width: var(--sb-size);
+/* ===== Scrollbar CSS ===== */
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #1e1d1e #2a2a2a;
 }
 
-body::-webkit-scrollbar-track {
-  background: var(--sb-track-color);
-  border-radius: 16px;
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 30px;
 }
 
-body::-webkit-scrollbar-thumb {
-  background: var(--sb-thumb-color);
-  border-radius: 16px;
+*::-webkit-scrollbar-track {
+  background: #575757;
 }
 
-@supports not selector(::-webkit-scrollbar) {
-  body {
-    scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
-  }
+*::-webkit-scrollbar-thumb {
+  background-color: #2e2d2e;
+  border-radius: 37px;
+  border: 5px inset #212121;
 }
 
 @theme {

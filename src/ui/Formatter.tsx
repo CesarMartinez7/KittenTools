@@ -14,23 +14,25 @@ interface JsonNodeProps {
 }
 
 const FormatDataLabel = ({ data }: { data: JsonValue }) => {
-  if (data === null) {
-    return <span className="text-purple-400">null</span>;
-  }
-
-  if ((typeof data === 'string' && data.length === 0) || data === '') {
-    return <span className="text-zinc-500">""</span>;
-  }
+  if (data === null) return <span className="text-purple-400">null</span>;
 
   if (typeof data === 'string') {
-    return <span className="text-emerald-400">"{data}"</span>;
+    return data.length === 0 ? (
+      <span className="text-zinc-500">""</span>
+    ) : (
+      <span className="text-emerald-400">"{data}"</span>
+    );
   }
 
   if (typeof data === 'boolean') {
     return <span className="text-sky-400">{String(data)}</span>;
   }
 
-  return <span className="text-yellow-400">{data}</span>;
+  if (typeof data === 'number') {
+    return <span className="text-yellow-400">{data}</span>;
+  }
+
+  return <span className="text-zinc-400">{String(data)}</span>;
 };
 
 const INDENT = 12;
@@ -49,21 +51,16 @@ const JsonNode: React.FC<JsonNodeProps> = ({
 
   return (
     <div
-      className="text-sm whitespace-break-spaces"
+      className="text-sm break-words whitespace-pre-wrap"
       style={{ marginLeft: depth * INDENT }}
     >
       {name !== undefined && (
-        <strong
-          className="text-red-400 mr-1"
-          title={`${name} : ${typeof name}`}
-        >
-          "{name}":
-        </strong>
+        <strong className="text-purple-400 mr-1">"{name}":</strong>
       )}
       {isObject ? (
         <>
           <span
-            className="text-zinc-500 cursor-pointer select-none hover:text-zinc-300 transition"
+            className="text-zinc-500 cursor-pointer select-none hover:text-zinc-300 transition-colors"
             onClick={toggle}
           >
             {isArray ? (
@@ -71,12 +68,14 @@ const JsonNode: React.FC<JsonNodeProps> = ({
                 icon="material-symbols-light:data-array"
                 width="20"
                 height="20"
+                color="#3ca9af"
               />
             ) : (
               <Icon
                 icon="material-symbols-light:data-object-sharp"
                 width="20"
                 height="20"
+                color="#6ac3af"
               />
             )}
           </span>
@@ -114,6 +113,8 @@ const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean }> = ({
   data,
   isOpen,
 }) => {
+  const [size, setSize] = useState<string>('0.00 KB');
+
   const handleCopyClipBoard = () => {
     try {
       const toCopy =
@@ -122,13 +123,19 @@ const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean }> = ({
           : JSON.stringify(data, null, 2);
       navigator.clipboard.writeText(toCopy);
     } catch (err) {
-      console.error('No se pudo copiar: JSON inválido');
+      console.error('❌ Error al copiar el JSON');
     }
   };
 
+  useEffect(() => {
+    const raw = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
+    const bytes = new Blob([raw]).size / 1024;
+    setSize(bytes.toFixed(2) + ' KB');
+  }, [data]);
+
   return (
-    <div className="relative w-full bg-zinc-900 text-zinc-400 rounded-xl border border-zinc-800 p-4 shadow-sm">
-      <div className="text-sm font-mono whitespace-pre-wrap">
+    <div className="relative w-full max-h-[44vh] flex flex-col backdrop-blur-2xl text-zinc-400 rounded-xl border border-zinc-800 shadow-sm ">
+      <div className="flex-1 overflow-y-auto px-4 py-4 text-sm font-mono whitespace-pre-wrap break-words">
         {typeof data === 'string' ? (
           (() => {
             try {
@@ -143,13 +150,18 @@ const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean }> = ({
         )}
       </div>
 
-      <button
-        title="Copiar JSON"
-        onClick={handleCopyClipBoard}
-        className="fixed top-3 right-3 bg-zinc-800 hover:bg-zinc-700 p-2 rounded-md border border-zinc-700 text-zinc-400 transition"
-      >
-        <Icon icon="mynaui:copy" width="20" height="20" />
-      </button>
+      {/* ACTIONS */}
+      <div className="flex justify-between items-center gap-2 px-4 py-2 border-t border-zinc-800 rounded-b-xl">
+        <span className="text-xs text-zinc-500">{size}</span>
+        <button
+          title="Copiar JSON"
+          onClick={handleCopyClipBoard}
+          className="flex items-center gap-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white px-3 py-1 rounded-md border border-zinc-700 transition-colors text-xs"
+        >
+          <Icon icon="mynaui:copy" width="14" height="14" />
+          Copiar
+        </button>
+      </div>
     </div>
   );
 };
