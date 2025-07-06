@@ -27,7 +27,7 @@ const App = () => {
   const handleCopy = () => navigator.clipboard.writeText(value);
 
   return (
-    <div className="bg-gradient-to-br from-zinc-950 to-zinc-800/100 text-zinc-200 py-10 px-4 min-h-screen font-mono">
+    <div className="bg-gradient-to-b from-zinc-950 to-zinc-800/100 text-zinc-200 py-10 px-4 min-h-screen font-mono">
       <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-6">
         <aside className="lg:w-64 w-full grid gap-5 justify-between rounded-2xl">
           <div className="p-6 shadow-2xl rounded-2xl backdrop-blur-3xl   flex flex-col items-center justify-center text-center space-y-4">
@@ -59,7 +59,6 @@ const App = () => {
                 {openAll ? ' Abrir label' : ' Expandir todo'}
               </button>
 
-              
               <button className="w-full flex items-center justify-center gap-2 bg-indigo-400 text-white hover:bg-indigo-500  font-bold px-3 py-2 text-sm rounded-lg transition">
                 <Icon icon="mdi:code-block-json" width="24" height="24" />
                 Cargar JSON{' '}
