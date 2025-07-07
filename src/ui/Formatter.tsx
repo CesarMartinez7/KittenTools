@@ -48,7 +48,7 @@ const JsonNode: React.FC<JsonNodeProps> = ({
   const isObject = typeof data === 'object' && data !== null;
   const isArray = Array.isArray(data);
 
-  const toggle = () => setCollapsed((prev) => !prev);
+  const toggle = () => setCollapsed(!collapsed);
 
   return (
     <div
@@ -67,25 +67,15 @@ const JsonNode: React.FC<JsonNodeProps> = ({
             onClick={toggle}
           >
             {isArray ? (
-              <Icon
-                icon="material-symbols-light:data-array"
-                width="20"
-                height="20"
-                color="#3ca9af"
-              />
+              !collapsed  ? "[" : "[..]"
             ) : (
-              <Icon
-                icon="material-symbols-light:data-object-sharp"
-                width="20"
-                height="20"
-                color="#6ac3af"
-              />
+              !collapsed && !isArray ? "{" : "{..}"
+              
             )}
           </span>
           {!collapsed && (
             <div className="ml-4 mt-1 space-y-1">
-              {' '}
-              {'{'}
+              
               {isArray
                 ? (data as JsonArray).map((item, i) => (
                     <JsonNode
@@ -106,7 +96,7 @@ const JsonNode: React.FC<JsonNodeProps> = ({
                       depth={depth + 1}
                     />
                   ))}
-              {'}'}{' '}
+              
             </div>
           )}
         </>
@@ -122,7 +112,7 @@ const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean }> = ({
   isOpen,
 }) => {
   const [size, setSize] = useState<string>('0.00 KB');
-  const [isOpenJsonViewer, setIsOpenJsonViewer] = useState<boolean>(false);
+  const [isOpenJsonViewer, setIsOpenJsonViewer] = useState<boolean>(true);
   const [INDENT, setIdent] = useState<number>(12);
   const [interfaceGen, setInterfaceGen] = useState<unknown[]>([]);
 
@@ -232,7 +222,7 @@ const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean }> = ({
             className="px-2 py-1 rounded-lg text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2"
             onClick={() => {
               console.log(INDENT);
-              setIdent(INDENT + 1);
+              setIdent((prev)  => prev  +  1);
             }}
           >
             +
@@ -240,7 +230,13 @@ const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean }> = ({
           <button
             className="px-2 py-1 rounded-lg text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2"
             onClick={() => {
-              setIdent(INDENT - 1);
+              setIdent((prev) =>  {
+                if(prev > 5) {
+                  return prev - 1
+                }else{
+                  return prev
+                }
+              });
             }}
           >
             -

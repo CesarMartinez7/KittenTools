@@ -29,7 +29,7 @@ const App = () => {
   
     const input = document.createElement("input") as HTMLInputElement;
     input.type = "file"
-    input.accept = ".json"
+    input.accept = ".json,.txt"
 
 
     input.onchange = (e) => {
@@ -43,18 +43,12 @@ const App = () => {
           const result = reader.result as string
           setValue(result)
         }
+
+
         reader.readAsText(file)
       }
     }
-
-
-
-
-
     input.click()
-    
-
-
   
 
   } 
