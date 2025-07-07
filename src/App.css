@@ -73,6 +73,12 @@
   font-style: italic;
 }
 
+
+
+button {
+  @apply cursor-pointer
+}
+
 .ibm-plex-mono-semibold-italic {
   font-family: 'IBM Plex Mono', monospace;
   font-weight: 600;

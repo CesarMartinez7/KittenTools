@@ -51,8 +51,14 @@ const App = () => {
 
 
   const handleClickminifyJson = () => {
-    console.log(value.replace("/n","" ))
-    console.log(value.replace(" ", "" ))
+
+    for(const i of value) {
+      i.replace("/n","" )
+    }
+
+    setValue(value)
+    setValue(value.replace(" ", "" ))
+    
     
   }
 
@@ -102,7 +108,7 @@ const App = () => {
             <div className="w-full space-y-3">
               <button
                 onClick={handleClear}
-                className="w-full flex items-center justify-center gap-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-3 py-2 text-sm rounded-lg transition"
+                className="w-full flex items-center justify-center gap-2 bg-gradient-to-t from-zinc-900 to-zinc-800 hover:bg-zinc-700 text-zinc-300 px-3 py-2 text-sm rounded-lg transition"
               >
                 <Icon icon="tabler:air-conditioning" width="20" /> Limpiar
               </button>
@@ -112,8 +118,8 @@ const App = () => {
               >
                 <Icon icon="tabler:copy" width="20" /> Copiar
               </button>
-              <button className="w-full flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-zinc-900 font-bold px-3 py-2 text-sm rounded-lg transition" onClick={handleClickminifyJson} >
-                Minify
+              <button className="w-full flex items-center justify-center gap-2 bg-emerald-500 bg-gradient-to-t from-emerald-600 to-emerald-300 hover:bg-emerald-400 text-zinc-900 font-bold px-3 py-2 text-sm rounded-lg transition" onClick={handleClickminifyJson} >
+              <Icon icon="tabler:box" width="24" height="24"   /> Minify
               </button>
 
               <button
@@ -124,7 +130,7 @@ const App = () => {
                 Cargar JSON{" "}
               </button>
               <button
-                className="w-full flex items-center justify-center gap-2 bg-kanagawa-orange text-white hover:bg-kanagawa-orange/60  font-bold px-3 py-2 text-sm rounded-lg transition"
+                className="w-full flex items-center justify-center gap-2 bg-kanagawa-orange text-black hover:bg-kanagawa-orange/60  font-bold px-3 py-2 text-sm rounded-lg transition"
                 onClick={handleCopyUrl}
               >
                 <Icon icon="tabler:share" width="20" height="20" />
