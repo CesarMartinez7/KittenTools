@@ -1,16 +1,17 @@
-import './App.css';
-import JsonViewer from './ui/Formatter';
-import { useState, useEffect } from 'react';
-import ReactSVG from './ui/react';
-import { Icon } from '@iconify/react/dist/iconify.js';
+import "./App.css";
+import JsonViewer from "./ui/Formatter";
+import { useState, useEffect } from "react";
+import ReactSVG from "./ui/react";
+import { Icon } from "@iconify/react/dist/iconify.js";
 
 const App = () => {
   const [value, setValue] = useState<string>(
-    localStorage.getItem('jsonData') || '[]',
+    localStorage.getItem("jsonData") || "[]",
   );
   const [isValid, setIsValid] = useState(true);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [error, setErrorMessage] = useState("")
   const [openAll, setOpenAll] = useState<boolean>(false);
+  
 
   useEffect(() => {
     try {
@@ -23,49 +24,79 @@ const App = () => {
     }
   }, [value]);
 
-  const handleClear = () => setValue('[]');
+  const handleClear = () => setValue("[]");
 
   const handleClickCargueJson = () => {
-  
     const input = document.createElement("input") as HTMLInputElement;
-    input.type = "file"
-    input.accept = ".json,.txt"
-
+    input.type = "file";
+    input.accept = ".json,.txt";
 
     input.onchange = (e) => {
-      const tg = e.target as HTMLInputElement
-      
-      if(tg.files) {
-        console.log(tg.files[0])
-        const file = tg.files[0]
-        const reader = new FileReader()
+      const tg = e.target as HTMLInputElement;
+
+      if (tg.files) {
+        console.log(tg.files[0]);
+        const file = tg.files[0];
+        const reader = new FileReader();
         reader.onload = () => {
-          const result = reader.result as string
-          setValue(result)
-        }
+          const result = reader.result as string;
+          setValue(result);
+        };
 
-
-        reader.readAsText(file)
+        reader.readAsText(file);
       }
-    }
-    input.click()
-  
+    };
+    input.click();
+  };
 
-  } 
+
+  const handleClickminifyJson = () => {
+    console.log(value.replace("/n","" ))
+    console.log(value.replace(" ", "" ))
+    
+  }
 
   const handleCopy = () => navigator.clipboard.writeText(value);
+  const handleCopyUrl = () => navigator.clipboard.writeText(window.location.toString());
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const jsdata = urlParams.get("jsdata");
+
+    if (jsdata) {
+      setValue(decodeURIComponent(jsdata));
+    } else {
+      urlParams.set("jsdata", encodeURIComponent(value));
+      const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
+      window.history.replaceState(null, "", newUrl);
+    }
+  }, []);
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set("jsdata", encodeURIComponent(value));
+    const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
+    
+      console.log("Valido")
+      window.history.replaceState(null, "", newUrl);
+    
+  }, [value]);
+
+
+  
+
 
   return (
     <div className="bg-gradient-to-b from-zinc-950 to-zinc-800/100 text-zinc-200 py-10 px-4 min-h-screen font-mono">
       <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-6">
         <aside className="lg:w-64 w-full grid gap-5 justify-between rounded-2xl">
           <div className="p-6 shadow-2xl rounded-2xl backdrop-blur-3xl   flex flex-col items-center justify-center text-center space-y-4">
-            <ReactSVG className="w-20 h-20 hover:rotate-400 transition-transform duration-700 " />
+            <ReactSVG className="w-20 h-20 hover:rotate-400 transition-transform duration-700 animate-spin  " />
             <h1 className="text-3xl font-bold text-white tracking-tight">
               ReactMatter
             </h1>
             <p className="text-sm text-zinc-400 max-w-[240px] break-words">
-              Valida y visualiza tu JSON de format elegante.
+              Valida, visualiza y Comparte tu JSON de forma elegante.
             </p>
 
             <div className="w-full space-y-3">
@@ -81,40 +112,48 @@ const App = () => {
               >
                 <Icon icon="tabler:copy" width="20" /> Copiar
               </button>
-              <button
-                className="w-full flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-zinc-900 font-bold px-3 py-2 text-sm rounded-lg transition"
-              >
+              <button className="w-full flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-zinc-900 font-bold px-3 py-2 text-sm rounded-lg transition" onClick={handleClickminifyJson} >
                 Minify
               </button>
 
-              <button className="w-full flex items-center justify-center gap-2 bg-indigo-400 text-white hover:bg-indigo-500  font-bold px-3 py-2 text-sm rounded-lg transition" onClick={handleClickCargueJson} >
-                <Icon icon="mdi:code-block-json" width="24" height="24" />
-                Cargar JSON{' '}
+              <button
+                className="w-full flex items-center justify-center gap-2 bg-indigo-400 text-white hover:bg-indigo-500  font-bold px-3 py-2 text-sm rounded-lg transition"
+                onClick={handleClickCargueJson}
+              >
+                <Icon icon="mdi:code-block-json" width="20" height="20" />
+                Cargar JSON{" "}
+              </button>
+              <button
+                className="w-full flex items-center justify-center gap-2 bg-kanagawa-orange text-white hover:bg-kanagawa-orange/60  font-bold px-3 py-2 text-sm rounded-lg transition"
+                onClick={handleCopyUrl}
+              >
+                <Icon icon="tabler:share" width="20" height="20" />
+                Compartir URL
               </button>
             </div>
           </div>
 
-          <footer className="text-xs  pt-6 rounded-2xl p-6 flex justify-start shadow-2xl backdrop-blur-2xl text-zinc-500 items-end border-zinc-800">
-            <p></p>ReactMatter -{' '}
-            <b className="text-orange-400 ml-1">@CesarMartinez</b>
-          </footer>
+          <footer className="text-xs pt-6 rounded-2xl p-6 flex justify-between shadow-2xl backdrop-blur-2xl text-zinc-500 items-end border-zinc-900">
+  <p>© {new Date().getFullYear()} ReactMatter.</p>
+  <p>Hecho con 💻 por <b className="text-orange-400 ml-1">@CesarMartinez</b></p>
+</footer>
+
         </aside>
 
         <main className="flex-1 space-y-6">
-          <section className=" rounded-xl shadow-2xl backdrop-blur-3xl p-6 space-y-4 flex flex-col gap-1">
+          <section className=" rounded-xl shadow-2xl backdrop-blur-3xl p-6 space-y-4 flex flex-col gap-1 border border-zinc-900">
             <label className="text-sm font-semibold text-zinc-400 my-4">
               Editor JSON
             </label>
             <textarea
-              onFocus={() => value === '[]' && setValue('')}
               value={value}
               onChange={(e) => {
                 setValue(
-                  e.target.value.replace(/\/\//g, '').replace(/n\//gi, ''),
+                  e.target.value.replace(/\/\//g, "").replace(/n\//gi, ""),
                 );
                 localStorage.setItem(
-                  'jsonData',
-                  e.target.value.replace(/\/\//g, '').replace(/n\//gi, ''),
+                  "jsonData",
+                  e.target.value.replace(/\/\//g, "").replace(/n\//gi, ""),
                 );
               }}
               className="w-full h-52 resize-none rounded-lg border border-zinc-800 p-3 text-sm font-mono text-zinc-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
@@ -132,7 +171,7 @@ const App = () => {
                 className="text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-400 px-3 py-1 rounded-md transition"
                 onClick={() => setOpenAll(!openAll)}
               >
-                {openAll ? '🔽 Abrir todo' : '🔼 Expandir todo'}
+                {openAll ? "🔽 Abrir todo" : "🔼 Expandir todo"}
               </button>
             </div>
 

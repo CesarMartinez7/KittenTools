@@ -1,6 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, {  useEffect, useState} from 'react';
 import { Icon } from '@iconify/react';
-import MOCK from '../mockjson.json';
+
+import FormatDataTypeLabel from './formatDataLabel';
+
+
 
 type JsonValue = string | number | boolean | null | JsonObject | JsonArray;
 type JsonObject = { [key: string]: JsonValue };
@@ -14,36 +17,13 @@ interface JsonNodeProps {
   open: boolean;
 }
 
-const FormatDataLabel = ({ data }: { data: JsonValue }) => {
-  if (data === null) return <span className="text-purple-400">null</span>;
-
-  if (typeof data === 'string') {
-    return data.length === 0 ? (
-      <span className="text-zinc-500">""</span>
-    ) : (
-      <span className="text-emerald-400">"{data}"</span>
-    );
-  }
-
-  if (typeof data === 'boolean') {
-    return <span className="text-sky-400">{String(data)}</span>;
-  }
-
-  if (typeof data === 'number') {
-    return <span className="text-yellow-400">{data}</span>;
-  }
-
-  return <span className="text-zinc-400">{String(data)}</span>;
-};
-
 const JsonNode: React.FC<JsonNodeProps> = ({
-  data = MOCK,
+  data,
   name,
-  open,
   INDENT,
   depth = 0,
 }) => {
-  const [collapsed, setCollapsed] = useState<boolean>(open);
+  const [collapsed, setCollapsed] = useState<boolean>(true);
 
   const isObject = typeof data === 'object' && data !== null;
   const isArray = Array.isArray(data);
@@ -57,7 +37,7 @@ const JsonNode: React.FC<JsonNodeProps> = ({
     >
       {name !== undefined && (
         <strong className="text-purple-400 mr-1 hover:bg-zinc-800 rounded-2xl ">
-          "{name}":{' '}
+          &quot;{name}&quot;:
         </strong>
       )}
       {isObject ? (
@@ -66,18 +46,22 @@ const JsonNode: React.FC<JsonNodeProps> = ({
             className="text-zinc-500 cursor-pointer select-none hover:text-zinc-300 transition-colors duration-500"
             onClick={toggle}
           >
-            {isArray ? (
-              !collapsed  ? "[" : "[..]"
-            ) : (
-              !collapsed && !isArray ? "{" : "{..}"
-              
-            )}
+            {isArray
+              ? !collapsed
+                ? '['
+                : '[..]'
+              : !collapsed && !isArray
+                ? '{'
+                : '{..}'}
           </span>
           {!collapsed && (
             <div className="ml-4 mt-1 space-y-1">
-              
               {isArray
                 ? (data as JsonArray).map((item, i) => (
+                  <>
+                  <div className='flex relative gap- ' key={i}>
+                    
+                     <span className='text-zinc-300'>{i + 1}</span> 
                     <JsonNode
                       INDENT={INDENT}
                       open={collapsed}
@@ -85,8 +69,13 @@ const JsonNode: React.FC<JsonNodeProps> = ({
                       data={item}
                       depth={depth + 1}
                     />
+                  </div>
+                    <span onClick={toggle}>{i + 1 === data.length ? "]" : ""}</span>
+                    
+                  </>
                   ))
-                : Object.entries(data as JsonObject).map(([key, val]) => (
+                : Object.entries(data as JsonObject).map(([key, val], idx) => (
+                  <>
                     <JsonNode
                       INDENT={INDENT}
                       open={collapsed}
@@ -95,17 +84,30 @@ const JsonNode: React.FC<JsonNodeProps> = ({
                       data={val}
                       depth={depth + 1}
                     />
+                    
+                    <span>{ Object.entries(data as JsonObject).length === idx + 1 ? "}" : ""}</span>
+                    </>
                   ))}
-              
             </div>
           )}
         </>
       ) : (
-        <FormatDataLabel data={data} />
+        <FormatDataTypeLabel data={data} />
       )}
     </div>
   );
 };
+
+type GeneratorOutput = { key: string; value: string | string[] };
+
+interface TypeInterface {
+  index: number;
+  name: string;
+  isObject?: boolean;
+  isArray: boolean;
+  key: string;
+  value: JsonValue;
+}
 
 const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean }> = ({
   data,
@@ -115,54 +117,83 @@ const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean }> = ({
   const [isOpenJsonViewer, setIsOpenJsonViewer] = useState<boolean>(true);
   const [INDENT, setIdent] = useState<number>(12);
   const [interfaceGen, setInterfaceGen] = useState<unknown[]>([]);
+  const [isGeneration, setIsGeneration] = useState([]);
+  const [Interfaces, setInterfaces] = useState<TypeInterface[]>();
+  const [encodeData, setEncodeData] = useState<string>();
 
+  const GeneratorInterfaceArray = (
+    value: [string, unknown][],
+  ): GeneratorOutput[] => {
+    const result: GeneratorOutput[] = [];
+
+    // Convertir a objeto si es posible
+    const obj = Object.fromEntries(value);
+
+    for (const [key, val] of Object.entries(obj)) {
+      if (Array.isArray(val)) {
+        // Extraer tipos únicos de los elementos del array
+        const types = [...new Set(val.map((item) => typeof item))];
+        result.push({ key, value: types.length === 1 ? types[0] : types });
+      } else {
+        result.push({ key, value: typeof val });
+      }
+    }
+
+    return result;
+  };
+
+  const GenerateInterface = (entries: [string, unknown][]) => {
+    const interfaceList = entries.map(([key, value]) => {
+      if (
+        typeof value === 'object' &&
+        value !== null &&
+        !Array.isArray(value)
+      ) {
+        if (Array.isArray(value)) {
+          console.log('kkjfslkfddsjf');
+          // Si es un array, obtenemos el tipo del primer elemento si existe
+          const firstElementType =
+            value.length > 0 ? typeof value[0] : 'unknown';
+          console.log(firstElementType);
+
+          console.warn(`Primer elemento ${firstElementType}`);
+          return { key, type: 'Arrayy' };
+        } else {
+          console.log('dsfsfdkjsdd');
+          return { key, type: 'Object' };
+        }
+      } else if (Array.isArray(value)) {
+        const gen = GeneratorInterfaceArray(value);
+        console.table([{ gen }]); //✅
+
+        return { key, type: 'Arrray' };
+      } else {
+        return { key, type: typeof value };
+      }
+    });
+
+    return interfaceList;
+  };
+  // Retorno del resultado
   const handleGetInterface = () => {
-    console.log(typeof data);
-
     let formatData =
-      typeof data === 'string' ? data : JSON.parse(data, null, 2);
-
+      typeof data === 'string' ? data : JSON.parse(data, null, 3);
     if (typeof data === 'string') {
       try {
         formatData = JSON.parse(data);
 
         // If es empieza como matriz o array entonces tomamos el primer elemento y sacamos las keys el resultado Data[]
-
         if (Array.isArray(formatData) && formatData.length > 0) {
           formatData = formatData[0]; // Tomamos el primer elemento del array
           console.log('EL primer elemento del array:', formatData);
           const entriesArrayObject = Object.entries(formatData);
-          // Aqui hacemos el proceso de obtencion de keys y tipos, podrias arrhora codigo si hacemos una funcion que se encargue de esto
-          const interfaceList = entriesArrayObject.map(([key, value]) => {
-            console.log(key, value);
-            return { key, type: typeof value };
-          });
 
-          console.log('INTEFAZ GENERADO ARRAY:', interfaceList);
+          const interfaceList = GenerateInterface(entriesArrayObject);
           setInterfaceGen(interfaceList);
           return;
         } else {
-          // Si no empieza como array entonces es un obejto y podemos obtener sus keys
           const entriesObject = Object.entries(formatData);
-          const interfaceList = entriesObject.map(([key, value]) => {
-            if (
-              typeof value === 'object' &&
-              value !== null &&
-              !Array.isArray(value)
-            ) {
-              if (Array.isArray(value)) {
-                // Si es un array, obtenemos el tipo del primer elemento si existe
-                const firstElementType =
-                  value.length > 0 ? typeof value[0] : 'unknown';
-                console.log(firstElementType);
-                return { key, type: 'Arrayy' };
-              } else {
-                return { key, type: 'Object' };
-              }
-            } else {
-              return { key, type: typeof value };
-            }
-          });
+          const interfaceList = GenerateInterface(entriesObject);
           setInterfaceGen(interfaceList);
         }
       } catch {
@@ -173,6 +204,7 @@ const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean }> = ({
     }
   };
 
+  // Copiar en el ClipBoard
   const handleCopyClipBoard = () => {
     try {
       const toCopy =
@@ -190,11 +222,12 @@ const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean }> = ({
     const bytes = new Blob([raw]).size / 1024;
     setSize(bytes.toFixed(2) + ' KB');
     handleGetInterface();
+
   }, [data]);
 
   return (
-    <div className="relative w-full max-h-[44vh] flex flex-col backdrop-blur-2xl text-zinc-400 rounded-xl border border-zinc-800 shadow-sm ">
-      <div className="flex gap-2 py-2 px-4 items-center justify-between border-b border-zinc-800 rounded-t-xl">
+    <div className="relative w-full max-h-[44vh] min-h-[44vh] flex flex-col backdrop-blur-2xl text-zinc-400 rounded-xl border border-zinc-800 shadow-sm  ">
+      <div className="flex gap-2 py-2 px-4 items-center justify-between border-b border-zinc-800 rounded-t-xl ">
         <button
           className="px-2 py-1 rounded-lg text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2"
           onClick={() => {
@@ -222,7 +255,7 @@ const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean }> = ({
             className="px-2 py-1 rounded-lg text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2"
             onClick={() => {
               console.log(INDENT);
-              setIdent((prev)  => prev  +  1);
+              setIdent((prev) => prev + 1);
             }}
           >
             +
@@ -230,11 +263,11 @@ const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean }> = ({
           <button
             className="px-2 py-1 rounded-lg text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2"
             onClick={() => {
-              setIdent((prev) =>  {
-                if(prev > 5) {
-                  return prev - 1
-                }else{
-                  return prev
+              setIdent((prev) => {
+                if (prev > 5) {
+                  return prev - 1;
+                } else {
+                  return prev;
                 }
               });
             }}
@@ -244,11 +277,12 @@ const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean }> = ({
         </div>
       </div>
 
-      {/* JSON CONTENT */}
+      {/* JSON CONTENT */}  
+
 
       {isOpenJsonViewer && (
-        <div className="flex-1 overflow-y-auto px-4 py-4 text-sm font-mono whitespace-pre-wrap break-words">
-          {typeof data === 'string' ? (
+        <div className="flex-1 overflow-y-auto px-4 py-4 text-sm font-mono whitespace-pre-wrap break-words ">
+          {typeof data === 'string' && data.length > 0 ? (
             (() => {
               try {
                 const parsed = JSON.parse(data);
@@ -264,17 +298,19 @@ const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean }> = ({
       )}
 
       {!isOpenJsonViewer && (
-        <div className="flex-1 overflow-y-auto px-4 py-4 text-sm font-mono whitespace-pre-wrap break-words">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden px-4 py-4 text-sm font-mono whitespace-pre-wrap break-words">
           {interfaceGen.length > 0 ? (
             <div className="space-y-2">
               <h3 className="text-zinc-300 font-semibold mb-2">
                 Interfaz Generada:
               </h3>
               <pre className="bg-zinc-800 p-4 rounded-lg">
+                <p>Interface</p>
                 {interfaceGen.map((item, index) => (
                   <div key={index}>
-                    <span className="text-purple-400">{item.key}</span>:{' '}
-                    <span className="text-yellow-400">{item.type}</span>
+                    <span className="text-purple-400">{item?.key}</span>:{' '}
+                    <span className="text-yellow-400">{item?.type}</span>
+                    <p>{"]"}</p>
                   </div>
                 ))}
               </pre>
