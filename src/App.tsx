@@ -24,6 +24,41 @@ const App = () => {
   }, [value]);
 
   const handleClear = () => setValue('[]');
+
+  const handleClickCargueJson = () => {
+  
+    const input = document.createElement("input") as HTMLInputElement;
+    input.type = "file"
+    input.accept = ".json"
+
+
+    input.onchange = (e) => {
+      const tg = e.target as HTMLInputElement
+      
+      if(tg.files) {
+        console.log(tg.files[0])
+        const file = tg.files[0]
+        const reader = new FileReader()
+        reader.onload = () => {
+          const result = reader.result as string
+          setValue(result)
+        }
+        reader.readAsText(file)
+      }
+    }
+
+
+
+
+
+    input.click()
+    
+
+
+  
+
+  } 
+
   const handleCopy = () => navigator.clipboard.writeText(value);
 
   return (
@@ -53,13 +88,12 @@ const App = () => {
                 <Icon icon="tabler:copy" width="20" /> Copiar
               </button>
               <button
-                onClick={() => setOpenAll(!openAll)}
                 className="w-full flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-zinc-900 font-bold px-3 py-2 text-sm rounded-lg transition"
               >
-                {openAll ? ' Abrir label' : ' Expandir todo'}
+                Minify
               </button>
 
-              <button className="w-full flex items-center justify-center gap-2 bg-indigo-400 text-white hover:bg-indigo-500  font-bold px-3 py-2 text-sm rounded-lg transition">
+              <button className="w-full flex items-center justify-center gap-2 bg-indigo-400 text-white hover:bg-indigo-500  font-bold px-3 py-2 text-sm rounded-lg transition" onClick={handleClickCargueJson} >
                 <Icon icon="mdi:code-block-json" width="24" height="24" />
                 Cargar JSON{' '}
               </button>
@@ -94,7 +128,7 @@ const App = () => {
             />
           </section>
 
-          <section className=" rounded-xl shadow-2xl border border-zinc-800  p-6 space-y-4 max-h-[60vh] min-h-[60vh]">
+          <section className=" rounded-xl shadow-2xl border border-zinc-800  p-6 space-y-1 max-h-[60vh] min-h-[60vh]">
             <div className="p-2 flex justify-between">
               <label className="text-sm font-semibold text-zinc-400">
                 Resultado Formateado
