@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect } from 'react';
 
 export default function ViewCsv({
   values,
@@ -8,12 +8,9 @@ export default function ViewCsv({
   keys: { key: string; type: string }[];
 }) {
   useEffect(() => {
-    console.log("Claves:", keys);
-    console.log("Primer valor:", values[0]);
+    console.log('Claves:', keys);
+    console.log('Primer valor:', values[0]);
   }, [keys, values]);
-
-
-  
 
   return (
     <div>
@@ -39,9 +36,9 @@ export default function ViewCsv({
                     >
                       {
                         // Asegura que sea un objeto antes de acceder
-                        typeof row === "object" && row !== null
+                        typeof row === 'object' && row !== null
                           ? String((row as Record<string, unknown>)[k.key])
-                          : "-"
+                          : '-'
                       }
                     </td>
                   ))}

@@ -1,55 +1,36 @@
-import "./App.css";
-import JsonViewer from "./ui/Formatter";
-import { useState, useEffect } from "react";
-import ReactSVG from "./ui/react";
-import { Icon } from "@iconify/react/dist/iconify.js";
-import { motion } from "motion/react"
+import './App.css';
+
+import { Icon } from '@iconify/react/dist/iconify.js';
+import { useEffect, useState } from 'react';
+import { JsonViewerLazy } from './ui/LAZY_COMPONENT';
+import ModalViewerJSON from './ui/ModalViewer';
+import ReactSVG from './ui/react';
 
 const App = () => {
   const [value, setValue] = useState<string>(
-    localStorage.getItem("jsonData") || "[]",
+    localStorage.getItem('jsonData') || '[]',
   );
   const [isValid, setIsValid] = useState(true);
-  const [error, setErrorMessage] = useState("");
+  const [error, setErrorMessage] = useState('');
   const [openAll, setOpenAll] = useState<boolean>(false);
-
-
-  const overlayVariants = {
-    visible: {
-      opacity: 1,
-      transition: {
-        when: "beforeChildren",
-        duration: 0.3,
-        delayChildren: 0.4
-      }
-    },
-    hidden: {
-      opacity: 0,
-      transition: {
-        when: "afterChildren",
-        duration: 0.3,
-        delay: 0.4
-      }
-    }
-  };
 
   useEffect(() => {
     try {
       JSON.parse(value);
       setIsValid(true);
-      setErrorMessage("");
+      setErrorMessage('');
     } catch {
       setIsValid(false);
-      setErrorMessage("JSON inválido. Por favor verifica tu entrada.");
+      setErrorMessage('JSON inválido. Por favor verifica tu entrada.');
     }
   }, [value]);
 
-  const handleClear = () => setValue("[]");
+  const handleClear = () => setValue('[]');
 
   const handleClickCargueJson = () => {
-    const input = document.createElement("input") as HTMLInputElement;
-    input.type = "file";
-    input.accept = ".json,.txt";
+    const input = document.createElement('input') as HTMLInputElement;
+    input.type = 'file';
+    input.accept = '.json,.txt';
 
     input.onchange = (e) => {
       const tg = e.target as HTMLInputElement;
@@ -69,18 +50,17 @@ const App = () => {
     input.click();
   };
 
-
   const handleClickOpenModal = () => {
-    setOpenAll(!openAll)
-  }
+    setOpenAll(!openAll);
+  };
 
   const handleClickminifyJson = () => {
-    for (let i of value) {
-      i.replace("/n", "");
+    for (const i of value) {
+      i.replace('/n', '');
     }
 
     setValue(value);
-    setValue(value.replace(" ", ""));
+    setValue(value.replace(' ', ''));
   };
 
   const handleCopy = () => navigator.clipboard.writeText(value);
@@ -89,50 +69,38 @@ const App = () => {
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    const jsdata = urlParams.get("jsdata");
+    const jsdata = urlParams.get('jsdata');
 
     if (jsdata) {
       setValue(decodeURIComponent(jsdata));
-      console.log("Decodificando data params");
+      console.log('Decodificando data params');
     } else {
-      urlParams.set("jsdata", encodeURIComponent(value));
+      urlParams.set('jsdata', encodeURIComponent(value));
       const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
-      window.history.replaceState(null, "", newUrl);
+      window.history.replaceState(null, '', newUrl);
     }
   }, []);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    urlParams.set("jsdata", encodeURIComponent(value));
+    urlParams.set('jsdata', encodeURIComponent(value));
     const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
 
-    console.log("Valido");
-    window.history.replaceState(null, "", newUrl);
+    console.log('Valido');
+    window.history.replaceState(null, '', newUrl);
   }, [value]);
 
   return (
     <div className="bg-gradient-to-b from-zinc-950 to-zinc-800/100 text-zinc-200  min-h-screen font-mono">
       {openAll && (
-        <motion.div   initial="hidden"
-        animate="visible"
-        exit="hidden"
-        variants={overlayVariants}
-     className="w-full absolute md:p-24 p-5 pointer-event backdrop-blur-2xl h-screen z-[888] flex justify-center-safe items-center flex-col">
-        <div className="w-full bg-zinc-900 overflow-auto rounded-2xl ">
-          <div className="w-full flex justify-end px-5 my-1">
-          <button className="btn-icon" onClick={handleClickOpenModal}><Icon icon="tabler:minimize" width="16" height="16" /></button>
-
-          </div>
-          <div className="bg-zinc-900 backdrop-blur-3xl overflow-hidden rounded-2xl">
-          <JsonViewer maxHeight="80vh" height="50vh" data={value} isOpen={openAll}/>
-
-          </div>
-        </div>
-
-        </motion.div>
+        <ModalViewerJSON
+          value={value}
+          openAll={openAll}
+          setOpenAll={setOpenAll}
+        />
       )}
 
-      <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-6">
+      <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-6 min-h-screen p-5">
         <aside className="lg:w-64 w-full grid gap-5 justify-between rounded-2xl">
           <div className="p-6 shadow-2xl rounded-2xl backdrop-blur-3xl   flex flex-col items-center justify-center text-center space-y-4">
             <ReactSVG className="w-20 h-20 hover:rotate-400 transition-transform duration-700 animate-spin  " />
@@ -168,9 +136,10 @@ const App = () => {
                 onClick={handleClickCargueJson}
               >
                 <Icon icon="mdi:code-block-json" width="20" height="20" />
-                Cargar JSON{" "}
+                Cargar JSON{' '}
               </button>
               <button
+                title="Compartir url"
                 className="w-full flex items-center justify-center gap-2 bg-kanagawa-orange text-black hover:bg-kanagawa-orange/60  font-bold px-3 py-2 text-sm rounded-lg transition"
                 onClick={handleCopyUrl}
               >
@@ -183,7 +152,7 @@ const App = () => {
           <footer className="text-xs pt-6 rounded-2xl p-6 flex justify-between shadow-2xl backdrop-blur-2xl text-zinc-500 items-end border-zinc-900">
             <p>© {new Date().getFullYear()} ReactMatter.</p>
             <p>
-              Hecho con 💻 por{" "}
+              Hecho con 💻 por{' '}
               <b className="text-orange-400 ml-1">@CesarMartinez</b>
             </p>
           </footer>
@@ -198,11 +167,11 @@ const App = () => {
               value={value}
               onChange={(e) => {
                 setValue(
-                  e.target.value.replace(/\/\//g, "").replace(/n\//gi, ""),
+                  e.target.value.replace(/\/\//g, '').replace(/n\//gi, ''),
                 );
                 localStorage.setItem(
-                  "jsonData",
-                  e.target.value.replace(/\/\//g, "").replace(/n\//gi, ""),
+                  'jsonData',
+                  e.target.value.replace(/\/\//g, '').replace(/n\//gi, ''),
                 );
               }}
               className="w-full h-52 resize-none rounded-lg border border-zinc-800 p-3 text-sm font-mono text-zinc-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
@@ -210,7 +179,7 @@ const App = () => {
             />
           </section>
 
-          <section className=" rounded-xl shadow-2xl border border-zinc-800  p-6 space-y-1 max-h-[60vh] min-h-[60vh]">
+          <section className=" rounded-xl shadow-2xl border border-zinc-800  p-6 space-y-">
             <div className="p-2 flex justify-between">
               <label className="text-sm font-semibold text-zinc-400">
                 Resultado Formateado
@@ -225,7 +194,12 @@ const App = () => {
             </div>
 
             <div className="text-sm whitespace-pre-wrap break-words break-all overflow-auto h-fit">
-              <JsonViewer data={value} isOpen={openAll} />
+              <JsonViewerLazy
+                data={value}
+                isOpen={openAll}
+                height="20vh"
+                maxHeight="20vh"
+              />
             </div>
             {isValid && (
               <p className="text-green-500 text-xs font-medium">

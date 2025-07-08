@@ -14,9 +14,6 @@
   interpolate-size: allow-keywords;
 }
 
-
-
-
 .btn-icon  {
   @apply p-1 text-xs bg-zinc-800 rounded-lg text-xs hover:bg-zinc-900 transition-colors
 }
