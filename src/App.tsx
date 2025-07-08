@@ -3,24 +3,24 @@ import JsonViewer from "./ui/Formatter";
 import { useState, useEffect } from "react";
 import ReactSVG from "./ui/react";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { MyComponent } from "./ui/Video";
 
 const App = () => {
   const [value, setValue] = useState<string>(
     localStorage.getItem("jsonData") || "[]",
   );
   const [isValid, setIsValid] = useState(true);
-  const [error, setErrorMessage] = useState("")
+  const [error, setErrorMessage] = useState("");
   const [openAll, setOpenAll] = useState<boolean>(false);
-  
 
   useEffect(() => {
     try {
       JSON.parse(value);
       setIsValid(true);
-      setErrorMessage('');
+      setErrorMessage("");
     } catch {
       setIsValid(false);
-      setErrorMessage('JSON inválido. Por favor verifica tu entrada.');
+      setErrorMessage("JSON inválido. Por favor verifica tu entrada.");
     }
   }, [value]);
 
@@ -49,21 +49,18 @@ const App = () => {
     input.click();
   };
 
-
   const handleClickminifyJson = () => {
-
-    for(const i of value) {
-      i.replace("/n","" )
+    for (let i of value) {
+      i.replace("/n", "");
     }
 
-    setValue(value)
-    setValue(value.replace(" ", "" ))
-    
-    
-  }
+    setValue(value);
+    setValue(value.replace(" ", ""));
+  };
 
   const handleCopy = () => navigator.clipboard.writeText(value);
-  const handleCopyUrl = () => navigator.clipboard.writeText(window.location.toString());
+  const handleCopyUrl = () =>
+    navigator.clipboard.writeText(window.location.toString());
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -71,6 +68,7 @@ const App = () => {
 
     if (jsdata) {
       setValue(decodeURIComponent(jsdata));
+      console.log("Decodificando data params");
     } else {
       urlParams.set("jsdata", encodeURIComponent(value));
       const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
@@ -82,18 +80,29 @@ const App = () => {
     const urlParams = new URLSearchParams(window.location.search);
     urlParams.set("jsdata", encodeURIComponent(value));
     const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
-    
-      console.log("Valido")
-      window.history.replaceState(null, "", newUrl);
-    
+
+    console.log("Valido");
+    window.history.replaceState(null, "", newUrl);
   }, [value]);
 
-
-  
-
-
   return (
-    <div className="bg-gradient-to-b from-zinc-950 to-zinc-800/100 text-zinc-200 py-10 px-4 min-h-screen font-mono">
+    <div className="bg-gradient-to-b from-zinc-950 to-zinc-800/100 text-zinc-200  min-h-screen font-mono">
+      {openAll && (
+        <div className="w-full absolute  pointer-event backdrop-blur-2xl h-screen z-[888] flex justify-center-safe items-center flex-col">
+        <div className="md:w-[900px] bg-zinc-900 overflow-hidden rounded-2xl ">
+          <div className="w-full flex justify-end px-5 my-1">
+          <button className="btn-icon" onClick={() => setOpenAll(!openAll)}><Icon icon="tabler:minimize" width="16" height="16" /></button>
+
+          </div>
+          <div className="bg-zinc-900 backdrop-blur-3xl overflow-hidden rounded-2xl">
+          <JsonViewer data={value} isOpen={openAll}/>
+
+          </div>
+        </div>
+
+        </div>
+      )}
+
       <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-6">
         <aside className="lg:w-64 w-full grid gap-5 justify-between rounded-2xl">
           <div className="p-6 shadow-2xl rounded-2xl backdrop-blur-3xl   flex flex-col items-center justify-center text-center space-y-4">
@@ -118,8 +127,11 @@ const App = () => {
               >
                 <Icon icon="tabler:copy" width="20" /> Copiar
               </button>
-              <button className="w-full flex items-center justify-center gap-2 bg-emerald-500 bg-gradient-to-t from-emerald-600 to-emerald-300 hover:bg-emerald-400 text-zinc-900 font-bold px-3 py-2 text-sm rounded-lg transition" onClick={handleClickminifyJson} >
-              <Icon icon="tabler:box" width="24" height="24"   /> Minify
+              <button
+                className="w-full flex items-center justify-center gap-2 bg-emerald-500 bg-gradient-to-t from-emerald-600 to-emerald-300 hover:bg-emerald-400 text-zinc-900 font-bold px-3 py-2 text-sm rounded-lg transition"
+                onClick={handleClickminifyJson}
+              >
+                <Icon icon="tabler:box" width="24" height="24" /> Minify
               </button>
 
               <button
@@ -139,11 +151,16 @@ const App = () => {
             </div>
           </div>
 
-          <footer className="text-xs pt-6 rounded-2xl p-6 flex justify-between shadow-2xl backdrop-blur-2xl text-zinc-500 items-end border-zinc-900">
-  <p>© {new Date().getFullYear()} ReactMatter.</p>
-  <p>Hecho con 💻 por <b className="text-orange-400 ml-1">@CesarMartinez</b></p>
-</footer>
 
+          
+
+          <footer className="text-xs pt-6 rounded-2xl p-6 flex justify-between shadow-2xl backdrop-blur-2xl text-zinc-500 items-end border-zinc-900">
+            <p>© {new Date().getFullYear()} ReactMatter.</p>
+            <p>
+              Hecho con 💻 por{" "}
+              <b className="text-orange-400 ml-1">@CesarMartinez</b>
+            </p>
+          </footer>
         </aside>
 
         <main className="flex-1 space-y-6">
@@ -174,10 +191,10 @@ const App = () => {
               </label>
 
               <button
-                className="text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-400 px-3 py-1 rounded-md transition"
+                className="text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-400 px-1 py-1 rounded-md transition"
                 onClick={() => setOpenAll(!openAll)}
               >
-                {openAll ? "🔽 Abrir todo" : "🔼 Expandir todo"}
+                <Icon icon="tabler:maximize" width="15" height="15" />
               </button>
             </div>
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Icon } from "@iconify/react";
 import FormatDataTypeLabel from "./formatDataLabel";
-import ViewCsv from "./viewCsv";
+
 import { mkConfig, generateCsv, download } from "export-to-csv";
 
 const csvConfig = mkConfig({ useKeysAsHeaders: true });
@@ -105,14 +105,14 @@ const JsonNode: React.FC<JsonNodeProps> = ({
 
 type GeneratorOutput = { key: string; value: string | string[] };
 
-interface TypeInterface {
-  index: number;
-  name: string;
-  isObject?: boolean;
-  isArray: boolean;
-  key: string;
-  value: JsonValue;
-}
+// interface TypeInterface {
+//   index: number;
+//   name: string;
+//   isObject?: boolean;
+//   isArray: boolean;
+//   key: string;
+//   value: JsonValue;
+// }
 
 const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean }> = ({
   data,
@@ -225,11 +225,22 @@ const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean }> = ({
     }
   };
 
+  // Arreglar esta puta mrd
   const handleClickGenerateCSV = () => {
-    const values = JSON.parse(data as string);
-    const csv = generateCsv(csvConfig)(values);
+    const date = [
+    {
+      nombr: "cesar"
+    },{
+      nombr: "sdfsdf"
+    }
+    ]
+    const dataformat = JSON.stringify(date as string)
+    console.log(dataformat)
+    const csv = generateCsv(csvConfig)(date);
     download(csvConfig)(csv);
   };
+
+
 
   useEffect(() => {
     const raw = typeof data === "string" ? data : JSON.stringify(data, null, 2);
@@ -349,22 +360,32 @@ const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean }> = ({
 
       {/* ACTIONS */}
       <div className="flex justify-between items-center gap-2 px-4 py-1 border-t border-zinc-800 rounded-b-xl">
-        <span className="text-xs text-zinc-500">{size}</span>
+        <span className="text-xs text-zinc-500 hover:text-zinc-200 transition-all">{size}</span>
 
         <button
           title="Copiar JSON"
           onClick={handleCopyClipBoard}
-          className="flex items-center gap-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white px-3 py-1 rounded-md border border-zinc-700 transition-colors text-xs"
+          className="p-1 text-xs bg-zinc-800 rounded-lg my-4 flex gap-2 "
         >
           <Icon icon="mynaui:copy" width="14" height="14" />
           Copiar
         </button>
+        <div className="flex gap-2">
         <button
-          className="btn p-1 text-xs bg-zinc-800 rounded-lg my-4"
+          className="btn-icon  p-1 text-xs bg-zinc-800 rounded-lg my-4"
           onClick={handleClickGenerateCSV}
         >
           Generar CSV
+
         </button>
+        {/* <button
+          className="btn p-1 text-xs bg-zinc-800 rounded-lg my-4"
+          onClick={handleClickGenerateCSV}
+        >
+          <Icon icon="tabler:maximize" width="18" height="18" />
+        </button> */}
+
+        </div>
       </div>
     </div>
   );

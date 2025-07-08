@@ -1,6 +1,6 @@
 import type { JsonValue } from "../types/models";
 const FormatDataTypeLabel = ({ data }: { data: JsonValue }) => {
-    if (data === null) return <span className="text-kanagawa-orange">null</span>;
+    if (Object.is(data, null) && data !== undefined) return <span className="text-kanagawa-orange">null   <b className="text-[9px] p-1 rounded-md text-zinc-200 bg-gradient-to-t from-zinc-900 to-zinc-700">null</b> </span>;
   
     if (typeof data === 'string') {
       return data.length === 0 ? (
