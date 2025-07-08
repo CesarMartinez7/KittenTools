@@ -14,11 +14,13 @@
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.11",
     "export-to-csv": "^1.4.0",
+    "json-2-csv": "^5.5.9",
     "motion": "^12.23.0",
     "postcss": "^8.5.6",
     "postcss-loader": "^8.1.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-hot-toast": "^2.5.2",
     "tailwindcss": "^4.1.11"
   },
   "devDependencies": {

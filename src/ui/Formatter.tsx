@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Icon } from "@iconify/react";
 import FormatDataTypeLabel from "./formatDataLabel";
+import { json2csv } from "json-2-csv";
+
+import toast, { Toaster } from "react-hot-toast";
+
+const notify = () => toast("Copiado con exito");
+const notifyError = () => toast("Ocurrio un error");
+
 import { mkConfig, generateCsv, download } from "export-to-csv";
+
 const csvConfig = mkConfig({ useKeysAsHeaders: true });
 
 type JsonValue = string | number | boolean | null | JsonObject | JsonArray;
@@ -36,6 +44,11 @@ const JsonNode: React.FC<JsonNodeProps> = ({
       className="text-sm break-words whitespace-pre-wrap   "
       style={{ marginLeft: depth * INDENT }}
     >
+      <Toaster
+        toastOptions={{
+          className: "bg-zinc-900! shadow-md! text-zinc-200! ",
+        }}
+      />
       {name !== undefined && (
         <strong className="text-purple-400 mr-1 hover:bg-zinc-800 rounded-2xl ">
           &quot;{name}&quot;:
@@ -61,7 +74,7 @@ const JsonNode: React.FC<JsonNodeProps> = ({
                 ? (data as JsonArray).map((item, i) => (
                     <>
                       <div className="flex relative gap- " key={i}>
-                        <span className="text-zinc-300">{i + 1}</span>
+                        {/* <span className="text-amber-600">- {i + 1}</span> */}
                         <JsonNode
                           INDENT={INDENT}
                           open={collapsed}
@@ -103,15 +116,21 @@ const JsonNode: React.FC<JsonNodeProps> = ({
   );
 };
 
-
-const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean, height: string, maxHeight: string,   }> = ({
+const JsonViewer: React.FC<{
+  data: JsonValue;
+  isOpen: boolean;
+  isOpenModal: boolean;
+  setIsOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
+  height: string;
+  maxHeight: string;
+}> = ({
   data,
   isOpen,
   height = "20vh",
-  maxHeight = "44vh"
+  maxHeight = "44vh",
+  isOpenModal,
+  setIsOpenModal,
 }) => {
-
-
   const [size, setSize] = useState<string>("0.00 KB");
   const [isOpenJsonViewer, setIsOpenJsonViewer] = useState<boolean>(true);
   // const [isOpenCsvViewer, setIsOpenCsvViewer] = useState<boolean>(true)
@@ -119,9 +138,6 @@ const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean, height: string, m
   const [interfaceGen, setInterfaceGen] = useState<unknown[]>([]);
   const [Interfaces, setInterfaces] = useState<unknown[]>([...interfaceGen]);
   const [values] = useState<JsonValue>(data);
-
-  // const [isGeneration, setIsGeneration] = useState([]);
-  // const [encodeData, setEncodeData] = useState<string>();
 
   const GeneratorInterfaceArray = (
     value: [string, unknown][],
@@ -166,7 +182,7 @@ const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean, height: string, m
         }
       } else if (Array.isArray(value)) {
         const gen = GeneratorInterfaceArray(value);
-        console.table([{ gen }]); //✅
+        console.table([{ gen }]); //                                                           ✅
 
         return { key, type: "Arrray" };
       } else {
@@ -218,36 +234,74 @@ const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean, height: string, m
 
   // Arreglar esta puta mrd
   const handleClickGenerateCSV = () => {
-    const date = [
-    {
-      nombr: "cesar"
-    },{
-      nombr: "sdfsdf"
-    }
-    ]
-    const dataformat = JSON.stringify(date as string)
-    console.log(dataformat)
-    const csv = generateCsv(csvConfig)(date);
-    download(csvConfig)(csv);
+    console.log(typeof values);
+
+    const ourData = [
+      {
+        firstName: "Idorenyin",
+        lastName: "Udoh",
+      },
+      {
+        firstName: "Loyle",
+        lastName: "Carner",
+      },
+      {
+        firstName: "Tamunotekena",
+        lastName: "Dagogo",
+      },
+    ];
+
+    // let dataformat = JSON.parse(values as string);
+    // console.table(dataformat);
+
+    const titleKeys = Object.keys(ourData[0]);
+
+    const refinedData = [];
+    refinedData.push(titleKeys);
+    ourData.forEach((item) => {
+      console.log(item);
+      refinedData.push(Object.values(item));
+    });
+
+    let csvContent = "";
+
+    refinedData.forEach((row) => {
+      csvContent += row.join(",") + "\n";
+    });
+
+    console.warn(csvContent)
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8," });
+    const objUrl = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.setAttribute("href", objUrl);
+    link.setAttribute("download", "File.csv");
+    link.textContent = "Click to Download";
   };
 
+  useEffect(() => {
+    handleClickGenerateCSV();
+  }, []);
 
+  const handleClickMxMn = () => {
+    console.log("minizime y maxi");
+    setIsOpenModal(!isOpenModal);
+  };
 
   useEffect(() => {
     const raw = typeof data === "string" ? data : JSON.stringify(data, null, 2);
     const bytes = new Blob([raw]).size / 1024;
     setSize(bytes.toFixed(2) + " KB");
-    console.log("sdfsdfsdf")
-    console.log(Interfaces)
+    console.log(Interfaces);
     handleGetInterface();
   }, [data]);
 
-
-  
-
   return (
-    <div className={` flex flex-col backdrop-blur-2xl text-zinc-400 rounded-xl border border-zinc-800 shadow-sm`}>
-      <p>{isOpen ? "yes" : "no"}</p>
+    <div
+      className={` flex flex-col backdrop-blur-2xl text-zinc-400 rounded-xl border border-zinc-800 shadow-sm`}
+    >
+      <Toaster />
       <div className="flex gap-2 py-2 px-4 items-center justify-between border-b border-zinc-800 rounded-t-xl ">
         <button
           className="px-2 py-1 rounded-lg text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2"
@@ -302,35 +356,32 @@ const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean, height: string, m
         </div>
       </div>
 
-
       {isOpenJsonViewer && (
-  <div
-    style={{
-      maxHeight,
-      height,
-      minHeight: "42vh",
-    }}
-    className="flex-1 overflow-auto px-3 py-4 text-sm font-mono whitespace-pre-wrap break-words"
-  >
-    {typeof data === "string" && data.length > 0 ? (
-      (() => {
-        try {
-          const parsed = JSON.parse(data);
-          return <JsonNode INDENT={INDENT} open={isOpen} data={parsed} />;
-        } catch (err) {
-          return <div className="text-red-400">❌ JSON inválido</div>;
-        }
-      })()
-    ) : (
-      <JsonNode INDENT={INDENT} open={isOpen} data={data} />
-    )}
-  </div>
-)}
-
+        <div
+          style={{
+            maxHeight,
+            height,
+            minHeight: "42vh",
+          }}
+          className="flex-1 overflow-auto px-3 py-4 text-sm font-mono whitespace-pre-wrap break-words"
+        >
+          {typeof data === "string" && data.length > 0 ? (
+            (() => {
+              try {
+                const parsed = JSON.parse(data);
+                return <JsonNode INDENT={INDENT} open={isOpen} data={parsed} />;
+              } catch (err) {
+                return <div className="text-red-400">❌ JSON inválido</div>;
+              }
+            })()
+          ) : (
+            <JsonNode INDENT={INDENT} open={isOpen} data={data} />
+          )}
+        </div>
+      )}
 
       {!isOpenJsonViewer && (
         <div className="flex-1 overflow-y-auto overflow-x-hidden px-4 py-4 text-sm font-mono whitespace-pre-wrap break-words">
-        
           {interfaceGen.length > 0 ? (
             <div className="space-y-2">
               <h3 className="text-zinc-300 font-semibold mb-2">
@@ -353,8 +404,10 @@ const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean, height: string, m
       )}
 
       {/* ACTIONS */}
-      <div className="flex justify-between items-center gap-2 px-4 py-1 border-t border-zinc-800 rounded-b-xl py-2">
-        <span className="text-xs text-zinc-500 hover:text-zinc-200 transition-all">{size}</span>
+      <div className="flex justify-between items-center gap-2 px-4 py-1 border-t border-zinc-800 rounded-b-xl ">
+        <span className="text-xs text-zinc-500 hover:text-zinc-200 transition-all">
+          {size}
+        </span>
 
         <button
           title="Copiar JSON"
@@ -365,27 +418,16 @@ const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean, height: string, m
           Copiar
         </button>
         <div className="flex gap-2">
-        <button
-          className="btn-icon  p-1 text-xs bg-zinc-800 rounded-lg "
-          onClick={handleClickGenerateCSV}
-        >
-          Generar CSV
-        </button>
-        <button
-          onClick={() => console.log("sdfjsdf")}
-            className="btn-icon"
-            
-            title="Minimizar"
+          <button
+            className="btn-icon  p-1 text-xs bg-zinc-800 rounded-lg "
+            onClick={handleClickGenerateCSV}
           >
-            <Icon icon="tabler:minimize" width="16" height="16" />
+            Generar CSV
           </button>
         </div>
       </div>
     </div>
   );
 };
-
-
-
 
 export default JsonViewer;

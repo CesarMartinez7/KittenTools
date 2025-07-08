@@ -1,36 +1,37 @@
-import './App.css';
+import "./App.css";
 
-import { Icon } from '@iconify/react/dist/iconify.js';
-import { useEffect, useState } from 'react';
-import { JsonViewerLazy } from './ui/LAZY_COMPONENT';
-import ModalViewerJSON from './ui/ModalViewer';
-import ReactSVG from './ui/react';
+import { Icon } from "@iconify/react/dist/iconify.js";
+import { useEffect, useState } from "react";
+import { JsonViewerLazy } from "./ui/LAZY_COMPONENT";
+import ModalViewerJSON from "./ui/ModalViewer";
+import ReactSVG from "./ui/react";
 
 const App = () => {
   const [value, setValue] = useState<string>(
-    localStorage.getItem('jsonData') || '[]',
+    localStorage.getItem("jsonData") || "[]",
   );
   const [isValid, setIsValid] = useState(true);
-  const [error, setErrorMessage] = useState('');
+  const [error, setErrorMessage] = useState("");
+  const [openModal, setOpenModal] = useState<boolean>(false);
   const [openAll, setOpenAll] = useState<boolean>(false);
 
   useEffect(() => {
     try {
       JSON.parse(value);
       setIsValid(true);
-      setErrorMessage('');
+      setErrorMessage("");
     } catch {
       setIsValid(false);
-      setErrorMessage('JSON inválido. Por favor verifica tu entrada.');
+      setErrorMessage("JSON inválido. Por favor verifica tu entrada.");
     }
   }, [value]);
 
-  const handleClear = () => setValue('[]');
+  const handleClear = () => setValue("[]");
 
   const handleClickCargueJson = () => {
-    const input = document.createElement('input') as HTMLInputElement;
-    input.type = 'file';
-    input.accept = '.json,.txt';
+    const input = document.createElement("input") as HTMLInputElement;
+    input.type = "file";
+    input.accept = ".json,.txt";
 
     input.onchange = (e) => {
       const tg = e.target as HTMLInputElement;
@@ -55,40 +56,14 @@ const App = () => {
   };
 
   const handleClickminifyJson = () => {
-    for (const i of value) {
-      i.replace('/n', '');
-    }
-
-    setValue(value);
-    setValue(value.replace(' ', ''));
+    
   };
 
   const handleCopy = () => navigator.clipboard.writeText(value);
   const handleCopyUrl = () =>
     navigator.clipboard.writeText(window.location.toString());
 
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const jsdata = urlParams.get('jsdata');
-
-    if (jsdata) {
-      setValue(decodeURIComponent(jsdata));
-      console.log('Decodificando data params');
-    } else {
-      urlParams.set('jsdata', encodeURIComponent(value));
-      const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
-      window.history.replaceState(null, '', newUrl);
-    }
-  }, []);
-
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    urlParams.set('jsdata', encodeURIComponent(value));
-    const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
-
-    console.log('Valido');
-    window.history.replaceState(null, '', newUrl);
-  }, [value]);
+  
 
   return (
     <div className="bg-gradient-to-b from-zinc-950 to-zinc-800/100 text-zinc-200  min-h-screen font-mono">
@@ -101,8 +76,8 @@ const App = () => {
       )}
 
       <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-6 min-h-screen p-5">
-        <aside className="lg:w-64 w-full grid gap-5 justify-between rounded-2xl">
-          <div className="p-6 shadow-2xl rounded-2xl backdrop-blur-3xl   flex flex-col items-center justify-center text-center space-y-4">
+        <aside className=" w-full lg:w-64  grid gap-5 justify-between rounded-2xl">
+          <div className="p-6 shadow-2xl rounded-2xl backdrop-blur-3xl   flex flex-col items-center justify-center text-center space-y-4 w-full">
             <ReactSVG className="w-20 h-20 hover:rotate-400 transition-transform duration-700 animate-spin  " />
             <h1 className="text-3xl font-bold text-white tracking-tight">
               ReactMatter
@@ -136,7 +111,7 @@ const App = () => {
                 onClick={handleClickCargueJson}
               >
                 <Icon icon="mdi:code-block-json" width="20" height="20" />
-                Cargar JSON{' '}
+                Cargar JSON{" "}
               </button>
               <button
                 title="Compartir url"
@@ -152,7 +127,7 @@ const App = () => {
           <footer className="text-xs pt-6 rounded-2xl p-6 flex justify-between shadow-2xl backdrop-blur-2xl text-zinc-500 items-end border-zinc-900">
             <p>© {new Date().getFullYear()} ReactMatter.</p>
             <p>
-              Hecho con 💻 por{' '}
+              Hecho con 💻 por{" "}
               <b className="text-orange-400 ml-1">@CesarMartinez</b>
             </p>
           </footer>
@@ -160,21 +135,21 @@ const App = () => {
 
         <main className="flex-1 space-y-6">
           <section className=" rounded-xl shadow-2xl backdrop-blur-3xl p-6 space-y-4 flex flex-col gap-1 border border-zinc-900">
-            <label className="text-sm font-semibold text-zinc-400 my-4">
+            <label className="text-sm font-semibold text-zinc-400 my-2">
               Editor JSON
             </label>
             <textarea
               value={value}
               onChange={(e) => {
                 setValue(
-                  e.target.value.replace(/\/\//g, '').replace(/n\//gi, ''),
+                  e.target.value.replace(/\/\//g, "").replace(/n\//gi, ""),
                 );
                 localStorage.setItem(
-                  'jsonData',
-                  e.target.value.replace(/\/\//g, '').replace(/n\//gi, ''),
+                  "jsonData",
+                  e.target.value.replace(/\/\//g, "").replace(/n\//gi, ""),
                 );
               }}
-              className="w-full h-52 resize-none rounded-lg border border-zinc-800 p-3 text-sm font-mono text-zinc-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+              className=" mask-b-from-10% mask-b-to-100%  w-full h-52 resize-none rounded-lg border border-zinc-800 p-3 text-sm font-mono text-zinc-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
               placeholder="Pega o escribe tu JSON aquí"
             />
           </section>
