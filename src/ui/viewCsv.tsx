@@ -7,10 +7,7 @@ export default function ViewCsv({
   values: unknown[];
   keys: { key: string; type: string }[];
 }) {
-  useEffect(() => {
-    console.log('Claves:', keys);
-    console.log('Primer valor:', values[0]);
-  }, [keys, values]);
+  useEffect(() => {}, [keys, values]);
 
   return (
     <div>

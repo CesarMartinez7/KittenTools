@@ -17,6 +17,7 @@ const ModalViewerJSON = ({ setOpenAll, openAll, value }: PropsModalViewer) => {
   const overlayVariants = {
     visible: {
       opacity: 1,
+
       transition: {
         when: 'beforeChildren',
         duration: 0.3,
@@ -56,8 +57,8 @@ const ModalViewerJSON = ({ setOpenAll, openAll, value }: PropsModalViewer) => {
       variants={overlayVariants}
       className="w-full absolute md:p-24 p-5 pointer-event backdrop-blur-2xl h-svh z-[888] flex justify-center-safe items-center flex-col"
     >
-      <div className="w-full bg-zinc-900 rounded-2xl ">
-        <div className="w-full flex justify-end px-5 my-1">
+      <div className="w-full backdrop-blur-3xl bg-black/60 rounded-2xl ">
+        <div className="w-full flex justify-end px-5  border-x py-1 border-t border-zinc-800">
           <button
             className="btn-icon"
             onClick={handleClickOpenModal}
@@ -66,7 +67,7 @@ const ModalViewerJSON = ({ setOpenAll, openAll, value }: PropsModalViewer) => {
             <Icon icon="tabler:minimize" width="16" height="16" />
           </button>
         </div>
-        <div className="bg-zinc-900 backdrop-blur-3xl overflow-hidde rounded-2xl">
+        <div className=" ">
           <JsonViewerLazy
             maxHeight="70vh"
             height="50vh"

@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { Icon } from "@iconify/react";
-import FormatDataTypeLabel from "./formatDataLabel";
-import { json2csv } from "json-2-csv";
+import { Icon } from '@iconify/react';
+import { download, generateCsv, mkConfig } from 'export-to-csv';
+import type React from 'react';
+import { useEffect, useRef, useState } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
+import useInterfaceGenerator from '../hooks/interface-create';
+import useInterfaceGenerator from '../hooks/interface-create';
+import FormatDataTypeLabel from './formatDataLabel';
 
-import toast, { Toaster } from "react-hot-toast";
-
-const notify = () => toast("Copiado con exito");
-const notifyError = () => toast("Ocurrio un error");
-
-import { mkConfig, generateCsv, download } from "export-to-csv";
+const notify = () => toast('Copiado con exito');
+const notifyError = () => toast('Ocurrio un error');
 
 const csvConfig = mkConfig({ useKeysAsHeaders: true });
 
@@ -34,7 +34,7 @@ const JsonNode: React.FC<JsonNodeProps> = ({
 }) => {
   const [collapsed, setCollapsed] = useState<boolean>(false);
 
-  const isObject = typeof data === "object" && data !== null;
+  const isObject = typeof data === 'object' && data !== null;
   const isArray = Array.isArray(data);
 
   const toggle = () => setCollapsed(!collapsed);
@@ -46,7 +46,7 @@ const JsonNode: React.FC<JsonNodeProps> = ({
     >
       <Toaster
         toastOptions={{
-          className: "bg-zinc-900! shadow-md! text-zinc-200! ",
+          className: 'bg-zinc-900! shadow-md! text-zinc-200! ',
         }}
       />
       {name !== undefined && (
@@ -62,11 +62,11 @@ const JsonNode: React.FC<JsonNodeProps> = ({
           >
             {isArray
               ? !collapsed
-                ? "["
-                : "[..]"
+                ? '['
+                : '[..]'
               : !collapsed && !isArray
-                ? "{"
-                : "{..}"}
+                ? '{'
+                : '{..}'}
           </span>
           {!collapsed && (
             <div className="ml-4 mt-1 space-y-1">
@@ -84,7 +84,7 @@ const JsonNode: React.FC<JsonNodeProps> = ({
                         />
                       </div>
                       <span onClick={toggle}>
-                        {i + 1 === data.length ? "]" : ""}
+                        {i + 1 === data.length ? ']' : ''}
                       </span>
                     </>
                   ))
@@ -101,8 +101,8 @@ const JsonNode: React.FC<JsonNodeProps> = ({
 
                       <span>
                         {Object.entries(data as JsonObject).length === idx + 1
-                          ? "}"
-                          : ""}
+                          ? '}'
+                          : ''}
                       </span>
                     </>
                   ))}
@@ -126,18 +126,22 @@ const JsonViewer: React.FC<{
 }> = ({
   data,
   isOpen,
-  height = "20vh",
-  maxHeight = "44vh",
+  height = '20vh',
+  maxHeight = '44vh',
   isOpenModal,
   setIsOpenModal,
 }) => {
-  const [size, setSize] = useState<string>("0.00 KB");
+  const [size, setSize] = useState<string>('0.00 KB');
+  const { generateInterfaceFromJson } = useInterfaceGenerator();
+
+  const viewerRef = useRef<HTMLDivElement>(null);
+
   const [isOpenJsonViewer, setIsOpenJsonViewer] = useState<boolean>(true);
   // const [isOpenCsvViewer, setIsOpenCsvViewer] = useState<boolean>(true)
   const [INDENT, setIdent] = useState<number>(12);
   const [interfaceGen, setInterfaceGen] = useState<unknown[]>([]);
-  const [Interfaces, setInterfaces] = useState<unknown[]>([...interfaceGen]);
-  const [values] = useState<JsonValue>(data);
+  const [Interfaces, setInterfaces] = useState<unknown[]>();
+  const [values, setValue] = useState<JsonValue>(data);
 
   const GeneratorInterfaceArray = (
     value: [string, unknown][],
@@ -163,28 +167,25 @@ const JsonViewer: React.FC<{
   const GenerateInterface = (entries: [string, unknown][]) => {
     const interfaceList = entries.map(([key, value]) => {
       if (
-        typeof value === "object" &&
+        typeof value === 'object' &&
         value !== null &&
         !Array.isArray(value)
       ) {
         if (Array.isArray(value)) {
-          console.log("kkjfslkfddsjf");
           // Si es un array, obtenemos el tipo del primer elemento si existe
           const firstElementType =
-            value.length > 0 ? typeof value[0] : "unknown";
-          console.log(firstElementType);
+            value.length > 0 ? typeof value[0] : 'unknown';
 
           console.warn(`Primer elemento ${firstElementType}`);
-          return { key, type: "Arrayy" };
+          return { key, type: 'Arrayy' };
         } else {
-          console.log("dsfsfdkjsdd");
-          return { key, type: "Object" };
+          return { key, type: 'Object' };
         }
       } else if (Array.isArray(value)) {
         const gen = GeneratorInterfaceArray(value);
         console.table([{ gen }]); //                                                           ✅
 
-        return { key, type: "Arrray" };
+        return { key, type: 'Arrray' };
       } else {
         return { key, type: typeof value };
       }
@@ -195,8 +196,8 @@ const JsonViewer: React.FC<{
   // Retorno del resultado
   const handleGetInterface = () => {
     let formatData =
-      typeof data === "string" ? data : JSON.parse(data, null, 3);
-    if (typeof data === "string") {
+      typeof data === 'string' ? data : JSON.parse(data, null, 3);
+    if (typeof data === 'string') {
       try {
         formatData = JSON.parse(data);
         // If es empieza como matriz o array entonces tomamos el primer elemento y sacamos las keys el resultado Data[]
@@ -212,10 +213,9 @@ const JsonViewer: React.FC<{
           setInterfaceGen(interfaceList);
         }
       } catch {
-        console.error("❌ JSON inválido");
+        console.error('❌ JSON inválido');
         return;
       }
-      console.log("INTEFAZ GENERADO FINAL:", interfaceGen);
     }
   };
 
@@ -223,31 +223,29 @@ const JsonViewer: React.FC<{
   const handleCopyClipBoard = () => {
     try {
       const toCopy =
-        typeof data === "string"
+        typeof data === 'string'
           ? JSON.stringify(JSON.parse(data), null, 2)
           : JSON.stringify(data, null, 2);
       navigator.clipboard.writeText(toCopy);
     } catch (err) {
-      console.error("❌ Error al copiar el JSON");
+      console.error('❌ Error al copiar el JSON');
     }
   };
 
   // Arreglar esta puta mrd
   const handleClickGenerateCSV = () => {
-    console.log(typeof values);
-
     const ourData = [
       {
-        firstName: "Idorenyin",
-        lastName: "Udoh",
+        firstName: 'Idorenyin',
+        lastName: 'Udoh',
       },
       {
-        firstName: "Loyle",
-        lastName: "Carner",
+        firstName: 'Loyle',
+        lastName: 'Carner',
       },
       {
-        firstName: "Tamunotekena",
-        lastName: "Dagogo",
+        firstName: 'Tamunotekena',
+        lastName: 'Dagogo',
       },
     ];
 
@@ -259,47 +257,48 @@ const JsonViewer: React.FC<{
     const refinedData = [];
     refinedData.push(titleKeys);
     ourData.forEach((item) => {
-      console.log(item);
       refinedData.push(Object.values(item));
     });
 
-    let csvContent = "";
+    let csvContent = '';
 
     refinedData.forEach((row) => {
-      csvContent += row.join(",") + "\n";
+      csvContent += row.join(',') + '\n';
     });
 
-    console.warn(csvContent)
+    console.warn(csvContent);
 
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8," });
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8,' });
     const objUrl = URL.createObjectURL(blob);
 
-    const link = document.createElement("a");
-    link.setAttribute("href", objUrl);
-    link.setAttribute("download", "File.csv");
-    link.textContent = "Click to Download";
+    const link = document.createElement('a');
+    link.setAttribute('href', objUrl);
+    link.setAttribute('download', 'File.csv');
+    link.textContent = 'Click to Download';
   };
 
   useEffect(() => {
     handleClickGenerateCSV();
   }, []);
 
-  const handleClickMxMn = () => {
-    console.log("minizime y maxi");
-    setIsOpenModal(!isOpenModal);
-  };
+  // const handleClickMxMn = () => {
+
+  //   setIsOpenModal(!isOpenModal);
+  // };
 
   useEffect(() => {
-    const raw = typeof data === "string" ? data : JSON.stringify(data, null, 2);
+    const raw = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
     const bytes = new Blob([raw]).size / 1024;
-    setSize(bytes.toFixed(2) + " KB");
+    setSize(bytes.toFixed(2) + ' KB');
     console.log(Interfaces);
-    handleGetInterface();
+    setValue(
+      generateInterfaceFromJson('goku', { goku: 'sdfsfd', vegeta: 'vgeta' }),
+    );
   }, [data]);
 
   return (
     <div
-      className={` flex flex-col backdrop-blur-2xl text-zinc-400 rounded-xl border border-zinc-800 shadow-sm`}
+      className={` flex flex-col backdrop-blur-2xl text-zinc-400 border border-zinc-800  shadow-sm`}
     >
       <Toaster />
       <div className="flex gap-2 py-2 px-4 items-center justify-between border-b border-zinc-800 rounded-t-xl ">
@@ -361,11 +360,12 @@ const JsonViewer: React.FC<{
           style={{
             maxHeight,
             height,
-            minHeight: "42vh",
+            minHeight: '42vh',
           }}
-          className="flex-1 overflow-auto px-3 py-4 text-sm font-mono whitespace-pre-wrap break-words"
+          ref={viewerRef}
+          className="flex-1 overflow-auto px-3 py-4 text-sm font-mono whitespace-pre-wrap break-words "
         >
-          {typeof data === "string" && data.length > 0 ? (
+          {typeof data === 'string' && data.length > 0 ? (
             (() => {
               try {
                 const parsed = JSON.parse(data);
@@ -391,7 +391,7 @@ const JsonViewer: React.FC<{
                 <p>Interface</p>
                 {interfaceGen.map((item, index) => (
                   <div key={index}>
-                    <span className="text-purple-400">{item?.key}</span>:{" "}
+                    <span className="text-purple-400">{item?.key}</span>:{' '}
                     <span className="text-yellow-400">{item?.type}</span>
                   </div>
                 ))}

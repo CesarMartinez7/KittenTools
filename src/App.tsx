@@ -1,17 +1,17 @@
-import "./App.css";
+import './App.css';
 
-import { Icon } from "@iconify/react/dist/iconify.js";
-import { useEffect, useState } from "react";
-import { JsonViewerLazy } from "./ui/LAZY_COMPONENT";
-import ModalViewerJSON from "./ui/ModalViewer";
-import ReactSVG from "./ui/react";
+import { Icon } from '@iconify/react/dist/iconify.js';
+import { useEffect, useState } from 'react';
+import { JsonViewerLazy } from './ui/LAZY_COMPONENT';
+import ModalViewerJSON from './ui/ModalViewer';
+import ReactSVG from './ui/react';
 
 const App = () => {
   const [value, setValue] = useState<string>(
-    localStorage.getItem("jsonData") || "[]",
+    localStorage.getItem('jsonData') || '[]',
   );
   const [isValid, setIsValid] = useState(true);
-  const [error, setErrorMessage] = useState("");
+  const [error, setErrorMessage] = useState('');
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [openAll, setOpenAll] = useState<boolean>(false);
 
@@ -19,25 +19,24 @@ const App = () => {
     try {
       JSON.parse(value);
       setIsValid(true);
-      setErrorMessage("");
+      setErrorMessage('');
     } catch {
       setIsValid(false);
-      setErrorMessage("JSON inválido. Por favor verifica tu entrada.");
+      setErrorMessage('JSON inválido. Por favor verifica tu entrada.');
     }
   }, [value]);
 
-  const handleClear = () => setValue("[]");
+  const handleClear = () => setValue('[]');
 
   const handleClickCargueJson = () => {
-    const input = document.createElement("input") as HTMLInputElement;
-    input.type = "file";
-    input.accept = ".json,.txt";
+    const input = document.createElement('input') as HTMLInputElement;
+    input.type = 'file';
+    input.accept = '.json,.txt';
 
     input.onchange = (e) => {
       const tg = e.target as HTMLInputElement;
 
       if (tg.files) {
-        console.log(tg.files[0]);
         const file = tg.files[0];
         const reader = new FileReader();
         reader.onload = () => {
@@ -55,15 +54,11 @@ const App = () => {
     setOpenAll(!openAll);
   };
 
-  const handleClickminifyJson = () => {
-    
-  };
+  const handleClickminifyJson = () => {};
 
   const handleCopy = () => navigator.clipboard.writeText(value);
   const handleCopyUrl = () =>
     navigator.clipboard.writeText(window.location.toString());
-
-  
 
   return (
     <div className="bg-gradient-to-b from-zinc-950 to-zinc-800/100 text-zinc-200  min-h-screen font-mono">
@@ -111,7 +106,7 @@ const App = () => {
                 onClick={handleClickCargueJson}
               >
                 <Icon icon="mdi:code-block-json" width="20" height="20" />
-                Cargar JSON{" "}
+                Cargar JSON{' '}
               </button>
               <button
                 title="Compartir url"
@@ -127,7 +122,7 @@ const App = () => {
           <footer className="text-xs pt-6 rounded-2xl p-6 flex justify-between shadow-2xl backdrop-blur-2xl text-zinc-500 items-end border-zinc-900">
             <p>© {new Date().getFullYear()} ReactMatter.</p>
             <p>
-              Hecho con 💻 por{" "}
+              Hecho con 💻 por{' '}
               <b className="text-orange-400 ml-1">@CesarMartinez</b>
             </p>
           </footer>
@@ -142,14 +137,14 @@ const App = () => {
               value={value}
               onChange={(e) => {
                 setValue(
-                  e.target.value.replace(/\/\//g, "").replace(/n\//gi, ""),
+                  e.target.value.replace(/\/\//g, '').replace(/n\//gi, ''),
                 );
                 localStorage.setItem(
-                  "jsonData",
-                  e.target.value.replace(/\/\//g, "").replace(/n\//gi, ""),
+                  'jsonData',
+                  e.target.value.replace(/\/\//g, '').replace(/n\//gi, ''),
                 );
               }}
-              className=" mask-b-from-10% mask-b-to-100%  w-full h-52 resize-none rounded-lg border border-zinc-800 p-3 text-sm font-mono text-zinc-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+              className=" mask-b-from-5% mask-b-to-140%  w-full h-52 resize-none rounded-lg border border-zinc-800 p-3 text-sm font-mono text-zinc-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
               placeholder="Pega o escribe tu JSON aquí"
             />
           </section>
