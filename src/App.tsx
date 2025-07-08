@@ -3,7 +3,7 @@ import JsonViewer from "./ui/Formatter";
 import { useState, useEffect } from "react";
 import ReactSVG from "./ui/react";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { MyComponent } from "./ui/Video";
+import { motion } from "motion/react"
 
 const App = () => {
   const [value, setValue] = useState<string>(
@@ -12,6 +12,26 @@ const App = () => {
   const [isValid, setIsValid] = useState(true);
   const [error, setErrorMessage] = useState("");
   const [openAll, setOpenAll] = useState<boolean>(false);
+
+
+  const overlayVariants = {
+    visible: {
+      opacity: 1,
+      transition: {
+        when: "beforeChildren",
+        duration: 0.3,
+        delayChildren: 0.4
+      }
+    },
+    hidden: {
+      opacity: 0,
+      transition: {
+        when: "afterChildren",
+        duration: 0.3,
+        delay: 0.4
+      }
+    }
+  };
 
   useEffect(() => {
     try {
@@ -48,6 +68,11 @@ const App = () => {
     };
     input.click();
   };
+
+
+  const handleClickOpenModal = () => {
+    setOpenAll(!openAll)
+  }
 
   const handleClickminifyJson = () => {
     for (let i of value) {
@@ -88,19 +113,23 @@ const App = () => {
   return (
     <div className="bg-gradient-to-b from-zinc-950 to-zinc-800/100 text-zinc-200  min-h-screen font-mono">
       {openAll && (
-        <div className="w-full absolute  pointer-event backdrop-blur-2xl h-screen z-[888] flex justify-center-safe items-center flex-col">
-        <div className="md:w-[900px] bg-zinc-900 overflow-hidden rounded-2xl ">
+        <motion.div   initial="hidden"
+        animate="visible"
+        exit="hidden"
+        variants={overlayVariants}
+     className="w-full absolute md:p-24 p-5 pointer-event backdrop-blur-2xl h-screen z-[888] flex justify-center-safe items-center flex-col">
+        <div className="w-full bg-zinc-900 overflow-auto rounded-2xl ">
           <div className="w-full flex justify-end px-5 my-1">
-          <button className="btn-icon" onClick={() => setOpenAll(!openAll)}><Icon icon="tabler:minimize" width="16" height="16" /></button>
+          <button className="btn-icon" onClick={handleClickOpenModal}><Icon icon="tabler:minimize" width="16" height="16" /></button>
 
           </div>
           <div className="bg-zinc-900 backdrop-blur-3xl overflow-hidden rounded-2xl">
-          <JsonViewer data={value} isOpen={openAll}/>
+          <JsonViewer maxHeight="80vh" height="50vh" data={value} isOpen={openAll}/>
 
           </div>
         </div>
 
-        </div>
+        </motion.div>
       )}
 
       <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-6">
@@ -151,9 +180,6 @@ const App = () => {
             </div>
           </div>
 
-
-          
-
           <footer className="text-xs pt-6 rounded-2xl p-6 flex justify-between shadow-2xl backdrop-blur-2xl text-zinc-500 items-end border-zinc-900">
             <p>© {new Date().getFullYear()} ReactMatter.</p>
             <p>
@@ -192,7 +218,7 @@ const App = () => {
 
               <button
                 className="text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-400 px-1 py-1 rounded-md transition"
-                onClick={() => setOpenAll(!openAll)}
+                onClick={handleClickOpenModal}
               >
                 <Icon icon="tabler:maximize" width="15" height="15" />
               </button>

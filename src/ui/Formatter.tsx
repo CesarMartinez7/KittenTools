@@ -24,7 +24,7 @@ const JsonNode: React.FC<JsonNodeProps> = ({
   INDENT,
   depth = 0,
 }) => {
-  const [collapsed, setCollapsed] = useState<boolean>(true);
+  const [collapsed, setCollapsed] = useState<boolean>(false);
 
   const isObject = typeof data === "object" && data !== null;
   const isArray = Array.isArray(data);
@@ -114,9 +114,11 @@ type GeneratorOutput = { key: string; value: string | string[] };
 //   value: JsonValue;
 // }
 
-const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean }> = ({
+const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean, height: string, maxHeight: string }> = ({
   data,
   isOpen,
+  height = "20vh",
+  maxHeight = "44vh"
 }) => {
   const [size, setSize] = useState<string>("0.00 KB");
   const [isOpenJsonViewer, setIsOpenJsonViewer] = useState<boolean>(true);
@@ -252,7 +254,7 @@ const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean }> = ({
   }, [data]);
 
   return (
-    <div className="relative w-full max-h-[44vh] min-h-[44vh] flex flex-col backdrop-blur-2xl text-zinc-400 rounded-xl border border-zinc-800 shadow-sm  ">
+    <div className={`relative  max-h-[${maxHeight}] min-h-[${height}] flex flex-col backdrop-blur-2xl text-zinc-400 rounded-xl border border-zinc-800 shadow-sm`}>
       <div className="flex gap-2 py-2 px-4 items-center justify-between border-b border-zinc-800 rounded-t-xl ">
         <button
           className="px-2 py-1 rounded-lg text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2"
@@ -307,11 +309,6 @@ const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean }> = ({
         </div>
       </div>
 
-      {/* JSON CONTENT */}
-
-      {/* {!isOpenJsonViewer && isOpenCsvViewer && (
-        <ViewCsv values={["dsfds","sdfdsf"]} />
-      )} */}
 
       {isOpenJsonViewer && (
         <div className="flex-1 overflow-y-auto px-4 py-4 text-sm font-mono whitespace-pre-wrap break-words ">
@@ -332,11 +329,7 @@ const JsonViewer: React.FC<{ data: JsonValue; isOpen: boolean }> = ({
 
       {!isOpenJsonViewer && (
         <div className="flex-1 overflow-y-auto overflow-x-hidden px-4 py-4 text-sm font-mono whitespace-pre-wrap break-words">
-          {/* <ViewCsv
-  values={values}
-  keys={interfaceGen}
-/> */}
-
+        
           {interfaceGen.length > 0 ? (
             <div className="space-y-2">
               <h3 className="text-zinc-300 font-semibold mb-2">
