@@ -1,15 +1,13 @@
 import { useState } from "react";
 import { diff } from "jsondiffpatch";
 import { JsonViewerLazy } from "./LAZY_COMPONENT";
-import {motion} from "motion/react"
+import { motion } from "framer-motion";
 
-
-export default function JsonDiffViewer() {
+export default function JsonDiffViewerModal() {
   const [json1, setJson1] = useState("");
   const [json2, setJson2] = useState("");
   const [diffResult, setDiffResult] = useState<object | null>(null);
   const [error, setError] = useState("");
-  
 
   const handleCompare = () => {
     try {
@@ -17,7 +15,6 @@ export default function JsonDiffViewer() {
       const parsed2 = JSON.parse(json2);
       const delta = diff(parsed1, parsed2);
       setDiffResult(delta as object);
-      console.log(delta);
       setError("");
     } catch {
       setError("JSON inválido 🫠");
@@ -26,58 +23,56 @@ export default function JsonDiffViewer() {
   };
 
   return (
-    <div className=" p-4  text-sm w-full lg:w-[1200px] m-auto h-screen ">
-      {error && <p className="text-red-400 mt-2 text-center">{error}</p>}
-      <div className="grid grid-cols-2 gap-4">
-        <div className="flex flex-col gap-y-2">
-          <span>Json #1</span>
+    <motion.div
+      initial={{ scale: 0.95, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      exit={{ scale: 0.95, opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      className=" w-4xl max-w-4xl bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-2xl text-sm text-zinc-200 "
+    >
+      
+      {error && (
+        <div className="text-red-400 text-center font-medium mb-2">
+          {error}
+        </div>
+      )}
+
+      <div className="grid md:grid-cols-2 gap-4 ">
+        <div className="flex flex-col">
+          <label className="mb-1 text-zinc-400 font-medium">JSON #1</label>
           <textarea
-            className="w-full h-64 p-2 border rounded bg-zinc-900 text-zinc-100"
-            placeholder="JSON 1"
+            className="bg-zinc-900 text-zinc-100 p-2 rounded-lg h-40 font-mono resize-none focus:outline-none focus:ring-2 focus:ring-orange-500"
+            placeholder="Pegue su JSON aquí"
             value={json1}
-            onChange={(e) => {
-              handleCompare();
-              setJson1(e.target.value);
-            }}
+            onChange={(e) => setJson1(e.target.value)}
           />
         </div>
-        <div className="flex flex-col gap-y-2">
-          <span>Json #2</span>
+
+        <div className="flex flex-col">
+          <label className="mb-1 text-zinc-400 font-medium">JSON #2</label>
           <textarea
-            className="w-full h-64 p-2 border rounded bg-zinc-900 text-zinc-100"
-            placeholder="JSON 2"
+            className="bg-zinc-900 text-zinc-100 p-2 rounded-lg h-40 font-mono resize-none focus:outline-none focus:ring-2 focus:ring-orange-500"
+            placeholder="Pegue su JSON aquí"
             value={json2}
-            onChange={(e) => {
-              handleCompare();
-              setJson2(e.target.value);
-            }}
+            onChange={(e) => setJson2(e.target.value)}
           />
         </div>
       </div>
-      <button
-        onClick={handleCompare}
-        className="gradient-black-btn my-4 font-bold"
-      >
-        Comparar
-      </button>
 
-      <div className="grid grid-cols-1 gap-4">
-        <div className="bg-zinc-900">
+      <div className="text-center mt-4">
+        <button
+          onClick={handleCompare}
+          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg shadow transition-colors"
+        >
+          Comparar
+        </button>
+      </div>
+
+      {diffResult && (
+        <div className="mt-6 bg-zinc-900 p-4 rounded-xl border border-zinc-800 max-h-96 overflow-auto">
           <JsonViewerLazy data={diffResult} __changed={diffResult} />
         </div>
-        
-      </div>
-
-      <p className="text-zinc-400 text-xs my-4 ">
-        Comparaciones generadas con{" "}
-        <a
-          className="font-bold text-zinc-300"
-          href="https://www.npmjs.com/package/json-diff"
-        >
-          json-diff-patch
-        </a>
-        .
-      </p>
-    </div>
+      )}
+    </motion.div>
   );
 }

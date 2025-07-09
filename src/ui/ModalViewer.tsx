@@ -1,7 +1,7 @@
-import { Icon } from '@iconify/react/dist/iconify.js';
-import { motion } from 'motion/react';
-import { useEffect, useRef } from 'react';
-import { JsonViewerLazy } from './LAZY_COMPONENT';
+import { Icon } from "@iconify/react/dist/iconify.js";
+import { AnimatePresence, motion } from "motion/react";
+import { useEffect, useRef } from "react";
+import { JsonViewerLazy } from "./LAZY_COMPONENT";
 
 interface PropsModalViewer {
   setOpenAll: React.Dispatch<React.SetStateAction<boolean>>;
@@ -14,7 +14,7 @@ export const overlayVariants = {
     opacity: 1,
 
     transition: {
-      when: 'beforeChildren',
+      when: "beforeChildren",
       duration: 0.3,
       delayChildren: 0.4,
     },
@@ -22,7 +22,7 @@ export const overlayVariants = {
   hidden: {
     opacity: 0,
     transition: {
-      when: 'afterChildren',
+      when: "afterChildren",
       duration: 0.3,
       delay: 0.4,
     },
@@ -39,19 +39,19 @@ const ModalViewerJSON = ({ setOpenAll, openAll, value }: PropsModalViewer) => {
   }, []);
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === 'Escape') {
+    if (event.key === "Escape") {
       setOpenAll(false);
     }
   };
 
   return (
+    
     <motion.div
       ref={modalRef}
       onKeyDown={handleKeyPress}
       initial="hidden"
       animate="visible"
-    
-      exit={{opacity: 0}}
+      exit={{ opacity: 0 }}
       tabIndex={0}
       variants={overlayVariants}
       className="w-full absolute md:p-24 p-5 pointer-event backdrop-blur-2xl h-svh z-[888] flex justify-center-safe items-center flex-col inset-0"
@@ -76,6 +76,7 @@ const ModalViewerJSON = ({ setOpenAll, openAll, value }: PropsModalViewer) => {
         </div>
       </div>
     </motion.div>
+    
   );
 };
 

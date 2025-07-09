@@ -121,6 +121,7 @@ const App = () => {
 
   return (
     <div className="fade-out">
+      <AnimatePresence>
       {openAll && (
         <ModalViewerJSON
           value={value}
@@ -128,14 +129,15 @@ const App = () => {
           setOpenAll={setOpenAll}
         />
       )}
-      {isOpenDiff && (
+      </AnimatePresence>
         <AnimatePresence>
+      {isOpenDiff && (
           <motion.div
             initial="hidden"
             animate="visible"
             exit={{ scale: 0 }}
             variants={overlayVariants}
-            className="absolute inset-0 h-screen min-h-screen max-h-screen z-[887] backdrop-blur-3xl "
+            className="absolute inset-0 h-screen min-h-screen max-h-screen z-[887] backdrop-blur-3xl bg-black/50 grid place-content-center "
           >
             <button
               className="btn-icon top-7  right-6 p-2 fixed z-50"
@@ -145,8 +147,8 @@ const App = () => {
             </button>
             <JsonDiffLazy />
           </motion.div>
-        </AnimatePresence>
       )}
+      </AnimatePresence>
       <div className="bg-gradient-to-b from-zinc-950 to-zinc-800/100 text-zinc-200 min-h-screen font-mono">
         <Toaster
           toastOptions={{
@@ -249,7 +251,9 @@ const App = () => {
                   <button
                     className="text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-400 px-1 py-1 rounded-md transition"
                     onClick={handleClickOpenModal}
-                  ></button>
+                  >
+                    <Icon icon="tabler:maximize" width="15" height="15"   />
+                  </button>
                 </div>
               </div>
 
