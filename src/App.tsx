@@ -137,10 +137,10 @@ const App = () => {
         <aside className="w-full lg:w-64 grid gap-5 justify-between rounded-2xl">
           <div className="p-6 shadow-2xl rounded-2xl backdrop-blur-3xl flex flex-col items-center justify-center text-center space-y-4 w-full">
             <ReactSVG className="w-20 h-20 hover:rotate-400 transition-transform duration-700 animate-spin" />
-            <h1 className="text-3xl font-bold text-white tracking-tight">
+            <h1 className="text-3xl font-bold bg-gradient-to-bl from-white to-zinc-600 bg-clip-text text-transparent">
               ReactMatter
             </h1>
-            <p className="text-sm text-zinc-400 max-w-[240px] break-words">
+            <p className="text-sm  max-w-[240px] break-words  bg-gradient-to-bl from-white to-zinc-600 bg-clip-text text-transparent">
               Valida, visualiza y comparte tu JSON de forma elegante.
             </p>
 
@@ -181,12 +181,14 @@ const App = () => {
             </div>
           </div>
 
-          <footer className="text-xs pt-6 rounded-2xl p-6 flex justify-between shadow-2xl backdrop-blur-2xl text-zinc-500 items-end border-zinc-900">
-            <p>© {new Date().getFullYear()} ReactMatter.</p>
-            <p>
-              Hecho con 💻 por{" "}
-              <b className="text-orange-400 ml-1">@CesarMartinez</b>
-            </p>
+          <footer className="text-xs pt-6 rounded-2xl p-6 flex justify-end  shadow-2xl backdrop-blur-2xl text-zinc-500 items-end border-zinc-900 flex-row">
+            <p>@CesarMartinez ReactMatter.</p>
+
+            <button className="btn-icon">
+            <Icon icon="tabler:brand-github" width="24" height="24"   />
+            </button>
+
+            
           </footer>
         </aside>
 

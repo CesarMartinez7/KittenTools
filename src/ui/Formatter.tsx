@@ -68,17 +68,18 @@ const JsonNode: React.FC<JsonNodeProps> = ({
               {isArray
                 ? (data as JsonArray).map((item, i) => (
                     <>
+                    
                       <div className="flex relative gap- " key={i}>
-                        {/* <span className="text-amber-600">- {i + 1}</span> */}
                         <JsonNode
                           INDENT={INDENT}
                           open={collapsed}
                           key={i}
                           data={item}
                           depth={depth + 1}
-                        />
+                          />
                       </div>
-                      <span onClick={toggle}>
+                       
+                      <span className='text-zinc-400' onClick={toggle}>
                         {i + 1 === data.length ? ']' : ''}
                       </span>
                     </>
@@ -94,7 +95,7 @@ const JsonNode: React.FC<JsonNodeProps> = ({
                         depth={depth + 1}
                       />
 
-                      <span>
+                      <span className='text-zinc-400'>
                         {Object.entries(data as JsonObject).length === idx + 1
                           ? '}'
                           : ''}
@@ -244,12 +245,9 @@ const JsonViewer: React.FC<{
       },
     ];
 
-    // let dataformat = JSON.parse(values as string);
-    // console.table(dataformat);
-
     const titleKeys = Object.keys(ourData[0]);
-
     const refinedData = [];
+    
     refinedData.push(titleKeys);
     ourData.forEach((item) => {
       refinedData.push(Object.values(item));
@@ -276,10 +274,6 @@ const JsonViewer: React.FC<{
     handleClickGenerateCSV();
   }, []);
 
-  // const handleClickMxMn = () => {
-
-  //   setIsOpenModal(!isOpenModal);
-  // };
 
   useEffect(() => {
     const raw = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
@@ -374,7 +368,11 @@ const JsonViewer: React.FC<{
       )}
 
       {!isOpenJsonViewer && (
-        <div className="flex-1 overflow-y-auto overflow-x-hidden px-4 py-4 text-sm font-mono whitespace-pre-wrap break-words">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden px-4 py-4 text-sm font-mono whitespace-pre-wrap break-words" style={{
+          maxHeight,
+          height,
+          minHeight: '42vh',
+        }}>
           {interfaceGen.length > 0 ? (
             <div className="space-y-2">
               <h3 className="text-zinc-300 font-semibold mb-2">
