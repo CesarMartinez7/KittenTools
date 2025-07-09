@@ -33,11 +33,7 @@ const ModalViewerJSON = ({ setOpenAll, openAll, value }: PropsModalViewer) => {
   const handleClickOpenModal = () => {
     setOpenAll(!openAll);
   };
-
- 
-
   const modalRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     modalRef.current?.focus();
   }, []);

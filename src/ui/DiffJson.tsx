@@ -26,7 +26,7 @@ export default function JsonDiffViewer() {
   };
 
   return (
-    <div className=" p-4  text-sm w-[1200px] mx-auto">
+    <div className=" p-4  text-sm w-full lg:w-[1200px] m-auto h-screen ">
       {error && <p className="text-red-400 mt-2 text-center">{error}</p>}
       <div className="grid grid-cols-2 gap-4">
         <div className="flex flex-col gap-y-2">
@@ -56,7 +56,7 @@ export default function JsonDiffViewer() {
       </div>
       <button
         onClick={handleCompare}
-        className="gradient-black-btn my-6 font-bold"
+        className="gradient-black-btn my-4 font-bold"
       >
         Comparar
       </button>

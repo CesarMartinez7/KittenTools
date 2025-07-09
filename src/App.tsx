@@ -6,7 +6,7 @@ import ModalViewerJSON from "./ui/ModalViewer";
 import ReactSVG from "./ui/react";
 import toast, { Toaster } from "react-hot-toast";
 import { JsonDiffLazy } from "./ui/LAZY_COMPONENT";
-import {motion} from "motion/react"
+import { AnimatePresence, motion } from "motion/react";
 import { overlayVariants } from "./ui/ModalViewer";
 
 const App = () => {
@@ -129,17 +129,23 @@ const App = () => {
         />
       )}
       {isOpenDiff && (
-        <motion.div  initial="hidden"
-        animate="visible"
-        exit={{scale: 0}}  variants={overlayVariants} className="absolute inset-0 h-screen min-h-screen max-h-screen z-[887] backdrop-blur-3xl ">
-          <button
-            className="btn-icon top-7  right-6 p-2 fixed"
-            onClick={() => setIsOpenDiff(!isOpenDiff)}
+        <AnimatePresence>
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            exit={{ scale: 0 }}
+            variants={overlayVariants}
+            className="absolute inset-0 h-screen min-h-screen max-h-screen z-[887] backdrop-blur-3xl "
           >
-            <Icon icon="tabler:x" width="24" height="24"  />
-          </button>
-          <JsonDiffLazy />
-        </motion.div>
+            <button
+              className="btn-icon top-7  right-6 p-2 fixed z-50"
+              onClick={() => setIsOpenDiff(!isOpenDiff)}
+            >
+              <Icon icon="tabler:x" width="24" height="24" />
+            </button>
+            <JsonDiffLazy />
+          </motion.div>
+        </AnimatePresence>
       )}
       <div className="bg-gradient-to-b from-zinc-950 to-zinc-800/100 text-zinc-200 min-h-screen font-mono">
         <Toaster
@@ -197,7 +203,7 @@ const App = () => {
                   title="Compa"
                   className="w-full flex items-center justify-center gap-2 bg-kanagawa-cyan text-black hover:bg-kanagawa-cyan/60 font-bold px-3 py-2 text-sm rounded-lg transition"
                   onClick={() => {
-                    setIsOpenDiff(!isOpenDiff)
+                    setIsOpenDiff(!isOpenDiff);
                   }}
                 >
                   <Icon icon="tabler:arrows-diff" width="24" height="24" />
@@ -243,9 +249,7 @@ const App = () => {
                   <button
                     className="text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-400 px-1 py-1 rounded-md transition"
                     onClick={handleClickOpenModal}
-                  >
-
-                  </button>
+                  ></button>
                 </div>
               </div>
 
