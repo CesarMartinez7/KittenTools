@@ -236,7 +236,7 @@ const JsonViewer: React.FC<{
 
   return (
     <div
-      className={` flex flex-col backdrop-blur-2xl text-zinc-400 border border-zinc-800  shadow-sm`}
+      className={` flex flex-col backdrop-blur-2xl text-zinc-400 border border-zinc-800  shadow-xl rounded-xl`}
     >
       <div className="flex gap-2 py-2 px-4 items-center justify-between border-b border-zinc-800 rounded-t-xl ">
         <div className="flex gap-2">

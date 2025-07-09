@@ -11,8 +11,7 @@
 
 
 :root {
-  interpolate-size: allow-keywords;
-  background-color: red;
+  @apply bg-zinc-800
 }
 
 

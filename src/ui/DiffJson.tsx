@@ -17,9 +17,14 @@ export default function JsonDiffViewerModal() {
       const delta = diff(parsed1, parsed2);
       setDiffResult(delta as object);
       setError("");
-      toast.success("Comparando")
+      toast.success("Comparando ...")
+      
+
+      
+
+
     } catch {
-        toast.error("json invalido")
+        toast.error("JSON invalido")
       setError("JSON inválido 🫠");
       setDiffResult(null);
     }
