@@ -119,7 +119,7 @@ const App = () => {
   };
 
   return (
-    <>
+    <div className="fade-out">
       {openAll && (
         <ModalViewerJSON
           value={value}
@@ -206,7 +206,7 @@ const App = () => {
                 setValue(clean);
                 localStorage.setItem("jsonData", clean);
               }}
-              className="mask-b-from-5% mask-b-to-140% w-full h-52 resize-none rounded-lg border border-zinc-800 p-3 text-sm font-mono text-zinc-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+              className="h-52"
               placeholder="Pega o escribe tu JSON aquí"
             />
           </section>
@@ -242,7 +242,7 @@ const App = () => {
         </main>
       </div>
     </div>
-    </>
+    </div>
   );
 };
 

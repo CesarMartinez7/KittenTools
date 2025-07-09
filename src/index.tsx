@@ -1,13 +1,18 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter, Routes, Route } from "react-router";
+import { AppHomeLazy } from "./ui/LAZY_COMPONENT";
+import { JsonDiffLazy } from "./ui/LAZY_COMPONENT";
+import "./App.css"
 
-const rootEl = document.getElementById('root');
-if (rootEl) {
-  const root = ReactDOM.createRoot(rootEl);
-  root.render(
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>,
-  );
-}
+
+const root = document.getElementById("root")!;
+
+ReactDOM.createRoot(root).render(
+  <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<AppHomeLazy />} />
+      <Route index path="/diff" element={<JsonDiffLazy/>} />
+    </Routes>
+  </BrowserRouter>
+);

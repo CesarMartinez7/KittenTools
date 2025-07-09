@@ -6,6 +6,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import useInterfaceGenerator from '../hooks/interface-create';
 import useInterfaceGenerator from '../hooks/interface-create';
 import FormatDataTypeLabel from './formatDataLabel';
+import { Link } from 'react-router';
 
 
 const csvConfig = mkConfig({ useKeysAsHeaders: true });
@@ -291,6 +292,8 @@ const JsonViewer: React.FC<{
     >
       
       <div className="flex gap-2 py-2 px-4 items-center justify-between border-b border-zinc-800 rounded-t-xl ">
+        <div className='flex gap-2'>
+
         <button
           className="px-2 py-1 rounded-lg text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2"
           onClick={() => {
@@ -312,6 +315,13 @@ const JsonViewer: React.FC<{
             </>
           )}
         </button>
+
+
+        
+
+        <Link to={"diff"} className='btn-icon'>Diff</Link>
+        
+        </div>
 
         
 
