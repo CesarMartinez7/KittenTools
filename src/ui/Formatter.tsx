@@ -112,8 +112,8 @@ const JsonNode: React.FC<JsonNodeProps> = ({
         </>
       ) : (
         <>
-          {__Changed !== null &&
-            Object.keys(__Changed).map((val) => <li key={val}>{val}</li>)}
+          {/* {__Changed !== null &&
+            Object.keys(__Changed).map((val) => <li key={val}>{val}</li>)} */}
           <FormatDataTypeLabel data={data} />
         </>
       )}
