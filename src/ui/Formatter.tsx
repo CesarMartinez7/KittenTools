@@ -150,9 +150,7 @@ const JsonViewer: React.FC<{
   const [Interfaces, setInterfaces] = useState<unknown[]>();
   const [values, setValue] = useState<JsonValue>(data);
 
-  useEffect(() => {
-    console.log(viewerRef.current);
-  }, [values]);
+  
 
   function generateJsonInterface(obj: any) {
     const result = {};
@@ -178,23 +176,13 @@ const JsonViewer: React.FC<{
       }
     }
 
-    console.log(`El resultado es ${result}`)
-    console.log(result)
+    
     return result;
   }
 
   // Copiar en el ClipBoard
-  const handleCopyClipBoard = () => {
-    try {
-      const toCopy =
-        typeof data === "string"
-          ? JSON.stringify(JSON.parse(data), null, 2)
-          : JSON.stringify(data, null, 2);
-      navigator.clipboard.writeText(toCopy);
-    } catch (err) {
-      console.error("❌ Error al copiar el JSON");
-    }
-  };
+ 
+  
 
   // Arreglar esta puta mrd
   const handleClickGenerateCSV = () => {
@@ -242,7 +230,7 @@ const JsonViewer: React.FC<{
     const raw = typeof data === "string" ? data : JSON.stringify(data, null, 2);
     const bytes = new Blob([raw]).size / 1024;
     setSize(bytes.toFixed(2) + " KB");
-    console.log(Interfaces);
+    
     
   }, [data]);
 
@@ -258,8 +246,6 @@ const JsonViewer: React.FC<{
               setIsOpenJsonViewer(!isOpenJsonViewer);
               if (isOpenJsonViewer) {
                 setInterfaceGen(generateJsonInterface(JSON.parse(values as string)))
-                console.log(interfaceGen)
-                
               }
             }}
           >
@@ -283,7 +269,7 @@ const JsonViewer: React.FC<{
           <button
             className="px-2 py-1 rounded-lg text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2"
             onClick={() => {
-              console.log(INDENT);
+              
               setIdent((prev) => prev + 1);
             }}
           >
@@ -363,14 +349,7 @@ const JsonViewer: React.FC<{
           {size}
         </span>
 
-        <button
-          title="Copiar JSON"
-          onClick={handleCopyClipBoard}
-          className="p-1 text-xs bg-zinc-800 rounded-lg  flex gap-2 "
-        >
-          <Icon icon="mynaui:copy" width="14" height="14" />
-          Copiar
-        </button>
+        
         <div className="flex gap-2">
           <button
             className="btn-icon  p-1 text-xs bg-zinc-800 rounded-lg "

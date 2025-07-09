@@ -158,7 +158,7 @@ const App = () => {
         <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-6 min-h-screen p-5">
           <aside className="w-full lg:w-64 grid gap-5  rounded-2xl">
             <div className="p-6 shadow-2xl rounded-2xl backdrop-blur-3xl flex flex-col items-center justify-center text-center space-y-4 w-full bg-zinc-900">
-              <ReactSVG className="w-20 h-20 hover:rotate-400 transition-transform duration-700 animate-spin" />
+              <ReactSVG className="w-20 h-20 hover:rotate-400 transition-transform duration-700 animat" />
               <h1 className="text-3xl font-bold bg-gradient-to-bl from-white to-zinc-600 bg-clip-text text-transparent">
                 ReactMatter
               </h1>
@@ -209,17 +209,17 @@ const App = () => {
                   }}
                 >
                   <Icon icon="tabler:arrows-diff" width="24" height="24" />
-                  Diff
+                  Comparar JSON
                 </button>
               </div>
             </div>
 
-            <footer className="text-xs pt-6 rounded-2xl p-6 flex justify-end  shadow-2xl backdrop-blur-2xl text-zinc-500 items-end border-zinc-900 bg-zinc-900 flex-row">
-              <p>@CesarMartinez ReactMatter.</p>
+            <footer className="text-xs pt-6 rounded-2xl p-6 flex j  shadow-2xl backdrop-blur-2xl text-zinc-500  border-zinc-900 bg-zinc-900 flex-col justify-center-safe items-center gap-2 ">
 
               <button className="btn-icon">
                 <Icon icon="tabler:brand-github" width="20" height="20" />
               </button>
+              <p>@CesarMartinez - ReactMatter.</p>
             </footer>
           </aside>
 
@@ -242,7 +242,7 @@ const App = () => {
               />
             </section>
 
-            <section className="rounded-xl shadow-2xl border border-zinc-800 bg-zinc-900 p-6">
+            <section className="rounded-xl shadow-2xl border border-zinc-800 bg-zinc-900 p-6 flex flex-col gap-y-3">
               <div className="p-2 flex justify-between">
                 <label className="text-sm font-semibold  bg-gradient-to-bl from-white to-zinc-600 bg-clip-text text-transparent">
                   Resultado Formateado

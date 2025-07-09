@@ -12,6 +12,7 @@
 
 :root {
   interpolate-size: allow-keywords;
+  background-color: red;
 }
 
 
@@ -116,6 +117,10 @@ body{
 }
 
 
+
+::selection{
+  @apply bg-zinc-700 text-zinc-500
+}
 
 button {
   @apply cursor-pointer
