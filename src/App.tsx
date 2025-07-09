@@ -1,67 +1,123 @@
-import './App.css';
-
-import { Icon } from '@iconify/react/dist/iconify.js';
-import { useEffect, useState } from 'react';
-import { JsonViewerLazy } from './ui/LAZY_COMPONENT';
-import ModalViewerJSON from './ui/ModalViewer';
-import ReactSVG from './ui/react';
+import "./App.css";
+import { Icon } from "@iconify/react/dist/iconify.js";
+import { useEffect, useState } from "react";
+import { JsonViewerLazy } from "./ui/LAZY_COMPONENT";
+import ModalViewerJSON from "./ui/ModalViewer";
+import ReactSVG from "./ui/react";
+import toast, { Toaster } from "react-hot-toast";
 
 const App = () => {
   const [value, setValue] = useState<string>(
-    localStorage.getItem('jsonData') || '[]',
+    localStorage.getItem("jsonData") || "[]",
   );
   const [isValid, setIsValid] = useState(true);
-  const [error, setErrorMessage] = useState('');
+  const [error, setErrorMessage] = useState("");
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [openAll, setOpenAll] = useState<boolean>(false);
+  const [shareUrl, setShareUrl] = useState<string>("");
 
+  // Leer datos desde la URL si existen
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const dataQuery = url.searchParams.get("jsdata");
+
+    if (dataQuery) {
+      try {
+        const decoded = decodeURIComponent(escape(atob(dataQuery)));
+        setShareUrl(decoded);
+        setValue(decoded);
+        console.log("✅ Datos recuperados de la URL:", decoded);
+      } catch (err) {
+        toast.error("❌ Error al decodificar el JSON desde la URL");
+        console.error("❌ Error al decodificar:", err);
+      }
+    }
+  }, []);
+
+  // Actualizar la URL cuando cambia el valor
+  useEffect(() => {
+    if (!value) return;
+
+    const url = new URL(window.location.href);
+    const encoded = btoa(unescape(encodeURIComponent(value)));
+    url.searchParams.set("jsdata", encoded);
+    window.history.replaceState({}, "", url);
+  }, [value]);
+
+  // Validar el JSON
   useEffect(() => {
     try {
       JSON.parse(value);
       setIsValid(true);
-      setErrorMessage('');
+      setErrorMessage("");
     } catch {
       setIsValid(false);
-      setErrorMessage('JSON inválido. Por favor verifica tu entrada.');
+      setErrorMessage("JSON inválido. Por favor verifica tu entrada.");
     }
   }, [value]);
 
-  const handleClear = () => setValue('[]');
+  const handleClear = () => setValue("[]");
 
   const handleClickCargueJson = () => {
-    const input = document.createElement('input') as HTMLInputElement;
-    input.type = 'file';
-    input.accept = '.json,.txt';
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".json,.txt";
 
     input.onchange = (e) => {
-      const tg = e.target as HTMLInputElement;
-
-      if (tg.files) {
-        const file = tg.files[0];
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
         const reader = new FileReader();
         reader.onload = () => {
           const result = reader.result as string;
           setValue(result);
         };
-
         reader.readAsText(file);
       }
     };
+
     input.click();
   };
 
-  const handleClickOpenModal = () => {
-    setOpenAll(!openAll);
+  const handleClickOpenModal = () => setOpenAll(!openAll);
+
+  const handleClickminifyJson = () => {
+    try {
+      const parsed = JSON.parse(value);
+      setValue(JSON.stringify(parsed));
+      toast.success("JSON minificado");
+    } catch {
+      toast.error("JSON inválido para minificar");
+    }
   };
 
-  const handleClickminifyJson = () => {};
+  const handleCopy = () => {
+    navigator.clipboard.writeText(value);
+    toast.success("Contenido copiado");
+  };
 
-  const handleCopy = () => navigator.clipboard.writeText(value);
-  const handleCopyUrl = () =>
-    navigator.clipboard.writeText(window.location.toString());
+  const handleCopyUrl = () => {
+    try {
+      const encoded = btoa(unescape(encodeURIComponent(value)));
+      const url = new URL(window.location.href);
+      url.searchParams.set("jsdata", encoded);
+      const fullUrl = url.toString();
+
+      navigator.clipboard
+        .writeText(fullUrl)
+        .then(() => {
+          toast.success("✅ URL copiada con éxito");
+          console.log("🔗", fullUrl);
+        })
+        .catch(() => {
+          toast.error("❌ No se pudo copiar la URL");
+        });
+    } catch {
+      toast.error("❌ Error al generar URL compartible");
+    }
+  };
 
   return (
-    <div className="bg-gradient-to-b from-zinc-950 to-zinc-800/100 text-zinc-200  min-h-screen font-mono">
+    <div className="bg-gradient-to-b from-zinc-950 to-zinc-800/100 text-zinc-200 min-h-screen font-mono">
       {openAll && (
         <ModalViewerJSON
           value={value}
@@ -70,15 +126,17 @@ const App = () => {
         />
       )}
 
+      <Toaster />
+
       <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-6 min-h-screen p-5">
-        <aside className=" w-full lg:w-64  grid gap-5 justify-between rounded-2xl">
-          <div className="p-6 shadow-2xl rounded-2xl backdrop-blur-3xl   flex flex-col items-center justify-center text-center space-y-4 w-full">
-            <ReactSVG className="w-20 h-20 hover:rotate-400 transition-transform duration-700 animate-spin  " />
+        <aside className="w-full lg:w-64 grid gap-5 justify-between rounded-2xl">
+          <div className="p-6 shadow-2xl rounded-2xl backdrop-blur-3xl flex flex-col items-center justify-center text-center space-y-4 w-full">
+            <ReactSVG className="w-20 h-20 hover:rotate-400 transition-transform duration-700 animate-spin" />
             <h1 className="text-3xl font-bold text-white tracking-tight">
               ReactMatter
             </h1>
             <p className="text-sm text-zinc-400 max-w-[240px] break-words">
-              Valida, visualiza y Comparte tu JSON de forma elegante.
+              Valida, visualiza y comparte tu JSON de forma elegante.
             </p>
 
             <div className="w-full space-y-3">
@@ -100,17 +158,16 @@ const App = () => {
               >
                 <Icon icon="tabler:box" width="24" height="24" /> Minify
               </button>
-
               <button
-                className="w-full flex items-center justify-center gap-2 bg-indigo-400 text-white hover:bg-indigo-500  font-bold px-3 py-2 text-sm rounded-lg transition"
+                className="w-full flex items-center justify-center gap-2 bg-indigo-400 text-white hover:bg-indigo-500 font-bold px-3 py-2 text-sm rounded-lg transition"
                 onClick={handleClickCargueJson}
               >
                 <Icon icon="mdi:code-block-json" width="20" height="20" />
-                Cargar JSON{' '}
+                Cargar JSON
               </button>
               <button
-                title="Compartir url"
-                className="w-full flex items-center justify-center gap-2 bg-kanagawa-orange text-black hover:bg-kanagawa-orange/60  font-bold px-3 py-2 text-sm rounded-lg transition"
+                title="Compartir URL"
+                className="w-full flex items-center justify-center gap-2 bg-kanagawa-orange text-black hover:bg-kanagawa-orange/60 font-bold px-3 py-2 text-sm rounded-lg transition"
                 onClick={handleCopyUrl}
               >
                 <Icon icon="tabler:share" width="20" height="20" />
@@ -122,39 +179,36 @@ const App = () => {
           <footer className="text-xs pt-6 rounded-2xl p-6 flex justify-between shadow-2xl backdrop-blur-2xl text-zinc-500 items-end border-zinc-900">
             <p>© {new Date().getFullYear()} ReactMatter.</p>
             <p>
-              Hecho con 💻 por{' '}
+              Hecho con 💻 por{" "}
               <b className="text-orange-400 ml-1">@CesarMartinez</b>
             </p>
           </footer>
         </aside>
 
         <main className="flex-1 space-y-6">
-          <section className=" rounded-xl shadow-2xl backdrop-blur-3xl p-6 space-y-4 flex flex-col gap-1 border border-zinc-900">
+          <section className="rounded-xl shadow-2xl backdrop-blur-3xl p-6 space-y-4 flex flex-col gap-1 border border-zinc-900">
             <label className="text-sm font-semibold text-zinc-400 my-2">
               Editor JSON
             </label>
             <textarea
               value={value}
               onChange={(e) => {
-                setValue(
-                  e.target.value.replace(/\/\//g, '').replace(/n\//gi, ''),
-                );
-                localStorage.setItem(
-                  'jsonData',
-                  e.target.value.replace(/\/\//g, '').replace(/n\//gi, ''),
-                );
+                const clean = e.target.value
+                  .replace(/\/\//g, "")
+                  .replace(/n\//gi, "");
+                setValue(clean);
+                localStorage.setItem("jsonData", clean);
               }}
-              className=" mask-b-from-5% mask-b-to-140%  w-full h-52 resize-none rounded-lg border border-zinc-800 p-3 text-sm font-mono text-zinc-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+              className="mask-b-from-5% mask-b-to-140% w-full h-52 resize-none rounded-lg border border-zinc-800 p-3 text-sm font-mono text-zinc-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
               placeholder="Pega o escribe tu JSON aquí"
             />
           </section>
 
-          <section className=" rounded-xl shadow-2xl border border-zinc-800  p-6 space-y-">
+          <section className="rounded-xl shadow-2xl border border-zinc-800 p-6">
             <div className="p-2 flex justify-between">
               <label className="text-sm font-semibold text-zinc-400">
                 Resultado Formateado
               </label>
-
               <button
                 className="text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-400 px-1 py-1 rounded-md transition"
                 onClick={handleClickOpenModal}
@@ -171,6 +225,7 @@ const App = () => {
                 maxHeight="20vh"
               />
             </div>
+
             {isValid && (
               <p className="text-green-500 text-xs font-medium">
                 ✓ JSON válido

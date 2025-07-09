@@ -7,8 +7,6 @@ import useInterfaceGenerator from '../hooks/interface-create';
 import useInterfaceGenerator from '../hooks/interface-create';
 import FormatDataTypeLabel from './formatDataLabel';
 
-const notify = () => toast('Copiado con exito');
-const notifyError = () => toast('Ocurrio un error');
 
 const csvConfig = mkConfig({ useKeysAsHeaders: true });
 
@@ -44,11 +42,8 @@ const JsonNode: React.FC<JsonNodeProps> = ({
       className="text-sm break-words whitespace-pre-wrap   "
       style={{ marginLeft: depth * INDENT }}
     >
-      <Toaster
-        toastOptions={{
-          className: 'bg-zinc-900! shadow-md! text-zinc-200! ',
-        }}
-      />
+      
+      
       {name !== undefined && (
         <strong className="text-purple-400 mr-1 hover:bg-zinc-800 rounded-2xl ">
           &quot;{name}&quot;:
@@ -300,7 +295,7 @@ const JsonViewer: React.FC<{
     <div
       className={` flex flex-col backdrop-blur-2xl text-zinc-400 border border-zinc-800  shadow-sm`}
     >
-      <Toaster />
+      
       <div className="flex gap-2 py-2 px-4 items-center justify-between border-b border-zinc-800 rounded-t-xl ">
         <button
           className="px-2 py-1 rounded-lg text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2"
