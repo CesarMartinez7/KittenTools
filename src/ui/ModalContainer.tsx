@@ -9,32 +9,30 @@ interface PropsModalViewer {
   value: string;
 }
 
-export const overlayVariants = {
-  visible: {
-    opacity: 1,
-
-    transition: {
-      when: 'beforeChildren',
-      duration: 0.3,
-      delayChildren: 0.4,
-    },
-  },
-  hidden: {
-    opacity: 0,
-    transition: {
-      when: 'afterChildren',
-      duration: 0.3,
-      delay: 0.4,
-    },
-  },
-};
-
 const ModalViewerJSON = ({ setOpenAll, openAll, value }: PropsModalViewer) => {
   const handleClickOpenModal = () => {
     setOpenAll(!openAll);
   };
 
- 
+  const overlayVariants = {
+    visible: {
+      opacity: 1,
+
+      transition: {
+        when: 'beforeChildren',
+        duration: 0.3,
+        delayChildren: 0.4,
+      },
+    },
+    hidden: {
+      opacity: 0,
+      transition: {
+        when: 'afterChildren',
+        duration: 0.3,
+        delay: 0.4,
+      },
+    },
+  };
 
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -54,8 +52,7 @@ const ModalViewerJSON = ({ setOpenAll, openAll, value }: PropsModalViewer) => {
       onKeyDown={handleKeyPress}
       initial="hidden"
       animate="visible"
-    
-      exit={{opacity: 0}}
+      exit="hidden"
       tabIndex={0}
       variants={overlayVariants}
       className="w-full absolute md:p-24 p-5 pointer-event backdrop-blur-2xl h-svh z-[888] flex justify-center-safe items-center flex-col inset-0"

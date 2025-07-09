@@ -15,7 +15,6 @@
     "@tailwindcss/postcss": "^4.1.11",
     "export-to-csv": "^1.4.0",
     "json-2-csv": "^5.5.9",
-    "json-diff": "^1.0.6",
     "jsondiffpatch": "^0.7.3",
     "motion": "^12.23.0",
     "postcss": "^8.5.6",
