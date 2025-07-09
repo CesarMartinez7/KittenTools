@@ -26,7 +26,7 @@ const App = () => {
         const decoded = decodeURIComponent(escape(atob(dataQuery)));
         setShareUrl(decoded);
         setValue(decoded);
-        console.log("✅ Datos recuperados de la URL:", decoded);
+        console.log("Datos recuperados de la URL:", decoded);
       } catch (err) {
         toast.error("❌ Error al decodificar el JSON desde la URL");
         console.error("❌ Error al decodificar:", err);
