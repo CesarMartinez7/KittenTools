@@ -52,7 +52,7 @@ const JsonNode: React.FC<JsonNodeProps> = ({
       {isObject ? (
         <>
           <span
-            className="text-zinc-500 cursor-pointer select-none hover:text-zinc-300 transition-colors duration-500"
+            className="text-zinc-300 cursor-pointer select-none hover:text-zinc-300 transition-colors duration-500"
             onClick={toggle}
           >
             {isArray
@@ -133,7 +133,7 @@ const JsonViewer: React.FC<{
 
   const [isOpenJsonViewer, setIsOpenJsonViewer] = useState<boolean>(true);
   // const [isOpenCsvViewer, setIsOpenCsvViewer] = useState<boolean>(true)
-  const [INDENT, setIdent] = useState<number>(12);
+  const [INDENT, setIdent] = useState<number>(1);
   const [interfaceGen, setInterfaceGen] = useState<unknown[]>([]);
   const [Interfaces, setInterfaces] = useState<unknown[]>();
   const [values, setValue] = useState<JsonValue>(data);
@@ -178,7 +178,7 @@ const JsonViewer: React.FC<{
         }
       } else if (Array.isArray(value)) {
         const gen = GeneratorInterfaceArray(value);
-        console.table([{ gen }]); //                                                           ✅
+        console.table([{ gen }]); //                                 
 
         return { key, type: 'Arrray' };
       } else {
@@ -319,9 +319,7 @@ const JsonViewer: React.FC<{
           )}
         </button>
 
-        <button className="px-2 py-1 rounded-lg text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2">
-          Ver TABLE
-        </button>
+        
 
         <div className="flex gap-1">
           <button

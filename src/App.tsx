@@ -28,8 +28,8 @@ const App = () => {
         setValue(decoded);
         console.log("Datos recuperados de la URL:", decoded);
       } catch (err) {
-        toast.error("❌ Error al decodificar el JSON desde la URL");
-        console.error("❌ Error al decodificar:", err);
+        toast.error(" Ereror al decodificar el JSON desde la URL");
+        console.error(" dError al decodificar:", err);
       }
     }
   }, []);
@@ -82,8 +82,10 @@ const App = () => {
 
   const handleClickminifyJson = () => {
     try {
-      const parsed = JSON.parse(value);
-      setValue(JSON.stringify(parsed));
+      const parseado = JSON.parse(value)
+      console.log(parseado)
+      setValue(JSON.stringify(parseado))
+      
       toast.success("JSON minificado");
     } catch {
       toast.error("JSON inválido para minificar");
@@ -105,7 +107,7 @@ const App = () => {
       navigator.clipboard
         .writeText(fullUrl)
         .then(() => {
-          toast.success("✅ URL copiada con éxito");
+          toast.success("Direccion copiada con exito.");
           console.log("🔗", fullUrl);
         })
         .catch(() => {
@@ -117,7 +119,7 @@ const App = () => {
   };
 
   return (
-    <div className="bg-gradient-to-b from-zinc-950 to-zinc-800/100 text-zinc-200 min-h-screen font-mono">
+    <>
       {openAll && (
         <ModalViewerJSON
           value={value}
@@ -125,8 +127,11 @@ const App = () => {
           setOpenAll={setOpenAll}
         />
       )}
+    <div className="bg-gradient-to-b from-zinc-950 to-zinc-800/100 text-zinc-200 min-h-screen font-mono">
 
-      <Toaster />
+      <Toaster toastOptions={{
+        className: "bg-zinc-800! text-zinc-400!"
+      }} />
 
       <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-6 min-h-screen p-5">
         <aside className="w-full lg:w-64 grid gap-5 justify-between rounded-2xl">
@@ -235,6 +240,7 @@ const App = () => {
         </main>
       </div>
     </div>
+    </>
   );
 };
 

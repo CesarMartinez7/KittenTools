@@ -55,7 +55,7 @@ const ModalViewerJSON = ({ setOpenAll, openAll, value }: PropsModalViewer) => {
       exit="hidden"
       tabIndex={0}
       variants={overlayVariants}
-      className="w-full absolute md:p-24 p-5 pointer-event backdrop-blur-2xl h-svh z-[888] flex justify-center-safe items-center flex-col"
+      className="w-full absolute md:p-24 p-5 pointer-event backdrop-blur-2xl h-svh z-[888] flex justify-center-safe items-center flex-col inset-0"
     >
       <div className="w-full backdrop-blur-3xl bg-black/60 rounded-2xl ">
         <div className="w-full flex justify-end px-5  border-x py-1 border-t border-zinc-800">
