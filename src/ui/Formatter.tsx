@@ -149,8 +149,6 @@ const JsonViewer: React.FC<{
   const [Interfaces, setInterfaces] = useState<unknown[]>();
   const [values, setValue] = useState<JsonValue>(data);
 
-  
-
   function generateJsonInterface(obj: any) {
     const result = {};
 
@@ -175,13 +173,10 @@ const JsonViewer: React.FC<{
       }
     }
 
-    
     return result;
   }
 
   // Copiar en el ClipBoard
- 
-  
 
   // Arreglar esta puta mrd
   const handleClickGenerateCSV = () => {
@@ -229,8 +224,6 @@ const JsonViewer: React.FC<{
     const raw = typeof data === "string" ? data : JSON.stringify(data, null, 2);
     const bytes = new Blob([raw]).size / 1024;
     setSize(bytes.toFixed(2) + " KB");
-    
-    
   }, [data]);
 
   return (
@@ -244,7 +237,9 @@ const JsonViewer: React.FC<{
             onClick={() => {
               setIsOpenJsonViewer(!isOpenJsonViewer);
               if (isOpenJsonViewer) {
-                setInterfaceGen(generateJsonInterface(JSON.parse(values as string)))
+                setInterfaceGen(
+                  generateJsonInterface(JSON.parse(values as string)),
+                );
               }
             }}
           >
@@ -260,15 +255,12 @@ const JsonViewer: React.FC<{
               </>
             )}
           </button>
-
-          
         </div>
 
         <div className="flex gap-1">
           <button
             className="px-2 py-1 rounded-lg text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2"
             onClick={() => {
-              
               setIdent((prev) => prev + 1);
             }}
           >
@@ -313,8 +305,13 @@ const JsonViewer: React.FC<{
                     data={parsed}
                   />
                 );
-              } catch (err) {
-                return <div className="text-red-400">❌ JSON inválido</div>;
+              } catch {
+                return (
+                  <div className="text-red-400 absolute inset-0 backdrop-blur-3xl text-center grid place-content-center gap-2">
+                    <Icon className="mx-auto" icon="tabler:alien" width="54" height="54" />
+                    <span className="mx-auto text-zinc-400">JSON desconocido o invalido.</span>
+                  </div>
+                );
               }
             })()
           ) : (
@@ -337,8 +334,7 @@ const JsonViewer: React.FC<{
             minHeight: "42vh",
           }}
         >
-          
-          <JsonNode data={interfaceGen} INDENT={INDENT}  isInterface={true}  />
+          <JsonNode data={interfaceGen} INDENT={INDENT} isInterface={true} />
         </div>
       )}
 
@@ -348,7 +344,6 @@ const JsonViewer: React.FC<{
           {size}
         </span>
 
-        
         <div className="flex gap-2">
           <button
             className="btn-icon  p-1 text-xs bg-zinc-800 rounded-lg "

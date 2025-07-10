@@ -215,23 +215,16 @@ const App = () => {
                   <Icon icon="tabler:air-conditioning" width="20" /> Limpiar
                 </button>
                 <button
-                  onClick={handleCopy}
-                  className="w-full flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-400 text-white px-3 py-2 text-sm rounded-lg transition"
-                >
-                  <Icon icon="tabler:copy" width="20" /> Copiar
-                </button>
-                <button
                   className="w-full flex items-center justify-center gap-2 bg-emerald-500 bg-gradient-to-t from-emerald-600 to-emerald-300 hover:bg-emerald-400 text-zinc-900 font-bold px-3 py-2 text-sm rounded-lg transition"
                   onClick={handleClickminifyJson}
                 >
                   <Icon icon="tabler:box" width="24" height="24" /> Minify
                 </button>
                 <button
-                  className="w-full flex items-center justify-center gap-2 bg-indigo-400 text-white hover:bg-indigo-500 font-bold px-3 py-2 text-sm rounded-lg transition"
-                  onClick={handleClickCargueJson}
+                  onClick={handleCopy}
+                  className="w-full flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-400 text-white px-3 py-2 text-sm rounded-lg transition"
                 >
-                  <Icon icon="mdi:code-block-json" width="20" height="20" />
-                  Cargar JSON
+                  <Icon icon="tabler:copy" width="20" /> Copiar
                 </button>
                 <button
                   title="Compartir URL"
@@ -241,6 +234,14 @@ const App = () => {
                   <Icon icon="tabler:share" width="20" height="20" />
                   Compartir URL
                 </button>
+                <button
+                  className="w-full flex items-center justify-center gap-2 bg-indigo-400 text-white hover:bg-indigo-500 font-bold px-3 py-2 text-sm rounded-lg transition"
+                  onClick={handleClickCargueJson}
+                >
+                  <Icon icon="mdi:code-block-json" width="20" height="20" />
+                  Cargar JSON
+                </button>
+                
 
                 <button
                   title="Compa"
@@ -261,10 +262,20 @@ const App = () => {
                     setIsDecode(!isDecode);
                   }}
                 >
-                  <Icon icon="tabler:arrows-diff" width="24" height="24" />
+                  <Icon icon="tabler:bomb-filled" width="20" height="20"  />
                   Decode JWT
                 </button>
 
+                <button
+                  title="Compa"
+                  className="w-full flex items-center justify-center gap-2 bg-amber-400 text-black  hover:bg-kanagawa-cyan/60 font-bold px-3 py-2 text-sm rounded-lg transition"
+                  onClick={() => {
+                    setIsDecode(!isDecode);
+                  }}
+                >
+                  <Icon icon="tabler:git-compare" width="20" height="20"   />
+                  Comparar Texto
+                </button>
 
 
               </div>

@@ -102,22 +102,22 @@ body{
   font-weight: 300;
   font-style: italic;
 }
-
+;
 .ibm-plex-mono-regular-italic {
   font-family: 'IBM Plex Mono', monospace;
   font-weight: 400;
   font-style: italic;
-}
+};
 
 .ibm-plex-mono-medium-italic {
   font-family: 'IBM Plex Mono', monospace;
   font-weight: 500;
   font-style: italic;
-}
+};
 
 .gradient-text {
   @apply  bg-gradient-to-bl from-white to-zinc-600 bg-clip-text text-transparent
-}
+};
 
 ::selection{
   @apply bg-zinc-700 text-zinc-500

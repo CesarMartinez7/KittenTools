@@ -3,11 +3,12 @@ import { jwtDecode } from "jwt-decode";
 import { JsonViewerLazy } from "./LAZY_COMPONENT";
 import { AnimatePresence } from "motion/react";
 import { motion } from "motion/react";
-import { Icon } from "@iconify/react/dist/iconify.js";
 import toast from "react-hot-toast";
 export default function JWTDecode() {
+
   const [jwt, setJwt] = useState<string>("");
   const [decode, setDecode] = useState<string | null>(null);
+
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setJwt(e.target.value);
