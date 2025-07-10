@@ -1,4 +1,3 @@
-import "./App.css";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useEffect, useState } from "react";
 import { JsonViewerLazy } from "./ui/LAZY_COMPONENT";

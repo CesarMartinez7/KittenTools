@@ -115,7 +115,7 @@ export const TextDiffViewer: React.FC<Props> = ({ texto1, texto2 }) => {
         </h2>
         <div className="bg-zinc-900 p-4 rounded-xl overflow-auto max-h-[300px] space-y-3 shadow">
           {changesDetected.length === 0 ? (
-            <p className="text-green-500">No se detectaron diferencias 🎉</p>
+            <p className="text-green-500">No hay Diferencias</p>
           ) : (
             changesDetected.map((e) => (
               <div key={crypto.randomUUID()} className="whitespace-pre-wrap">
