@@ -9,6 +9,7 @@ import { JsonDiffLazy } from "./ui/LAZY_COMPONENT";
 import { AnimatePresence, motion } from "motion/react";
 import { overlayVariants } from "./ui/ModalViewer";
 import JWTDecode from "./ui/DecodeJWT";
+import { ModalViewer } from "./ui/Difftext";
 
 const App = () => {
   const [value, setValue] = useState<string>(
@@ -18,6 +19,7 @@ const App = () => {
   const [error, setErrorMessage] = useState("");
   const [openAll, setOpenAll] = useState<boolean>(false);
   const [isOpenDiff, setIsOpenDiff] = useState<boolean>(false);
+  const [isOpenDiffText, setIsOpenDiffText] = useState<boolean>(false);
   const [isDecode, setIsDecode] = useState<boolean>(false)
 
   // // Leer datos desde la URL si existen
@@ -136,7 +138,7 @@ const App = () => {
   };
 
   return (
-    <div className="fade-out relative">
+    <div className=" relative">
       <AnimatePresence>
         {openAll && (
           <ModalViewerJSON
@@ -146,8 +148,6 @@ const App = () => {
           />
         )}
       </AnimatePresence>
-
-
       <AnimatePresence>
         {isDecode && (
           <motion.div
@@ -164,6 +164,25 @@ const App = () => {
             <Icon icon="tabler:x" width="24" height="24" />
           </button>
           <JWTDecode/>
+        </motion.div>
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {isOpenDiffText && (
+          <motion.div
+          initial="hidden"
+          animate="visible"
+          exit={{ scale: 0 }}
+          variants={overlayVariants}
+          className="absolute inset-0  z-[887] backdrop-blur-3xl bg-black/50 grid gap-5 "
+        >
+          <button
+            className="btn-icon top-7  right-6 p-2 fixed z-50"
+            onClick={() => setIsOpenDiffText(!isOpenDiffText)}
+          >
+            <Icon icon="tabler:x" width="24" height="24" />
+          </button>
+          <ModalViewer/>
         </motion.div>
         )}
       </AnimatePresence>
@@ -270,7 +289,7 @@ const App = () => {
                   title="Compa"
                   className="w-full flex items-center justify-center gap-2 bg-amber-400 text-black  hover:bg-kanagawa-cyan/60 font-bold px-3 py-2 text-sm rounded-lg transition"
                   onClick={() => {
-                    setIsDecode(!isDecode);
+                    setIsOpenDiffText(!isOpenDiffText);
                   }}
                 >
                   <Icon icon="tabler:git-compare" width="20" height="20"   />

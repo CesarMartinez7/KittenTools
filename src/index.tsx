@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router";
 import { AppHomeLazy } from "./ui/LAZY_COMPONENT";
 
 import "./App.css";
-import { ModalViewer, TextDiffViewer } from "./ui/Difftext";
+import { ModalViewer } from "./ui/Difftext";
 
 const root = document.getElementById("root")!;
 
