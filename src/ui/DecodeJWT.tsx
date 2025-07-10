@@ -3,28 +3,28 @@ import { jwtDecode } from "jwt-decode";
 import { JsonViewerLazy } from "./LAZY_COMPONENT";
 import { AnimatePresence } from "motion/react";
 import { motion } from "motion/react";
-
+import { Icon } from "@iconify/react/dist/iconify.js";
+import toast from "react-hot-toast";
 export default function JWTDecode() {
   const [jwt, setJwt] = useState<string>("");
   const [decode, setDecode] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setJwt(e.target.value);
-    
   };
 
   const handleCheck = () => {
     try {
       setDecode(jwtDecode(jwt));
     } catch {
-      alert("JWT inválido o mal formateado");
+      toast.error("JWT invalido o mal formateado");
     }
   };
 
   return (
     <div className="p-4 rounded-lg bg-zinc-900 text-white flex flex-col gap-2 w-2xl">
-      <label htmlFor="jwt" className="font-semibold text-center text-zinc-200">
-        Pega tu JWT aquí:
+      <label htmlFor="jwt" className="gradient-text mx-auto ">
+        Decodifica Json Web TOKEN
       </label>
       <textarea
         id="jwt"
@@ -35,25 +35,25 @@ export default function JWTDecode() {
       />
       <button
         onClick={handleCheck}
-        className="bg-emerald-600 hover:bg-emerald-700 px-4 py-2 rounded font-medium"
+        className="w-full flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-400 text-white px-3 py-2 text-sm rounded-lg transition"
       >
-        Decodificar JWT
+        Decodificar
       </button>
 
       <AnimatePresence mode="wait">
-  {jwt && decode && (
-    <motion.div
-      key={jwt} // clave para reiniciar animación si cambia
-      initial={{ scale: 0.95, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      exit={{ scale: 0.95, opacity: 0 }}
-      transition={{ duration: 0.25, ease: "easeOut" }}
-      className="max-h-[70vh] overflow-auto" // opcional: scroll si el JWT es gigante
-    >
-      <JsonViewerLazy data={decode} />
-    </motion.div>
-  )}
-</AnimatePresence>
+        {jwt && decode && (
+          <motion.div
+            key={jwt} // clave para reiniciar animación si cambia
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.95, opacity: 0 }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+            className="max-h-[70vh] overflow-auto" // opcional: scroll si el JWT es gigante
+          >
+            <JsonViewerLazy data={decode} />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

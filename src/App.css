@@ -115,7 +115,9 @@ body{
   font-style: italic;
 }
 
-
+.gradient-text {
+  @apply  bg-gradient-to-bl from-white to-zinc-600 bg-clip-text text-transparent
+}
 
 ::selection{
   @apply bg-zinc-700 text-zinc-500

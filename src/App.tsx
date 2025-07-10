@@ -136,7 +136,7 @@ const App = () => {
   };
 
   return (
-    <div className="fade-out">
+    <div className="fade-out relative">
       <AnimatePresence>
         {openAll && (
           <ModalViewerJSON
@@ -155,7 +155,7 @@ const App = () => {
           animate="visible"
           exit={{ scale: 0 }}
           variants={overlayVariants}
-          className="absolute inset-0 h-screen  max-h-screen z-[887] backdrop-blur-3xl bg-black/50 grid place-content-center gap-5 "
+          className="absolute inset-0  z-[887] backdrop-blur-3xl bg-black/50 grid place-content-center gap-5 "
         >
           <button
             className="btn-icon top-7  right-6 p-2 fixed z-50"
