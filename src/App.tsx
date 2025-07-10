@@ -8,6 +8,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { JsonDiffLazy } from "./ui/LAZY_COMPONENT";
 import { AnimatePresence, motion } from "motion/react";
 import { overlayVariants } from "./ui/ModalViewer";
+import JWTDecode from "./ui/DecodeJWT";
 
 const App = () => {
   const [value, setValue] = useState<string>(
@@ -17,6 +18,7 @@ const App = () => {
   const [error, setErrorMessage] = useState("");
   const [openAll, setOpenAll] = useState<boolean>(false);
   const [isOpenDiff, setIsOpenDiff] = useState<boolean>(false);
+  const [isDecode, setIsDecode] = useState<boolean>(false)
 
   // // Leer datos desde la URL si existen
   // useEffect(() => {
@@ -144,6 +146,31 @@ const App = () => {
           />
         )}
       </AnimatePresence>
+
+
+      <AnimatePresence>
+        {isDecode && (
+          <motion.div
+          initial="hidden"
+          animate="visible"
+          exit={{ scale: 0 }}
+          variants={overlayVariants}
+          className="absolute inset-0 h-screen  max-h-screen z-[887] backdrop-blur-3xl bg-black/50 grid place-content-center gap-5 "
+        >
+          <button
+            className="btn-icon top-7  right-6 p-2 fixed z-50"
+            onClick={() => setIsDecode(!isDecode)}
+          >
+            <Icon icon="tabler:x" width="24" height="24" />
+          </button>
+          <JWTDecode/>
+        </motion.div>
+        )}
+      </AnimatePresence>
+
+
+
+
       <AnimatePresence>
         {isOpenDiff && (
           <motion.div
@@ -225,6 +252,21 @@ const App = () => {
                   <Icon icon="tabler:arrows-diff" width="24" height="24" />
                   Comparar JSON
                 </button>
+
+
+                <button
+                  title="Compa"
+                  className="w-full flex items-center justify-center gap-2 bg-kanagawa-muted text-white hover:bg-kanagawa-cyan/60 font-bold px-3 py-2 text-sm rounded-lg transition"
+                  onClick={() => {
+                    setIsDecode(!isDecode);
+                  }}
+                >
+                  <Icon icon="tabler:arrows-diff" width="24" height="24" />
+                  Decode JWT
+                </button>
+
+
+
               </div>
             </div>
 
@@ -258,7 +300,7 @@ const App = () => {
 
           <main className="flex-1 space-y-6">
             <section className="rounded-xl shadow-2xl backdrop-blur-3xl p-6 space-y-4 flex flex-col gap-1 border border-zinc-900 bg-zinc-900">
-              <label className="text- my-2 font-semibold  bg-gradient-to-bl from-white to-zinc-600 bg-clip-text text-transparent">
+              <label className="text- my-2 bg-gradient-to-bl from-white to-zinc-600 bg-clip-text text-transparent">
                 Editor JSON
               </label>
               <textarea

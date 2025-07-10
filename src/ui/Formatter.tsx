@@ -29,7 +29,6 @@ interface JsonNodeProps {
 type GeneratorOutput = { key: string; value: string | string[] };
 
 const JsonNode: React.FC<JsonNodeProps> = ({
-  isInteface,
   data,
   name,
   INDENT,

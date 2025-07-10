@@ -16,6 +16,7 @@
     "export-to-csv": "^1.4.0",
     "json-2-csv": "^5.5.9",
     "jsondiffpatch": "^0.7.3",
+    "jwt-decode": "^4.0.0",
     "motion": "^12.23.0",
     "postcss": "^8.5.6",
     "postcss-loader": "^8.1.1",
