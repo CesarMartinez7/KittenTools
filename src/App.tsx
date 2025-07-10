@@ -204,7 +204,7 @@ const App = () => {
                 ReactMatter
               </h1>
               <p className="text-sm  max-w-[240px] break-words  bg-gradient-to-bl from-white to-zinc-600 bg-clip-text text-transparent">
-                Valida, visualiza y comparte tu JSON de forma elegante.
+                Valida, visualiza, genera, y compara tu JSON de forma elegante.
               </p>
 
               <div className="w-full space-y-3">
