@@ -1,6 +1,6 @@
-# ReactMatter
+# <p style="text-align:center;">ReactMatter  ⚛️</p>
 
-![./reactmatter.png](./reactmatter.png)
+![./reactmatter.png](./reactmatterv2.png)
 
 ReactMatter es una herramienta sencilla pero poderosa diseñada para formatear JSON y generar interfaces de TypeScript al instante, todo sin necesidad de conectarse a un backend ni hacer consumos externos.
 Bajo la filosofía de "lo que es del frontend, se queda en el frontend", ReactMatter apuesta por la eficiencia, rapidez y simplicidad.
@@ -14,3 +14,20 @@ Bajo la filosofía de "lo que es del frontend, se queda en el frontend", ReactMa
 ReactMatter está construido con React, y su nombre lo dice todo: combina la potencia de React con herramientas que realmente importan para el trabajo diario de los desarrolladores.
 
 💡 Ideal para quienes trabajan con APIs, mockups o estructuras de datos complejas.
+
+
+# Características ⭐
+
+- Formateo de JSON rápido sin uso de back-end
+- Minifacion de JSON
+- expansión del formateador de JSON
+- Interfaz intuitiva
+- Comparación de JSON 
+- Carga de JSON CON FILE READER
+- Compartir URL y JSON por query params (desarrollo)
+- Todo en una sola vista
+- Rápido y Sencillo
+
+
+<p style="text-align:center;">Desarrollado con ♥ Por @Cesar Martinez</p>
+<p style="text-align:center;">2025</p>

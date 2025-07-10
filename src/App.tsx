@@ -229,7 +229,7 @@ const App = () => {
             </div>
 
             <footer className="text-xs pt-6 rounded-2xl p-6 flex j  shadow-2xl backdrop-blur-2xl text-zinc-500  border-zinc-900 bg-zinc-900 flex-col justify-center-safe items-center gap-2 ">
-              <p className="text-pretty text-center ">Desarrollado con tecnologias como </p>
+              <p className="text-pretty text-center ">Desarrollado con tecnologias </p>
               <div className="flex gap-2">
               <button className="btn-icon">
               <Icon icon="tabler:brand-tailwind" width="24" height="24"   />
@@ -258,7 +258,7 @@ const App = () => {
 
           <main className="flex-1 space-y-6">
             <section className="rounded-xl shadow-2xl backdrop-blur-3xl p-6 space-y-4 flex flex-col gap-1 border border-zinc-900 bg-zinc-900">
-              <label className="text-sm my-2 font-semibold  bg-gradient-to-bl from-white to-zinc-600 bg-clip-text text-transparent">
+              <label className="text- my-2 font-semibold  bg-gradient-to-bl from-white to-zinc-600 bg-clip-text text-transparent">
                 Editor JSON
               </label>
               <textarea
@@ -277,7 +277,7 @@ const App = () => {
 
             <section className="rounded-xl shadow-2xl bg-zinc-900 p-6 flex flex-col gap-y-3">
               <div className="p-2 flex justify-between">
-                <label className="text-sm font-semibold  bg-gradient-to-bl from-white to-zinc-600 bg-clip-text text-transparent">
+                <label className="|font-semibold  bg-gradient-to-bl from-white to-zinc-600 bg-clip-text text-transparent">
                   Resultado Formateado
                 </label>
                 <div className=" flex justify-center items-center gap-2">
