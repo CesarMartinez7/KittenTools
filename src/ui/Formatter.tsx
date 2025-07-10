@@ -308,8 +308,16 @@ const JsonViewer: React.FC<{
               } catch {
                 return (
                   <div className="text-red-400 absolute inset-0 backdrop-blur-3xl text-center grid place-content-center gap-2">
-                    <Icon className="mx-auto" icon="tabler:alien" width="54" height="54" />
-                    <span className="mx-auto text-zinc-400">JSON desconocido o invalido.</span>
+                    <Icon
+                      className="mx-auto"
+                      icon="tabler:alien"
+                      width="54"
+                      height="54"
+                    />
+                    <span className="mx-auto text-zinc-400">
+                      JSON desconocido o invalido.
+                    </span>
+                    <a href="https://www.w3schools.com/js/js_json_syntax.asp" className="text-blue-300 text-xs">Lee un poco sobre la sintaxis JSON</a>
                   </div>
                 );
               }

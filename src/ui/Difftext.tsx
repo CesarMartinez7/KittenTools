@@ -74,26 +74,28 @@ export const ModalViewer = () => {
 
   return (
     <main className="min-h-screen  text-white p-6 flex flex-col gap-8 items-center justify-center">
-      <div>Comparar Texto</div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-6xl">
-        <div>
-          <p># 1</p>
-          <textarea
-            onChange={handleChangeOriginalText}
-            placeholder="Texto Original"
-            className="p-4 bg-zinc-800 rounded-lg shadow-inner min-h-[200px] resize-none outline-none focus:ring-2 ring-zinc-600"
-          />
+      <div>
+        <h3 className="gradient-text text-center text-lg">Comparar Texto</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-6xl">
+          <div className="w-xl">
+            <p># 1</p>
+            <textarea
+              onChange={handleChangeOriginalText}
+              placeholder="Texto Original"
+              className="p-4 bg-zinc-800 rounded-lg shadow-inner min-h-[200px] resize-none outline-none focus:ring-2 ring-zinc-600"
+            />
+          </div>
+          <div>
+            <p># 2</p>
+            <textarea
+              onChange={handleChangeComparateText}
+              placeholder="Texto compa"
+              className="p-4 bg-zinc-800 rounded-lg shadow-inner min-h-[200px] resize-none outline-none focus:ring-2 ring-zinc-600"
+            />
+          </div>
         </div>
-        <div>
-          <p># 2</p>
-          <textarea
-            onChange={handleChangeComparateText}
-            placeholder="Texto compa"
-            className="p-4 bg-zinc-800 rounded-lg shadow-inner min-h-[200px] resize-none outline-none focus:ring-2 ring-zinc-600"
-          />
-        </div>
+        <TextDiffViewer texto1={originalText} texto2={compareText} />
       </div>
-      <TextDiffViewer texto1={originalText} texto2={compareText} />
     </main>
   );
 };
@@ -105,7 +107,7 @@ export const TextDiffViewer: React.FC<Props> = ({ texto1, texto2 }) => {
     <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-6 font-mono text-sm">
       <div>
         <p className="gradient-text">Texto Principal</p>
-        <pre className="bg-zinc-900 text-white p-4 rounded-xl overflow-auto max-h-[300px] shadow">
+        <pre className="bg-zinc-900 text-white p-4 rounded-xl overflow-auto max-h-[300px] h-[300px] shadow">
           {texto1}
         </pre>
       </div>
@@ -113,7 +115,7 @@ export const TextDiffViewer: React.FC<Props> = ({ texto1, texto2 }) => {
         <h2 className="gradient-text font-semibold text-zinc-400 ">
           Diferencias
         </h2>
-        <div className="bg-zinc-900 p-4 rounded-xl overflow-auto max-h-[300px] space-y-3 shadow">
+        <div className="bg-zinc-900 p-4 rounded-xl overflow-auto h-[300px] max-h-[300px] space-y-3 shadow">
           {changesDetected.length === 0 ? (
             <p className="text-green-500">No hay Diferencias</p>
           ) : (
