@@ -342,7 +342,7 @@ const App = () => {
                 </label>
                 <textarea
                   value={value}
-                  onFocus={() => setValue("")}
+                  
                   onChange={(e) => {
                     const clean = e.target.value
                       .replace(/\/\//g, "")
@@ -379,11 +379,11 @@ const App = () => {
                   />
                 </div>
 
-                {isValid && (
+                
                   <p className="text-green-500 text-xs font-medium">
-                    ✓ JSON válido
+                    {isValid ? "✓ JSON válido" : ""} 
                   </p>
-                )}
+                
               </section>
             </main>
           </div>
