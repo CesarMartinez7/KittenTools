@@ -202,7 +202,7 @@ const App = () => {
               animate="visible"
               exit={{ scale: 0 }}
               variants={overlayVariants}
-              className="absolute inset-0 h-screen min-h-screen max-h-screen z-[887] backdrop-blur-3xl bg-black/50 grid place-content-center "
+              className="absolute inset-0  z-[887] backdrop-blur-3xl bg-black/50 grid place-content-center "
             >
               <button
                 className="btn-icon top-7  right-6 p-2 fixed z-50"
@@ -304,7 +304,7 @@ const App = () => {
 
               <footer className="text-xs pt-6 rounded-2xl p-6 flex j  shadow-2xl backdrop-blur-2xl text-zinc-500  border-zinc-900 bg-zinc-900/70 flex-col justify-center-safe items-center gap-2 ">
                 <p className="text-pretty text-center ">
-                  Desarrollado con tecnologias{" "}
+                  Desarrollandose con tecnologias{" "}
                 </p>
                 <div className="flex gap-2">
                   <button className="btn-icon">
@@ -342,6 +342,7 @@ const App = () => {
                 </label>
                 <textarea
                   value={value}
+                  onFocus={() => setValue("")}
                   onChange={(e) => {
                     const clean = e.target.value
                       .replace(/\/\//g, "")

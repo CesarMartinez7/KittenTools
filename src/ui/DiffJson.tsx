@@ -17,12 +17,13 @@ export default function JsonDiffViewerModal() {
       const delta = diff(parsed1, parsed2);
       setDiffResult(delta as object);
       setError("");
+
+      if(diffResult === undefined) {
+        toast.success("No hay diferencias entre los dos JSON")
+      }
+
       toast.success("Comparando ...")
-      
-
-      
-
-
+      console.log(diffResult)
     } catch {
         toast.error("JSON invalido")
       setError("JSON inválido 🫠");
@@ -36,7 +37,7 @@ export default function JsonDiffViewerModal() {
       animate={{ scale: 1, opacity: 1 }}
       exit={{ scale: 0.95, opacity: 0 }}
       transition={{ duration: 0.2 }}
-      className=" w-4xl max-w-4xl bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-2xl text-sm text-zinc-200 "
+      className=" w-5xl  bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-2xl text-sm text-zinc-200 "
     >
         <h2 className="my-2 text-xl font-semibold  text-center bg-gradient-to-bl from-white to-zinc-600 bg-clip-text text-transparent">Comparador JSON</h2>
       <div className="grid md:grid-cols-2 gap-4 ">
@@ -70,10 +71,12 @@ export default function JsonDiffViewerModal() {
         </button>
       </div>
 
+      {diffResult === undefined && (
+        <p className="text-center p-4">No hay Cambios</p>
+      )}
+
       {diffResult && (
-        
           <JsonViewerLazy data={diffResult} __changed={diffResult} />
-        
       )}
     </motion.div>
   );

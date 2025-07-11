@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Icon } from "@iconify/react/dist/iconify.js";
 
 type Props = {
   texto1: string;
@@ -75,7 +76,7 @@ export const ModalViewer = () => {
   return (
     <main className="min-h-screen  text-white p-6 flex flex-col gap-8 items-center justify-center">
       <div>
-        <h3 className="gradient-text text-center text-lg">Comparar Texto</h3>
+        <h3 className="text-zinc-200 text-center text-lg">Comparar Texto</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-6xl">
           <div className="w-xl">
             <p># 1</p>
@@ -96,6 +97,10 @@ export const ModalViewer = () => {
         </div>
         <TextDiffViewer texto1={originalText} texto2={compareText} />
       </div>
+      <p className="text-zinc-400 text-xs">
+        Las comparaciones estan hechas por parrafos despues de un salto de linea
+        y palabras, no por caracteres.
+      </p>
     </main>
   );
 };
@@ -104,7 +109,7 @@ export const TextDiffViewer: React.FC<Props> = ({ texto1, texto2 }) => {
   const changesDetected = getLines(texto1, texto2);
 
   return (
-    <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-6 font-mono text-sm">
+    <div className="w-full  max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-6 font-mono bg-red text-sm">
       <div>
         <p className="gradient-text">Texto Principal</p>
         <pre className="bg-zinc-900 text-white p-4 rounded-xl overflow-auto max-h-[300px] h-[300px] shadow">

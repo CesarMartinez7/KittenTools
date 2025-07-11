@@ -1,5 +1,5 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, scale } from "motion/react";
 import { useEffect, useRef } from "react";
 import { JsonViewerLazy } from "./LAZY_COMPONENT";
 
@@ -11,8 +11,7 @@ interface PropsModalViewer {
 
 export const overlayVariants = {
   visible: {
-    opacity: 1,
-
+    scale: 1,
     transition: {
       when: "beforeChildren",
       duration: 0.3,
@@ -20,7 +19,7 @@ export const overlayVariants = {
     },
   },
   hidden: {
-    opacity: 0,
+    scale: 0,
     transition: {
       when: "afterChildren",
       duration: 0.3,
