@@ -13,8 +13,8 @@ import Beams from "./ui/Beams";
 import Aurora from "./ui/Aurora";
 
 const App = () => {
-  const [value, setValue] = useState<string>(
-    localStorage.getItem("jsonData") || "[]",
+  const [value, setValue] = useState<string | null | undefined>(
+    localStorage.getItem("jsonData") || null,
   );
   const [isValid, setIsValid] = useState(true);
   const [error, setErrorMessage] = useState("");
@@ -64,7 +64,7 @@ const App = () => {
   }, [value]);
 
   const handleClear = () => {
-    setValue("[]");
+    setValue(null);
     localStorage.removeItem("jsonData");
     toast.success("Limpiado exitosamente.");
   };
@@ -378,12 +378,6 @@ const App = () => {
                     maxHeight="20vh"
                   />
                 </div>
-
-                
-                  <p className="text-green-500 text-xs font-medium">
-                    {isValid ? "✓ JSON válido" : ""} 
-                  </p>
-                
               </section>
             </main>
           </div>
