@@ -228,7 +228,7 @@ const JsonViewer: React.FC<{
 
   return (
     <div
-      className={` flex flex-col backdrop-blur-2xl text-zinc-400 border border-zinc-800  shadow-xl rounded-xl`}
+      className={` flex flex-col backdrop-blur-2xl text-zinc-400 border border-zinc-800  overflow-hidden shadow-xl rounded-xl`}
     >
       <div className="flex gap-2 py-2 px-4 items-center justify-between border-b border-zinc-800 rounded-t-xl ">
         <div className="flex gap-2">
@@ -291,7 +291,7 @@ const JsonViewer: React.FC<{
             minHeight: "42vh",
           }}
           ref={viewerRef}
-          className="flex-1 overflow-auto px-3 py-4 text-sm font-mono whitespace-pre-wrap break-words "
+          className="flex-1 overflow-auto px-3 py-4 text-sm font-mono whitespace-break-spaces "
         >
           {typeof data === "string" && data.length > 0 ? (
             (() => {
@@ -307,7 +307,7 @@ const JsonViewer: React.FC<{
                 );
               } catch {
                 return (
-                  <div className="text-red-400 absolute inset-0 backdrop-blur-3xl text-center grid place-content-center gap-2">
+                  <div className="text-red-400 absolute inset-0 backdrop-blur-3xl text-center grid place-content-center gap-2 overflow-hidden">
                     <Icon
                       className="mx-auto"
                       icon="tabler:alien"

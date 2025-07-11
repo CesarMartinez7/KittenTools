@@ -6,6 +6,14 @@ type Props = {
   texto2: string;
 };
 
+
+
+const getCharactersWord = (cadenaOne: string, cadenaTwo: string) => {
+
+  console.log(`La cadena es cadenaText ${cadenaOne} ${cadenaTwo}`)
+
+}
+
 const getWord = (rightLine: string, leftLine: string) => {
   const wordsRight = rightLine.split(" ");
   const wordsLeft = leftLine.split(" ");

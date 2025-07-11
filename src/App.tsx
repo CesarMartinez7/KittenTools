@@ -344,6 +344,14 @@ const App = () => {
                   value={value}
                   
                   onChange={(e) => {
+
+                    if(e.target.value.length === 0){
+                      setValue(null)
+                      return;
+                    }
+
+
+
                     const clean = e.target.value
                       .replace(/\/\//g, "")
                       .replace(/n\//gi, "");
