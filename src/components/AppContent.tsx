@@ -2,7 +2,7 @@
 import ContainerDescripcion from "./DESCRIPCION";
 import ToolBar from "./TOOLBAR.";
 import ContainerTextArea from "./TEXTAREA-EDITOR";
-import ResultadoJsonFormat from "./resultado";
+import ResultadoJsonFormat from "./JSONFORMATER";
 
 type Props = {
   value: string | null | undefined;

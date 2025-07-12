@@ -12,6 +12,7 @@ import { BaseModal } from "./ui/BaseModal";
 import ContainerDescripcion from "./components/DESCRIPCION";
 import ToolBar from "./components/TOOLBAR.";
 import ContainerTextArea from "./components/TEXTAREA-EDITOR";
+import GridLayout from "./pages/GridLayout";
 
 const App = () => {
   const [value, setValue] = useState<string | null | undefined>(
@@ -23,6 +24,7 @@ const App = () => {
   const [isOpenDiff, setIsOpenDiff] = useState<boolean>(false);
   const [isOpenDiffText, setIsOpenDiffText] = useState<boolean>(false);
   const [isDecode, setIsDecode] = useState<boolean>(false);
+  const [showGrid, setShowGrid] = useState(false);
 
   // // Leer datos desde la URL si existen
   // useEffect(() => {
@@ -145,6 +147,26 @@ const App = () => {
 
   return (
     <>
+      {/* Botón toggle layout en fixed */}
+      <button
+        className="fixed top-6 left-6 z-50 flex items-center justify-center gap-2 bg-gradient-to-t from-zinc-900 to-zinc-800 hover:bg-zinc-700 text-zinc-300 px-4 py-2 text-sm rounded-xl shadow-lg transition"
+        onClick={() => setShowGrid((prev) => !prev)}
+        style={{ minWidth: 120 }}
+      >
+        <Icon icon="tabler:layout-grid" width="22" />
+        {showGrid ? "Modo Flex" : "Modo Grid"}
+      </button>
+
+      <button
+        className="fixed top-6 left-40 z-50 flex items-center justify-center gap-2 bg-gradient-to-t from-zinc-900 to-zinc-800 hover:bg-zinc-700 text-zinc-300 px-4 py-2 text-sm rounded-xl shadow-lg transition"
+        onClick={() => setShowGrid((prev) => !prev)}
+        style={{ minWidth: 120 }}
+      >
+        <Icon icon="tabler:layout-grid" width="22" />
+      </button>
+
+
+
       <div className="relative">
         <Aurora
           colorStops={["#27272a", "#4fbed6", "#18181b"]}
@@ -152,28 +174,6 @@ const App = () => {
           amplitude={1.0}
           speed={0.5}
         />
-        {/* Modal para JSON Viewer */}
-        <BaseModal isOpen={openAll} onClose={() => setOpenAll(false)}>
-          <ModalViewerJSON value={value} />
-        </BaseModal>
-
-        {/* Modal para JWT Decode */}
-        <BaseModal isOpen={isDecode} onClose={() => setIsDecode(false)}>
-          <JWTDecode />
-        </BaseModal>
-
-        {/* Modal para Diff Text */}
-        <BaseModal
-          isOpen={isOpenDiffText}
-          onClose={() => setIsOpenDiffText(false)}
-        >
-          <ModalViewer />
-        </BaseModal>
-
-        {/* Modal para JSON Diff */}
-        <BaseModal isOpen={isOpenDiff} onClose={() => setIsOpenDiff(false)}>
-          <JsonDiffLazy />
-        </BaseModal>
         <div className="bg-gradient-to-b from-zinc-950 to-zinc-800/100 text-zinc-200 min-h-screen font-mono">
           <Toaster
             toastOptions={{
@@ -181,58 +181,92 @@ const App = () => {
             }}
           />
           <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-6 min-h-screen p-5">
-            <aside className="w-full lg:w-64 grid gap-5  rounded-2xl">
-              <ToolBar
+            {/* El botón ya está en fixed, así que lo quitamos de aquí */}
+            {/* Layout principal */}
+            {showGrid ? (
+              <GridLayout
+                value={value}
+                setValue={setValue}
+                isValid={isValid}
+                error={error}
+                openAll={openAll}
+                setOpenAll={setOpenAll}
+                isOpenDiff={isOpenDiff}
+                setIsOpenDiff={setIsOpenDiff}
+                isOpenDiffText={isOpenDiffText}
+                setIsOpenDiffText={setIsOpenDiffText}
+                isDecode={isDecode}
+                setIsDecode={setIsDecode}
                 handleClear={handleClear}
                 handleClickCargueJson={handleClickCargueJson}
                 handleClickminifyJson={handleClickminifyJson}
                 handleCopy={handleCopy}
                 handleCopyUrl={handleCopyUrl}
-                isDecode={isDecode}
-                setIsDecode={setIsDecode}
-                isOpenDiff={isOpenDiff}
-                setIsOpenDiff={setIsOpenDiff}
-                setIsOpenDiffText={setIsOpenDiffText}
-                isOpenDiffText={isOpenDiffText}
-                classNameContainer="p-6 shadow-2xl rounded-2xl backdrop-blur"
               />
-
-              <ContainerDescripcion />
-            </aside>
-
-
-
-            <main className="flex-1 space-y-6">
-            <ContainerTextArea value={value} setValue={setValue} />
-              
-
-              <section className="rounded-xl backdrop-blur  shadow-2xl bg-zinc-900/80 p-6 flex flex-col gap-y-3">
-                <div className="p-2 flex justify-between">
-                  <label className="bg-gradient-to-bl from-white to-zinc-600 bg-clip-text text-transparent">
-                    Resultado Formateado
-                  </label>
-                  <div className=" flex justify-center items-center gap-2">
-                    <button
-                      className="text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-400 px-1 py-1 rounded-md transition"
-                      onClick={handleClickOpenModal}
-                    >
-                      <Icon icon="tabler:maximize" width="15" height="15" />
-                    </button>
-                  </div>
-                </div>
-
-                <div className="text-sm whitespace-pre-wrap break-words break-all overflow-auto h-fit">
-                  <JsonViewerLazy
-                    data={value}
-                    isOpen={openAll}
-                    height="20vh"
-                    maxHeight="20vh"
+            ) : (
+              <>
+                <aside className="w-full lg:w-64 grid gap-5 rounded-2xl">
+                  <ToolBar
+                    classContainerButtons="flex flex-col gap-3"
+                    classContainerMain="flex flex-col gap-3"
+                    handleClear={handleClear}
+                    handleClickCargueJson={handleClickCargueJson}
+                    handleClickminifyJson={handleClickminifyJson}
+                    handleCopy={handleCopy}
+                    handleCopyUrl={handleCopyUrl}
+                    isDecode={isDecode}
+                    setIsDecode={setIsDecode}
+                    isOpenDiff={isOpenDiff}
+                    setIsOpenDiff={setIsOpenDiff}
+                    setIsOpenDiffText={setIsOpenDiffText}
+                    isOpenDiffText={isOpenDiffText}
+                    classNameContainer="p-6 shadow-2xl rounded-2xl backdrop-blur"
                   />
-                </div>
-              </section>
-            </main>
+                  <ContainerDescripcion />
+                </aside>
+                <main className="flex-1 space-y-6">
+                  <ContainerTextArea value={value} setValue={setValue} classText="h-78" />
+                  <section className="rounded-xl backdrop-blur shadow-2xl bg-zinc-900/80 p-6 flex flex-col gap-y-3">
+                    <div className="p-2 flex justify-between">
+                      <label className="bg-gradient-to-bl from-white to-zinc-600 bg-clip-text text-transparent">
+                        Resultado Formateado
+                      </label>
+                      <div className="flex justify-center items-center gap-2">
+                        <button
+                          className="text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-400 px-1 py-1 rounded-md transition"
+                          onClick={handleClickOpenModal}
+                        >
+                          <Icon icon="tabler:maximize" width="15" height="15" />
+                        </button>
+                      </div>
+                    </div>
+                    <div className="text-sm whitespace-pre-wrap break-words break-all overflow-auto h-fit">
+                      <JsonViewerLazy
+                        data={value}
+                        isOpen={openAll}
+                        height="20vh"
+                        maxHeight="20vh"
+                      />
+                    </div>
+                  </section>
+                </main>
+              </>
+            )}
           </div>
         </div>
+        {/* Modals */}
+        <BaseModal isOpen={openAll} onClose={() => setOpenAll(false)}>
+          <ModalViewerJSON value={value} />
+        </BaseModal>
+        <BaseModal isOpen={isDecode} onClose={() => setIsDecode(false)}>
+          <JWTDecode />
+        </BaseModal>
+        <BaseModal isOpen={isOpenDiffText} onClose={() => setIsOpenDiffText(false)}>
+          <ModalViewer />
+        </BaseModal>
+        <BaseModal isOpen={isOpenDiff} onClose={() => setIsOpenDiff(false)}>
+          <JsonDiffLazy />
+        </BaseModal>
       </div>
     </>
   );
