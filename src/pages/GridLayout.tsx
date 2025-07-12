@@ -1,6 +1,7 @@
 import React from "react";
 import ContainerDescripcion from "../components/DESCRIPCION";
 import ToolBar from "../components/TOOLBAR.";
+import { motion } from "motion/react";
 import ContainerTextArea from "../components/TEXTAREA-EDITOR";
 import ResultadoJsonFormat from "../components/JSONFORMATER";
 
@@ -65,7 +66,7 @@ const GridLayout: React.FC<GridLayoutExtendedProps> = ({
     handleCopyUrl,
 }) => {
     return (
-        <div
+        <motion.div exit={{ opacity: 0 }}
             className={`grid grid-cols-2 grid-rows-[auto_1fr_auto] gap-4 h-full w-full p-4 max-w-6xl mx-auto ${className}`}
             style={style}
         >
@@ -118,7 +119,7 @@ const GridLayout: React.FC<GridLayoutExtendedProps> = ({
             <div className="col-span-2 row-start-3">
                 <ContainerDescripcion {...descripcionProps} />
             </div>
-        </div>
+        </motion.div>
     );
 };
 

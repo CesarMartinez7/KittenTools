@@ -2,7 +2,6 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import { useEffect, useState } from "react";
 import { JsonViewerLazy } from "./ui/LAZY_COMPONENT";
 import ModalViewerJSON from "./ui/ModalViewer";
-import ReactSVG from "./ui/react";
 import toast, { Toaster } from "react-hot-toast";
 import { JsonDiffLazy } from "./ui/LAZY_COMPONENT";
 import JWTDecode from "./ui/DecodeJWT";
@@ -13,6 +12,8 @@ import ContainerDescripcion from "./components/DESCRIPCION";
 import ToolBar from "./components/TOOLBAR.";
 import ContainerTextArea from "./components/TEXTAREA-EDITOR";
 import GridLayout from "./pages/GridLayout";
+import { AnimatePresence } from "motion/react";
+import { motion } from "motion/react";
 
 const App = () => {
   const [value, setValue] = useState<string | null | undefined>(
@@ -25,6 +26,7 @@ const App = () => {
   const [isOpenDiffText, setIsOpenDiffText] = useState<boolean>(false);
   const [isDecode, setIsDecode] = useState<boolean>(false);
   const [showGrid, setShowGrid] = useState(false);
+  const [showAurora, setShowAurora] = useState<boolean>(true);
 
   // // Leer datos desde la URL si existen
   // useEffect(() => {
@@ -143,6 +145,8 @@ const App = () => {
     } catch {
       toast.error("Error al generar URL compartible");
     }
+    
+    
   };
 
   return (
@@ -150,40 +154,49 @@ const App = () => {
       {/* Botón toggle layout en fixed */}
       <button
         className="fixed top-6 left-6 z-50 flex items-center justify-center gap-2 bg-gradient-to-t from-zinc-900 to-zinc-800 hover:bg-zinc-700 text-zinc-300 px-4 py-2 text-sm rounded-xl shadow-lg transition"
-        onClick={() => setShowGrid((prev) => !prev)}
+        onClick={() => setShowAurora((prev) => !prev)}
         style={{ minWidth: 120 }}
       >
         <Icon icon="tabler:layout-grid" width="22" />
-        {showGrid ? "Modo Flex" : "Modo Grid"}
+        {showAurora ? "Ocultar Aurora" : "Mostrar Aurora"}
       </button>
 
       <button
-        className="fixed top-6 left-40 z-50 flex items-center justify-center gap-2 bg-gradient-to-t from-zinc-900 to-zinc-800 hover:bg-zinc-700 text-zinc-300 px-4 py-2 text-sm rounded-xl shadow-lg transition"
+        className="fixed top-6 left-50 z-50 flex items-center justify-center gap-2 bg-gradient-to-t from-zinc-900 to-zinc-800 hover:bg-zinc-700 text-zinc-300 px-2 py-2 text-sm rounded-xl shadow-lg transition"
         onClick={() => setShowGrid((prev) => !prev)}
-        style={{ minWidth: 120 }}
+        style={{ minWidth: 40 }}
       >
-        <Icon icon="tabler:layout-grid" width="22" />
+        <Icon icon={`tabler:${showGrid ? "layout-grid" : "layout"}`} width="22" />
       </button>
 
-
-
       <div className="relative">
-        <Aurora
-          colorStops={["#27272a", "#4fbed6", "#18181b"]}
-          blend={0.5}
-          amplitude={1.0}
-          speed={0.5}
-        />
+
+
+        {showAurora && (
+          <Aurora
+            colorStops={["#27272a", "#4fbed6", "#18181b"]}
+            blend={0.5}
+            amplitude={1.0}
+            speed={0.5}
+          />
+
+        )}
+        
         <div className="bg-gradient-to-b from-zinc-950 to-zinc-800/100 text-zinc-200 min-h-screen font-mono">
           <Toaster
             toastOptions={{
               className: "bg-zinc-800! text-zinc-400!",
             }}
           />
-          <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-6 min-h-screen p-5">
-            {/* El botón ya está en fixed, así que lo quitamos de aquí */}
-            {/* Layout principal */}
-            {showGrid ? (
+            <AnimatePresence mode="wait">
+            <motion.div
+              className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-6 min-h-screen p-5"
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            >
+              {showGrid ? (
               <GridLayout
                 value={value}
                 setValue={setValue}
@@ -203,65 +216,81 @@ const App = () => {
                 handleCopy={handleCopy}
                 handleCopyUrl={handleCopyUrl}
               />
-            ) : (
+              ) : (
               <>
                 <aside className="w-full lg:w-64 grid gap-5 rounded-2xl">
-                  <ToolBar
-                    classContainerButtons="flex flex-col gap-3"
-                    classContainerMain="flex flex-col gap-3"
-                    handleClear={handleClear}
-                    handleClickCargueJson={handleClickCargueJson}
-                    handleClickminifyJson={handleClickminifyJson}
-                    handleCopy={handleCopy}
-                    handleCopyUrl={handleCopyUrl}
-                    isDecode={isDecode}
-                    setIsDecode={setIsDecode}
-                    isOpenDiff={isOpenDiff}
-                    setIsOpenDiff={setIsOpenDiff}
-                    setIsOpenDiffText={setIsOpenDiffText}
-                    isOpenDiffText={isOpenDiffText}
-                    classNameContainer="p-6 shadow-2xl rounded-2xl backdrop-blur"
-                  />
-                  <ContainerDescripcion />
+                <ToolBar
+                  classContainerButtons="flex flex-col gap-3"
+                  classContainerMain="flex flex-col gap-3"
+                  handleClear={handleClear}
+                  handleClickCargueJson={handleClickCargueJson}
+                  handleClickminifyJson={handleClickminifyJson}
+                  handleCopy={handleCopy}
+                  handleCopyUrl={handleCopyUrl}
+                  isDecode={isDecode}
+                  setIsDecode={setIsDecode}
+                  isOpenDiff={isOpenDiff}
+                  setIsOpenDiff={setIsOpenDiff}
+                  setIsOpenDiffText={setIsOpenDiffText}
+                  isOpenDiffText={isOpenDiffText}
+                  classNameContainer="p-6 shadow-2xl rounded-2xl backdrop-blur"
+                />
+                <ContainerDescripcion />
                 </aside>
                 <main className="flex-1 space-y-6">
-                  <ContainerTextArea value={value} setValue={setValue} classText="h-78" />
-                  <section className="rounded-xl backdrop-blur shadow-2xl bg-zinc-900/80 p-6 flex flex-col gap-y-3">
-                    <div className="p-2 flex justify-between">
-                      <label className="bg-gradient-to-bl from-white to-zinc-600 bg-clip-text text-transparent">
-                        Resultado Formateado
-                      </label>
-                      <div className="flex justify-center items-center gap-2">
-                        <button
-                          className="text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-400 px-1 py-1 rounded-md transition"
-                          onClick={handleClickOpenModal}
-                        >
-                          <Icon icon="tabler:maximize" width="15" height="15" />
-                        </button>
-                      </div>
-                    </div>
-                    <div className="text-sm whitespace-pre-wrap break-words break-all overflow-auto h-fit">
-                      <JsonViewerLazy
-                        data={value}
-                        isOpen={openAll}
-                        height="20vh"
-                        maxHeight="20vh"
-                      />
-                    </div>
-                  </section>
+                <ContainerTextArea
+                  value={value}
+                  setValue={setValue}
+                  classText="h-78"
+                />
+                <section className="rounded-xl backdrop-blur shadow-2xl bg-zinc-900/80 p-6 flex flex-col gap-y-3">
+                  <div className="p-2 flex justify-between">
+                  <label className="bg-gradient-to-bl from-white to-zinc-600 bg-clip-text text-transparent">
+                    Resultado Formateado
+                  </label>
+                  <div className="flex justify-center items-center gap-2">
+                    <button
+                    className="text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-400 px-1 py-1 rounded-md transition"
+                    onClick={handleClickOpenModal}
+                    >
+                    <Icon icon="tabler:maximize" width="15" height="15" />
+                    </button>
+                  </div>
+                  </div>
+                  <div className="text-sm whitespace-pre-wrap break-words break-all overflow-auto h-fit">
+                  <JsonViewerLazy
+                    data={value}
+                    isOpen={openAll}
+                    height="20vh"
+                    maxHeight="20vh"
+                  />
+                  </div>
+                </section>
                 </main>
               </>
-            )}
-          </div>
+              )}
+            </motion.div>
+            </AnimatePresence>
         </div>
-        {/* Modals */}
+        
+
+
+
+
+
+
+
+
         <BaseModal isOpen={openAll} onClose={() => setOpenAll(false)}>
           <ModalViewerJSON value={value} />
         </BaseModal>
         <BaseModal isOpen={isDecode} onClose={() => setIsDecode(false)}>
           <JWTDecode />
         </BaseModal>
-        <BaseModal isOpen={isOpenDiffText} onClose={() => setIsOpenDiffText(false)}>
+        <BaseModal
+          isOpen={isOpenDiffText}
+          onClose={() => setIsOpenDiffText(false)}
+        >
           <ModalViewer />
         </BaseModal>
         <BaseModal isOpen={isOpenDiff} onClose={() => setIsOpenDiff(false)}>
