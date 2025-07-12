@@ -6,8 +6,7 @@ import toast, { Toaster } from "react-hot-toast";
 import useInterfaceGenerator from "../hooks/interface-create";
 import useInterfaceGenerator from "../hooks/interface-create";
 import FormatDataTypeLabel from "./formatDataLabel";
-import { Link } from "react-router";
-import { JsonViewerLazy } from "./LAZY_COMPONENT";
+
 
 const csvConfig = mkConfig({ useKeysAsHeaders: true });
 
@@ -176,49 +175,18 @@ const JsonViewer: React.FC<{
     return result;
   }
 
-  // Copiar en el ClipBoard
-
   // Arreglar esta puta mrd
   const handleClickGenerateCSV = () => {
-    const ourData = [
-      {
-        firstName: "Idorenyin",
-        lastName: "Udoh",
-      },
-      {
-        firstName: "Loyle",
-        lastName: "Carner",
-      },
-      {
-        firstName: "Tamunotekena",
-        lastName: "Dagogo",
-      },
-    ];
+   const csv = generateCsv(csvConfig)(JSON.parse(values as string));
+   if (!csv) {
+      toast.error("No se pudo generar el CSV");
+      return;
+    }
 
-    const titleKeys = Object.keys(ourData[0]);
-    const refinedData = [];
-
-    refinedData.push(titleKeys);
-    ourData.forEach((item) => {
-      refinedData.push(Object.values(item));
-    });
-
-    let csvContent = "";
-
-    refinedData.forEach((row) => {
-      csvContent += row.join(",") + "\n";
-    });
-
-    console.warn(csvContent);
-
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8," });
-    const objUrl = URL.createObjectURL(blob);
-
-    const link = document.createElement("a");
-    link.setAttribute("href", objUrl);
-    link.setAttribute("download", "File.csv");
-    link.textContent = "Click to Download";
+     download(csvConfig)(csv)
   };
+
+  
 
   useEffect(() => {
     const raw = typeof data === "string" ? data : JSON.stringify(data, null, 2);

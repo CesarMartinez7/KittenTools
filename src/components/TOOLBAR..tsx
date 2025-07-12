@@ -2,7 +2,7 @@ import ReactSVG from "../ui/react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
 interface ToolBarProps {
-    classNameContainer: string
+    classNameContainer?: string
     handleClear: () => void,
     handleClickminifyJson: () => void,
     handleCopy: () => void,
@@ -59,7 +59,7 @@ export default function ToolBar ({handleClickminifyJson, isDecode , isOpenDiffTe
             Compartir URL
           </button>
           <button
-            className="w-full flex items-center justify-center gap-2 bg-indigo-400 text-white hover:bg-indigo-500 font-bold px-3 py-2 text-sm rounded-lg transition"
+            className="w-full flex items-center justify-center gap-2 bg-indigo-500 text-white hover:bg-indigo-500 font-bold px-3 py-2 text-sm rounded-lg transition"
             onClick={handleClickCargueJson}
           >
             <Icon icon="mdi:code-block-json" width="20" height="20" />

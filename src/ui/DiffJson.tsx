@@ -18,14 +18,14 @@ export default function JsonDiffViewerModal() {
       setDiffResult(delta as object);
       setError("");
 
-      if(diffResult === undefined) {
-        toast.success("No hay diferencias entre los dos JSON")
+      if (diffResult === undefined) {
+        toast.success("No hay diferencias entre los dos JSON");
       }
 
-      toast.success("Comparando ...")
-      console.log(diffResult)
+      toast.success("Comparando ...");
+      console.log(diffResult);
     } catch {
-        toast.error("JSON invalido")
+      toast.error("JSON invalido");
       setError("JSON inválido 🫠");
       setDiffResult(null);
     }
@@ -37,9 +37,11 @@ export default function JsonDiffViewerModal() {
       animate={{ scale: 1, opacity: 1 }}
       exit={{ scale: 0.95, opacity: 0 }}
       transition={{ duration: 0.2 }}
-      className=" w-5xl  bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-2xl text-sm text-zinc-200 "
+      className=" md:w-5xl w-full bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-2xl text-sm text-zinc-200 "
     >
-        <h2 className="my-2 text-xl font-semibold  text-center bg-gradient-to-bl from-white to-zinc-600 bg-clip-text text-transparent">Comparador JSON</h2>
+      <h2 className="my-2 text-xl font-semibold  text-center bg-gradient-to-bl from-white to-zinc-600 bg-clip-text text-transparent">
+        Comparador JSON
+      </h2>
       <div className="grid md:grid-cols-2 gap-4 ">
         <div className="flex flex-col">
           <label className="mb-1 text-zinc-400 font-medium">JSON #1</label>
@@ -76,7 +78,7 @@ export default function JsonDiffViewerModal() {
       )}
 
       {diffResult && (
-          <JsonViewerLazy data={diffResult} __changed={diffResult} />
+        <JsonViewerLazy data={diffResult} __changed={diffResult} />
       )}
     </motion.div>
   );

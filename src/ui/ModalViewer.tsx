@@ -1,5 +1,5 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { AnimatePresence, motion, scale } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef } from "react";
 import { JsonViewerLazy } from "./LAZY_COMPONENT";
 
@@ -30,6 +30,8 @@ export const overlayVariants = {
 
 const ModalViewerJSON = ({ setOpenAll, openAll, value }: PropsModalViewer) => {
   const handleClickOpenModal = () => {
+    console.log("click");
+    console.log("openAll", openAll);
     setOpenAll(!openAll);
   };
   const modalRef = useRef<HTMLDivElement>(null);
