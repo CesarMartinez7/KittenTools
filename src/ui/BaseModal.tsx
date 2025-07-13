@@ -1,6 +1,5 @@
-import { AnimatePresence } from "motion/react";
-import { motion } from "motion/react";
-
+import { motion, AnimatePresence } from "framer-motion";
+import { Icon } from "@iconify/react/dist/iconify.js";
 interface BaseModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -13,43 +12,39 @@ export const BaseModal = ({ isOpen, onClose, children }: BaseModalProps) => {
     visible: {
       opacity: 1,
       scale: 1,
-      transition: {
-        duration: 0.2,
-        ease: "easeOut",
-      },
+      transition: { duration: 0.2, ease: "easeOut" },
     },
     exit: {
       opacity: 0,
       scale: 0.95,
-      transition: {
-        duration: 0.15,
-        ease: "easeIn",
-      },
+      transition: { duration: 0.15, ease: "easeIn" },
     },
   };
 
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          exit="exit"
-          variants={modalVariants}
-          className="fixed inset-0 z-[887] backdrop-blur-sm  bg-black/70 flex items-center justify-center p-4"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="modal-title"
-        >
-          {/* Fondo clickable para cerrar */}
-          <motion.div
-            className="absolute inset-0"
+        <div className="fixed  pointer-events-none inset-0 z-[887] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+          {/* Botón cerrar fuera del modal */}
+          <button
             onClick={onClose}
-            whileTap={{ backgroundColor: "rgba(0,0,0,0.6)" }}
-          />
+            className="absolute top-4 bg-zinc-900 p-2 rounded-full right-4 text-zinc-300 hover:text-white transition z-[888]"
+            aria-label="Cerrar modal"
+          >
+            <Icon icon="tabler:currency-xrp" width="20" height="20" />
+          </button>
 
-          {children}
-        </motion.div>
+          {/* Modal como estaba */}
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            variants={modalVariants}
+            className="relative z-10 pointer-events-auto"
+          >
+            {children}
+          </motion.div>
+        </div>
       )}
     </AnimatePresence>
   );

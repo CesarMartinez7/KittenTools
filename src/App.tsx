@@ -28,6 +28,11 @@ const App = () => {
   const [showGrid, setShowGrid] = useState(false);
   const [showAurora, setShowAurora] = useState<boolean>(true);
 
+  const handleCloseAll = () => setOpenAll(false);
+  const handleCloseDecode = () => setIsDecode(false);
+  const handleCloseDiffText = () => setIsOpenDiffText(false);
+  const handleCloseDiff = () => setIsOpenDiff(false);
+
   // // Leer datos desde la URL si existen
   // useEffect(() => {
   //   const url = new URL(window.location.href);
@@ -278,19 +283,19 @@ const App = () => {
           </AnimatePresence>
         </div>
 
-        <BaseModal isOpen={openAll} onClose={() => setOpenAll(false)}>
+        <BaseModal isOpen={openAll} onClose={handleCloseAll}>
           <ModalViewerJSON value={value} />
         </BaseModal>
-        <BaseModal isOpen={isDecode} onClose={() => setIsDecode(false)}>
+
+        <BaseModal isOpen={isDecode} onClose={handleCloseDecode}>
           <JWTDecode />
         </BaseModal>
-        <BaseModal
-          isOpen={isOpenDiffText}
-          onClose={() => setIsOpenDiffText(false)}
-        >
+
+        <BaseModal isOpen={isOpenDiffText} onClose={handleCloseDiffText}>
           <ModalViewer />
         </BaseModal>
-        <BaseModal isOpen={isOpenDiff} onClose={() => setIsOpenDiff(false)}>
+
+        <BaseModal isOpen={isOpenDiff} onClose={handleCloseDiff}>
           <JsonDiffLazy />
         </BaseModal>
       </div>
