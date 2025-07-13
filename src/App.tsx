@@ -160,7 +160,7 @@ const App = () => {
       </button>
 
       <button
-        className="fixed top-6 left-50 z-50 flex items-center justify-center gap-2 bg-gradient-to-t from-zinc-900 to-zinc-800 hover:bg-zinc-700 text-zinc-300 px-2 py-2 text-sm rounded-xl shadow-lg transition"
+        className="fixed top-6 left-53 z-50 flex items-center justify-center gap-2 bg-gradient-to-t from-zinc-900 to-zinc-800 hover:bg-zinc-700 text-zinc-300 px-2 py-2 text-sm rounded-xl shadow-lg transition"
         onClick={() => setShowGrid((prev) => !prev)}
         style={{ minWidth: 40 }}
       >
