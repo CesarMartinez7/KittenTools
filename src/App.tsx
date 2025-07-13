@@ -1,5 +1,5 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { JsonViewerLazy } from "./ui/LAZY_COMPONENT";
 import ModalViewerJSON from "./ui/ModalViewer";
 import toast, { Toaster } from "react-hot-toast";
@@ -17,7 +17,7 @@ import { motion } from "motion/react";
 
 const App = () => {
   const [value, setValue] = useState<string | null | undefined>(
-    localStorage.getItem("jsonData") || null,
+    localStorage.getItem("jsonData") || " ",
   );
   const [isValid, setIsValid] = useState(true);
   const [error, setErrorMessage] = useState("");
@@ -73,7 +73,7 @@ const App = () => {
       toast.error("No hay nada que limpiar.");
       return;
     }
-    setValue(null);
+    setValue("");
     localStorage.removeItem("jsonData");
     toast.success("Limpiado exitosamente.");
   };
@@ -111,6 +111,8 @@ const App = () => {
       toast.error("JSON inválido para minificar");
     }
   };
+
+
 
   const handleCopy = () => {
     if (value.length > 0) {
@@ -157,7 +159,7 @@ const App = () => {
         onClick={() => setShowAurora((prev) => !prev)}
         style={{ minWidth: 120 }}
       >
-        <Icon icon="tabler:layout-grid" width="22" />
+        <Icon icon="tabler:beer" width="24" height="24" />
         {showAurora ? "Ocultar Aurora" : "Mostrar Aurora"}
       </button>
 
@@ -218,7 +220,7 @@ const App = () => {
               />
               ) : (
               <>
-                <aside className="w-full lg:w-64 grid gap-5 rounded-2xl">
+                <motion.aside exit={{scale: 0}} className="w-full lg:w-64 grid gap-5 rounded-2xl">
                 <ToolBar
                   classContainerButtons="flex flex-col gap-3"
                   classContainerMain="flex flex-col gap-3"
@@ -236,7 +238,7 @@ const App = () => {
                   classNameContainer="p-6 shadow-2xl rounded-2xl backdrop-blur"
                 />
                 <ContainerDescripcion />
-                </aside>
+                </motion.aside>
                 <main className="flex-1 space-y-6">
                 <ContainerTextArea
                   value={value}
@@ -258,6 +260,7 @@ const App = () => {
                   </div>
                   </div>
                   <div className="text-sm whitespace-pre-wrap break-words break-all overflow-auto h-fit">
+                    
                   <JsonViewerLazy
                     data={value}
                     isOpen={openAll}
