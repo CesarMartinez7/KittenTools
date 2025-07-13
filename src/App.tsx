@@ -112,8 +112,6 @@ const App = () => {
     }
   };
 
-
-
   const handleCopy = () => {
     if (value.length > 0) {
       try {
@@ -147,8 +145,6 @@ const App = () => {
     } catch {
       toast.error("Error al generar URL compartible");
     }
-    
-    
   };
 
   return (
@@ -168,12 +164,13 @@ const App = () => {
         onClick={() => setShowGrid((prev) => !prev)}
         style={{ minWidth: 40 }}
       >
-        <Icon icon={`tabler:${showGrid ? "layout-grid" : "layout"}`} width="22" />
+        <Icon
+          icon={`tabler:${showGrid ? "layout-grid" : "layout"}`}
+          width="22"
+        />
       </button>
 
       <div className="relative">
-
-
         {showAurora && (
           <Aurora
             colorStops={["#27272a", "#4fbed6", "#18181b"]}
@@ -181,16 +178,15 @@ const App = () => {
             amplitude={1.0}
             speed={0.5}
           />
-
         )}
-        
+
         <div className="bg-gradient-to-b from-zinc-950 to-zinc-800/100 text-zinc-200 min-h-screen font-mono">
           <Toaster
             toastOptions={{
               className: "bg-zinc-800! text-zinc-400!",
             }}
           />
-            <AnimatePresence mode="wait">
+          <AnimatePresence mode="wait">
             <motion.div
               className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-6 min-h-screen p-5"
               initial={{ scale: 0.95, opacity: 0 }}
@@ -199,90 +195,88 @@ const App = () => {
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
             >
               {showGrid ? (
-              <GridLayout
-                value={value}
-                setValue={setValue}
-                isValid={isValid}
-                error={error}
-                openAll={openAll}
-                setOpenAll={setOpenAll}
-                isOpenDiff={isOpenDiff}
-                setIsOpenDiff={setIsOpenDiff}
-                isOpenDiffText={isOpenDiffText}
-                setIsOpenDiffText={setIsOpenDiffText}
-                isDecode={isDecode}
-                setIsDecode={setIsDecode}
-                handleClear={handleClear}
-                handleClickCargueJson={handleClickCargueJson}
-                handleClickminifyJson={handleClickminifyJson}
-                handleCopy={handleCopy}
-                handleCopyUrl={handleCopyUrl}
-              />
-              ) : (
-              <>
-                <motion.aside exit={{scale: 0}} className="w-full lg:w-64 grid gap-5 rounded-2xl">
-                <ToolBar
-                  classContainerButtons="flex flex-col gap-3"
-                  classContainerMain="flex flex-col gap-3"
+                <GridLayout
+                  value={value}
+                  setValue={setValue}
+                  isValid={isValid}
+                  error={error}
+                  openAll={openAll}
+                  setOpenAll={setOpenAll}
+                  isOpenDiff={isOpenDiff}
+                  setIsOpenDiff={setIsOpenDiff}
+                  isOpenDiffText={isOpenDiffText}
+                  setIsOpenDiffText={setIsOpenDiffText}
+                  isDecode={isDecode}
+                  setIsDecode={setIsDecode}
                   handleClear={handleClear}
                   handleClickCargueJson={handleClickCargueJson}
                   handleClickminifyJson={handleClickminifyJson}
                   handleCopy={handleCopy}
                   handleCopyUrl={handleCopyUrl}
-                  isDecode={isDecode}
-                  setIsDecode={setIsDecode}
-                  isOpenDiff={isOpenDiff}
-                  setIsOpenDiff={setIsOpenDiff}
-                  setIsOpenDiffText={setIsOpenDiffText}
-                  isOpenDiffText={isOpenDiffText}
-                  classNameContainer="p-6 shadow-2xl rounded-2xl backdrop-blur"
                 />
-                <ContainerDescripcion />
-                </motion.aside>
-                <main className="flex-1 space-y-6">
-                <ContainerTextArea
-                  value={value}
-                  setValue={setValue}
-                  classText="h-78"
-                />
-                <section className="rounded-xl backdrop-blur shadow-2xl bg-zinc-900/80 p-6 flex flex-col gap-y-3">
-                  <div className="p-2 flex justify-between">
-                  <label className="bg-gradient-to-bl from-white to-zinc-600 bg-clip-text text-transparent">
-                    Resultado Formateado
-                  </label>
-                  <div className="flex justify-center items-center gap-2">
-                    <button
-                    className="text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-400 px-1 py-1 rounded-md transition"
-                    onClick={handleClickOpenModal}
-                    >
-                    <Icon icon="tabler:maximize" width="15" height="15" />
-                    </button>
-                  </div>
-                  </div>
-                  <div className="text-sm whitespace-pre-wrap break-words break-all overflow-auto h-fit">
-                    
-                  <JsonViewerLazy
-                    data={value}
-                    isOpen={openAll}
-                    height="20vh"
-                    maxHeight="20vh"
-                  />
-                  </div>
-                </section>
-                </main>
-              </>
+              ) : (
+                <>
+                  <motion.aside
+                    exit={{ scale: 0 }}
+                    className="w-full lg:w-64 grid gap-5 rounded-2xl"
+                  >
+                    <ToolBar
+                      classContainerButtons="flex flex-col gap-3"
+                      classContainerMain="flex flex-col gap-3"
+                      handleClear={handleClear}
+                      handleClickCargueJson={handleClickCargueJson}
+                      handleClickminifyJson={handleClickminifyJson}
+                      handleCopy={handleCopy}
+                      handleCopyUrl={handleCopyUrl}
+                      isDecode={isDecode}
+                      setIsDecode={setIsDecode}
+                      isOpenDiff={isOpenDiff}
+                      setIsOpenDiff={setIsOpenDiff}
+                      setIsOpenDiffText={setIsOpenDiffText}
+                      isOpenDiffText={isOpenDiffText}
+                      classNameContainer="p-6 shadow-2xl rounded-2xl backdrop-blur"
+                    />
+                    <ContainerDescripcion />
+                  </motion.aside>
+                  <main className="flex-1 space-y-6">
+                    <ContainerTextArea
+                      value={value}
+                      setValue={setValue}
+                      classText="h-78"
+                    />
+                    <section className="rounded-xl backdrop-blur shadow-2xl bg-zinc-900/80 p-6 flex flex-col gap-y-3">
+                      <div className="p-2 flex justify-between">
+                        <label className="bg-gradient-to-bl from-white to-zinc-600 bg-clip-text text-transparent">
+                          Resultado Formateado
+                        </label>
+                        <div className="flex justify-center items-center gap-2">
+                          <button
+                            className="text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-400 px-1 py-1 rounded-md transition"
+                            onClick={handleClickOpenModal}
+                          >
+                            <Icon
+                              icon="tabler:maximize"
+                              width="15"
+                              height="15"
+                            />
+                          </button>
+                        </div>
+                      </div>
+                      <div className="text-sm whitespace-pre-wrap break-words break-all overflow-auto h-fit">
+                        <JsonViewerLazy
+                          data={value}
+                          isOpen={openAll}
+                          height="20vh"
+                          maxHeight="20vh"
+                        />
+                      </div>
+                    </section>
+                  </main>
+                </>
               )}
             </motion.div>
-            </AnimatePresence>
+          </AnimatePresence>
         </div>
-        
-
-
-
-
-
-
-
 
         <BaseModal isOpen={openAll} onClose={() => setOpenAll(false)}>
           <ModalViewerJSON value={value} />
