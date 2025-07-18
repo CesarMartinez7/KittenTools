@@ -33,33 +33,6 @@ const App = () => {
   const handleCloseDiffText = () => setIsOpenDiffText(false);
   const handleCloseDiff = () => setIsOpenDiff(false);
 
-  // // Leer datos desde la URL si existennull null
-  //   const dataQuery = url.searchParams.get("jsdata");
-
-  //   if (dataQuery) {
-  //     try {
-  //       const decoded = decodeURIComponent(escape(atob(dataQuery)));
-  //       setShareUrl(decoded);
-  //       setValue(decoded);
-  //       console.log("Datos recuperados de la URL:", decoded);
-  //     } catch (err) {
-  //       toast.error(" Ereror al decodificar el JSON desde la URL");
-  //       console.error(" dError al decodificar:", err);
-  //     }
-  //   }
-  // }, []);
-
-  // // Actualizar la URL cuando cambia el valor
-  // useEffect(() => {
-  //   if (!value) return;
-
-  //   const url = new URL(window.location.href);
-  //   const encoded = btoa(unescape(encodeURIComponent(value)));
-  //   url.searchParams.set("jsdata", encoded);
-  //   window.history.replaceState({}, "", url);
-  // }, [value]);
-
-  // Validar el JSON
   useEffect(() => {
     try {
       JSON.parse(value);
