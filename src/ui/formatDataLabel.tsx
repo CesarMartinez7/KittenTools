@@ -18,11 +18,11 @@ const FormatDataTypeLabel = ({ data }: { data: JsonValue }) => {
     return (
       <span
         className="text-cyan-400 hover:text-emerald-300 hover:text-shadow-xs transition-all duration-500"
-        title="Click para expandir"
+        title="Abreme que soy la tengo muy larga 😈"
         onClick={() => setCollapsedLabel(false)}
       >
         &quot;{String(data.slice(0, 50).concat("..."))}&quot;{""}
-        <b className="text-[9px] p-1 rounded-md text-zinc-200 bg-gradient-to-t from-zinc-900 to-zinc-700">
+        &quot;<b className="text-[9px] p-1 rounded-md text-zinc-200 bg-gradient-to-t from-zinc-900 to-zinc-700">
           {typeof data}
         </b>{" "}
       </span>
@@ -34,7 +34,6 @@ const FormatDataTypeLabel = ({ data }: { data: JsonValue }) => {
       <span
         className="text-green-400 hover:text-emerald-300 hover:text-shadow-xs transition-all duration-500"
         title="Click para expandir"
-        onClick={() => alert("Dbo cerrar")}
       >
         &quot;{String(data)}&quot;{""}
         <b className="text-[9px] p-1 rounded-md text-zinc-200 bg-gradient-to-t from-zinc-900 to-zinc-700">
@@ -67,8 +66,8 @@ const FormatDataTypeLabel = ({ data }: { data: JsonValue }) => {
   }
 
   return (
-    <span className="text-green-400 hover:text-zinc-300" onClick={() => setCollapsedLabel(true) }>
-      {String(data)}{" "}
+    <span className="text-green-400 hover:text-green-500" onClick={() => setCollapsedLabel(true) }>
+      &quot;{String(data)}&quot;
       <b className="text-[9px] p-1 rounded-md text-zinc-200 bg-gradient-to-t from-zinc-900 to-zinc-700">
         {typeof data}
       </b>{" "}

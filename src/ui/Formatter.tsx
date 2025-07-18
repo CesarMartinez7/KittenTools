@@ -4,7 +4,6 @@ import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import useInterfaceGenerator from "../hooks/interface-create";
-import useInterfaceGenerator from "../hooks/interface-create";
 import FormatDataTypeLabel from "./formatDataLabel";
 
 const csvConfig = mkConfig({ useKeysAsHeaders: true });
@@ -68,8 +67,8 @@ const JsonNode: React.FC<JsonNodeProps> = ({
             <div className="ml-4 mt-1 space-y-1">
               {isArray
                 ? (data as JsonArray).map((item, i) => (
-                    <>
-                      <div className="flex relative gap- " key={i}>
+                    <span key={i}>
+                      <div className="flex relative " key={i}>
                         <JsonNode
                           __Changed={__Changed}
                           INDENT={INDENT}
@@ -83,7 +82,7 @@ const JsonNode: React.FC<JsonNodeProps> = ({
                       <span className="text-zinc-400" onClick={toggle}>
                         {i + 1 === data.length ? "]" : ""}
                       </span>
-                    </>
+                    </span>
                   ))
                 : Object.entries(data as JsonObject).map(([key, val], idx) => (
                     <>
@@ -126,26 +125,35 @@ const JsonViewer: React.FC<{
   height: string;
   maxHeight: string;
   __changed: object;
-}> = ({
-  data,
-  isOpen,
-  height = "20vh",
-  maxHeight = "44vh",
-  __changed,
-  isOpenModal,
-  setIsOpenModal,
-}) => {
+}> = ({ data, isOpen, height = "20vh", maxHeight = "44vh", __changed }) => {
   const [size, setSize] = useState<string>("0.00 KB");
   const { generateInterfaceFromJson } = useInterfaceGenerator();
 
   const viewerRef = useRef<HTMLDivElement>(null);
 
   const [isOpenJsonViewer, setIsOpenJsonViewer] = useState<boolean>(true);
-  // const [isOpenCsvViewer, setIsOpenCsvViewer] = useState<boolean>(true)
   const [INDENT, setIdent] = useState<number>(1);
   const [interfaceGen, setInterfaceGen] = useState<any>();
-  const [Interfaces, setInterfaces] = useState<unknown[]>();
+  // const [Interfaces, setInterfaces] = useState<unknown[]>();
   const [values, setValue] = useState<JsonValue>(data);
+
+  const handleClickSummary = () => {
+    if(INDENT >= 10) {
+      toast.error("No se puede aumentar el identado a mas de 10 espacios para no romper la vista");
+      return;
+    }
+    setIdent((prev) => prev + 1);
+  };
+  const handleClickRest = () => {
+    setIdent((prev) => {
+      if (prev > 5) {
+        return prev - 1;
+        toast.error("No se puede reducir más el indentado");
+      } else {
+        return prev;
+      }
+    });
+  };
 
   function generateJsonInterface(obj: any) {
     const result = {};
@@ -185,7 +193,6 @@ const JsonViewer: React.FC<{
     toast.success("CSV generado correctamente");
   };
 
-
   // Recalcular el size del json o la data
 
   useEffect(() => {
@@ -196,7 +203,7 @@ const JsonViewer: React.FC<{
 
   return (
     <div
-      className={` flex flex-col backdrop-blur-2xl text-zinc-400 border border-zinc-800  overflow-hidden shadow-xl rounded-xl`}
+      className={` flex flex-col backdrop-blur-2xl text-zinc-400 border border-zinc-800 min-w-6xl  overflow-hidden shadow-xl rounded-xl`}
     >
       <div className="flex gap-2 py-2 px-4 items-center justify-between border-b border-zinc-800 rounded-t-xl ">
         <div className="flex gap-2">
@@ -228,23 +235,13 @@ const JsonViewer: React.FC<{
         <div className="flex gap-1">
           <button
             className="px-2 py-1 rounded-lg text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2"
-            onClick={() => {
-              setIdent((prev) => prev + 1);
-            }}
+            onClick={handleClickSummary}
           >
             +
           </button>
           <button
             className="px-2 py-1 rounded-lg text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2"
-            onClick={() => {
-              setIdent((prev) => {
-                if (prev > 5) {
-                  return prev - 1;
-                } else {
-                  return prev;
-                }
-              });
-            }}
+            onClick={handleClickRest}
           >
             -
           </button>

@@ -99,7 +99,6 @@ const App = () => {
         reader.readAsText(file);
       }
     };
-
     input.click();
   };
 
