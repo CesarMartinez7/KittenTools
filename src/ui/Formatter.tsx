@@ -96,7 +96,7 @@ const JsonNode: React.FC<JsonNodeProps> = ({
                         depth={depth + 1}
                       />
 
-                      <span className="text-zinc-400">
+                      <span className="text-zinc-300">
                         {Object.entries(data as JsonObject).length === idx + 1
                           ? "}"
                           : ""}
@@ -108,8 +108,6 @@ const JsonNode: React.FC<JsonNodeProps> = ({
         </>
       ) : (
         <>
-          {/* {__Changed !== null &&
-            Object.keys(__Changed).map((val) => <li key={val}>{val}</li>)} */}
           <FormatDataTypeLabel data={data} />
         </>
       )}
@@ -205,7 +203,7 @@ const JsonViewer: React.FC<{
 
   return (
     <div
-      className={` flex flex-col backdrop-blur-2xl text-zinc-400 border border-zinc-800 overflow-hidden shadow-xl rounded-xl`}
+      className={` flex flex-col backdrop-blur-2xl text-zinc-400 border border-zinc-800 overflow-hidden shadow-xl rounded-xl `}
     >
       <div className="flex gap-2 py-2 px-4 items-center justify-between border-b border-zinc-800 rounded-t-xl ">
         <div className="flex gap-2">

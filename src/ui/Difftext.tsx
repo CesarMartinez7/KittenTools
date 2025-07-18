@@ -128,7 +128,7 @@ export const ModalViewer = () => {
         <h3 className="text-zinc-200 text-center text-lg gradient-text  font-bold">
           Comparar Texto
         </h3>
-        <div className="grid gap-5 md:grid-cols-2 w-full max-w-6xl">
+        <div className="grid gap-5 md:grid-cols-2 w-full md:w-6xl max-w-6xl">
           <div>
             <p># 1 Texto</p>
             <textarea

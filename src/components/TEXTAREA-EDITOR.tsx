@@ -38,17 +38,6 @@ export default function ContainerTextArea({
       if (e.ctrlKey && e.key === "b") {
         e.preventDefault();
         setIsOpenBar((prev) => !prev);
-        toast.success("Toggle con Ctrl + B");
-      }
-
-      if (e.ctrlKey && e.key === "i") {
-        e.preventDefault();
-        if (value) {
-          localStorage.setItem("jsonData", value);
-          toast.success("Guardado con Ctrl + I");
-        } else {
-          toast.error("No hay contenido para guardar");
-        }
       }
     };
 
@@ -57,7 +46,7 @@ export default function ContainerTextArea({
     return () => {
       window.removeEventListener("keydown", handleGlobalKeyDown);
     };
-  }, [value]); // Escucha cambios en value para poder guardar
+  }, []); // Escucha cambios en value para poder guardar
 
   const handleChangeTextArea = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (e.target.value.length === 0) {
@@ -70,7 +59,7 @@ export default function ContainerTextArea({
       JSON.parse(clean);
       localStorage.setItem("jsonData", clean);
     } catch {
-      toast.error("JSON inválido, no se guardará en el localStorage");
+      console.log("kjsdfkjdsf");
     }
   };
 
@@ -84,14 +73,14 @@ export default function ContainerTextArea({
         Editor JSON
       </label>
 
-      <div className="relative p-2 h-full">
+      <div className="relative p-2 h-full ">
         <AnimatePresence mode="wait">
           {isOpenBar && (
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="backdrop-blur-3xl bg-zinc-900/35 border border-zinc-800 p-2 flex flex-col w-32 gap-1 rounded absolute right-4"
+              className="backdrop-blur-3xl bg-zinc-900/35 border border-zinc-800 p-2 flex flex-col w-42 shadow-xl shadow-zinc-800 gap-1 rounded absolute right-4"
             >
               <input
                 ref={inputRefTextOld}
@@ -106,7 +95,7 @@ export default function ContainerTextArea({
                 placeholder="Valor Remplazado"
               />
               <button
-                className="bg-cyan-700 p-1 rounded-md"
+                className="bg-gradient-to-r from-green-400 to-green-900  p-1 rounded-md"
                 onClick={handleCLickReplaceText}
               >
                 Remplazar

@@ -137,7 +137,7 @@ const App = () => {
       </button>
 
       <button
-        className="fixed top-6 left-46 z-50 flex items-center justify-center gap-2 bg-gradient-to-t from-zinc-900 to-zinc-800 hover:bg-zinc-700 text-zinc-300 px-2 py-2 text-sm rounded-xl shadow-lg transition"
+        className="fixed top-6 left-54 z-50 flex items-center justify-center gap-2 bg-gradient-to-t from-zinc-900 to-zinc-800 hover:bg-zinc-700 text-zinc-300 px-2 py-2 text-sm rounded-xl shadow-lg transition"
         onClick={() => setShowGrid((prev) => !prev)}
         style={{ minWidth: 40 }}
       >
@@ -165,7 +165,7 @@ const App = () => {
           />
           <AnimatePresence mode="wait">
             <motion.div
-              className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-6 min-h-screen p-5"
+              className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-6 min-h-screen p-5"
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
