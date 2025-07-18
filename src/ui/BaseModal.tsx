@@ -24,7 +24,7 @@ export const BaseModal = ({ isOpen, onClose, children }: BaseModalProps) => {
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed  pointer-events-none inset-0 z-[887] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+        <div className="fixed  inset-0 z-[887] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
           {/* Botón cerrar fuera del modal */}
           <button
             onClick={onClose}

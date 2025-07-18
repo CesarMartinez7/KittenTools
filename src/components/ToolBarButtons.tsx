@@ -58,7 +58,7 @@ export default function ToolbarButtons({
         Compartir URL
       </button>
       <button
-        className="w-full flex items-center justify-center gap-2 bg-indigo-500 text-white hover:bg-indigo-500 font-bold px-3 py-2 text-sm rounded-lg transition h-[40px]"
+        className="w-full flex items-center justify-center gap-2 bg-emerald-500 bg-gradient-to-t from-indigo-700 to-indigo-500 text-white  font-bold px-3 py-2 text-sm rounded-lg transition h-[40px]"
         onClick={handleClickCargueJson}
       >
         <Icon icon="mdi:code-block-json" width="20" height="20" />
