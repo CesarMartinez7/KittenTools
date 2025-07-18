@@ -16,8 +16,13 @@ export default function ContainerTextArea({
 }: ContainerArea) {
   const [textToReplace, setTextToReplace] = useState<string>("");
   const [textoReplace, setTextReplace] = useState<string>("");
-  const [isOpenBar, setIsOpenBar] = useState<boolean>(false);
+
+  // Valor a remplazar
+  const inputRefTextOld = useRef<HTMLInputElement>(null);
+  const inputRefTextNew = useRef<HTMLInputElement>(null);
   const refSection = useRef<HTMLDivElement>(null);
+
+  const [isOpenBar, setIsOpenBar] = useState<boolean>(false);
 
   useEffect(() => {
     console.log("Replazados");
@@ -25,6 +30,14 @@ export default function ContainerTextArea({
   }, [textoReplace, textoReplace]);
 
   const handleCLickReplaceText = () => {
+    setTextToReplace(inputRefTextOld.current?.value || "");
+    setTextReplace(inputRefTextNew.current?.value || "");
+
+    console.warn(
+      `Valor a remplazar ${textToReplace} valor nuevo remplazado ${textoReplace}`,
+    );
+
+    setValue(value?.replaceAll(textToReplace, textoReplace));
     console.log(value?.replaceAll(textToReplace, textToReplace));
   };
 
@@ -93,12 +106,17 @@ export default function ContainerTextArea({
               className="backdrop-blur-3xl bg-zinc-900/35 border border-zinc-800 p-2 flex flex-col w-32 gap-1 rounded absolute right-4"
             >
               <input
+                ref={inputRefTextOld}
                 type="text"
                 tabIndex={0}
                 title="Valor a buscar"
                 placeholder="Valor a buscar"
               />
-              <input type="text" placeholder="Valor Remplazado" />
+              <input
+                ref={inputRefTextNew}
+                type="text"
+                placeholder="Valor Remplazado"
+              />
               <button
                 className="bg-cyan-700 p-1 rounded-md"
                 onClick={handleCLickReplaceText}
