@@ -258,7 +258,7 @@ const App = () => {
         <BaseModal isOpen={openViewerJsonFull} onClose={handleCloseAll}>
           <JsonViewerLazy
             maxHeight="70vh"
-            height="50vh"
+            height="60vh"
             data={value}
             isOpen={openViewerJsonFull}
           />

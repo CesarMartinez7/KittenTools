@@ -2,7 +2,7 @@ import { Icon } from "@iconify/react";
 import { download, generateCsv, mkConfig } from "export-to-csv";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import useInterfaceGenerator from "../hooks/interface-create";
 import FormatDataTypeLabel from "./formatDataLabel";
 
@@ -205,7 +205,7 @@ const JsonViewer: React.FC<{
 
   return (
     <div
-      className={` flex flex-col backdrop-blur-2xl text-zinc-400 border border-zinc-800   overflow-hidden shadow-xl rounded-xl`}
+      className={` flex flex-col backdrop-blur-2xl text-zinc-400 border border-zinc-800 overflow-hidden shadow-xl rounded-xl`}
     >
       <div className="flex gap-2 py-2 px-4 items-center justify-between border-b border-zinc-800 rounded-t-xl ">
         <div className="flex gap-2">
