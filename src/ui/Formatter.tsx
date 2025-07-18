@@ -147,8 +147,8 @@ const JsonViewer: React.FC<{
   const handleClickRest = () => {
     setIdent((prev) => {
       if (prev > 5) {
-        return prev - 1;
         toast.error("No se puede reducir más el indentado");
+        return prev - 1;
       } else {
         return prev;
       }
