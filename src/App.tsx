@@ -193,7 +193,7 @@ const App = () => {
           />
           <AnimatePresence mode="wait">
             <motion.div
-              className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-6 min-h-screen p-5"
+              className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-6 min-h-screen p-5"
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
