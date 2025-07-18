@@ -1,154 +1,95 @@
-@import 'tailwindcss';
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+@import "tailwindcss";
 
-
-
-.ibm-plex-mono-thin {
-  font-family: 'IBM Plex Mono', monospace;
-  font-weight: 100;
+@font-face {
+  font-family: RedHat;
+  src: url("./assets/fonts/RedHatText-Light.ttf") format("truetype");
+  font-weight: 300;
   font-style: normal;
 }
 
+@font-face {
+  font-family: RedHat;
+  src: url("./assets/fonts/RedHatText-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: RedHat;
+  src: url("./assets/fonts/RedHatText-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: RedHat;
+  src: url("./assets/fonts/RedHatText-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: RedHat;
+  src: url("./assets/fonts/RedHatText-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+}
+
+body {
+  font-family: monospace;
+}
 
 :root {
-  @apply bg-zinc-800
+  @apply bg-zinc-800;
 }
-
-
 
 .gradient-black-btn {
-  @apply w-full flex items-center justify-center gap-2 bg-gradient-to-t from-zinc-900 to-zinc-800 hover:bg-zinc-700 text-zinc-300 px-3 py-2 text-sm rounded-lg transition
+  @apply w-full flex items-center justify-center gap-2 bg-gradient-to-t from-zinc-900 to-zinc-800 hover:bg-zinc-700 text-zinc-300 px-3 py-2 text-sm rounded-lg transition;
 }
 
-textarea{
-  @apply  w-full  resize-none rounded-lg border border-zinc-800 p-3 text-sm font-mono text-zinc-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition
+textarea {
+  @apply w-full  resize-none rounded-lg border border-zinc-800 p-3 text-sm  text-zinc-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition;
 }
 
-body{
-  @apply bg-gradient-to-b from-zinc-950 to-zinc-800/100 text-zinc-200 min-h-screen font-mono
+body {
+  @apply bg-gradient-to-b from-zinc-950 to-zinc-800/100 text-zinc-200 min-h-screen;
 }
 
-
-.fade-out{
+.fade-out {
   animation-name: fade-animation;
   animation-duration: 100ms;
   animation-timing-function: inherit;
 }
 
-
 @keyframes fade-animation {
-  0%{
+  0% {
     background-color: red;
   }
-  100%{
+  100% {
     background-color: none;
   }
 }
 
-.btn-icon  {
-  @apply p-1 text-xs bg-zinc-800 rounded-lg text-xs hover:bg-zinc-900 transition-colors
+.btn-icon {
+  @apply p-1 text-xs bg-zinc-800 rounded-lg text-xs hover:bg-zinc-900 transition-colors;
 }
-
-.ibm-plex-mono-extralight {
-  font-family: 'IBM Plex Mono', monospace;
-  font-weight: 200;
-  font-style: normal;
-}
-
-.ibm-plex-mono-light {
-  font-family: 'IBM Plex Mono', monospace;
-  font-weight: 300;
-  font-style: normal;
-}
-
-.ibm-plex-mono-regular {
-  font-family: 'IBM Plex Mono', monospace;
-  font-weight: 400;
-  font-style: normal;
-}
-
-.ibm-plex-mono-medium {
-  font-family: 'IBM Plex Mono', monospace;
-  font-weight: 500;
-  font-style: normal;
-}
-
-.ibm-plex-mono-semibold {
-  font-family: 'IBM Plex Mono', monospace;
-  font-weight: 600;
-  font-style: normal;
-}
-
-.ibm-plex-mono-bold {
-  font-family: 'IBM Plex Mono', monospace;
-  font-weight: 700;
-  font-style: normal;
-}
-
-.ibm-plex-mono-thin-italic {
-  font-family: 'IBM Plex Mono', monospace;
-  font-weight: 100;
-  font-style: italic;
-}
-
-.ibm-plex-mono-extralight-italic {
-  font-family: 'IBM Plex Mono', monospace;
-  font-weight: 200;
-  font-style: italic;
-}
-
-.ibm-plex-mono-light-italic {
-  font-family: 'IBM Plex Mono', monospace;
-  font-weight: 300;
-  font-style: italic;
-}
-;
-.ibm-plex-mono-regular-italic {
-  font-family: 'IBM Plex Mono', monospace;
-  font-weight: 400;
-  font-style: italic;
-};
-
-.ibm-plex-mono-medium-italic {
-  font-family: 'IBM Plex Mono', monospace;
-  font-weight: 500;
-  font-style: italic;
-};
 
 .gradient-text {
-  @apply  bg-gradient-to-bl from-white to-zinc-600 bg-clip-text text-transparent
-};
+  @apply bg-gradient-to-bl from-white to-zinc-600 bg-clip-text text-transparent;
+}
 
-::selection{
-  @apply bg-zinc-700 text-zinc-500
+::selection {
+  @apply bg-zinc-700 text-zinc-500;
 }
 
 button {
-  @apply cursor-pointer
-}
-
-.ibm-plex-mono-semibold-italic {
-  font-family: 'IBM Plex Mono', monospace;
-  font-weight: 600;
-  font-style: italic;
-}
-
-.ibm-plex-mono-bold-italic {
-  font-family: 'IBM Plex Mono', monospace;
-  font-weight: 700;
-  font-style: italic;
-}
-
-body {
-  --sb-track-color: #29292d;
-  --sb-thumb-color: #353550;
-  --sb-size: 8px;
+  @apply cursor-pointer;
 }
 
 /* ===== Scrollbar CSS ===== */
 /* Firefox */
 * {
-  scrollbar-width:thin;
+  scrollbar-width: thin;
   scrollbar-color: #585758 #2a2a2a;
 }
 

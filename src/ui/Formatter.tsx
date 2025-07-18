@@ -138,8 +138,10 @@ const JsonViewer: React.FC<{
   const [values, setValue] = useState<JsonValue>(data);
 
   const handleClickSummary = () => {
-    if(INDENT >= 10) {
-      toast.error("No se puede aumentar el identado a mas de 10 espacios para no romper la vista");
+    if (INDENT >= 10) {
+      toast.error(
+        "No se puede aumentar el identado a mas de 10 espacios para no romper la vista",
+      );
       return;
     }
     setIdent((prev) => prev + 1);
@@ -203,7 +205,7 @@ const JsonViewer: React.FC<{
 
   return (
     <div
-      className={` flex flex-col backdrop-blur-2xl text-zinc-400 border border-zinc-800 min-w-6xl  overflow-hidden shadow-xl rounded-xl`}
+      className={` flex flex-col backdrop-blur-2xl text-zinc-400 border border-zinc-800   overflow-hidden shadow-xl rounded-xl`}
     >
       <div className="flex gap-2 py-2 px-4 items-center justify-between border-b border-zinc-800 rounded-t-xl ">
         <div className="flex gap-2">
@@ -256,7 +258,7 @@ const JsonViewer: React.FC<{
             minHeight: "42vh",
           }}
           ref={viewerRef}
-          className="flex-1 overflow-auto px-3 py-4 text-sm font-mono whitespace-break-spaces "
+          className="flex-1 overflow-auto px-3 py-4 text-sm  whitespace-break-spaces "
         >
           {typeof data === "string" && data.length > 0 ? (
             (() => {
@@ -305,7 +307,7 @@ const JsonViewer: React.FC<{
 
       {!isOpenJsonViewer && (
         <div
-          className="flex-1 overflow-y-auto overflow-x-hidden px-4 py-4 text-sm font-mono whitespace-pre-wrap break-words"
+          className="flex-1 overflow-y-auto overflow-x-hidden px-4 py-4 text-sm  whitespace-pre-wrap break-words"
           style={{
             maxHeight,
             height,

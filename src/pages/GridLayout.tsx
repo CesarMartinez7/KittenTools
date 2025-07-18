@@ -6,74 +6,72 @@ import ContainerTextArea from "../components/TEXTAREA-EDITOR";
 import ResultadoJsonFormat from "../components/JSONFORMATER";
 
 export interface GridLayoutProps {
-    toolbarProps?: {
-        classContainerButtons?: string;
-        classContainerMain?: string;
-    };
-    textAreaProps?: Record<string, any>;
-    resultadoProps?: Record<string, any>;
-    descripcionProps?: Record<string, any>;
-    className?: string;
-    style?: React.CSSProperties;
+  toolbarProps?: {
+    classContainerButtons?: string;
+    classContainerMain?: string;
+  };
+  textAreaProps?: Record<string, any>;
+  resultadoProps?: Record<string, any>;
+  descripcionProps?: Record<string, any>;
+  className?: string;
+  style?: React.CSSProperties;
 }
 
 export interface GridLayoutExtendedProps extends GridLayoutProps {
-    value: string;
-    setValue: React.Dispatch<React.SetStateAction<string>>;
-    isValid: boolean;
-    error: string | null;
-    openAll: boolean;
-    setOpenAll: React.Dispatch<React.SetStateAction<boolean>>;
-    isOpenDiff: boolean;
-    setIsOpenDiff: React.Dispatch<React.SetStateAction<boolean>>;
-    isOpenDiffText: boolean;
-    setIsOpenDiffText: React.Dispatch<React.SetStateAction<boolean>>;
-    isDecode: boolean;
-    setIsDecode: React.Dispatch<React.SetStateAction<boolean>>;
-    handleClickOpenModal?: () => void;
-    handleClear: () => void;
-    handleClickCargueJson: () => void;
-    handleClickminifyJson: () => void;
-    handleCopy: () => void;
-    handleCopyUrl: () => void;
+  value: string;
+  setValue: React.Dispatch<React.SetStateAction<string>>;
+  isValid: boolean;
+  error: string | null;
+  openAll: boolean;
+  setOpenAll: React.Dispatch<React.SetStateAction<boolean>>;
+  isOpenDiff: boolean;
+  setIsOpenDiff: React.Dispatch<React.SetStateAction<boolean>>;
+  isOpenDiffText: boolean;
+  setIsOpenDiffText: React.Dispatch<React.SetStateAction<boolean>>;
+  isDecode: boolean;
+  setIsDecode: React.Dispatch<React.SetStateAction<boolean>>;
+  handleClickOpenModal?: () => void;
+  handleClear: () => void;
+  handleClickCargueJson: () => void;
+  handleClickminifyJson: () => void;
+  handleCopy: () => void;
+  handleCopyUrl: () => void;
 }
 
-
-
-
 const GridLayout: React.FC<GridLayoutExtendedProps> = ({
-    toolbarProps,
-    textAreaProps,
-    resultadoProps,
-    descripcionProps,
-    className = "",
-    style,
-    value,
-    setValue,
-    isValid,
-    error,
-    openAll,
-    setOpenAll,
-    isOpenDiff,
-    setIsOpenDiff,
-    isOpenDiffText,
-    setIsOpenDiffText,
-    isDecode,
-    setIsDecode,
-    handleClear,
-    handleClickCargueJson,
-    handleClickminifyJson,
-    handleCopy,
-    handleClickOpenModal,
-    handleCopyUrl,
+  toolbarProps,
+  textAreaProps,
+  resultadoProps,
+  descripcionProps,
+  className = "",
+  style,
+  value,
+  setValue,
+  isValid,
+  error,
+  openAll,
+  setOpenAll,
+  isOpenDiff,
+  setIsOpenDiff,
+  isOpenDiffText,
+  setIsOpenDiffText,
+  isDecode,
+  setIsDecode,
+  handleClear,
+  handleClickCargueJson,
+  handleClickminifyJson,
+  handleCopy,
+  handleClickOpenModal,
+  handleCopyUrl,
 }) => {
-    return (
-        <motion.div exit={{ opacity: 0 }}
-            className={`grid grid-cols-1 grid-rows-[auto_1fr_auto] gap-4 h-full w-full p-4 max-w-7xl mx-auto ${className}`}
-            style={style}
-        >
-            {/* Toolbar arriba */}
-            {/* <div className="col-span-2">
+  return (
+    <motion.div
+      exit={{ opacity: 0 }}
+      className={`grid grid-cols-1 md:grid-cols-2 grid-rows-[auto_1fr_auto] gap-4 h-full w-full p-4 max-w-7xl mx-auto   ${className}`}
+      style={style}
+    >
+      {/* Toolbar arriba */}
+      {/* <div className="col-span-2">
                 <ToolBar
                     classContainerButtons={toolbarProps?.classContainerButtons ?? "flex flex-row"}
                     classContainerMain={toolbarProps?.classContainerMain ?? "flex flex-row"}
@@ -93,37 +91,37 @@ const GridLayout: React.FC<GridLayoutExtendedProps> = ({
                     handleCopyUrl={handleCopyUrl}
                 />
             </div> */}
-            {/* Editor a la izquierda */}
-            <div className="col-span-1 row-start-2">
-                <ContainerTextArea
-                    classText="h-full"
-                    {...textAreaProps}
-                    value={value}
-                    setValue={setValue}
-                    isValid={isValid}
-                    error={error}
-                />
-            </div>
-            {/* Resultado a la derecha */}
-            <div className="col-span-1 row-start-2">
-                <ResultadoJsonFormat
-                    {...resultadoProps}
-                    value={value}
-                    isValid={isValid}
-                    handleClickOpenModal={handleClickOpenModal}
-                    error={error}
-                    openAll={openAll}
-                    isOpenDiff={isOpenDiff}
-                    isOpenDiffText={isOpenDiffText}
-                    isDecode={isDecode}
-                />
-            </div>
-            {/* Descripción abajo */}
-            <div className="col-span-2 row-start-3">
-                <ContainerDescripcion {...descripcionProps} />
-            </div>
-        </motion.div>
-    );
+      {/* Editor a la izquierda */}
+      <div className="col-span-1 row-start-2">
+        <ContainerTextArea
+          classText="h-full"
+          {...textAreaProps}
+          value={value}
+          setValue={setValue}
+          isValid={isValid}
+          error={error}
+        />
+      </div>
+      {/* Resultado a la derecha */}
+      <div className="col-span-1 row-start-2">
+        <ResultadoJsonFormat
+          {...resultadoProps}
+          value={value}
+          isValid={isValid}
+          handleClickOpenModal={handleClickOpenModal}
+          error={error}
+          openAll={openAll}
+          isOpenDiff={isOpenDiff}
+          isOpenDiffText={isOpenDiffText}
+          isDecode={isDecode}
+        />
+      </div>
+      {/* Descripción abajo */}
+      <div className="col-span-2 row-start-3">
+        <ContainerDescripcion {...descripcionProps} />
+      </div>
+    </motion.div>
+  );
 };
 
 export default GridLayout;

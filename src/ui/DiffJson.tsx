@@ -46,7 +46,7 @@ export default function JsonDiffViewerModal() {
         <div className="flex flex-col">
           <label className="mb-1 text-zinc-400 font-medium">JSON #1</label>
           <textarea
-            className="bg-zinc-900 text-zinc-100 p-2 rounded-lg h-40 font-mono resize-none focus:outline-none focus:ring-2 focus:ring-orange-500"
+            className="bg-zinc-900 text-zinc-100 p-2 rounded-lg h-40  resize-none focus:outline-none focus:ring-2 focus:ring-orange-500"
             placeholder={error}
             value={json1}
             onChange={(e) => setJson1(e.target.value)}
@@ -56,7 +56,7 @@ export default function JsonDiffViewerModal() {
         <div className="flex flex-col">
           <label className="mb-1 text-zinc-400 font-medium">JSON #2</label>
           <textarea
-            className="bg-zinc-900 text-zinc-100 p-2 rounded-lg h-40 font-mono resize-none focus:outline-none focus:ring-2 focus:ring-orange-500"
+            className="bg-zinc-900 text-zinc-100 p-2 rounded-lg h-40  resize-none focus:outline-none focus:ring-2 focus:ring-orange-500"
             placeholder="Pegue su JSON aquí"
             value={json2}
             onChange={(e) => setJson2(e.target.value)}
