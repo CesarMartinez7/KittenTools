@@ -18,17 +18,23 @@ export default function ContainerTextArea({
   const inputRefTextOld = useRef<HTMLInputElement>(null);
   const inputRefTextNew = useRef<HTMLInputElement>(null);
   const refSection = useRef<HTMLDivElement>(null);
+  const [timeReplace, setTimeReplace] = useState(false);
 
   const [isOpenBar, setIsOpenBar] = useState<boolean>(false);
 
+  // Evento para replazar el texto
   const handleCLickReplaceText = () => {
     const from = inputRefTextOld.current?.value || "";
     const to = inputRefTextNew.current?.value || "";
 
+    setTimeReplace(true);
+    console.log(timeReplace);
     if (!from) return toast.error("Ingresa un valor a buscar");
     const result = value?.replaceAll(from, to);
     setValue(result);
     toast.success("Reemplazo realizado");
+    setTimeReplace(false);
+    console.log(timeReplace);
   };
 
   useEffect(() => {
@@ -75,12 +81,12 @@ export default function ContainerTextArea({
 
       <div className="relative p-2 h-full ">
         <AnimatePresence mode="wait">
-          {isOpenBar && (
+          {isOpenBar && !timeReplace && (
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="backdrop-blur-3xl bg-zinc-900/35 border border-zinc-800 p-2 flex flex-col w-42 shadow-xl shadow-zinc-800 gap-1 rounded absolute right-4"
+              className="backdrop-blur-3xl bg-zinc-900/35 border border-zinc-800 p-3 flex flex-col w-42 shadow-xl shadow-zinc-800 gap-1 rounded absolute right-4"
             >
               <input
                 ref={inputRefTextOld}
