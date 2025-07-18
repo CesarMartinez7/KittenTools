@@ -18,30 +18,37 @@ export default function ContainerTextArea({
   const inputRefTextOld = useRef<HTMLInputElement>(null);
   const inputRefTextNew = useRef<HTMLInputElement>(null);
   const refSection = useRef<HTMLDivElement>(null);
-  const [timeReplace, setTimeReplace] = useState(false);
 
   const [isOpenBar, setIsOpenBar] = useState<boolean>(false);
 
   // Evento para replazar el texto
+
+  const handleCLickReplaceTextFirst = () => {
+    const from = inputRefTextOld.current?.value || "";
+    const to = inputRefTextNew.current?.value || "";
+
+    if (!from) return toast.error("Ingresa un valor a buscar");
+    const result = value?.replace(from, to);
+    setValue(result);
+    toast.success("Reemplazo realizado");
+  };
+
   const handleCLickReplaceText = () => {
     const from = inputRefTextOld.current?.value || "";
     const to = inputRefTextNew.current?.value || "";
 
-    setTimeReplace(true);
-    console.log(timeReplace);
     if (!from) return toast.error("Ingresa un valor a buscar");
     const result = value?.replaceAll(from, to);
     setValue(result);
     toast.success("Reemplazo realizado");
-    setTimeReplace(false);
-    console.log(timeReplace);
   };
 
   useEffect(() => {
     refSection.current?.focus();
 
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
-      if (e.ctrlKey && e.key === "b") {
+      // No importa si esta en minuscula la b o en mayuscula siempre se abrira
+      if ((e.ctrlKey && e.key === "b") || (e.ctrlKey && e.key === "B")) {
         e.preventDefault();
         setIsOpenBar((prev) => !prev);
       }
@@ -81,7 +88,7 @@ export default function ContainerTextArea({
 
       <div className="relative p-2 h-full ">
         <AnimatePresence mode="wait">
-          {isOpenBar && !timeReplace && (
+          {isOpenBar && (
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -100,12 +107,20 @@ export default function ContainerTextArea({
                 type="text"
                 placeholder="Valor Remplazado"
               />
-              <button
-                className="bg-gradient-to-r from-green-400 to-green-900  p-1 rounded-md"
-                onClick={handleCLickReplaceText}
-              >
-                Remplazar
-              </button>
+              <div className="flex h-6 gap-2 text-wrap whitespace-normal">
+                <button
+                  className="bg-gradient-to-r flex-1 from-green-400 to-green-900  p-1 rounded-md"
+                  onClick={handleCLickReplaceTextFirst}
+                >
+                  Remplazar
+                </button>
+                <button
+                  className="bg-gradient-to-r flex-1 from-blue-400 to-blue-900  p-1 rounded-md text-xs"
+                  onClick={handleCLickReplaceText}
+                >
+                  Todos
+                </button>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>

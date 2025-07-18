@@ -85,7 +85,7 @@ const JsonNode: React.FC<JsonNodeProps> = ({
                     </span>
                   ))
                 : Object.entries(data as JsonObject).map(([key, val], idx) => (
-                    <>
+                    <span key={idx}>
                       <JsonNode
                         __Changed={__Changed}
                         INDENT={INDENT}
@@ -101,7 +101,7 @@ const JsonNode: React.FC<JsonNodeProps> = ({
                           ? "}"
                           : ""}
                       </span>
-                    </>
+                    </span>
                   ))}
             </div>
           )}
