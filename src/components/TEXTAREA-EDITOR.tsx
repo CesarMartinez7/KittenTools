@@ -14,9 +14,6 @@ export default function ContainerTextArea({
   value,
   classText = "",
 }: ContainerArea) {
-  const [textToReplace, setTextToReplace] = useState<string>("");
-  const [textoReplace, setTextReplace] = useState<string>("");
-
   // Valor a remplazar
   const inputRefTextOld = useRef<HTMLInputElement>(null);
   const inputRefTextNew = useRef<HTMLInputElement>(null);
@@ -24,27 +21,18 @@ export default function ContainerTextArea({
 
   const [isOpenBar, setIsOpenBar] = useState<boolean>(false);
 
-  useEffect(() => {
-    console.log("Replazados");
-    console.log(`Valor 1 ${textToReplace} valor2 ${textoReplace}`);
-  }, [textoReplace, textoReplace]);
-
   const handleCLickReplaceText = () => {
-    setTextToReplace(inputRefTextOld.current?.value || "");
-    setTextReplace(inputRefTextNew.current?.value || "");
+    const from = inputRefTextOld.current?.value || "";
+    const to = inputRefTextNew.current?.value || "";
 
-    console.warn(
-      `Valor a remplazar ${textToReplace} valor nuevo remplazado ${textoReplace}`,
-    );
-
-    setValue(value?.replaceAll(textToReplace, textoReplace));
-    console.log(value?.replaceAll(textToReplace, textToReplace));
+    if (!from) return toast.error("Ingresa un valor a buscar");
+    const result = value?.replaceAll(from, to);
+    setValue(result);
+    toast.success("Reemplazo realizado");
   };
 
-  // 🎯 Al montar, enfoca y configura atajos de teclado globales
   useEffect(() => {
     refSection.current?.focus();
-    toast.success("Foco añadido automáticamente");
 
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
       if (e.ctrlKey && e.key === "b") {
