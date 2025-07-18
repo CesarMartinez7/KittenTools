@@ -125,7 +125,7 @@ export const ModalViewer = () => {
   return (
     <main className="text-white p-6 flex flex-col gap-8 items-center justify-center">
       <div className="flex flex-col items-center gap-4 w-full">
-        <h3 className="text-zinc-200 text-center text-lg">Comparar Texto</h3>
+        <h3 className="text-zinc-200 text-center text-lg gradient-text text-xl font-bold">Comparar Texto</h3>
         <div className="grid gap-5 md:grid-cols-2 w-full max-w-6xl">
           <div>
             <p># 1 Texto</p>

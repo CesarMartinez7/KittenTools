@@ -7,7 +7,6 @@ import useInterfaceGenerator from "../hooks/interface-create";
 import useInterfaceGenerator from "../hooks/interface-create";
 import FormatDataTypeLabel from "./formatDataLabel";
 
-
 const csvConfig = mkConfig({ useKeysAsHeaders: true });
 
 type JsonValue = string | number | boolean | null | JsonObject | JsonArray;
@@ -177,16 +176,17 @@ const JsonViewer: React.FC<{
 
   // Arreglar esta puta mrd
   const handleClickGenerateCSV = () => {
-   const csv = generateCsv(csvConfig)(JSON.parse(values as string));
-   if (!csv) {
+    const csv = generateCsv(csvConfig)(JSON.parse(values as string));
+    if (!csv) {
       toast.error("No se pudo generar el CSV");
       return;
     }
-
-     download(csvConfig)(csv)
+    download(csvConfig)(csv);
+    toast.success("CSV generado correctamente");
   };
 
-  
+
+  // Recalcular el size del json o la data
 
   useEffect(() => {
     const raw = typeof data === "string" ? data : JSON.stringify(data, null, 2);
@@ -285,7 +285,12 @@ const JsonViewer: React.FC<{
                     <span className="mx-auto text-zinc-400">
                       JSON desconocido o invalido.
                     </span>
-                    <a href="https://www.w3schools.com/js/js_json_syntax.asp" className="text-blue-300 text-xs">Lee un poco sobre la sintaxis JSON</a>
+                    <a
+                      href="https://www.w3schools.com/js/js_json_syntax.asp"
+                      className="text-blue-300 text-xs"
+                    >
+                      Lee un poco sobre la sintaxis JSON
+                    </a>
                   </div>
                 );
               }
