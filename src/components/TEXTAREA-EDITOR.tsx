@@ -82,22 +82,43 @@ export default function ContainerTextArea({
       tabIndex={0}
       className={`rounded-xl shadow-2xl backdrop-blur-3xl p-6 space-y-4 flex flex-col gap-1 bg-zinc-900/80 focus:outline-none ${classText}`}
     >
-      <label className="my-2 bg-gradient-to-b from-white to-zinc-500 bg-clip-text text-transparent">
-        Editor JSON
-      </label>
+      <div className="flex items-center-safe justify-between px-1 ">
+        <label className="my-2 bg-gradient-to-b from-white to-zinc-500 bg-clip-text text-transparent">
+          Editor JSON
+        </label>
+        <p>Ctrl + b</p>
+      </div>
 
       <div className="relative p-2 h-full ">
         <AnimatePresence mode="wait">
           {isOpenBar && (
             <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
+              initial={{ opacity: 0, y: -10, scale: 0.95, filter: "blur(4px)" }}
+              animate={{
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                filter: "blur(0px)",
+                transition: {
+                  type: "spring",
+                  stiffness: 200,
+                  damping: 20,
+                },
+              }}
+              exit={{
+                opacity: 0,
+                y: -10,
+                scale: 0.95,
+                filter: "blur(4px)",
+                transition: { duration: 0.2 },
+              }}
+              layout
               className="backdrop-blur-3xl bg-zinc-900/35 border border-zinc-800 p-3 flex flex-col w-42 shadow-xl shadow-zinc-800 gap-1 rounded absolute right-4"
             >
               <input
                 ref={inputRefTextOld}
                 type="text"
+                autoFocus
                 tabIndex={0}
                 title="Valor a buscar"
                 placeholder="Valor a buscar"
@@ -109,13 +130,13 @@ export default function ContainerTextArea({
               />
               <div className="flex h-6 gap-2 text-wrap whitespace-normal">
                 <button
-                  className="bg-gradient-to-r flex-1 from-green-400 to-green-900  p-1 rounded-md"
+                  className="bg-gradient-to-r flex-1 from-green-500 to-green-500 p-1 rounded-md"
                   onClick={handleCLickReplaceTextFirst}
                 >
                   Remplazar
                 </button>
                 <button
-                  className="bg-gradient-to-r flex-1 from-blue-400 to-blue-900  p-1 rounded-md text-xs"
+                  className="bg-gradient-to-r flex-1 from-blue-400 to-blue-900 p-1 rounded-md text-xs"
                   onClick={handleCLickReplaceText}
                 >
                   Todos
@@ -124,6 +145,7 @@ export default function ContainerTextArea({
             </motion.div>
           )}
         </AnimatePresence>
+
         <textarea
           value={value ?? ""}
           onChange={handleChangeTextArea}
