@@ -35,6 +35,10 @@
   font-style: normal;
 }
 
+input {
+  @apply bg-zinc-900 p-1 border border-zinc-600 rounded-md;
+}
+
 body {
   font-family: monospace;
 }

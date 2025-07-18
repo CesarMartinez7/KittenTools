@@ -44,6 +44,7 @@ const App = () => {
     }
   }, [value]);
 
+  // Limpiar el input y el formatter
   const handleClear = () => {
     if (localStorage.getItem("jsonData") === null) {
       toast.error("No hay nada que limpiar.");
@@ -54,6 +55,7 @@ const App = () => {
     toast.success("Limpiado exitosamente.");
   };
 
+  // Cargue del input del json o txt
   const handleClickCargueJson = () => {
     const input = document.createElement("input");
     input.type = "file";

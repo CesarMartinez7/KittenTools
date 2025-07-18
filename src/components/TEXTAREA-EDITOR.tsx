@@ -1,4 +1,7 @@
+import { useEffect, useState, useRef, KeyboardEvent } from "react";
 import toast from "react-hot-toast";
+import { AnimatePresence } from "motion/react";
+import { motion } from "motion/react";
 
 interface ContainerArea {
   value: string | null | undefined;
@@ -11,7 +14,49 @@ export default function ContainerTextArea({
   value,
   classText = "",
 }: ContainerArea) {
+  const [textToReplace, setTextToReplace] = useState<string>("");
+  const [textoReplace, setTextReplace] = useState<string>("");
+  const [isOpenBar, setIsOpenBar] = useState<boolean>(false);
+  const refSection = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    console.log("Replazados");
+    console.log(`Valor 1 ${textToReplace} valor2 ${textoReplace}`);
+  }, [textoReplace, textoReplace]);
+
+  const handleCLickReplaceText = () => {
+    console.log(value?.replaceAll(textToReplace, textToReplace));
+  };
+
+  // 🎯 Al montar, enfoca y configura atajos de teclado globales
+  useEffect(() => {
+    refSection.current?.focus();
+    toast.success("Foco añadido automáticamente");
+
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.key === "b") {
+        e.preventDefault();
+        setIsOpenBar((prev) => !prev);
+        toast.success("Toggle con Ctrl + B");
+      }
+
+      if (e.ctrlKey && e.key === "i") {
+        e.preventDefault();
+        if (value) {
+          localStorage.setItem("jsonData", value);
+          toast.success("Guardado con Ctrl + I");
+        } else {
+          toast.error("No hay contenido para guardar");
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleGlobalKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleGlobalKeyDown);
+    };
+  }, [value]); // Escucha cambios en value para poder guardar
 
   const handleChangeTextArea = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (e.target.value.length === 0) {
@@ -20,26 +65,56 @@ export default function ContainerTextArea({
     }
     const clean = e.target.value.replace(/\/\//g, "").replace(/n\//gi, "");
     setValue(clean);
-    if (JSON.parse(clean)) {
+    try {
+      JSON.parse(clean);
       localStorage.setItem("jsonData", clean);
-    } else {
-      toast.error("JSON inválido, no se guardara en el localStorage");
+    } catch {
+      toast.error("JSON inválido, no se guardará en el localStorage");
     }
   };
 
   return (
     <section
-      className={`rounded-xl shadow-2xl backdrop-blur-3xl p-6 space-y-4 flex flex-col gap-1  bg-zinc-900/80  ${classText} `}
+      ref={refSection}
+      tabIndex={0}
+      className={`rounded-xl shadow-2xl backdrop-blur-3xl p-6 space-y-4 flex flex-col gap-1 bg-zinc-900/80 focus:outline-none ${classText}`}
     >
-      <label className="text- my-2 bg-gradient-to-b from-white to-zinc-500 bg-clip-text text-transparent">
+      <label className="my-2 bg-gradient-to-b from-white to-zinc-500 bg-clip-text text-transparent">
         Editor JSON
       </label>
-      <textarea
-        value={value}
-        onChange={handleChangeTextArea}
-        className="h-full"
-        placeholder="Pega o escribe tu JSON aquí"
-      />
+
+      <div className="relative p-2 h-full">
+        <AnimatePresence mode="wait">
+          {isOpenBar && (
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="backdrop-blur-3xl bg-zinc-900/35 border border-zinc-800 p-2 flex flex-col w-32 gap-1 rounded absolute right-4"
+            >
+              <input
+                type="text"
+                tabIndex={0}
+                title="Valor a buscar"
+                placeholder="Valor a buscar"
+              />
+              <input type="text" placeholder="Valor Remplazado" />
+              <button
+                className="bg-cyan-700 p-1 rounded-md"
+                onClick={handleCLickReplaceText}
+              >
+                Remplazar
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+        <textarea
+          value={value ?? ""}
+          onChange={handleChangeTextArea}
+          className="h-full w-full resize-none"
+          placeholder="Pega o escribe tu JSON aquí"
+        />
+      </div>
     </section>
   );
 }
