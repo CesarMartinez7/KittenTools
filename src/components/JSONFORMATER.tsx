@@ -2,16 +2,19 @@ import { JsonViewerLazy } from "../ui/LAZY_COMPONENT"
 import { Icon } from "@iconify/react/dist/iconify.js"
 
 interface JsonFormatProps {
-    handleClickOpenModal: () => void,
     value:  string |  null | undefined
     openAll: boolean
-
-
 }
 
+export default function ResultadoJsonFormat ({ value, openAll} : JsonFormatProps) {
 
 
-export default function ResultadoJsonFormat ({handleClickOpenModal, value, openAll} : JsonFormatProps) {
+  const handleClickOpenModal = () => {
+    // Aquí puedes implementar la lógica para abrir un modal o realizar otra acción
+    console.log("Abrir modal o realizar otra acción");
+  }
+
+
     return( <section className="rounded-xl backdrop-blur  shadow-2xl bg-zinc-900/80 p-6 flex flex-col gap-y-3">
         <div className="p-2 flex justify-between">
           <label className="bg-gradient-to-bl from-white to-zinc-600 bg-clip-text text-transparent">

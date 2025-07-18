@@ -46,25 +46,15 @@ const ModalViewerJSON = ({ setOpenAll, openAll, value }: PropsModalViewer) => {
   };
 
   return (
-    <motion.div
-      ref={modalRef}
-      onKeyDown={handleKeyPress}
-      initial="hidden"
-      animate="visible"
-      exit={{ scale: 0 }}
-      tabIndex={0}
-      variants={overlayVariants}
-      className=" absolute md:p-24 p-5 pointer-event backdrop-blur-2xl h-svh z-[888] flex justify-center-safe items-center flex-col inset-0"
-    >
-          <button
-            className="btn-icon fixed right-5 top-7 z-50 "
-            onClick={handleClickOpenModal}
-            title="Minimizar"
-          >
-             <Icon icon="tabler:x" width="24" height="24" />
-          </button>
+    <>
+      <button
+        className="btn-icon fixed right-5 top-7 z-50 "
+        onClick={handleClickOpenModal}
+        title="Minimizar"
+      >
+        <Icon icon="tabler:x" width="24" height="24" />
+      </button>
       <div className="w-full backdrop-blur-3xl rounded-xl bg-black/70  ">
-        
         <div className=" ">
           <JsonViewerLazy
             maxHeight="70vh"
@@ -74,8 +64,7 @@ const ModalViewerJSON = ({ setOpenAll, openAll, value }: PropsModalViewer) => {
           />
         </div>
       </div>
-    </motion.div>
-    
+    </>
   );
 };
 

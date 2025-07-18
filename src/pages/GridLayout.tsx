@@ -30,6 +30,7 @@ export interface GridLayoutExtendedProps extends GridLayoutProps {
     setIsOpenDiffText: React.Dispatch<React.SetStateAction<boolean>>;
     isDecode: boolean;
     setIsDecode: React.Dispatch<React.SetStateAction<boolean>>;
+    handleClickOpenModal?: () => void;
     handleClear: () => void;
     handleClickCargueJson: () => void;
     handleClickminifyJson: () => void;
@@ -63,11 +64,12 @@ const GridLayout: React.FC<GridLayoutExtendedProps> = ({
     handleClickCargueJson,
     handleClickminifyJson,
     handleCopy,
+    handleClickOpenModal,
     handleCopyUrl,
 }) => {
     return (
         <motion.div exit={{ opacity: 0 }}
-            className={`grid grid-cols-1 md:grid-cols-2 grid-rows-[auto_1fr_auto] gap-4 h-full w-full p-4 max-w-7xl mx-auto ${className}`}
+            className={`grid grid-cols-1 grid-rows-[auto_1fr_auto] gap-4 h-full w-full p-4 max-w-7xl mx-auto ${className}`}
             style={style}
         >
             {/* Toolbar arriba */}
@@ -108,6 +110,7 @@ const GridLayout: React.FC<GridLayoutExtendedProps> = ({
                     {...resultadoProps}
                     value={value}
                     isValid={isValid}
+                    handleClickOpenModal={handleClickOpenModal}
                     error={error}
                     openAll={openAll}
                     isOpenDiff={isOpenDiff}

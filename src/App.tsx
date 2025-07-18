@@ -21,14 +21,14 @@ const App = () => {
   );
   const [isValid, setIsValid] = useState(true);
   const [error, setErrorMessage] = useState("");
-  const [openAll, setOpenAll] = useState<boolean>(false);
+  const [openViewerJsonFull, setOpenViewerJsonFull] = useState<boolean>(false);
   const [isOpenDiff, setIsOpenDiff] = useState<boolean>(false);
   const [isOpenDiffText, setIsOpenDiffText] = useState<boolean>(false);
   const [isDecode, setIsDecode] = useState<boolean>(false);
   const [showGrid, setShowGrid] = useState(false);
   const [showAurora, setShowAurora] = useState<boolean>(true);
 
-  const handleCloseAll = () => setOpenAll(false);
+  const handleCloseAll = () => setOpenViewerJsonFull(false);
   const handleCloseDecode = () => setIsDecode(false);
   const handleCloseDiffText = () => setIsOpenDiffText(false);
   const handleCloseDiff = () => setIsOpenDiff(false);
@@ -103,7 +103,7 @@ const App = () => {
     input.click();
   };
 
-  const handleClickOpenModal = () => setOpenAll(!openAll);
+  const handleClickOpenModal = () => setOpenViewerJsonFull(!openViewerJsonFull);
 
   const handleClickminifyJson = () => {
     try {
@@ -205,8 +205,8 @@ const App = () => {
                   setValue={setValue}
                   isValid={isValid}
                   error={error}
-                  openAll={openAll}
-                  setOpenAll={setOpenAll}
+                  openAll={openViewerJsonFull}
+                  setOpenAll={setOpenViewerJsonFull}
                   isOpenDiff={isOpenDiff}
                   setIsOpenDiff={setIsOpenDiff}
                   isOpenDiffText={isOpenDiffText}
@@ -270,7 +270,7 @@ const App = () => {
                       <div className="text-sm whitespace-pre-wrap break-words break-all overflow-auto h-fit">
                         <JsonViewerLazy
                           data={value}
-                          isOpen={openAll}
+                          isOpen={openViewerJsonFull}
                           height="20vh"
                           maxHeight="20vh"
                         />
@@ -283,8 +283,13 @@ const App = () => {
           </AnimatePresence>
         </div>
 
-        <BaseModal isOpen={openAll} onClose={handleCloseAll}>
-          <ModalViewerJSON value={value} />
+        <BaseModal isOpen={openViewerJsonFull} onClose={handleCloseAll}>
+          <JsonViewerLazy
+            maxHeight="70vh"
+            height="50vh"
+            data={value}
+            isOpen={openViewerJsonFull}
+          />
         </BaseModal>
 
         <BaseModal isOpen={isDecode} onClose={handleCloseDecode}>
