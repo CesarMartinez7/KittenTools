@@ -76,6 +76,10 @@ export default function ContainerTextArea({
     }
   };
 
+  const handleClickKdb = () => {
+    setIsOpenBar((prev) => !prev);
+  };
+
   return (
     <section
       ref={refSection}
@@ -86,7 +90,9 @@ export default function ContainerTextArea({
         <label className="my-2 bg-gradient-to-b from-white to-zinc-500 bg-clip-text text-transparent">
           Editor JSON
         </label>
-        <p>Ctrl + b</p>
+        <p className="text-zinc-500">
+          <kbd onClick={handleClickKdb}>Ctrl + b para toolbar o Clikeame</kbd>
+        </p>
       </div>
 
       <div className="relative p-2 h-full ">
@@ -147,6 +153,7 @@ export default function ContainerTextArea({
         </AnimatePresence>
 
         <textarea
+          autoFocus
           value={value ?? ""}
           onChange={handleChangeTextArea}
           className="h-full w-full resize-none"

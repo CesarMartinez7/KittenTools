@@ -7,6 +7,10 @@
   font-style: normal;
 }
 
+kbd {
+  @apply text-[9px] border p-0.5 rounded border-b-3 bg-zinc-900 border-zinc-700 text-white text-center cursor-pointer;
+}
+
 @font-face {
   font-family: RedHat;
   src: url("./assets/fonts/RedHatText-Regular.ttf") format("truetype");

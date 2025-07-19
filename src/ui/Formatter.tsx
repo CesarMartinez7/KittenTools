@@ -23,8 +23,6 @@ interface JsonNodeProps {
   __Changed: string;
 }
 
-type GeneratorOutput = { key: string; value: string | string[] };
-
 const JsonNode: React.FC<JsonNodeProps> = ({
   data,
   name,
@@ -203,7 +201,7 @@ const JsonViewer: React.FC<{
 
   return (
     <div
-      className={` flex flex-col backdrop-blur-2xl text-zinc-400 border border-zinc-800 overflow-hidden shadow-xl rounded-xl `}
+      className={` flex flex-col backdrop-blur-2xl text-zinc-400 border border-zinc-800 overflow-hidden shadow-xl rounded-xl min-w-5xl `}
     >
       <div className="flex gap-2 py-2 px-4 items-center justify-between border-b border-zinc-800 rounded-t-xl ">
         <div className="flex gap-2">
