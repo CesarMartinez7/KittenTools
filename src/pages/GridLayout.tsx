@@ -1,9 +1,11 @@
 import React from "react";
 import ContainerDescripcion from "../components/DESCRIPCION";
-import ToolBar from "../components/TOOLBAR.";
+import { JsonViewerLazy } from "../ui/LAZY_COMPONENT";
+import { BaseModal } from "../ui/BaseModal";
 import { motion } from "motion/react";
 import ContainerTextArea from "../components/TEXTAREA-EDITOR";
 import ResultadoJsonFormat from "../components/JSONFORMATER";
+import ToolBar from "../components/TOOLBAR.";
 
 export interface GridLayoutProps {
   toolbarProps?: {
@@ -71,26 +73,30 @@ const GridLayout: React.FC<GridLayoutExtendedProps> = ({
       style={style}
     >
       {/* Toolbar arriba */}
-      {/* <div className="col-span-2">
-                <ToolBar
-                    classContainerButtons={toolbarProps?.classContainerButtons ?? "flex flex-row"}
-                    classContainerMain={toolbarProps?.classContainerMain ?? "flex flex-row"}
-                    {...toolbarProps}
-                    openAll={openAll}
-                    setOpenAll={setOpenAll}
-                    isOpenDiff={isOpenDiff}
-                    setIsOpenDiff={setIsOpenDiff}
-                    isOpenDiffText={isOpenDiffText}
-                    setIsOpenDiffText={setIsOpenDiffText}
-                    isDecode={isDecode}
-                    setIsDecode={setIsDecode}
-                    handleClear={handleClear}
-                    handleClickCargueJson={handleClickCargueJson}
-                    handleClickminifyJson={handleClickminifyJson}
-                    handleCopy={handleCopy}
-                    handleCopyUrl={handleCopyUrl}
-                />
-            </div> */}
+      <div className="col-span-2">
+        <ToolBar
+          classContainerButtons={
+            toolbarProps?.classContainerButtons ?? "flex row"
+          }
+          classContainerMain={
+            toolbarProps?.classContainerMain ?? "flex flex-row flex-wrap"
+          }
+          {...toolbarProps}
+          openAll={openAll}
+          setOpenAll={setOpenAll}
+          isOpenDiff={isOpenDiff}
+          setIsOpenDiff={setIsOpenDiff}
+          isOpenDiffText={isOpenDiffText}
+          setIsOpenDiffText={setIsOpenDiffText}
+          isDecode={isDecode}
+          setIsDecode={setIsDecode}
+          handleClear={handleClear}
+          handleClickCargueJson={handleClickCargueJson}
+          handleClickminifyJson={handleClickminifyJson}
+          handleCopy={handleCopy}
+          handleCopyUrl={handleCopyUrl}
+        />
+      </div>
       {/* Editor a la izquierda */}
       <div className="col-span-1 row-start-2">
         <ContainerTextArea
@@ -120,6 +126,15 @@ const GridLayout: React.FC<GridLayoutExtendedProps> = ({
       <div className="col-span-2 row-start-3">
         <ContainerDescripcion {...descripcionProps} />
       </div>
+
+      <BaseModal isOpen={openAll} onClose={() => setOpenAll(false)}>
+        <JsonViewerLazy
+          maxHeight="70vh"
+          height="60vh"
+          data={value}
+          isOpen={true}
+        />
+      </BaseModal>
     </motion.div>
   );
 };

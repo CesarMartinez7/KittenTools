@@ -132,12 +132,12 @@ const App = () => {
         onClick={() => setShowAurora((prev) => !prev)}
         style={{ minWidth: 120 }}
       >
-        <Icon icon="tabler:beer" width="24" height="24" />
+        <Icon icon="tabler:beer" width="20" height="20" />
         {showAurora ? "Ocultar Aurora" : "Mostrar Aurora"}
       </button>
 
       <button
-        className="fixed top-6 left-54 z-50 flex items-center justify-center gap-2 bg-gradient-to-t from-zinc-900 to-zinc-800 hover:bg-zinc-700 text-zinc-300 px-2 py-2 text-sm rounded-xl shadow-lg transition"
+        className="fixed top-6 left-50 z-50 flex items-center justify-center gap-2 bg-gradient-to-t from-zinc-900 to-zinc-800 hover:bg-zinc-700 text-zinc-300 px-2 py-2 text-sm rounded-xl shadow-lg transition"
         onClick={() => setShowGrid((prev) => !prev)}
         style={{ minWidth: 40 }}
       >

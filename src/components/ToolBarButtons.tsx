@@ -30,7 +30,7 @@ export default function ToolbarButtons({
   classContainerButtons = "flex flex-row"
 }: ToolbarButtonsProps) {
   return (
-    <div className={`w-full  flex flex-col gap-1 ${classContainerButtons}`}>
+    <div className={`w-full flex flex-wrap gap-1 ${classContainerButtons}`}>
       <button
         onClick={handleClear}
         className="w-full flex items-center justify-center gap-2 bg-gradient-to-t from-zinc-900 to-zinc-800 hover:bg-zinc-700 text-zinc-300 px-3 py-2 text-sm rounded-lg transition h-[40px]"

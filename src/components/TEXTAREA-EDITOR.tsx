@@ -28,6 +28,12 @@ export default function ContainerTextArea({
     const to = inputRefTextNew.current?.value || "";
 
     if (!from) return toast.error("Ingresa un valor a buscar");
+
+
+    if (!value?.includes(from)) {
+      return toast.error("El valor a buscar no se encuentra en el texto");
+    }
+
     const result = value?.replace(from, to);
     setValue(result);
     toast.success("Reemplazo realizado");
@@ -36,6 +42,11 @@ export default function ContainerTextArea({
   const handleCLickReplaceText = () => {
     const from = inputRefTextOld.current?.value || "";
     const to = inputRefTextNew.current?.value || "";
+
+
+    if (!value?.includes(from)) {
+      return toast.error("El valor a buscar no se encuentra en el texto");
+    }
 
     if (!from) return toast.error("Ingresa un valor a buscar");
     const result = value?.replaceAll(from, to);
@@ -132,7 +143,7 @@ export default function ContainerTextArea({
               <input
                 ref={inputRefTextNew}
                 type="text"
-                placeholder="Valor Remplazado"
+                placeholder="Valor a Remplazar"
               />
               <div className="flex h-6 gap-2 text-wrap whitespace-normal">
                 <button

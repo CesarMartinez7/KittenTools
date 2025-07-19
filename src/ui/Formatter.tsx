@@ -201,7 +201,7 @@ const JsonViewer: React.FC<{
 
   return (
     <div
-      className={` flex flex-col backdrop-blur-2xl text-zinc-400 border border-zinc-800 overflow-hidden shadow-xl rounded-xl min-w-5xl `}
+      className={`flex flex-col backdrop-blur-2xl text-zinc-400 border border-zinc-800 overflow-hidden shadow-xl rounded-xl max-w-5xl min-w-xl `}
     >
       <div className="flex gap-2 py-2 px-4 items-center justify-between border-b border-zinc-800 rounded-t-xl ">
         <div className="flex gap-2">
@@ -310,7 +310,19 @@ const JsonViewer: React.FC<{
             minHeight: "42vh",
           }}
         >
-          <JsonNode data={interfaceGen} INDENT={INDENT} isInterface={true} />
+          {Array.isArray(interfaceGen) ? (
+            interfaceGen.map((item, index) => (
+              <div key={index} className="mb-2">
+                <pre className="text-xs text-zinc-300 whitespace-pre-wrap break-words">
+                  {JSON.stringify(item, null, 2)}
+                </pre>
+              </div>
+            ))
+          ) : typeof interfaceGen === "object" ? (
+            <pre className="text-xs text-zinc-300 whitespace-pre-wrap break-words">
+              {JSON.stringify(interfaceGen, null, 2)}
+            </pre>
+          ) : null}
         </div>
       )}
 
