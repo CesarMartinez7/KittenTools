@@ -124,6 +124,20 @@ const App = () => {
     }
   };
 
+
+  useEffect(() => {
+    console.warn(navigator.userAgent)
+
+    if(navigator.userAgent.includes("mobile") || navigator.userAgent.includes("Android")) {
+      toast.error("Esta aplicación no está optimizada para dispositivos móviles. Por favor, utiliza un navegador de escritorio para una mejor experiencia.");
+      setShowAurora(false)
+    }
+    
+
+
+  }, [])
+
+
   return (
     <>
       {/* Botón toggle layout en fixed */}
