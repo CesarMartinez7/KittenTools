@@ -130,7 +130,7 @@ export default function ContainerTextArea({
                 transition: { duration: 0.2 },
               }}
               layout
-              className="backdrop-blur-3xl bg-zinc-900/35 border border-zinc-800 p-3 flex flex-col w-42 shadow-xl shadow-zinc-800 gap-1 rounded absolute right-4"
+              className="backdrop-blur-3xl bg-zinc-900/35 border border-zinc-800 p-3 flex flex-col w-52 shadow-xl shadow-zinc-800 gap-1 rounded absolute right-4"
             >
               <input
                 ref={inputRefTextOld}
@@ -145,20 +145,22 @@ export default function ContainerTextArea({
                 type="text"
                 placeholder="Valor a Remplazar"
               />
-              <div className="flex h-6 gap-2 text-wrap whitespace-normal">
+                <div className="flex h-6 gap-2 text-wrap whitespace-normal">
                 <button
-                  className="bg-gradient-to-r flex-1 from-green-500 to-green-500 p-1 rounded-md"
+                  className="bg-gradient-to-r flex-1 from-green-500 to-green-500 p-1 rounded-md text-xs truncate"
                   onClick={handleCLickReplaceTextFirst}
+                  title="Reemplazar solo la primera coincidencia"
                 >
-                  Remplazar
+                  Reemplazar primero
                 </button>
                 <button
-                  className="bg-gradient-to-r flex-1 from-blue-400 to-blue-900 p-1 rounded-md text-xs"
+                  className="bg-gradient-to-r flex-1 from-blue-400 to-blue-900 p-1 rounded-md text-xs truncate"
                   onClick={handleCLickReplaceText}
+                  title="Reemplazar todas las coincidencias"
                 >
-                  Todos
+                  Reemplazar todo
                 </button>
-              </div>
+                </div>
             </motion.div>
           )}
         </AnimatePresence>
