@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import useInterfaceGenerator from "../hooks/interface-create";
 import FormatDataTypeLabel from "./formatDataLabel";
+import LazyListItem from "./LazyListPerform";
 
 const csvConfig = mkConfig({ useKeysAsHeaders: true });
 
@@ -65,8 +66,9 @@ const JsonNode: React.FC<JsonNodeProps> = ({
             <div className="ml-4 mt-1 space-y-1">
               {isArray
                 ? (data as JsonArray).map((item, i) => (
+                  <LazyListItem key={i}>
                     <span key={i}>
-                      <div className="flex relative " key={i}>
+                      <div className="flex relative">
                         <JsonNode
                           __Changed={__Changed}
                           INDENT={INDENT}
@@ -81,6 +83,7 @@ const JsonNode: React.FC<JsonNodeProps> = ({
                         {i + 1 === data.length ? "]" : ""}
                       </span>
                     </span>
+                    </LazyListItem>
                   ))
                 : Object.entries(data as JsonObject).map(([key, val], idx) => (
                     <span key={idx}>
