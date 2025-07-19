@@ -86,7 +86,7 @@ export default function ToolbarButtons({
       </button>
       <button
         title="Compa"
-        className="w-full flex  items-center justify-center gap-2 bg-amber-400 bg-gradient-to-t from-amber-400 to-amber-500 text-black h-[40px]  hover:bg-kanagawa-cyan/60 font-bold px-3 py-2 text-sm rounded-lg transition"
+        className="w-full flex  items-center justify-center gap-2 bg-amber-400 bg-gradient-to-t from-amber-400 to-amber-500 text-black h-[40px] hover:bg-kanagawa-cyan/60 font-bold px-3 py-2 text-sm rounded-lg transition"
         onClick={() => {
           setIsOpenDiffText(!isOpenDiffText);
         }}
