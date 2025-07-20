@@ -66,23 +66,23 @@ const JsonNode: React.FC<JsonNodeProps> = ({
             <div className="ml-4 mt-1 space-y-1">
               {isArray
                 ? (data as JsonArray).map((item, i) => (
-                  <LazyListItem key={i}>
-                    <span key={i}>
-                      <div className="flex relative">
-                        <JsonNode
-                          __Changed={__Changed}
-                          INDENT={INDENT}
-                          open={collapsed}
-                          key={i}
-                          data={item}
-                          depth={depth + 1}
-                        />
-                      </div>
+                    <LazyListItem key={i}>
+                      <span key={i}>
+                        <div className="flex relative">
+                          <JsonNode
+                            __Changed={__Changed}
+                            INDENT={INDENT}
+                            open={collapsed}
+                            key={i}
+                            data={item}
+                            depth={depth + 1}
+                          />
+                        </div>
 
-                      <span className="text-zinc-400" onClick={toggle}>
-                        {i + 1 === data.length ? "]" : ""}
+                        <span className="text-zinc-400" onClick={toggle}>
+                          {i + 1 === data.length ? "]" : ""}
+                        </span>
                       </span>
-                    </span>
                     </LazyListItem>
                   ))
                 : Object.entries(data as JsonObject).map(([key, val], idx) => (
@@ -122,9 +122,18 @@ const JsonViewer: React.FC<{
   isOpenModal: boolean;
   setIsOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
   height: string;
+  width?: string;
   maxHeight: string;
   __changed: object;
-}> = ({ data, isOpen, height = "20vh", maxHeight = "44vh", __changed }) => {
+}> = ({
+  data,
+  isOpen,
+  width,
+
+  height = "20vh",
+  maxHeight = "44vh",
+  __changed,
+}) => {
   const [size, setSize] = useState<string>("0.00 KB");
   const { generateInterfaceFromJson } = useInterfaceGenerator();
 
@@ -132,9 +141,8 @@ const JsonViewer: React.FC<{
 
   const [isOpenJsonViewer, setIsOpenJsonViewer] = useState<boolean>(true);
   const [INDENT, setIdent] = useState<number>(1);
-  const [interfaceGen, setInterfaceGen] = useState<any>();
-  // const [Interfaces, setInterfaces] = useState<unknown[]>();
-  const [values, setValue] = useState<JsonValue>(data);
+  const [interfaceGen, setInterfaceGen] = useState<unknown>();
+  const [values] = useState<JsonValue>(data);
 
   const handleClickSummary = () => {
     if (INDENT >= 10) {
@@ -195,7 +203,6 @@ const JsonViewer: React.FC<{
   };
 
   // Recalcular el size del json o la data
-
   useEffect(() => {
     const raw = typeof data === "string" ? data : JSON.stringify(data, null, 2);
     const bytes = new Blob([raw]).size / 1024;
@@ -204,7 +211,8 @@ const JsonViewer: React.FC<{
 
   return (
     <div
-      className={`flex flex-col backdrop-blur-2xl text-zinc-400 border border-zinc-800 overflow-hidden shadow-xl rounded-xl max-w-5xl min-w-xl `}
+      className={`flex flex-col backdrop-blur-2xl text-zinc-400 border border-zinc-800 overflow-hidden shadow-xl rounded-xl  min-w-xl bg-zinc-900/70 `}
+      style={{ width: width }}
     >
       <div className="flex gap-2 py-2 px-4 items-center justify-between border-b border-zinc-800 rounded-t-xl ">
         <div className="flex gap-2">

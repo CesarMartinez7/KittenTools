@@ -124,46 +124,46 @@ const App = () => {
     }
   };
 
-
   useEffect(() => {
-    console.warn(navigator.userAgent)
+    console.warn(navigator.userAgent);
 
-    if(navigator.userAgent.includes("mobile") || navigator.userAgent.includes("Android")) {
-      toast.error("Esta aplicación no está optimizada para dispositivos móviles. ");
-      toast.error("Se removera el fondo de aurora para mejorar el rendimiento.");
-      setShowAurora(false)
+    if (
+      navigator.userAgent.includes("mobile") ||
+      navigator.userAgent.includes("Android")
+    ) {
+      toast.error(
+        "Esta aplicación no está optimizada para dispositivos móviles. ",
+      );
+      toast.error(
+        "Se removera el fondo de aurora para mejorar el rendimiento.",
+      );
+      setShowAurora(false);
     }
-    
-
-
-  }, [])
-
+  }, []);
 
   return (
     <>
       {/* Botón toggle layout en fixed */}
       <div className="fixed bottom-4 left-4 z-50 flex items-center justify-center gap-2  text-zinc-300 px-4 py-2 text-sm rounded-xl shadow-lg transition flex flex-row gap-2">
-      <button
-        className=" z-50 flex items-center justify-center gap-2 bg-gradient-to-t from-zinc-900 to-zinc-800 hover:bg-zinc-700 text-zinc-300 px-4 py-2 text-sm rounded-xl shadow-lg transition"
-        onClick={() => setShowAurora((prev) => !prev)}
-        style={{ minWidth: 120 }}
-      >
-        <Icon icon="tabler:beer" width="20" height="20" />
-        {showAurora ? "Ocultar Aurora" : "Mostrar Aurora"}
-      </button>
-      <button
-        className=" left-50 z-50 flex items-center justify-center gap-2 bg-gradient-to-t from-zinc-900 to-zinc-800 hover:bg-zinc-700 text-zinc-300 px-2 py-2 text-sm rounded-xl shadow-lg transition"
-        onClick={() => setShowGrid((prev) => !prev)}
-        style={{ minWidth: 40 }}
-      >
-        <Icon
-          icon={`tabler:${showGrid ? "layout-grid" : "layout"}`}
-          width="22"
-        />
-      </button>
-    
+        <button
+          className=" z-50 flex items-center justify-center gap-2 bg-gradient-to-t from-zinc-900 to-zinc-800 hover:bg-zinc-700 text-zinc-300 px-4 py-2 text-sm rounded-xl shadow-lg transition"
+          onClick={() => setShowAurora((prev) => !prev)}
+          style={{ minWidth: 120 }}
+        >
+          <Icon icon="tabler:beer" width="20" height="20" />
+          {showAurora ? "Ocultar Aurora" : "Mostrar Aurora"}
+        </button>
+        <button
+          className=" left-50 z-50 flex items-center justify-center gap-2 bg-gradient-to-t from-zinc-900 to-zinc-800 hover:bg-zinc-700 text-zinc-300 px-2 py-2 text-sm rounded-xl shadow-lg transition"
+          onClick={() => setShowGrid((prev) => !prev)}
+          style={{ minWidth: 40 }}
+        >
+          <Icon
+            icon={`tabler:${showGrid ? "layout-grid" : "layout"}`}
+            width="22"
+          />
+        </button>
       </div>
-
 
       <div className="relative">
         {showAurora && (
@@ -276,6 +276,7 @@ const App = () => {
         <BaseModal isOpen={openViewerJsonFull} onClose={handleCloseAll}>
           <JsonViewerLazy
             maxHeight="70vh"
+            width="80vw"
             height="60vh"
             data={value}
             isOpen={openViewerJsonFull}
