@@ -2,95 +2,119 @@ import { useState } from "react";
 import type { JsonValue } from "../types/models";
 
 const FormatDataTypeLabel = ({ data }: { data: JsonValue }) => {
-  const [collapsedLabel, setCollapsedLabel] = useState<boolean>(true);
+  const [collapsedLabel, setCollapsedLabel] = useState(true);
 
+  // ❗ Mantén esta clase tal como la tienes, no se modifica
+  const LabelBadge = ({ type }: { type: string }) => (
+    <b className="text-[9px] p-1 rounded-md text-zinc-200 bg-gradient-to-t from-zinc-900 to-zinc-700">
+      {type}
+    </b>
+  );
+
+  const Text = ({
+    children,
+    color = "text-white",
+    title,
+    onClick,
+    isLink = false,
+    href,
+  }: {
+    children: React.ReactNode;
+    color?: string;
+    title?: string;
+    onClick?: () => void;
+    isLink?: boolean;
+    href?: string;
+  }) => {
+    const base = `${color} transition-colors duration-300 hover:opacity-80`;
+
+    if (isLink && href) {
+      return (
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`${base} underline`}
+          title={title}
+        >
+          {children}
+        </a>
+      );
+    }
+
+    return (
+      <span className={base} title={title} onClick={onClick}>
+        {children}
+      </span>
+    );
+  };
+
+  // null
   if (Object.is(data, null) && data !== undefined)
     return (
-      <span className="text-kanagawa-orange">
-        null{" "}
-        <b className="text-[9px] p-1 rounded-md text-zinc-200 bg-gradient-to-t from-zinc-900 to-zinc-700">
-          null
-        </b>{" "}
-      </span>
+      <Text color="text-orange-400">
+        null <LabelBadge type="null" />
+      </Text>
     );
 
-  if (typeof data === "string" && collapsedLabel && data.length >= 30) {
-    return (
-      <span
-        className="text-pink-400 hover:text-emerald-300 hover:text-shadow-xs transition-all duration-500"
-        title="Abreme porque la tengo muy larga 😈"
-        onClick={() => setCollapsedLabel(false)}
-      >
-        &quot;{String(data.slice(0, 50).concat("..."))}&quot;
-        &quot;<b className="text-[9px] p-1 rounded-md text-zinc-200 bg-gradient-to-t from-zinc-900 to-zinc-700">
-          {typeof data}
-        </b>{" "}
-      </span>
-    );
-  }
-
-
-    if (typeof data === "string" && data.startsWith("http")) {
-    return (
-      <a
-        target="_blank"
-        rel="noopener noreferrer"
-        href={data}
-        className="text-lime-400  hover:text-shadow-xs transition-all underline duration-500"
-        title="Link externo"
-      >
-        &quot;{String(data)}&quot;{""}
-        <b className="text-[9px] underline-none p-1 rounded-md text-zinc-200 bg-gradient-to-t from-zinc-900 to-zinc-700">
-          {typeof data}
-        </b>{" "}
-      </a>
-    );
-  }
-  
-
-  if (typeof data === "string" && collapsedLabel && data.length < 40) {
-    return (
-      <span
-        className="text-green-400 hover:text-emerald-300 hover:text-shadow-xs transition-all duration-500"
-        title="Click para expandir"
-      >
-        &quot;{String(data)}&quot;
-        <b className="text-[9px] p-1 rounded-md text-zinc-200 bg-gradient-to-t from-zinc-900 to-zinc-700">
-          {typeof data}
-        </b>
-      </span>
-    );
-  }
-
+  // boolean
   if (typeof data === "boolean") {
     return (
-      <span className="text-sky-400 hover:text-sky-500">
-        {String(data)}{" "}
-        <b className="text-[9px] p-1 rounded-md text-zinc-200 bg-gradient-to-t from-zinc-900 to-zinc-700">
-          {typeof data}
-        </b>{" "}
-      </span>
+      <Text color="text-sky-400">
+        {String(data)} <LabelBadge type="boolean" />
+      </Text>
     );
   }
 
+  // number
   if (typeof data === "number") {
     return (
-      <span className="text-yellow-400 hover:text-yellow-300">
-        {data}{" "}
-        <b className="text-[9px] p-1 rounded-md text-zinc-200 bg-gradient-to-t from-zinc-900 to-zinc-700">
-          {typeof data}
-        </b>{" "}
-      </span>
+      <Text color="text-yellow-400">
+        {data} <LabelBadge type="number" />
+      </Text>
     );
   }
 
+  // string que es URL
+  if (typeof data === "string" && data.startsWith("http")) {
+    return (
+      <Text color="text-lime-400" isLink href={data} title="Link externo">
+        &quot;{data}&quot; <LabelBadge type="string" />
+      </Text>
+    );
+  }
+
+  // string larga (colapsada)
+  if (typeof data === "string" && collapsedLabel && data.length >= 30) {
+    return (
+      <Text
+        color="text-pink-400"
+        title="Haz clic para expandir"
+        onClick={() => setCollapsedLabel(false)}
+      >
+        &quot;{data.slice(0, 50)}...&quot; <LabelBadge type="string" />
+      </Text>
+    );
+  }
+
+  // string corta
+  if (typeof data === "string" && collapsedLabel) {
+    return (
+      <Text
+        color="text-green-400"
+        title="Haz clic para expandir"
+        onClick={() => setCollapsedLabel(false)}
+      >
+        &quot;{data}&quot; <LabelBadge type="string" />
+      </Text>
+    );
+  }
+
+  // fallback o expandido
   return (
-    <span className="text-green-400 hover:text-green-500" onClick={() => setCollapsedLabel(true) }>
-      &quot;{String(data)}&quot;
-      <b className="text-[9px] p-1 rounded-md text-zinc-200 bg-gradient-to-t from-zinc-900 to-zinc-700">
-        {typeof data}
-      </b>{" "}
-    </span>
+    <Text color="text-emerald-300" onClick={() => setCollapsedLabel(true)}>
+      &quot;{String(data)}&quot; <LabelBadge type={typeof data} />
+    </Text>
   );
 };
 

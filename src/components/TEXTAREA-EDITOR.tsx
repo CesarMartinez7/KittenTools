@@ -73,6 +73,7 @@ export default function ContainerTextArea({
   }, []); // Escucha cambios en value para poder guardar
 
   const handleChangeTextArea = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+
     if (e.target.value.length === 0) {
       setValue(null);
       return;
