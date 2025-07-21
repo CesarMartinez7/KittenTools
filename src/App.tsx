@@ -101,8 +101,14 @@ const App = () => {
       return;
     }
 
+
+    toast.error("Estas seguro que tienes algo que copiar?")
+
     toast.error("No tienes nada para copiar en tu Text Area.");
   };
+
+
+  
 
   const handleCopyUrl = () => {
     try {

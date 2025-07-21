@@ -63,7 +63,7 @@ const JsonNode: React.FC<JsonNodeProps> = ({
                 : "{..}"}
           </span>
           {!collapsed && (
-            <div className="ml-4 mt-1 space-y-1">
+            <div className="mt-1 space-y-1">
               {isArray
                 ? (data as JsonArray).map((item, i) => (
                     <LazyListItem key={i}>

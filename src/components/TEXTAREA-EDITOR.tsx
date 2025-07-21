@@ -110,7 +110,7 @@ export default function ContainerTextArea({
       <div className="relative p-2 h-full ">
         <AnimatePresence mode="wait">
           {isOpenBar && (
-            <motion.div
+            <motion.div 
               initial={{ opacity: 0, y: -10, scale: 0.95, filter: "blur(4px)" }}
               animate={{
                 opacity: 1,

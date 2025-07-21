@@ -9,7 +9,6 @@ export default function JWTDecode() {
   const [jwt, setJwt] = useState<string>("");
   const [decode, setDecode] = useState<string | null>(null);
 
-
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setJwt(e.target.value);
   };
