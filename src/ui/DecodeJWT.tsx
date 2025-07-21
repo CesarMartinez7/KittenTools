@@ -23,9 +23,9 @@ export default function JWTDecode() {
   };
 
   return (
-    <div className="p-4 rounded-lg bg-zinc-900 text-white flex flex-col gap-2 w-2xl">
+    <div className="p-4 rounded-lg bg-zinc-900/90 shadow shadow-xl text-white flex flex-col gap-2 w-2xl">
       <label htmlFor="jwt" className="gradient-text mx-auto text-lg my-4 ">
-        Decodificador Json Web TOKEN
+        Decodificador JWT 
       </label>
       <textarea
         id="jwt"
