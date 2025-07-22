@@ -107,7 +107,7 @@ export default function ToolbarButtons({
         }}
       >
         <Icon icon="tabler:terminal" width="20" height="20" />
-        Curl Web
+        CURL WEB
       </button>
     </div>
   );

@@ -7,6 +7,12 @@ interface BaseModalProps {
 }
 
 export const BaseModal = ({ isOpen, onClose, children }: BaseModalProps) => {
+
+
+   
+
+
+
   const modalVariants = {
     hidden: { opacity: 0, scale: 0.95 },
     visible: {
