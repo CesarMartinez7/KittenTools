@@ -140,7 +140,7 @@ const JsonViewer: React.FC<{
   const viewerRef = useRef<HTMLDivElement>(null);
 
   const [isOpenJsonViewer, setIsOpenJsonViewer] = useState<boolean>(true);
-  const [INDENT, setIdent] = useState<number>(1);
+  const [INDENT, setIdent] = useState<number>(10);
   const [interfaceGen, setInterfaceGen] = useState<unknown>();
   const [values] = useState<JsonValue>(data);
 
