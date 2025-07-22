@@ -146,10 +146,13 @@ const App = () => {
 
     window.addEventListener("keydown", (e) => {
       if (e.key === "x" && e.ctrlKey) {
-        setShowConsole(true);
-      }
-      if (e.key === "x" && e.ctrlKey && showConsole) {
-        setShowConsole(false);
+        
+        if(!showConsole){
+          setShowConsole(true);
+          return;
+        }
+
+        setShowConsole(false)
       }
     });
 

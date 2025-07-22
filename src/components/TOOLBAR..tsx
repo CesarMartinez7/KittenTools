@@ -36,7 +36,6 @@ export default function ToolBar({
   showConsole,
   setShowConsole,
   classContainerButtons = "flex ",
-  classContainerMain = "flex flex-row",
 }: ToolBarProps) {
   return (
     <div

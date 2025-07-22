@@ -38,24 +38,24 @@ export default function Console() {
     setConsoleText("");
   };
 
-  useEffect(() => {
-    consoleRef.current?.scrollTo({
-      top: consoleRef.current.scrollHeight,
-      behavior: "smooth",
-    });
-  }, [history]);
+//   useEffect(() => {
+//     // consoleRef.current?.scrollTo({
+//     //   top: consoleRef.current.scrollHeight,
+//     //   behavior: "smooth",
+//     // });
+//   }, [history]);
 
   return (
     <div className="w-screen h-screen bg-zinc- backdrop-blur-3xl flex flex-col">
       <div
         ref={consoleRef}
-        className="flex-1 p-4 relative overflow-y-auto text-sm font-mono text-green-400"
+        className="flex-1 p-12 relative overflow-y-auto text-sm font-mono text-green-400"
         >
           <span>{`<ENPOINT - URL> `} <b className="text-amber-300">{`<METHOD>`}</b> </span>
         {history.map((entry, index) => (
           <div key={index} className="mb-4">
-            <div className="text-green-600">$ {entry.command}</div>
-            <div className="bg-zinc-950 p-4">
+            <div className="text-green-500 my-2">$ {entry.command}</div>
+            <div className="bg-zinc-950 p-4 shadow-2xl rounded-lg">
             <JsonNode data={entry.output} INDENT={12} />
 
             </div>

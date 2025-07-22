@@ -37,7 +37,7 @@ export default function ToolbarButtons({
     <div className={`w-full flex  gap-1 ${classContainerButtons}`}>
       <button
         onClick={handleClear}
-        className="w-full flex items-center justify-center gap-2 bg-gradient-to-t from-zinc-900 to-zinc-800 hover:bg-zinc-700 text-zinc-300 px-3 py-2 text-sm rounded-lg transition h-[40px]"
+        className="w-full flex upper font-bold items-center justify-center gap-2 bg-gradient-to-t from-zinc-900 to-zinc-800 hover:bg-zinc-700 text-zinc-300 px-3 py-2 text-sm rounded-lg transition h-[40px]"
       >
         <Icon icon="tabler:air-conditioning" width="20" /> Limpiar
       </button>
@@ -49,7 +49,7 @@ export default function ToolbarButtons({
       </button>
       <button
         onClick={handleCopy}
-        className="w-full flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-400 text-white px-3 py-2 text-sm rounded-lg transition h-[40px]"
+        className="w-full flex font-bold items-center bg-gradient-to-t from-sky-500 to-sky-600 hover:bg-blue-400  justify-center gap-2  text-white px-3 py-2 text-sm rounded-lg transition h-[40px]"
       >
         <Icon icon="tabler:copy" width="20" /> Copiar
       </button>
@@ -62,7 +62,7 @@ export default function ToolbarButtons({
         Compartir URL
       </button>
       <button
-        className="w-full flex items-center justify-center gap-2 bg-emerald-500 bg-gradient-to-t from-indigo-700 to-indigo-500 text-white  font-bold px-3 py-2 text-sm rounded-lg transition h-[40px]"
+        className="w-full flex  items-center justify-center gap-2 bg-emerald-500 bg-gradient-to-t from-indigo-700 to-indigo-500 text-white font-bold px-3 py-2 text-sm rounded-lg transition h-[40px]"
         onClick={handleClickCargueJson}
       >
         <Icon icon="mdi:code-block-json" width="20" height="20" />
@@ -70,7 +70,7 @@ export default function ToolbarButtons({
       </button>
       <button
         title="Compa"
-        className="w-full flex items-center justify-center gap-2 bg-kanagawa-cyan text-black hover:bg-kanagawa-cyan/60 font-bold px-3 py-2 text-sm rounded-lg transition h-[40px]"
+        className="w-full flex  items-center justify-center gap-2 bg-kanagawa-cyan text-black hover:bg-kanagawa-cyan/60 font-bold px-3 py-2 text-sm rounded-lg transition h-[40px]"
         onClick={() => {
           setIsOpenDiff(!isOpenDiff);
         }}
@@ -101,13 +101,13 @@ export default function ToolbarButtons({
 
       <button
         title="Compa"
-        className="w-full flex  items-center justify-center gap-2 bg-rose-400 bg-gradient-to-t from-rose-400 to-rose-500 text-black h-[40px] hover:bg-kanagawa-cyan/60 font-bold px-3 py-2 text-sm rounded-lg transition"
+        className="w-full flex  items-center justify-center gap-2 bg-rose-400 bg-gradient-to-t from-emerald-600 to-emerald-700 text-white h-[40px] font-bold px-3 py-2 text-sm rounded-lg transition"
         onClick={() => {
           setShowConsole(!showConsole)
         }}
       >
         <Icon icon="tabler:terminal" width="20" height="20" />
-        Consola
+        Curl Web
       </button>
     </div>
   );
