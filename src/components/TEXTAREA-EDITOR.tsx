@@ -137,6 +137,7 @@ export default function ContainerTextArea({
                 ref={inputRefTextOld}
                 type="text"
                 autoFocus
+                className="input-base"
                 tabIndex={0}
                 title="Valor a buscar"
                 placeholder="Valor a buscar"
@@ -144,6 +145,7 @@ export default function ContainerTextArea({
               <input
                 ref={inputRefTextNew}
                 type="text"
+                className="input-base"
                 placeholder="Valor a Remplazar"
               />
                 <div className="flex h-6 gap-2 text-wrap whitespace-normal">

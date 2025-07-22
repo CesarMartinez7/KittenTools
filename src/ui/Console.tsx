@@ -1,8 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 export default function Console() {
-  const [consoleText, setConsoleText] = useState("");
-  const [result, setResult] = useState<object | null>(null);
+  const [consoleText, setConsoleText] = useState("https://jsonplaceholder.typicode.com/posts POST");
+  const [history, setHistory] = useState<
+    { command: string; output: object | string }[]
+  >([]);
   const consoleRef = useRef<HTMLDivElement>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -18,9 +20,16 @@ export default function Console() {
     try {
       const response = await fetch(endpoint, { method });
       const data = await response.json();
-      setResult(data);
+
+      setHistory((prev) => [
+        ...prev,
+        { command: consoleText, output: data },
+      ]);
     } catch (error) {
-      setResult({ error: "Error al hacer la petición" });
+      setHistory((prev) => [
+        ...prev,
+        { command: consoleText, output: "❌ Error al hacer la petición" },
+      ]);
     }
 
     setConsoleText("");
@@ -31,19 +40,24 @@ export default function Console() {
       top: consoleRef.current.scrollHeight,
       behavior: "smooth",
     });
-  }, [result]);
+  }, [history]);
 
   return (
     <div className="w-screen h-screen bg-zinc-950 flex flex-col">
       <div
         ref={consoleRef}
-        className="flex-1 p-4 overflow-y-auto text-sm text-green-400 font-mono"
+        className="flex-1 p-4 overflow-y-auto text-sm font-mono text-green-400"
       >
-        {result && (
-          <pre className="whitespace-pre-wrap">
-            {JSON.stringify(result, null, 2)}
-          </pre>
-        )}
+        {history.map((entry, index) => (
+          <div key={index} className="mb-4">
+            <div className="text-blue-400">$ {entry.command}</div>
+            <pre className="whitespace-pre-wrap">
+              {typeof entry.output === "string"
+                ? entry.output
+                : JSON.stringify(entry.output, null, 2)}
+            </pre>
+          </div>
+        ))}
       </div>
 
       <form
@@ -56,7 +70,8 @@ export default function Console() {
           value={consoleText}
           onChange={(e) => setConsoleText(e.target.value)}
           className="flex-1 bg-zinc-800 p-2 rounded text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder='Type: "https://api.example.com GET"'
+          placeholder='Ej: "https://jsonplaceholder.typicode.com/posts POST"'
+          
         />
       </form>
     </div>

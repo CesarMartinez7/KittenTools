@@ -28,11 +28,13 @@ const App = () => {
   const [isDecode, setIsDecode] = useState<boolean>(false);
   const [showGrid, setShowGrid] = useState(false);
   const [showAurora, setShowAurora] = useState<boolean>(true);
+  const [showConsole, setShowConsole] = useState<boolean>(false)
 
   const handleCloseAll = () => setOpenViewerJsonFull(false);
   const handleCloseDecode = () => setIsDecode(false);
   const handleCloseDiffText = () => setIsOpenDiffText(false);
   const handleCloseDiff = () => setIsOpenDiff(false);
+  const handleCloseConsole = () => setShowConsole(false)
 
   useEffect(() => {
     try {
@@ -143,16 +145,8 @@ const App = () => {
     }
 
     window.addEventListener("keydown", (e) => {
-
-      if(e.key === "Escape") {
-        setOpenViewerJsonFull(false);
-        setIsDecode(false);
-        setIsOpenDiffText(false);
-        setIsOpenDiff(false);
-      }
-
-      if(e.key === "l" && e.ctrlKey){
-        window.alert("Abriendo terminal peticones ...")
+      if(e.key === "x" && e.ctrlKey){
+        setShowConsole(true)
       }
 
     })
@@ -319,7 +313,7 @@ const App = () => {
           <JsonDiffLazy />
         </BaseModal>
 
-        <BaseModal isOpen={openViewerJsonFull} onClose={handleCloseAll}>
+        <BaseModal isOpen={showConsole} onClose={handleCloseConsole}>
           <Console />
         </BaseModal>
       </div>
