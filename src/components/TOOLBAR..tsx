@@ -31,12 +31,12 @@ export default function ToolBar({
   isOpenDiff,
   setIsDecode,
   setIsOpenDiffText,
-  classContainerButtons = "flex flex-row",
+  classContainerButtons = "flex ",
   classContainerMain = "flex flex-row",
 }: ToolBarProps) {
   return (
     <div
-      className={`p-6 shadow-2xl rounded-2xl backdrop-blur-xl flex flex-col items-center h-full justify-center text-center space-y-4 w-full bg-zinc-900/60`}
+      className={`p-6 shadow-2xl rounded-2xl backdrop-blur-xl flex flex-col items-center h-full justify-center text-center space-y-4 w-full bg-zinc-900/60 `}
     >
       <ReactSVG className="w-20 h-20 hover:rotate-400 transition-transform duration-700 hover:scale-125 focus:bg-amber-200 drop-shadows-sm  " />
       <h1 className="text-3xl font-bold bg-gradient-to-bl from-white to-zinc-400 bg-clip-text text-transparent">

@@ -14,6 +14,7 @@ import ContainerTextArea from "./components/TEXTAREA-EDITOR";
 import GridLayout from "./pages/GridLayout";
 import { AnimatePresence } from "motion/react";
 import { motion } from "motion/react";
+import Console from "./ui/Console";
 
 const App = () => {
   const [value, setValue] = useState<string | null | undefined>(
@@ -101,14 +102,10 @@ const App = () => {
       return;
     }
 
-
-    toast.error("Estas seguro que tienes algo que copiar?")
+    toast.error("Estas seguro que tienes algo que copiar?");
 
     toast.error("No tienes nada para copiar en tu Text Area.");
   };
-
-
-  
 
   const handleCopyUrl = () => {
     try {
@@ -132,7 +129,6 @@ const App = () => {
 
   useEffect(() => {
     console.warn(navigator.userAgent);
-
     if (
       navigator.userAgent.includes("mobile") ||
       navigator.userAgent.includes("Android")
@@ -145,12 +141,34 @@ const App = () => {
       );
       setShowAurora(false);
     }
+
+    window.addEventListener("keydown", (e) => {
+
+      if(e.key === "Escape") {
+        setOpenViewerJsonFull(false);
+        setIsDecode(false);
+        setIsOpenDiffText(false);
+        setIsOpenDiff(false);
+      }
+
+      if(e.key === "l" && e.ctrlKey){
+        window.alert("Abriendo terminal peticones ...")
+      }
+
+    })
+
+
+    return () => {
+      window.removeEventListener("keydown", () => {});
+    }
+
+
   }, []);
 
   return (
     <>
       {/* Botón toggle layout en fixed */}
-      <div className="fixed bottom-4 left-4 z-50 flex items-center justify-center gap-2  text-zinc-300 px-4 py-2 text-sm rounded-xl shadow-lg transition flex flex-row gap-2">
+      <div className="fixed bottom-4 left-4 z-50  items-center justify-center   text-zinc-300 px-4 py-2 text-sm rounded-xl shadow-lg transition flex flex-row gap-2">
         <button
           className=" z-50 flex items-center justify-center gap-2 bg-gradient-to-t from-zinc-900 to-zinc-800 hover:bg-zinc-700 text-zinc-300 px-4 py-2 text-sm rounded-xl shadow-lg transition"
           onClick={() => setShowAurora((prev) => !prev)}
@@ -181,7 +199,7 @@ const App = () => {
           />
         )}
 
-        <div className="bg-gradient-to-b from-zinc-950 to-zinc-800/100 text-zinc-200 min-h-screen ">
+        <div className=" text-zinc-200 min-h-screen ">
           <Toaster
             toastOptions={{
               className: "bg-zinc-800! text-zinc-400!",
@@ -189,7 +207,7 @@ const App = () => {
           />
           <AnimatePresence mode="wait">
             <motion.div
-              className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-6 min-h-screen p-5"
+              className={` ${showGrid ? "max-w-[80vw]" : "max-w-7xl"} mx-auto flex flex-col lg:flex-row gap-6 min-h-screen p-5`}
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
@@ -299,6 +317,10 @@ const App = () => {
 
         <BaseModal isOpen={isOpenDiff} onClose={handleCloseDiff}>
           <JsonDiffLazy />
+        </BaseModal>
+
+        <BaseModal isOpen={openViewerJsonFull} onClose={handleCloseAll}>
+          <Console />
         </BaseModal>
       </div>
     </>

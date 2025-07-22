@@ -39,9 +39,7 @@ kbd {
   font-style: normal;
 }
 
-input {
-  @apply bg-zinc-900 p-1 border border-zinc-600 rounded-md;
-}
+
 
 body {
   font-family: monospace;
@@ -55,8 +53,11 @@ body {
   @apply w-full flex items-center justify-center gap-2 bg-gradient-to-t from-zinc-900 to-zinc-800 hover:bg-zinc-700 text-zinc-300 px-3 py-2 text-sm rounded-lg transition;
 }
 
+
+
+
 textarea {
-  @apply w-full resize-none rounded-lg border border-zinc-800 p-3 text-sm  text-zinc-50 focus:outline-none focus:ring focus:ring-blue-300 transition;
+  @apply w-full resize-none rounded-lg border border-zinc-800 p-3 text-sm  text-zinc-50 focus:outline-none focus:ring focus:ring-blue-100 transition;
 }
 
 body {

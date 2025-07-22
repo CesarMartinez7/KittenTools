@@ -214,8 +214,8 @@ const JsonViewer: React.FC<{
       className={`flex flex-col backdrop-blur-2xl text-zinc-400 border border-zinc-800 overflow-hidden shadow-xl rounded-xl  min-w-xl bg-zinc-900/70 `}
       style={{ width: width }}
     >
-      <div className="flex gap-2 py-2 px-4 items-center justify-between border-b border-zinc-800 rounded-t-xl ">
-        <div className="flex gap-2">
+      <div className="flex gap-2 py-2   px-4 items-center justify-between border-b border-zinc-800 rounded-t-xl ">
+        <div className="flex gap-2 ">
           <button
             className="px-2 py-1 rounded-lg text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2"
             onClick={() => {
@@ -241,15 +241,15 @@ const JsonViewer: React.FC<{
           </button>
         </div>
 
-        <div className="flex gap-1">
+        <div className="flex gap-1 ">
           <button
-            className="px-2 py-1 rounded-lg text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2"
+            className="px-2 py-1 rounded text- bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2"
             onClick={handleClickSummary}
           >
             +
           </button>
           <button
-            className="px-2 py-1 rounded-lg text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2"
+            className="px-2 py-1 rounded text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2"
             onClick={handleClickRest}
           >
             -
@@ -265,7 +265,7 @@ const JsonViewer: React.FC<{
             minHeight: "42vh",
           }}
           ref={viewerRef}
-          className="flex-1 overflow-auto px-3 py-4 text-sm  whitespace-break-spaces "
+          className="flex-1 overflow-auto px-3 py-4 text-sm  whitespace-break-spaces  "
         >
           {typeof data === "string" && data.length > 0 ? (
             (() => {

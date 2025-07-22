@@ -69,17 +69,14 @@ const GridLayout: React.FC<GridLayoutExtendedProps> = ({
   return (
     <motion.div
       exit={{ opacity: 0 }}
-      className={`grid grid-cols-1 md:grid-cols-2 grid-rows-[auto_1fr_auto] gap-4 h-full w-full p-4 max-w-7xl mx-auto   ${className}`}
+      className={`grid grid-cols-1 md:grid-cols-2 grid-rows-[auto_1fr_auto] gap-4 h-full w-full p-4  mx-auto  ${className}`}
       style={style}
     >
       {/* Toolbar arriba */}
       <div className="col-span-2">
         <ToolBar
           classContainerButtons={
-            toolbarProps?.classContainerButtons ?? "flex row"
-          }
-          classContainerMain={
-            toolbarProps?.classContainerMain ?? "flex flex-row flex-wrap"
+             " flex-row gap-2 flex-col"
           }
           {...toolbarProps}
           openAll={openAll}
