@@ -1,4 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
+import JsonDiffViewerModal from "./DiffJson";
+import { JsonNode } from "./Formatter";
+import toast from "react-hot-toast";
 
 export default function Console() {
   const [consoleText, setConsoleText] = useState("https://jsonplaceholder.typicode.com/posts POST");
@@ -11,7 +14,7 @@ export default function Console() {
     e.preventDefault();
 
     if (!consoleText.trim()) {
-      alert("Please enter a command.");
+      toast.error("Por favor introduzca texto")
       return;
     }
 
@@ -46,30 +49,31 @@ export default function Console() {
     <div className="w-screen h-screen bg-zinc- backdrop-blur-3xl flex flex-col">
       <div
         ref={consoleRef}
-        className="flex-1 p-4 overflow-y-auto text-sm font-mono text-green-400"
-      >
+        className="flex-1 p-4 relative overflow-y-auto text-sm font-mono text-green-400"
+        >
+          <span>{`<ENPOINT - URL> `} <b className="text-amber-300">{`<METHOD>`}</b> </span>
         {history.map((entry, index) => (
           <div key={index} className="mb-4">
-            <div className="text-blue-400">$ {entry.command}</div>
-            <pre className="whitespace-pre-wrap">
-              {typeof entry.output === "string"
-                ? entry.output
-                : JSON.stringify(entry.output, null, 2)}
-            </pre>
+            <div className="text-green-600">$ {entry.command}</div>
+            <div className="bg-zinc-950 p-4">
+            <JsonNode data={entry.output} INDENT={12} />
+
+            </div>
+            
           </div>
         ))}
       </div>
 
       <form
         onSubmit={handleSubmit}
-        className="w-full p-4 flex items-center gap-2 border-t border-zinc-800 bg-zinc-900"
+        className="w-full p-4 flex items-center gap-2 border-t border-zinc-800 "
       >
         <span className="text-green-400">$</span>
         <input
           type="text"
           value={consoleText}
           onChange={(e) => setConsoleText(e.target.value)}
-          className="flex-1 bg-zinc-800 p-2 rounded text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="flex-1 bg-zinc-900/50 p-2 rounded text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder='Ej: "https://jsonplaceholder.typicode.com/posts POST"'
           
         />

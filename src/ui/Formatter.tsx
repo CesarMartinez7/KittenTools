@@ -24,7 +24,7 @@ interface JsonNodeProps {
   __Changed: string;
 }
 
-const JsonNode: React.FC<JsonNodeProps> = ({
+export const JsonNode: React.FC<JsonNodeProps> = ({
   data,
   name,
   INDENT,
