@@ -28,13 +28,13 @@ const App = () => {
   const [isDecode, setIsDecode] = useState<boolean>(false);
   const [showGrid, setShowGrid] = useState(false);
   const [showAurora, setShowAurora] = useState<boolean>(true);
-  const [showConsole, setShowConsole] = useState<boolean>(false)
+  const [showConsole, setShowConsole] = useState<boolean>(false);
 
   const handleCloseAll = () => setOpenViewerJsonFull(false);
   const handleCloseDecode = () => setIsDecode(false);
   const handleCloseDiffText = () => setIsOpenDiffText(false);
   const handleCloseDiff = () => setIsOpenDiff(false);
-  const handleCloseConsole = () => setShowConsole(false)
+  const handleCloseConsole = () => setShowConsole(false);
 
   useEffect(() => {
     try {
@@ -145,18 +145,17 @@ const App = () => {
     }
 
     window.addEventListener("keydown", (e) => {
-      if(e.key === "x" && e.ctrlKey){
-        setShowConsole(true)
+      if (e.key === "x" && e.ctrlKey) {
+        setShowConsole(true);
       }
-
-    })
-
+      if (e.key === "x" && e.ctrlKey && showConsole) {
+        setShowConsole(false);
+      }
+    });
 
     return () => {
       window.removeEventListener("keydown", () => {});
-    }
-
-
+    };
   }, []);
 
   return (
@@ -234,6 +233,8 @@ const App = () => {
                     className="w-full lg:w-64 grid gap-5 rounded-2xl"
                   >
                     <ToolBar
+                      showConsole={showConsole}
+                      setShowConsole={setShowConsole}
                       classContainerButtons="flex flex-col gap-3"
                       classContainerMain="flex flex-col gap-3"
                       handleClear={handleClear}

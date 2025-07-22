@@ -12,7 +12,9 @@ interface ToolbarButtonsProps {
   setIsDecode: React.Dispatch<React.SetStateAction<boolean>>,
   isDecode: boolean,
   isOpenDiffText: boolean,
-  classContainerButtons?: string
+  classContainerButtons?: string,
+  showConsole: boolean
+  setShowConsole: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export default function ToolbarButtons({
@@ -27,6 +29,8 @@ export default function ToolbarButtons({
   setIsDecode,
   isDecode,
   isOpenDiffText,
+  setShowConsole,
+  showConsole,
   classContainerButtons = "flex flex-row"
 }: ToolbarButtonsProps) {
   return (
@@ -93,6 +97,17 @@ export default function ToolbarButtons({
       >
         <Icon icon="tabler:git-compare" width="20" height="20" />
         Comparar Texto
+      </button>
+
+      <button
+        title="Compa"
+        className="w-full flex  items-center justify-center gap-2 bg-rose-400 bg-gradient-to-t from-rose-400 to-rose-500 text-black h-[40px] hover:bg-kanagawa-cyan/60 font-bold px-3 py-2 text-sm rounded-lg transition"
+        onClick={() => {
+          setShowConsole(!showConsole)
+        }}
+      >
+        <Icon icon="tabler:terminal" width="20" height="20" />
+        Consola
       </button>
     </div>
   );

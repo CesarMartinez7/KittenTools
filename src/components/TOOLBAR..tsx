@@ -17,6 +17,8 @@ interface ToolBarProps {
   isOpenDiffText: boolean;
   classContainerMain: string;
   classContainerButtons: string;
+  showConsole: boolean,
+  setShowConsole: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function ToolBar({
@@ -31,6 +33,8 @@ export default function ToolBar({
   isOpenDiff,
   setIsDecode,
   setIsOpenDiffText,
+  showConsole,
+  setShowConsole,
   classContainerButtons = "flex ",
   classContainerMain = "flex flex-row",
 }: ToolBarProps) {
@@ -46,6 +50,8 @@ export default function ToolBar({
         Valida, visualiza, genera, y compara tu JSON de forma elegante.
       </p>
       <ToolbarButtons
+        showConsole={showConsole}
+        setShowConsole={setShowConsole }
         handleClear={handleClear}
         handleClickminifyJson={handleClickminifyJson}
         handleCopy={handleCopy}

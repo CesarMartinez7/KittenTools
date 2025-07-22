@@ -43,7 +43,7 @@ export default function Console() {
   }, [history]);
 
   return (
-    <div className="w-screen h-screen bg-zinc-950 flex flex-col">
+    <div className="w-screen h-screen bg-zinc- backdrop-blur-3xl flex flex-col">
       <div
         ref={consoleRef}
         className="flex-1 p-4 overflow-y-auto text-sm font-mono text-green-400"
