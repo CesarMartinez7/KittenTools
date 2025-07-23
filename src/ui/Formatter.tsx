@@ -313,28 +313,34 @@ const JsonViewer: React.FC<{
       )}
 
       {!isOpenJsonViewer && (
-        <div
-          className="flex-1 overflow-y-auto overflow-x-hidden px-4 py-4 text-sm  whitespace-pre-wrap break-words"
-          style={{
-            maxHeight,
-            height,
-            minHeight: "42vh",
-          }}
-        >
-          {Array.isArray(interfaceGen) ? (
-            interfaceGen.map((item, index) => (
-              <div key={index} className="mb-2">
-                <pre className="text-xs text-zinc-300 whitespace-pre-wrap break-words">
-                  {JSON.stringify(item, null, 2)}
-                </pre>
-              </div>
-            ))
-          ) : typeof interfaceGen === "object" ? (
-            <pre className="text-xs text-zinc-300 whitespace-pre-wrap break-words">
-              {JSON.stringify(interfaceGen, null, 2)}
-            </pre>
-          ) : null}
-        </div>
+        <>
+          <p></p>
+          
+
+
+          <div
+            className="flex-1 overflow-y-auto overflow-x-hidden px-4 py-4 text-sm  whitespace-pre-wrap break-words"
+            style={{
+              maxHeight,
+              height,
+              minHeight: "42vh",
+            }}
+          >
+            {Array.isArray(interfaceGen) ? (
+              interfaceGen.map((item, index) => (
+                <div key={index} className="mb-2">
+                  <pre className="text-xs text-zinc-300 whitespace-pre-wrap break-words">
+                    {JSON.stringify(item, null, 2)}
+                  </pre>
+                </div>
+              ))
+            ) : typeof interfaceGen === "object" ? (
+              <pre className="text-xs text-zinc-300 whitespace-pre-wrap break-words">
+                {JSON.stringify(interfaceGen, null, 2)}
+              </pre>
+            ) : null}
+          </div>
+        </>
       )}
 
       {/* ACTIONS */}

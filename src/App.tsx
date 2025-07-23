@@ -264,7 +264,7 @@ const App = () => {
                     <section className="rounded-xl backdrop-blur shadow-2xl bg-zinc-900/80 p-6 flex flex-col gap-y-3">
                       <div className="p-1 flex justify-between">
                         <label className="bg-gradient-to-bl from-white to-zinc-600 bg-clip-text text-transparent">
-                          Resultado Formateado
+                          Datos Procesados
                         </label>
                         <div className="flex justify-center items-center gap-2">
                           <button

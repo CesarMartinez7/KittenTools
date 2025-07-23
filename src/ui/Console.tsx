@@ -13,6 +13,7 @@ export default function Console() {
       command: string;
       output: object | string;
       dataResponse: Response | null | undefined;
+      headers: unknown[]
     }[]
   >([]);
   const consoleRef = useRef<HTMLDivElement>(null);
@@ -41,9 +42,13 @@ export default function Console() {
         });
         const data = await response.json();
         const dataResponse = response;
+
+
+        const headers : any[] =[]
+
         setHistory((prev) => [
           ...prev,
-          { command: consoleText, output: data, dataResponse },
+          { command: consoleText, output: data, dataResponse, headers: response.headers.forEach((e) => [...headers, e]) },
         ]);
         setIsLoading((prev) => !prev);
       } else {
@@ -89,7 +94,8 @@ export default function Console() {
               <span>{entry.dataResponse?.status}</span>{" "}
             </div>
 
-            <div className="bg-zinc-900/80 p-4 shadow rounded-lg ">
+            <div className="bg-zinc-900/80 p-4 shadow rounded-lg  ">
+            
               <JsonNode data={entry.output} INDENT={12} />
             </div>
           </div>
