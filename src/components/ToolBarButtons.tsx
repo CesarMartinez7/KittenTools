@@ -55,7 +55,7 @@ export default function ToolbarButtons({
       </button>
       <button
         title="Compartir URL"
-        className="w-full flex items-center justify-center gap-2 bg-kanagawa-orange text-black hover:bg-kanagawa-orange/60 font-bold px-3 py-2 text-sm rounded-lg transition h-[40px]"
+        className="w-full flex items-center justify-center gap-2 bg-kanagawa-orange text-black hover:bg-kanagawa-orange/60 font-bold px-3 py-2 text-sm rounded-lg transition h-[40px] disabled:opacity-60 disabled:event-pointer-none disabled:cursor-not-allowed cursor-not-allowed cursor-help " disabled
         onClick={handleCopyUrl}
       >
         <Icon icon="tabler:share" width="20" height="20" />
