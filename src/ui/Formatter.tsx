@@ -4,7 +4,6 @@ import { AnimatePresence, motion } from 'motion/react';
 import type React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
-import useInterfaceGenerator from '../hooks/interface-create';
 import FormatDataTypeLabel from './formatDataLabel';
 import LazyListItem from './LazyListPerform';
 import TableData from './Table';

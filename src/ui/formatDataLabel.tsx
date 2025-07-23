@@ -85,7 +85,7 @@ const FormatDataTypeLabel = ({ data }: { data: JsonValue }) => {
   }
 
   // string larga (colapsada)
-  if (typeof data === 'string' && collapsedLabel && data.length >= 30) {
+  if (typeof data === 'string' && collapsedLabel && data.length >= 50) {
     return (
       <Text
         color="text-pink-400"
