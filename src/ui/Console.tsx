@@ -6,6 +6,8 @@ export default function Console() {
   const [consoleText, setConsoleText] = useState(
     "https://jsonplaceholder.typicode.com/posts POST",
   );
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [history, setHistory] = useState<
     {
       command: string;
@@ -25,7 +27,10 @@ export default function Console() {
 
     if (consoleText.split(" ").length > 3) {
       toast.error("Tal vez este mandando mas parametros de lo permitidos.");
+      return;
     }
+
+    setIsLoading((prev) => !prev)
 
     const [endpoint, method = "GET", ...body] = consoleText.split(" ");
 
@@ -42,6 +47,8 @@ export default function Console() {
         ...prev,
         { command: consoleText, output: data, dataResponse },
       ]);
+
+      setIsLoading((prev) => !prev)
     } catch (error) {
       setHistory((prev) => [
         ...prev,
@@ -61,10 +68,17 @@ export default function Console() {
 
   return (
     <div className="w-screen h-screen  backdrop-blur-3xl flex flex-col">
+
+        {isLoading && (
+        <div className="h-screen w-screen justify-center items-center flex absolute backdrop-blur-3xl ">
+            Cargando ...
+        </div>
+        )}
       <div
         ref={consoleRef}
         className="flex-1 p-12 relative overflow-y-auto mask-b-from-90% mask-b-to-100% font-mono text-xs"
       >
+
         <span>
           {`<ENPOINT - URL> `} <b className="text-amber-300">{`<METHOD>`}</b>{" "}
           <b className="text-rose-500">{`<BODY>`}</b>{" "}
@@ -72,8 +86,7 @@ export default function Console() {
         {history.map((entry, index) => (
           <div key={index} className="mb-4">
             <div className="text-green-500 my-2 flex justify-between">
-            $ {" "}
-              {entry.dataResponse?.url}{" "}
+              $ {entry.dataResponse?.url}{" "}
               <span>{entry.dataResponse?.status}</span>{" "}
             </div>
 
