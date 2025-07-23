@@ -67,9 +67,7 @@ export default function Console() {
         ...prev,
         { command: consoleText, output: "❌ Error al hacer la petición" },
       ]);
-    }
-
-    setConsoleText("");
+    }    
   };
 
   return (

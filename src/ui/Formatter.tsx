@@ -136,7 +136,6 @@ const JsonViewer: React.FC<{
 }) => {
   const [size, setSize] = useState<string>("0.00 KB");
   const { generateInterfaceFromJson } = useInterfaceGenerator();
-
   const viewerRef = useRef<HTMLDivElement>(null);
 
   const [isOpenJsonViewer, setIsOpenJsonViewer] = useState<boolean>(true);
@@ -314,7 +313,7 @@ const JsonViewer: React.FC<{
 
       {!isOpenJsonViewer && (
         <>
-          <p></p>
+          <p>Porno</p>
           
 
 
