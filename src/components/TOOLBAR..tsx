@@ -1,5 +1,5 @@
 import ReactSVG from "../ui/react";
-
+import TextType from "../ui/TextEncode";
 import ToolbarButtons from "./ToolBarButtons";
 
 interface ToolBarProps {
@@ -17,7 +17,7 @@ interface ToolBarProps {
   isOpenDiffText: boolean;
   classContainerMain: string;
   classContainerButtons: string;
-  showConsole: boolean,
+  showConsole: boolean;
   setShowConsole: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -42,15 +42,24 @@ export default function ToolBar({
       className={`p-6 shadow-2xl rounded-2xl backdrop-blur-xl flex flex-col items-center h-full justify-center text-center space-y-4 w-full bg-zinc-900/60 `}
     >
       <ReactSVG className="w-20 h-20 hover:rotate-400 transition-transform duration-700 hover:scale-125 focus:bg-amber-200 drop-shadows-sm  " />
-      <h1 className="text-3xl font-bold bg-gradient-to-bl from-white to-zinc-400 bg-clip-text text-transparent">
-        ReactKitt
-      </h1>
+      {/* <h1 className="text-3xl font-bold bg-gradient-to-bl from-white to-zinc-400 bg-clip-text text-transparent">
+        Kitten
+      </h1> */}
+      
+      <TextType
+      className="text-3xl font-bold bg-gradient-to-bl from-white to-zinc-400 bg-clip-text text-transparent"
+        text={["Kitten", "ReactKitt"]}
+        typingSpeed={105}
+        pauseDuration={2500}
+        showCursor={true}
+        cursorCharacter="|"
+      />
       <p className="text-sm  max-w-[240px] break-words  bg-gradient-to-bl from-white to-zinc-600 bg-clip-text text-transparent ">
         Valida, visualiza, genera, y compara tu JSON de forma elegante.
       </p>
       <ToolbarButtons
         showConsole={showConsole}
-        setShowConsole={setShowConsole }
+        setShowConsole={setShowConsole}
         handleClear={handleClear}
         handleClickminifyJson={handleClickminifyJson}
         handleCopy={handleCopy}
