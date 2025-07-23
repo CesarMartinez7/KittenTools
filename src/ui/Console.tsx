@@ -34,7 +34,7 @@ export default function Console() {
 
     try {
       if (method.toUpperCase() !== "GET") {
-        alert("diferente")
+        
         const response = await fetch(endpoint, {
           method: method,
           body: bodyString,
@@ -47,7 +47,7 @@ export default function Console() {
         ]);
         setIsLoading((prev) => !prev);
       } else {
-        alert("igual")
+        
         const response = await fetch(endpoint);
         const data = await response.json();
         const dataResponse = response;
