@@ -1,14 +1,14 @@
-import { motion } from 'framer-motion';
-import { diff } from 'jsondiffpatch';
-import { useState } from 'react';
-import toast from 'react-hot-toast';
-import { JsonViewerLazy } from './LAZY_COMPONENT';
+import { motion } from "framer-motion";
+import { diff } from "jsondiffpatch";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { JsonViewerLazy } from "./LAZY_COMPONENT";
 
 export default function JsonDiffViewerModal() {
-  const [json1, setJson1] = useState('');
-  const [json2, setJson2] = useState('');
+  const [json1, setJson1] = useState("");
+  const [json2, setJson2] = useState("");
   const [diffResult, setDiffResult] = useState<object | null>(null);
-  const [error, setError] = useState('Pegue su JSON Aqui');
+  const [error, setError] = useState("Pegue su JSON Aqui");
 
   const handleCompare = () => {
     try {
@@ -16,16 +16,16 @@ export default function JsonDiffViewerModal() {
       const parsed2 = JSON.parse(json2);
       const delta = diff(parsed1, parsed2);
       setDiffResult(delta as object);
-      setError('');
+      setError("");
 
       if (diffResult === undefined) {
-        toast.success('No hay diferencias entre los dos JSON');
+        toast.success("No hay diferencias entre los dos JSON");
       }
 
       console.log(diffResult);
     } catch {
-      toast.error('JSON invalido');
-      setError('JSON inválido 🫠');
+      toast.error("JSON invalido");
+      setError("JSON inválido 🫠");
       setDiffResult(null);
     }
   };
@@ -41,7 +41,7 @@ export default function JsonDiffViewerModal() {
       <h2 className="my-2 text-xl font-semibold  text-center bg-gradient-to-bl from-white to-zinc-600 bg-clip-text text-transparent">
         Comparador JSON
       </h2>
-      <div className="grid md:grid-cols-2 gap-4 ">
+      <div className="grid md:grid-cols-2 gap-4  ">
         <div className="flex flex-col">
           <label className="mb-1 text-zinc-400 font-medium">JSON #1</label>
           <textarea
@@ -76,9 +76,12 @@ export default function JsonDiffViewerModal() {
         <p className="text-center p-4">No hay Cambios</p>
       )}
 
-      {diffResult && (
-        <JsonViewerLazy data={diffResult} __changed={diffResult} height='' maxHeight='50vh' />
-      )}
+      <JsonViewerLazy
+        data={diffResult}
+        __changed={diffResult}
+        height=""
+        maxHeight="50vh"
+      />
     </motion.div>
   );
 }
