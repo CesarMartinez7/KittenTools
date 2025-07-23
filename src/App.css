@@ -66,7 +66,7 @@ body {
 }
 
 textarea {
-  @apply w-full resize-none rounded-lg border border-zinc-800 p-3 text-sm  text-zinc-50 focus:outline-none focus:ring focus:ring-blue-100 transition;
+  @apply w-full resize-none rounded-lg border border-zinc-800 p-3 text-sm  text-zinc-50 focus:outline-none focus:ring focus:ring-blue-400 transition;
 }
 
 body {

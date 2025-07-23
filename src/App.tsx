@@ -161,7 +161,7 @@ const App = () => {
   return (
     <>
       {/* Botón toggle layout en fixed */}
-      <div className="fixed bottom-4 left-4 z-50  items-center justify-center   text-zinc-300 px-4 py-2 text-sm rounded-xl shadow-lg transition flex flex-row gap-2">
+      <div className="fixed bottom-4 left-4 z-50  items-center justify-center   text-zinc-300 px-4 py-2 text-sm rounded-xl shadow-lg transition-all flex flex-row gap-2">
         <button
           className=" z-50 flex items-center justify-center gap-2 bg-gradient-to-t from-zinc-900 to-zinc-800 hover:bg-zinc-700 text-zinc-300 px-4 py-2 text-sm rounded-xl shadow-lg transition"
           onClick={() => setShowAurora((prev) => !prev)}

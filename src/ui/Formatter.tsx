@@ -255,8 +255,10 @@ const JsonViewer: React.FC<{
             <span>Generar interfaz</span>{' '}
           </button>
 
+          <AnimatePresence  >
           {!showJsonViewer && (
-            <button
+            <motion.button
+              exit={{opacity: 0}}
               className="px-2 py-1 rounded-lg text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2"
               onClick={() => {
                 handleClickShowJson();
@@ -271,8 +273,9 @@ const JsonViewer: React.FC<{
                 <Icon icon="logos:json" width="12" height="12" />
                 <span>Ver JSON</span>
               </>
-            </button>
+            </motion.button>
           )}
+          </AnimatePresence>
         </div>
 
         <div className="flex gap-1 ">
