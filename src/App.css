@@ -130,6 +130,9 @@ button:disabled{
   border: 5px inset #212121;
 }
 
+
+
+
 @theme {
   --color-kanagawa-bg: #1f1f28;
   --color-kanagawa-surface: #2a2a37;

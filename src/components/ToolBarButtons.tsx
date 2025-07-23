@@ -47,21 +47,25 @@ export default function ToolbarButtons({
       >
         <Icon icon="tabler:box" width="24" height="24" /> Minify
       </button>
+
+      <button
+        title="Compa"
+        className="w-full flex  items-center justify-center gap-2 bg-rose-400 bg-gradient-to-t from-emerald-600 to-emerald-700 text-white h-[40px] font-bold px-3 py-2 text-sm rounded-lg transition"
+        onClick={() => {
+          setShowConsole(!showConsole);
+        }}
+      >
+        <Icon icon="tabler:terminal" width="20" height="20" />
+        CURL WEB
+      </button>
+
       <button
         onClick={handleCopy}
         className="w-full flex font-bold items-center bg-gradient-to-t from-sky-500 to-sky-600 hover:bg-blue-400  justify-center gap-2  text-white px-3 py-2 text-sm rounded-lg transition h-[40px]"
       >
         <Icon icon="tabler:copy" width="20" /> Copiar
       </button>
-      <button
-        title="Compartir URL"
-        className="w-full flex items-center justify-center gap-2 bg-kanagawa-orange text-black hover:bg-kanagawa-orange/60 font-bold px-3 py-2 text-sm rounded-lg transition h-[40px] disabled:opacity-60 disabled:event-pointer-none disabled:cursor-not-allowed cursor-not-allowed cursor-help "
-        disabled
-        onClick={handleCopyUrl}
-      >
-        <Icon icon="tabler:share" width="20" height="20" />
-        Compartir URL
-      </button>
+      
       <button
         type="button"
         className="w-full flex items-center justify-center gap-2 bg-emerald-500 bg-gradient-to-t from-indigo-700 to-indigo-500 text-white font-bold px-3 py-2 text-sm rounded-lg transition h-[40px]"
@@ -102,15 +106,16 @@ export default function ToolbarButtons({
       </button>
 
       <button
-        title="Compa"
-        className="w-full flex  items-center justify-center gap-2 bg-rose-400 bg-gradient-to-t from-emerald-600 to-emerald-700 text-white h-[40px] font-bold px-3 py-2 text-sm rounded-lg transition"
-        onClick={() => {
-          setShowConsole(!showConsole);
-        }}
+        title="Compartir URL"
+        className="w-full flex items-center justify-center gap-2 bg-kanagawa-orange text-black hover:bg-kanagawa-orange/60 font-bold px-3 py-2 text-sm rounded-lg transition h-[40px] disabled:opacity-60 disabled:event-pointer-none "
+        
+        onClick={handleCopyUrl}
       >
-        <Icon icon="tabler:terminal" width="20" height="20" />
-        CURL WEB
+        <Icon icon="tabler:git-pull-request" width="20" height="20"   />
+        Cliente AXIOS
       </button>
+
+      
     </div>
   );
 }

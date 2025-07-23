@@ -39,7 +39,7 @@ export default function TableData({ data }: { data: unknown }) {
   return (
     <motion.div exit={{ scale: 0 }} className="p-6 h-full overflow-auto ">
       <div className="relative">
-        <table className="w-full text-xs text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <table className="w-full  text-xs text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-zinc-500 bg-zinc-900 dark:text-gray-400 sticky">
             <tr>
               {columnNames?.map((col, idx) => (
@@ -65,7 +65,7 @@ export default function TableData({ data }: { data: unknown }) {
                       {val && (
                         <>
                           {val.slice(1).map((e, idx) => (
-                            <td className="px-6 py-4" key={idx}>
+                            <td className="px-6 py-4 text-ellipsis" key={idx}>
                               {String(e)}
                             </td>
                           ))}
