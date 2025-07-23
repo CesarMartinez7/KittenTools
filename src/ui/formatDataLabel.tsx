@@ -1,5 +1,5 @@
-import { useState } from "react";
-import type { JsonValue } from "../types/models";
+import { useState } from 'react';
+import type { JsonValue } from '../types/models';
 
 const FormatDataTypeLabel = ({ data }: { data: JsonValue }) => {
   const [collapsedLabel, setCollapsedLabel] = useState(true);
@@ -13,7 +13,7 @@ const FormatDataTypeLabel = ({ data }: { data: JsonValue }) => {
 
   const Text = ({
     children,
-    color = "text-white",
+    color = 'text-white',
     title,
     onClick,
     isLink = false,
@@ -37,9 +37,7 @@ const FormatDataTypeLabel = ({ data }: { data: JsonValue }) => {
           className={`${base} underline `}
           title={title}
         >
-          
           {children}
-          
         </a>
       );
     }
@@ -60,7 +58,7 @@ const FormatDataTypeLabel = ({ data }: { data: JsonValue }) => {
     );
 
   // boolean
-  if (typeof data === "boolean") {
+  if (typeof data === 'boolean') {
     return (
       <Text color="text-sky-400">
         {String(data)} <LabelBadge type="boolean" />
@@ -69,7 +67,7 @@ const FormatDataTypeLabel = ({ data }: { data: JsonValue }) => {
   }
 
   // number
-  if (typeof data === "number") {
+  if (typeof data === 'number') {
     return (
       <Text color="text-yellow-400">
         {data} <LabelBadge type="number" />
@@ -78,7 +76,7 @@ const FormatDataTypeLabel = ({ data }: { data: JsonValue }) => {
   }
 
   // string que es URL
-  if (typeof data === "string" && data.startsWith("http")) {
+  if (typeof data === 'string' && data.startsWith('http')) {
     return (
       <Text color="text-lime-400" isLink href={data} title="Link externo">
         &quot;{data}&quot; <LabelBadge type="string" />
@@ -87,7 +85,7 @@ const FormatDataTypeLabel = ({ data }: { data: JsonValue }) => {
   }
 
   // string larga (colapsada)
-  if (typeof data === "string" && collapsedLabel && data.length >= 30) {
+  if (typeof data === 'string' && collapsedLabel && data.length >= 30) {
     return (
       <Text
         color="text-pink-400"
@@ -100,7 +98,7 @@ const FormatDataTypeLabel = ({ data }: { data: JsonValue }) => {
   }
 
   // string corta
-  if (typeof data === "string" && collapsedLabel) {
+  if (typeof data === 'string' && collapsedLabel) {
     return (
       <Text
         color="text-green-400"

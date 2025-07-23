@@ -7,8 +7,6 @@ export default function ViewCsv({
   values: unknown[];
   keys: { key: string; type: string }[];
 }) {
-  useEffect(() => {}, [keys, values]);
-
   return (
     <div>
       <div className="relative overflow-x-auto">

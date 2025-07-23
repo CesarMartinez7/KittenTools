@@ -1,5 +1,6 @@
-import { motion, AnimatePresence } from "framer-motion";
-import { Icon } from "@iconify/react/dist/iconify.js";
+import { Icon } from '@iconify/react/dist/iconify.js';
+import { AnimatePresence, motion } from 'framer-motion';
+
 interface BaseModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -7,23 +8,17 @@ interface BaseModalProps {
 }
 
 export const BaseModal = ({ isOpen, onClose, children }: BaseModalProps) => {
-
-
-   
-
-
-
   const modalVariants = {
     hidden: { opacity: 0, scale: 0.95 },
     visible: {
       opacity: 1,
       scale: 1,
-      transition: { duration: 0.2, ease: "easeOut" },
+      transition: { duration: 0.2, ease: 'easeOut' },
     },
     exit: {
       opacity: 0,
       scale: 0.95,
-      transition: { duration: 0.15, ease: "easeIn" },
+      transition: { duration: 0.15, ease: 'easeIn' },
     },
   };
 

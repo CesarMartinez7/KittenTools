@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import type React from 'react';
+import { useEffect, useState } from 'react';
 
 // Interfaces
 interface ICharacterDiff {
@@ -33,14 +34,14 @@ const getCharactersWord = (
   cadenaOne: string,
   cadenaTwo: string,
 ): ICharacterDiff[] => {
-  const wordsRight = cadenaOne.split("");
-  const wordsLeft = cadenaTwo.split("");
+  const wordsRight = cadenaOne.split('');
+  const wordsLeft = cadenaTwo.split('');
   const changesDetected: ICharacterDiff[] = [];
   const totalLength = Math.max(wordsLeft.length, wordsRight.length);
 
   for (let index = 0; index < totalLength; index++) {
-    const letterLeft = wordsLeft[index] || "";
-    const letterRight = wordsRight[index] || "";
+    const letterLeft = wordsLeft[index] || '';
+    const letterRight = wordsRight[index] || '';
     changesDetected.push({
       valueLeft: letterLeft,
       valueRight: letterRight,
@@ -54,14 +55,14 @@ const getCharactersWord = (
 
 // Función para comparar palabras
 const getWord = (rightLine: string, leftLine: string): IWordDiff[] => {
-  const wordsRight = rightLine.split(" ");
-  const wordsLeft = leftLine.split(" ");
+  const wordsRight = rightLine.split(' ');
+  const wordsLeft = leftLine.split(' ');
   const totalLength = Math.max(wordsLeft.length, wordsRight.length);
   const changesDetected: IWordDiff[] = [];
 
   for (let index = 0; index < totalLength; index++) {
-    const wordLeft = wordsLeft[index] || "";
-    const wordRight = wordsRight[index] || "";
+    const wordLeft = wordsLeft[index] || '';
+    const wordRight = wordsRight[index] || '';
 
     changesDetected.push({
       valueLeft: wordLeft,
@@ -77,14 +78,14 @@ const getWord = (rightLine: string, leftLine: string): IWordDiff[] => {
 
 // Función para comparar líneas
 const getLines = (right: string, left: string): ILineDiff[] => {
-  const linesRight = right.split("\n");
-  const linesLeft = left.split("\n");
+  const linesRight = right.split('\n');
+  const linesLeft = left.split('\n');
   const totalLines: number = Math.max(linesLeft.length, linesRight.length);
   const changesDetected: ILineDiff[] = [];
 
   for (let index = 0; index < totalLines; index++) {
-    const leftLine = linesLeft[index] || "";
-    const rightLine = linesRight[index] || "";
+    const leftLine = linesLeft[index] || '';
+    const rightLine = linesRight[index] || '';
 
     if (leftLine !== rightLine) {
       changesDetected.push({
@@ -100,24 +101,24 @@ const getLines = (right: string, left: string): ILineDiff[] => {
 
 // COMPONENTE PRINCIPAL
 export const ModalViewer = () => {
-  const [originalText, setOriginalText] = useState<string>("");
-  const [compareText, setComparateText] = useState<string>("");
+  const [originalText, setOriginalText] = useState<string>('');
+  const [compareText, setComparateText] = useState<string>('');
 
   useEffect(() => {
     // Cargar textos desde localStorage al iniciar
     if (
-      localStorage.getItem("originalText") &&
-      localStorage.getItem("compareText")
+      localStorage.getItem('originalText') &&
+      localStorage.getItem('compareText')
     ) {
-      console.log("Cargando textos desde localStorage");
-      setOriginalText(localStorage.getItem("originalText") || "");
-      setComparateText(localStorage.getItem("compareText") || "");
+      console.log('Cargando textos desde localStorage');
+      setOriginalText(localStorage.getItem('originalText') || '');
+      setComparateText(localStorage.getItem('compareText') || '');
     }
 
     return () => {
       if (originalText && compareText) {
-        localStorage.setItem("originalText", originalText);
-        localStorage.setItem("compareText", compareText);
+        localStorage.setItem('originalText', originalText);
+        localStorage.setItem('compareText', compareText);
       }
     };
   }, []);
@@ -192,11 +193,11 @@ export const TextDiffViewer: React.FC<Props> = ({ texto1, texto2 }) => {
                           key={charIdx}
                           className={`${
                             charDiff.changed
-                              ? "text-red-400 font-bold"
-                              : "text-green-400"
+                              ? 'text-red-400 font-bold'
+                              : 'text-green-400'
                           } text-xs `}
                         >
-                          {charDiff.valueLeft || "·"}
+                          {charDiff.valueLeft || '·'}
                         </span>
                       ))}
                       <span className="text-zinc-500"> </span>

@@ -1,14 +1,14 @@
-import { useState } from "react";
-import { diff } from "jsondiffpatch";
-import { JsonViewerLazy } from "./LAZY_COMPONENT";
-import { motion } from "framer-motion";
-import toast from "react-hot-toast";
+import { motion } from 'framer-motion';
+import { diff } from 'jsondiffpatch';
+import { useState } from 'react';
+import toast from 'react-hot-toast';
+import { JsonViewerLazy } from './LAZY_COMPONENT';
 
 export default function JsonDiffViewerModal() {
-  const [json1, setJson1] = useState("");
-  const [json2, setJson2] = useState("");
+  const [json1, setJson1] = useState('');
+  const [json2, setJson2] = useState('');
   const [diffResult, setDiffResult] = useState<object | null>(null);
-  const [error, setError] = useState("Pegue su JSON Aqui");
+  const [error, setError] = useState('Pegue su JSON Aqui');
 
   const handleCompare = () => {
     try {
@@ -16,17 +16,17 @@ export default function JsonDiffViewerModal() {
       const parsed2 = JSON.parse(json2);
       const delta = diff(parsed1, parsed2);
       setDiffResult(delta as object);
-      setError("");
+      setError('');
 
       if (diffResult === undefined) {
-        toast.success("No hay diferencias entre los dos JSON");
+        toast.success('No hay diferencias entre los dos JSON');
       }
 
-      toast.success("Comparando ...");
+      toast.success('Comparando ...');
       console.log(diffResult);
     } catch {
-      toast.error("JSON invalido");
-      setError("JSON inválido 🫠");
+      toast.error('JSON invalido');
+      setError('JSON inválido 🫠');
       setDiffResult(null);
     }
   };

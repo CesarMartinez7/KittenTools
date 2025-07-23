@@ -1,13 +1,13 @@
-import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route } from "react-router";
-import { AppHomeLazy } from "./ui/LAZY_COMPONENT";
-import "./App.css";
-import { TextDiffViewer } from "./ui/Difftext";
+import ReactDOM from 'react-dom/client';
+import { BrowserRouter, Route, Routes } from 'react-router';
+import { AppHomeLazy } from './ui/LAZY_COMPONENT';
+import './App.css';
+import { TextDiffViewer } from './ui/Difftext';
 
-const root = document.getElementById("root")!;
+const root = document.getElementById('root')!;
 
-const texto = "Holaaaa ";
-const texto2 = "Holisss";
+const texto = 'Holaaaa ';
+const texto2 = 'Holisss';
 
 ReactDOM.createRoot(root).render(
   <BrowserRouter>

@@ -1,7 +1,6 @@
-import { useEffect, useState, useRef, KeyboardEvent } from "react";
-import toast from "react-hot-toast";
-import { AnimatePresence } from "motion/react";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from 'motion/react';
+import { type KeyboardEvent, useEffect, useRef, useState } from 'react';
+import toast from 'react-hot-toast';
 
 interface ContainerArea {
   value: string | null | undefined;
@@ -12,7 +11,7 @@ interface ContainerArea {
 export default function ContainerTextArea({
   setValue,
   value,
-  classText = "",
+  classText = '',
 }: ContainerArea) {
   // Valor a remplazar
   const inputRefTextOld = useRef<HTMLInputElement>(null);
@@ -24,34 +23,32 @@ export default function ContainerTextArea({
   // Evento para replazar el texto
 
   const handleCLickReplaceTextFirst = () => {
-    const from = inputRefTextOld.current?.value || "";
-    const to = inputRefTextNew.current?.value || "";
+    const from = inputRefTextOld.current?.value || '';
+    const to = inputRefTextNew.current?.value || '';
 
-    if (!from) return toast.error("Ingresa un valor a buscar");
-
+    if (!from) return toast.error('Ingresa un valor a buscar');
 
     if (!value?.includes(from)) {
-      return toast.error("El valor a buscar no se encuentra en el texto");
+      return toast.error('El valor a buscar no se encuentra en el texto');
     }
 
     const result = value?.replace(from, to);
     setValue(result);
-    toast.success("Reemplazo realizado");
+    toast.success('Reemplazo realizado');
   };
 
   const handleCLickReplaceText = () => {
-    const from = inputRefTextOld.current?.value || "";
-    const to = inputRefTextNew.current?.value || "";
-
+    const from = inputRefTextOld.current?.value || '';
+    const to = inputRefTextNew.current?.value || '';
 
     if (!value?.includes(from)) {
-      return toast.error("El valor a buscar no se encuentra en el texto");
+      return toast.error('El valor a buscar no se encuentra en el texto');
     }
 
-    if (!from) return toast.error("Ingresa un valor a buscar");
+    if (!from) return toast.error('Ingresa un valor a buscar');
     const result = value?.replaceAll(from, to);
     setValue(result);
-    toast.success("Reemplazo realizado");
+    toast.success('Reemplazo realizado');
   };
 
   useEffect(() => {
@@ -59,32 +56,31 @@ export default function ContainerTextArea({
 
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
       // No importa si esta en minuscula la b o en mayuscula siempre se abrira
-      if ((e.ctrlKey && e.key === "b") || (e.ctrlKey && e.key === "B")) {
+      if ((e.ctrlKey && e.key === 'b') || (e.ctrlKey && e.key === 'B')) {
         e.preventDefault();
         setIsOpenBar((prev) => !prev);
       }
     };
 
-    window.addEventListener("keydown", handleGlobalKeyDown);
+    window.addEventListener('keydown', handleGlobalKeyDown);
 
     return () => {
-      window.removeEventListener("keydown", handleGlobalKeyDown);
+      window.removeEventListener('keydown', handleGlobalKeyDown);
     };
   }, []); // Escucha cambios en value para poder guardar
 
   const handleChangeTextArea = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-
     if (e.target.value.length === 0) {
       setValue(null);
       return;
     }
-    const clean = e.target.value.replace(/\/\//g, "").replace(/n\//gi, "");
+    const clean = e.target.value.replace(/\/\//g, '').replace(/n\//gi, '');
     setValue(clean);
     try {
       JSON.parse(clean);
-      localStorage.setItem("jsonData", clean);
+      localStorage.setItem('jsonData', clean);
     } catch {
-      console.log("kjsdfkjdsf");
+      console.log('kjsdfkjdsf');
     }
   };
 
@@ -110,15 +106,15 @@ export default function ContainerTextArea({
       <div className="relative p-2 h-full ">
         <AnimatePresence mode="wait">
           {isOpenBar && (
-            <motion.div 
-              initial={{ opacity: 0, y: -10, scale: 0.95, filter: "blur(4px)" }}
+            <motion.div
+              initial={{ opacity: 0, y: -10, scale: 0.95, filter: 'blur(4px)' }}
               animate={{
                 opacity: 1,
                 y: 0,
                 scale: 1,
-                filter: "blur(0px)",
+                filter: 'blur(0px)',
                 transition: {
-                  type: "spring",
+                  type: 'spring',
                   stiffness: 200,
                   damping: 20,
                 },
@@ -127,7 +123,7 @@ export default function ContainerTextArea({
                 opacity: 0,
                 y: -10,
                 scale: 0.95,
-                filter: "blur(4px)",
+                filter: 'blur(4px)',
                 transition: { duration: 0.2 },
               }}
               layout
@@ -148,7 +144,7 @@ export default function ContainerTextArea({
                 className="input-base"
                 placeholder="Valor a Remplazar"
               />
-                <div className="flex h-6 gap-2 text-wrap whitespace-normal">
+              <div className="flex h-6 gap-2 text-wrap whitespace-normal">
                 <button
                   className="bg-gradient-to-r flex-1 from-green-500 to-green-500 p-1 rounded-md text-xs truncate"
                   onClick={handleCLickReplaceTextFirst}
@@ -163,14 +159,14 @@ export default function ContainerTextArea({
                 >
                   Reemplazar todo
                 </button>
-                </div>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
 
         <textarea
           autoFocus
-          value={value ?? ""}
+          value={value ?? ''}
           onChange={handleChangeTextArea}
           className="h-full w-full resize-none"
           placeholder="Pega o escribe tu JSON aquí"

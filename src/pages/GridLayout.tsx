@@ -1,11 +1,11 @@
-import React from "react";
-import ContainerDescripcion from "../components/DESCRIPCION";
-import { JsonViewerLazy } from "../ui/LAZY_COMPONENT";
-import { BaseModal } from "../ui/BaseModal";
-import { motion } from "motion/react";
-import ContainerTextArea from "../components/TEXTAREA-EDITOR";
-import ResultadoJsonFormat from "../components/JSONFORMATER";
-import ToolBar from "../components/TOOLBAR.";
+import { motion } from 'motion/react';
+import type React from 'react';
+import ContainerDescripcion from '../components/DESCRIPCION';
+import ResultadoJsonFormat from '../components/JSONFORMATER';
+import ContainerTextArea from '../components/TEXTAREA-EDITOR';
+import ToolBar from '../components/TOOLBAR.';
+import { BaseModal } from '../ui/BaseModal';
+import { JsonViewerLazy } from '../ui/LAZY_COMPONENT';
 
 export interface GridLayoutProps {
   toolbarProps?: {
@@ -45,7 +45,7 @@ const GridLayout: React.FC<GridLayoutExtendedProps> = ({
   textAreaProps,
   resultadoProps,
   descripcionProps,
-  className = "",
+  className = '',
   style,
   value,
   setValue,
@@ -75,9 +75,7 @@ const GridLayout: React.FC<GridLayoutExtendedProps> = ({
       {/* Toolbar arriba */}
       <div className="col-span-2">
         <ToolBar
-          classContainerButtons={
-             " flex-row gap-2 flex-col"
-          }
+          classContainerButtons={' flex-row gap-2 flex-col'}
           {...toolbarProps}
           openAll={openAll}
           setOpenAll={setOpenAll}

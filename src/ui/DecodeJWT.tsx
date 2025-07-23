@@ -1,12 +1,10 @@
-import { useState } from "react";
-import { jwtDecode } from "jwt-decode";
-import { JsonViewerLazy } from "./LAZY_COMPONENT";
-import { AnimatePresence } from "motion/react";
-import { motion } from "motion/react";
-import toast from "react-hot-toast";
+import { jwtDecode } from 'jwt-decode';
+import { AnimatePresence, motion } from 'motion/react';
+import { useState } from 'react';
+import toast from 'react-hot-toast';
+import { JsonViewerLazy } from './LAZY_COMPONENT';
 export default function JWTDecode() {
-
-  const [jwt, setJwt] = useState<string>("");
+  const [jwt, setJwt] = useState<string>('');
   const [decode, setDecode] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -17,14 +15,14 @@ export default function JWTDecode() {
     try {
       setDecode(jwtDecode(jwt));
     } catch {
-      toast.error("JWT invalido o mal formateado");
+      toast.error('JWT invalido o mal formateado');
     }
   };
 
   return (
     <div className="p-4 rounded-lg bg-zinc-900/90 shadow shadow-xl text-white flex flex-col gap-2 w-2xl">
       <label htmlFor="jwt" className="gradient-text mx-auto text-lg my-4 ">
-        Decodificador JWT 
+        Decodificador JWT
       </label>
       <textarea
         id="jwt"
@@ -47,7 +45,7 @@ export default function JWTDecode() {
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
-            transition={{ duration: 0.25, ease: "easeOut" }}
+            transition={{ duration: 0.25, ease: 'easeOut' }}
             className="max-h-[70vh] overflow-auto" // opcional: scroll si el JWT es gigante
           >
             <JsonViewerLazy data={decode} />

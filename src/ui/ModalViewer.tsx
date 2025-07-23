@@ -1,7 +1,7 @@
-import { Icon } from "@iconify/react/dist/iconify.js";
-import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useRef } from "react";
-import { JsonViewerLazy } from "./LAZY_COMPONENT";
+import { Icon } from '@iconify/react/dist/iconify.js';
+import { AnimatePresence, motion } from 'motion/react';
+import { useEffect, useRef } from 'react';
+import { JsonViewerLazy } from './LAZY_COMPONENT';
 
 interface PropsModalViewer {
   setOpenAll: React.Dispatch<React.SetStateAction<boolean>>;
@@ -13,7 +13,7 @@ export const overlayVariants = {
   visible: {
     scale: 1,
     transition: {
-      when: "beforeChildren",
+      when: 'beforeChildren',
       duration: 0.3,
       delayChildren: 0.4,
     },
@@ -21,7 +21,7 @@ export const overlayVariants = {
   hidden: {
     scale: 0,
     transition: {
-      when: "afterChildren",
+      when: 'afterChildren',
       duration: 0.3,
       delay: 0.4,
     },
@@ -30,8 +30,8 @@ export const overlayVariants = {
 
 const ModalViewerJSON = ({ setOpenAll, openAll, value }: PropsModalViewer) => {
   const handleClickOpenModal = () => {
-    console.log("click");
-    console.log("openAll", openAll);
+    console.log('click');
+    console.log('openAll', openAll);
     setOpenAll(!openAll);
   };
   const modalRef = useRef<HTMLDivElement>(null);
@@ -40,7 +40,7 @@ const ModalViewerJSON = ({ setOpenAll, openAll, value }: PropsModalViewer) => {
   }, []);
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === "Escape") {
+    if (event.key === 'Escape') {
       setOpenAll(false);
     }
   };

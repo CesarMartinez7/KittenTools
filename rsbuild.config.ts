@@ -6,6 +6,6 @@ export default defineConfig({
   html: {
     title: 'ReactMatter - Formateador de JSON',
     favicon: './src/public/react.svg',
-    template: './src/public/index.html',        
+    template: './src/public/index.html',
   },
 });

@@ -1,6 +1,6 @@
-import ReactSVG from "../ui/react";
-import TextType from "../ui/TextEncode";
-import ToolbarButtons from "./ToolBarButtons";
+import ReactSVG from '../ui/react';
+import TextType from '../ui/TextEncode';
+import ToolbarButtons from './ToolBarButtons';
 
 interface ToolBarProps {
   classNameContainer?: string;
@@ -35,20 +35,23 @@ export default function ToolBar({
   setIsOpenDiffText,
   showConsole,
   setShowConsole,
-  classContainerButtons = "flex ",
+  classContainerButtons = 'flex ',
 }: ToolBarProps) {
   return (
     <div
       className={`p-6 shadow-2xl rounded-2xl backdrop-blur-xl flex flex-col items-center h-full justify-center text-center space-y-4 w-full bg-zinc-900/60 `}
     >
       <ReactSVG className="w-20 h-20 hover:rotate-400 transition-transform duration-700 hover:scale-125 focus:bg-amber-200 drop-shadows-sm  " />
-        <h1 className="text-3xl font-bold bg-gradient-to-bl from-white to-zinc-400 bg-clip-text text-transparent">
+      <h1 className="text-3xl font-bold bg-gradient-to-bl from-white to-zinc-400 bg-clip-text text-transparent">
         ReactKitt
-      </h1> 
-      
+      </h1>
+
       <TextType
         className="text-sm min-h-[40px] max-w-[240px] break-words text-zinc-800 "
-        text={["Utiliza Herramientas hechas para desarrolladores.", "Valida, visualiza, genera, y compara tu JSON de forma elegante."]}
+        text={[
+          'Utiliza Herramientas hechas para desarrolladores.',
+          'Valida, visualiza, genera, y compara tu JSON de forma elegante.',
+        ]}
         typingSpeed={15}
         pauseDuration={1500}
         showCursor={true}

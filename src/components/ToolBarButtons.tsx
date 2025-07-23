@@ -1,20 +1,20 @@
-import { Icon } from "@iconify/react/dist/iconify.js"
+import { Icon } from '@iconify/react/dist/iconify.js';
 
 interface ToolbarButtonsProps {
-  handleClear: () => void,
-  handleClickminifyJson: () => void,
-  handleCopy: () => void,
-  handleCopyUrl: () => void,
-  handleClickCargueJson: () => void,
-  setIsOpenDiff: React.Dispatch<React.SetStateAction<boolean>>,
-  isOpenDiff: boolean,
-  setIsOpenDiffText: React.Dispatch<React.SetStateAction<boolean>>,
-  setIsDecode: React.Dispatch<React.SetStateAction<boolean>>,
-  isDecode: boolean,
-  isOpenDiffText: boolean,
-  classContainerButtons?: string,
-  showConsole: boolean
-  setShowConsole: React.Dispatch<React.SetStateAction<boolean>>
+  handleClear: () => void;
+  handleClickminifyJson: () => void;
+  handleCopy: () => void;
+  handleCopyUrl: () => void;
+  handleClickCargueJson: () => void;
+  setIsOpenDiff: React.Dispatch<React.SetStateAction<boolean>>;
+  isOpenDiff: boolean;
+  setIsOpenDiffText: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsDecode: React.Dispatch<React.SetStateAction<boolean>>;
+  isDecode: boolean;
+  isOpenDiffText: boolean;
+  classContainerButtons?: string;
+  showConsole: boolean;
+  setShowConsole: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function ToolbarButtons({
@@ -31,7 +31,7 @@ export default function ToolbarButtons({
   isOpenDiffText,
   setShowConsole,
   showConsole,
-  classContainerButtons = "flex flex-row"
+  classContainerButtons = 'flex flex-row',
 }: ToolbarButtonsProps) {
   return (
     <div className={`w-full flex  gap-1 ${classContainerButtons}`}>
@@ -55,14 +55,16 @@ export default function ToolbarButtons({
       </button>
       <button
         title="Compartir URL"
-        className="w-full flex items-center justify-center gap-2 bg-kanagawa-orange text-black hover:bg-kanagawa-orange/60 font-bold px-3 py-2 text-sm rounded-lg transition h-[40px] disabled:opacity-60 disabled:event-pointer-none disabled:cursor-not-allowed cursor-not-allowed cursor-help " disabled
+        className="w-full flex items-center justify-center gap-2 bg-kanagawa-orange text-black hover:bg-kanagawa-orange/60 font-bold px-3 py-2 text-sm rounded-lg transition h-[40px] disabled:opacity-60 disabled:event-pointer-none disabled:cursor-not-allowed cursor-not-allowed cursor-help "
+        disabled
         onClick={handleCopyUrl}
       >
         <Icon icon="tabler:share" width="20" height="20" />
         Compartir URL
       </button>
       <button
-        className="w-full flex  items-center justify-center gap-2 bg-emerald-500 bg-gradient-to-t from-indigo-700 to-indigo-500 text-white font-bold px-3 py-2 text-sm rounded-lg transition h-[40px]"
+        type="button"
+        className="w-full flex items-center justify-center gap-2 bg-emerald-500 bg-gradient-to-t from-indigo-700 to-indigo-500 text-white font-bold px-3 py-2 text-sm rounded-lg transition h-[40px]"
         onClick={handleClickCargueJson}
       >
         <Icon icon="mdi:code-block-json" width="20" height="20" />
@@ -103,7 +105,7 @@ export default function ToolbarButtons({
         title="Compa"
         className="w-full flex  items-center justify-center gap-2 bg-rose-400 bg-gradient-to-t from-emerald-600 to-emerald-700 text-white h-[40px] font-bold px-3 py-2 text-sm rounded-lg transition"
         onClick={() => {
-          setShowConsole(!showConsole)
+          setShowConsole(!showConsole);
         }}
       >
         <Icon icon="tabler:terminal" width="20" height="20" />
