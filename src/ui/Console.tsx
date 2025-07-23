@@ -19,37 +19,45 @@ export default function Console() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!consoleText.trim()) {
       toast.error("Por favor introduzca texto");
       return;
     }
-
     if (consoleText.split(" ").length > 3) {
       toast.error("Tal vez este mandando mas parametros de lo permitidos.");
       return;
     }
 
-    setIsLoading((prev) => !prev)
-
+    setIsLoading((prev) => !prev);
     const [endpoint, method = "GET", ...body] = consoleText.split(" ");
-
     const bodyString = body.join(" ");
 
     try {
-      const response = await fetch(endpoint, { method, body: bodyString });
-      const dataResponse = response;
-      const data = await response.json();
-
-      console.log(dataResponse);
-
-      setHistory((prev) => [
-        ...prev,
-        { command: consoleText, output: data, dataResponse },
-      ]);
-
-      setIsLoading((prev) => !prev)
+      if (method.toUpperCase() !== "GET") {
+        alert("diferente")
+        const response = await fetch(endpoint, {
+          method: method,
+          body: bodyString,
+        });
+        const data = await response.json();
+        const dataResponse = response;
+        setHistory((prev) => [
+          ...prev,
+          { command: consoleText, output: data, dataResponse },
+        ]);
+        setIsLoading((prev) => !prev);
+      } else {
+        alert("igual")
+        const response = await fetch(endpoint);
+        const data = await response.json();
+        const dataResponse = response;
+        setHistory((prev) => [
+          ...prev,
+          { command: consoleText, output: data, dataResponse },
+        ]);
+      }
     } catch (error) {
+      setIsLoading((prev) => !prev);
       setHistory((prev) => [
         ...prev,
         { command: consoleText, output: "❌ Error al hacer la petición" },
@@ -59,26 +67,17 @@ export default function Console() {
     setConsoleText("");
   };
 
-  //   useEffect(() => {
-  //     // consoleRef.current?.scrollTo({
-  //     //   top: consoleRef.current.scrollHeight,
-  //     //   behavior: "smooth",
-  //     // });
-  //   }, [history]);
-
   return (
     <div className="w-screen h-screen  backdrop-blur-3xl flex flex-col">
-
-        {isLoading && (
+      {isLoading && (
         <div className="h-screen w-screen justify-center items-center flex absolute backdrop-blur-3xl ">
-            Cargando ...
+          Cargando ...
         </div>
-        )}
+      )}
       <div
         ref={consoleRef}
         className="flex-1 p-12 relative overflow-y-auto mask-b-from-90% mask-b-to-100% font-mono text-xs"
       >
-
         <span>
           {`<ENPOINT - URL> `} <b className="text-amber-300">{`<METHOD>`}</b>{" "}
           <b className="text-rose-500">{`<BODY>`}</b>{" "}
