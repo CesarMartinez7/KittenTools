@@ -4,19 +4,14 @@ import { Icon } from "@iconify/react";
 
 import ButtonResponse from "./components/buttonResponse";
 import AddQueryParam from "./components/addQueryParams";
-
 import { useContext } from "react";
-
 import { Methodos, Opciones } from "./mapper-ops";
+
 
 import { ParamsContext } from "./components/addQueryParams";
 import JsonViewer from "../../ui/Formatter";
 
-import "./App.css"
-
-
-
-
+import "./App.css";
 
 export default function AppClient() {
   const paramsFormat = useContext(ParamsContext);
@@ -30,54 +25,59 @@ export default function AppClient() {
   const [mimeSelected, setMimeSelected] = useState<number>(0);
   const [bodyJson, setBodyJson] = useState<string>("");
 
+  const [endpointUrl, setEndpointUrl] = useState<string>(
+    "https://dummyjson.com/posts/add",
+  );
 
-  const [endpointUrl, setEndpointUrl] = useState<string>("")
-  
-  const editorRef = useRef<HTMLDivElement>(null);
-
-  const [isLoadingPeticion, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    console.log(paramsFormat);
-    setQueryParams(queryParams);
-  }, [queryParams]);
-
-  // Evento para montar el editor
-  function handleEditorDidMount(editor: unknown) {
-    //@ts-ignore
-    editorRef.current = editor;
-  }
-
-  // Mostrar valor del editor
-  function showValue() {
-    //@ts-ignore
-    setBodyJson(editorRef.current?.getValue());
-    console.error(bodyJson);
-  }
+    fetch('https://jsonplaceholder.typicode.com/posts', {
+        method: 'POST',
+        body: JSON.stringify({
+          title: 'foo',
+          body: 'bar',
+          userId: 1,
+        }),
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8',
+        },
+      })
+        .then((response) => response.json())
+        .then((json) => console.log(json));
+      
+  }, []);
 
   const handleRequest = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!urlPeticion.current?.value) return;
+    
     try {
-      const params: string = paramsFormat || "";
+        setIsLoading(true);
+        const params: string = paramsFormat || "";
 
       // Solo si es tiene params entonces le pasamos lo queryparams
       const url = urlPeticion.current.value + params;
-      let response;
-      setIsLoading(true);
 
+
+      let response;
+
+      console.log(bodyJson)
       switch (selectedMethod) {
         case "POST":
-          response = await axios.post(url, { data: "data here" });
+          response = await axios.post(url, { data: {
+            title: 'I am in love with someone.',
+            userId: 5,
+            
+          } });
           break;
         case "PUT":
-          response = await axios.put(url, { data: "Ejemplo de PUT" });
+          response = await axios.put(url, { data: bodyJson });
           break;
         case "DELETE":
-          response = await axios.delete(url);
+          response = await axios.delete(url, {data: bodyJson});
           break;
         case "PATCH":
-          response = await axios.patch(url, { data: "Ejemplo de PATCH" });
+          response = await axios.patch(url, { data: bodyJson });
           break;
         default:
           response = await axios.get(url);
@@ -87,20 +87,21 @@ export default function AppClient() {
       setResponseSelected(response.data);
       setChangeRequest(!changeRequest);
 
-      setIsLoading(false);
+       setIsLoading(false);
     } catch (error) {
       setResponseSelected(`Error: ${error.message}`);
+      setIsLoading(false)
 
       setCode(error.response?.status || 500);
     }
   };
 
-  const handleClickShowMethod = () => setShowMethods((prev) => !prev)
-  
+  const handleClickShowMethod = () => setShowMethods((prev) => !prev);
+
   return (
     <div>
-      
-      <div className="w-full gap-2 flex flex-col p-12 h-screen">
+      <div className="relative fixed z-20"></div>
+      <div className="w-full gap-2 flex flex-col p-12 h-screen z-50">
         <form onSubmit={handleRequest}>
           <div className="my-3">
             <span className="text-[12px]">
@@ -118,8 +119,9 @@ export default function AppClient() {
             <input
               type="text"
               ref={urlPeticion}
+              value={endpointUrl}
               placeholder="https://....."
-              onChange={(e) => setEndpointUrl(e.target.value) }
+              onChange={(e) => setEndpointUrl(e.target.value)}
               autoFocus
               className="w-full input-gray"
             />
@@ -128,7 +130,7 @@ export default function AppClient() {
             </button>
           </div>
           <details className="dropdown">
-            <summary className="btn m-1 ">Metodos</summary>
+            <summary className="btn m-1">Metodos</summary>
             {Methodos.map((metodo) => (
               <button
                 key={metodo.name}
@@ -145,8 +147,8 @@ export default function AppClient() {
         </form>
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 h-screen ">
-          <div className=" px-4 py-8 border rounded border-zinc-800">
-            <div className="flex flex-wrap gap-2 ">
+          <div className=" px-5 border rounded border-zinc-800  flex flex-col bg-zinc-900">
+            <div className=" flex flex-wrap gap-2 flex-col">
               {Opciones.map((opcion, index) => (
                 <button
                   key={index}
@@ -160,37 +162,56 @@ export default function AppClient() {
                   {opcion.name}
                 </button>
               ))}
-              {mimeSelected === 1 ? (
+              {mimeSelected === 1 && (
                 <>
-                  <button onClick={showValue}>Show value</button>
-                  <textarea name="" id=""></textarea>
+                  <textarea
+                    onChange={(e) => setBodyJson(e.target.value)}
+                    className="h-full w-full"
+                    name=""
+                    id=""
+                  ></textarea>
                 </>
-              ) : null}
+              )}
 
-              {mimeSelected === 0 ? (
+              {mimeSelected === 0 && (
                 <div className="w-full h-full">
-                  <AddQueryParam/>
+                  <AddQueryParam />
                 </div>
-              ) : null}
+              )}
+
+              {mimeSelected === 2 && <div>Headers</div>}
+
+              {mimeSelected === 3 && <div>Auth</div>}
             </div>
           </div>
 
           {responseSelected ? (
-            <div className="border-zinc-800 border-1 rounded-md p-4">
+            <div className="border-zinc-800 border-1 bg-zinc-900 rounded-md p-4 ">
               <div className="flex justify-end">
                 <ButtonResponse code={code} />
               </div>
 
               <div>
-                <JsonViewer data={responseSelected} maxHeight="90vh" height="100%"/>
+                {isLoading ? (
+                  <div>Cargando</div>
+                ) : (
+                  <JsonViewer
+                    data={responseSelected}
+                    maxHeight="90vh"
+                    height="100%"
+                  />
+                )}
               </div>
-
-
             </div>
           ) : (
-            <pre className="border-zinc-800 border-1 rounded-md p-4 grid place-content-center-safe text-zinc-500">
-             <Icon icon="tabler:send" width="100" height="100"  className="mx-auto"  />
-              <p>Se creativo y inteligente.</p>
+            <pre className="border-zinc-800 border-1 rounded-md p-4 grid place-content-center-safe text-zinc-500 bg-zinc-900">
+              <Icon
+                icon="tabler:send"
+                width="100"
+                height="100"
+                className="mx-auto"
+              />
+              <p>Se creativo y inteligente 🐀🐀.</p>
             </pre>
           )}
         </div>

@@ -1,14 +1,13 @@
-
 @import "tailwindcss";
 
-.gray-btn{
-    @apply px-2 py-2 rounded-lg text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2
+.gray-btn {
+  @apply px-2 py-2 rounded-lg text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2;
 }
 
-.input-gray{
-    @apply bg-zinc-800 p-2 border-none rounded
+.input-gray {
+  @apply bg-zinc-800 p-2 border-none rounded;
 }
 
 .btn-black {
-    @apply  p-2 rounded-md text-zinc-200 bg-gradient-to-t from-zinc-900 to-zinc-800
+  @apply p-2 rounded-md text-zinc-200 bg-gradient-to-t from-zinc-900 to-zinc-800;
 }
