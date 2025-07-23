@@ -118,6 +118,8 @@ export const JsonNode: React.FC<JsonNodeProps> = ({
   );
 };
 
+
+
 const JsonViewer: React.FC<{
   data: JsonValue;
   isOpen: boolean;
@@ -137,7 +139,7 @@ const JsonViewer: React.FC<{
   __changed,
 }) => {
   const [size, setSize] = useState<string>('0.00 KB');
-  const { generateInterfaceFromJson } = useInterfaceGenerator();
+  // const { generateInterfaceFromJson } = useInterfaceGenerator();
   const viewerRef = useRef<HTMLDivElement>(null);
 
   const [showJsonViewer, setShowJsonViewer] = useState<boolean>(true);
@@ -148,12 +150,22 @@ const JsonViewer: React.FC<{
   const [interfaceGen, setInterfaceGen] = useState<unknown>();
   const [values] = useState<JsonValue>(data);
 
+
+  useEffect(() => {
+    setShowJsonViewer(true)
+    setShowInterface(false)
+    setShowTable(false)
+  }, [values])
+
   const handleClickShowTable = () => {
     setShowInterface(false);
     setShowJsonViewer(false);
     setShowTable(true);
   };
   const handleClickShowInterface = () => {
+
+    setInterfaceGen(generateJsonInterface(JSON.parse(values as string)))
+    
     setShowJsonViewer(false);
     setShowTable(false);
     setShowInterface(true);
@@ -234,7 +246,7 @@ const JsonViewer: React.FC<{
 
   return (
     <div
-      className={`flex flex-col backdrop-blur-2xl text-zinc-400 border border-zinc-800 overflow-hidden shadow-xl rounded-xl  min-w-xl  bg-zinc-900/70 `}
+      className={`flex flex-col backdrop-blur-2xl text-zinc-400 border border-zinc-800 overflow-auto shadow-xl rounded-xl  min-w-xl  bg-zinc-900/70 `}
       style={{ width: width, height: height, maxHeight: maxHeight }}
     >
       <div className="flex gap-2 py-2   px-4 items-center justify-between border-b border-zinc-800 rounded-t-xl ">
@@ -246,7 +258,7 @@ const JsonViewer: React.FC<{
             onClick={handleClickShowTable}
           >
             <Icon icon="tabler:database" width="14" height="14"   />
-            Datos {`(dev)`}{' '}
+            Datos {`(new - dev)`}{' '}
           </button>
           <button
             className="px-2 py-1 rounded-lg text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2"

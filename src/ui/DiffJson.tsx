@@ -78,7 +78,7 @@ export default function JsonDiffViewerModal() {
       )}
 
       {diffResult && (
-        <JsonViewerLazy data={diffResult} __changed={diffResult} />
+        <JsonViewerLazy data={diffResult} __changed={diffResult} height='' maxHeight='50vh' />
       )}
     </motion.div>
   );

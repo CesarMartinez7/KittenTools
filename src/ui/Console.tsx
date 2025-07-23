@@ -21,17 +21,23 @@ export default function Console() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!consoleText.trim()) {
       toast.error('Por favor introduzca texto');
       return;
     }
-    if (consoleText.split(' ').length > 3) {
+    if (consoleText.split(' ').length > 4) {
       toast.error('Tal vez este mandando mas parametros de lo permitidos.');
       return;
     }
 
     setIsLoading((prev) => !prev);
-    const [endpoint, method = 'GET', ...body] = consoleText.split(' ');
+    const [endpoint, method = 'GET' ,...body] = consoleText.split(' ');
+
+    
+
+    
+
     const bodyString = body.join(' ');
 
     try {
@@ -87,7 +93,7 @@ export default function Console() {
       >
         <span>
           {`<ENPOINT - URL> `} <b className="text-amber-300">{`<METHOD>`}</b>{' '}
-          <b className="text-rose-500">{`<BODY>`}</b>{' '}
+          <b className="text-indigo-500">{`<HEADERS>`}</b>   <b className="text-rose-500">{`<BODY>`}</b>{' '}
         </span>
         {history.map((entry, index) => (
           <div key={index} className="mb-4">

@@ -22,6 +22,8 @@ const useInterfaceGenerator = () => {
       }
     };
 
+    console.log("Creando")
+
     const interfaceBody = entries
       .map(([key, value]) => `  ${key}: ${getType(value)};`)
       .join('\n');

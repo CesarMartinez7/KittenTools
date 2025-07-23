@@ -67,7 +67,7 @@ export default function ContainerTextArea({
     return () => {
       window.removeEventListener('keydown', handleGlobalKeyDown);
     };
-  }, []); // Escucha cambios en value para poder guardar
+  }, []); // Escucha cambioss en value para poder guardar
 
   const handleChangeTextArea = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (e.target.value.length === 0) {
@@ -98,8 +98,8 @@ export default function ContainerTextArea({
         <label className="my-2 bg-gradient-to-b from-white to-zinc-500 bg-clip-text text-transparent">
           Editor JSON
         </label>
-        <p className="text-zinc-500">
-          <kbd onClick={handleClickKdb}>Ctrl + b</kbd>
+        <p className="text-zinc-500 text-[11px]">
+          <button onClick={handleClickKdb}>Ctrl + b</button>
         </p>
       </div>
 

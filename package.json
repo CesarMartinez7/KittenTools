@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.11",
+    "axios": "^1.11.0",
     "export-to-csv": "^1.4.0",
     "gsap": "^3.13.0",
     "json-2-csv": "^5.5.9",

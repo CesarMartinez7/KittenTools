@@ -13,7 +13,7 @@ export default function TableData({ data }: { data: unknown }) {
     try {
       parsedData = typeof data === 'string' ? JSON.parse(data) : data;
     } catch (error) {
-      toast.error('Error al parsear el JSON');
+      toast.error(`Error al parsear el JSON ${error}`);
       return;
     }
 
@@ -32,18 +32,18 @@ export default function TableData({ data }: { data: unknown }) {
     } else if (typeof parsedData === 'object') {
       toast.success('Es un objeto');
     } else if (typeof parsedData === 'string') {
-      toast.error('Es un string plano');
+      toast.success('Es un string plano');
     }
   }, [data]);
 
   return (
-    <motion.div exit={{ opacity: 0 }} className="p-6 h-full overflow-auto ">
+    <motion.div exit={{ scale: 0 }} className="p-6 h-full overflow-auto ">
       <div className="relative">
         <table className="w-full text-xs text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-zinc-500 bg-zinc-900 dark:text-gray-400 sticky">
             <tr>
               {columnNames?.map((col, idx) => (
-                <th scope="col" key={idx} className="px-6 py-3" key={col}>
+                <th scope="col" key={idx} className="px-6 py-3">
                   {col}
                 </th>
               ))}
@@ -52,9 +52,9 @@ export default function TableData({ data }: { data: unknown }) {
           <tbody>
             {valuesColums && (
               <>
-                {valuesColums?.map((val: Array) => (
+                {valuesColums?.map((val: Array, idx: number) => (
                   <>
-                    <tr className="bg-white border-b border-zinc-900 bg-zinc-800 ">
+                    <tr key={idx} className="bg-white border-b border-zinc-900 bg-zinc-800 ">
                       <th
                         scope="row"
                         className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
@@ -79,10 +79,6 @@ export default function TableData({ data }: { data: unknown }) {
           </tbody>
         </table>
       </div>
-
-      {/* <pre className="text-sm text-zinc-200 bg-zinc-900 p-4 rounded-lg">
-        {JSON.stringify(dataClone, null, 2)}
-      </pre> */}
     </motion.div>
   );
 }
