@@ -120,7 +120,7 @@ export default function AppClient() {
               ref={urlPeticion}
               placeholder="https://....."
               onChange={(e) => setEndpointUrl(e.target.value) }
-              value={"https://jsonplaceholder.typicode.com/posts"}
+              autoFocus
               className="w-full input-gray"
             />
             <button type="submit" className="gray-btn ">
@@ -145,7 +145,7 @@ export default function AppClient() {
         </form>
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 h-screen ">
-          <div className=" px-4 py-8">
+          <div className=" px-4 py-8 border rounded border-zinc-800">
             <div className="flex flex-wrap gap-2 ">
               {Opciones.map((opcion, index) => (
                 <button
@@ -188,14 +188,9 @@ export default function AppClient() {
 
             </div>
           ) : (
-            <pre className="border-zinc-800 border-1 rounded-md p-4 grid place-content-center">
-              <Icon
-                icon="lucide:send"
-                width="120"
-                height="120"
-                className="text-zinc-700"
-              />
-              <p>Not found request</p>
+            <pre className="border-zinc-800 border-1 rounded-md p-4 grid place-content-center-safe text-zinc-500">
+             <Icon icon="tabler:send" width="100" height="100"  className="mx-auto"  />
+              <p>Se creativo y inteligente.</p>
             </pre>
           )}
         </div>
