@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import useInterfaceGenerator from "../hooks/interface-create";
 import FormatDataTypeLabel from "./formatDataLabel";
 import LazyListItem from "./LazyListPerform";
+import TableData from "./Table";
 
 const csvConfig = mkConfig({ useKeysAsHeaders: true });
 
@@ -138,10 +139,22 @@ const JsonViewer: React.FC<{
   const { generateInterfaceFromJson } = useInterfaceGenerator();
   const viewerRef = useRef<HTMLDivElement>(null);
 
-  const [isOpenJsonViewer, setIsOpenJsonViewer] = useState<boolean>(true);
+
+  const [showJsonViewer, setShowJsonViewer] = useState<boolean>(true);
+  const [showTable, setShowTable] = useState<boolean>(false)
+  const [showInterface, setShowInterface] = useState<boolean>(false)
+  
+
   const [INDENT, setIdent] = useState<number>(10);
   const [interfaceGen, setInterfaceGen] = useState<unknown>();
   const [values] = useState<JsonValue>(data);
+
+
+
+  const handleClickShowTable = () => setShowTable((prev) => !prev)
+  const handleClickShowInterface = () => setShowInterface((prev) => !prev)
+  // const handleClickShowJson = () => setShow
+
 
   const handleClickSummary = () => {
     if (INDENT >= 10) {
@@ -215,28 +228,26 @@ const JsonViewer: React.FC<{
     >
       <div className="flex gap-2 py-2   px-4 items-center justify-between border-b border-zinc-800 rounded-t-xl ">
         <div className="flex gap-2 ">
+          <button className="px-2 py-1 rounded-lg text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2" onClick={handleClickShowTable}>
+          Generar Tabla {`(dev)`} </button>
+          <button className="px-2 py-1 rounded-lg text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2" onClick={handleClickShowInterface}>
+          <Icon icon="logos:typescript-icon" width="12" height="12" />
+                <span>Generar interfaz</span> </button>
           <button
             className="px-2 py-1 rounded-lg text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2"
             onClick={() => {
-              setIsOpenJsonViewer(!isOpenJsonViewer);
-              if (isOpenJsonViewer) {
+              setShowJsonViewer((prev) => !prev);
+              if (showJsonViewer) {
                 setInterfaceGen(
                   generateJsonInterface(JSON.parse(values as string)),
                 );
               }
             }}
           >
-            {isOpenJsonViewer ? (
-              <>
-                <Icon icon="logos:typescript-icon" width="12" height="12" />
-                <span>Generar interfaz</span>
-              </>
-            ) : (
               <>
                 <Icon icon="logos:json" width="12" height="12" />
                 <span>Ver JSON</span>
               </>
-            )}
           </button>
         </div>
 
@@ -256,7 +267,9 @@ const JsonViewer: React.FC<{
         </div>
       </div>
 
-      {isOpenJsonViewer && (
+      {/* Aqui mostrar el json por defual siempre */}
+
+      {showJsonViewer && (
         <div
           style={{
             maxHeight,
@@ -311,12 +324,14 @@ const JsonViewer: React.FC<{
         </div>
       )}
 
-      {!isOpenJsonViewer && (
+      {/* Mostrar la tabla  */}
+      {showTable && (
+        <TableData data={data} />
+      )}
+
+      {/* Mostrar la generacion de interfaces */}
+      {showInterface && (
         <>
-          <p>Porno</p>
-          
-
-
           <div
             className="flex-1 overflow-y-auto overflow-x-hidden px-4 py-4 text-sm  whitespace-pre-wrap break-words"
             style={{
@@ -325,6 +340,8 @@ const JsonViewer: React.FC<{
               minHeight: "42vh",
             }}
           >
+            
+
             {Array.isArray(interfaceGen) ? (
               interfaceGen.map((item, index) => (
                 <div key={index} className="mb-2">

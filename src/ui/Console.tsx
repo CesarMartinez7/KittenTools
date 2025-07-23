@@ -73,7 +73,8 @@ export default function Console() {
   return (
     <div className="w-screen h-screen  backdrop-blur-3xl flex flex-col">
       {isLoading && (
-        <div className="h-screen w-screen justify-center items-center flex absolute backdrop-blur-3xl ">
+        <div className="h-screen w-screen justify-center items-center flex absolute backdrop-blur-3xl z-[999] flex-col ">
+          <span className="svg-spinners--gooey-balls-2"></span>
           Cargando ...
         </div>
       )}
