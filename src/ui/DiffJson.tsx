@@ -22,7 +22,6 @@ export default function JsonDiffViewerModal() {
         toast.success('No hay diferencias entre los dos JSON');
       }
 
-      toast.success('Comparando ...');
       console.log(diffResult);
     } catch {
       toast.error('JSON invalido');
@@ -37,7 +36,7 @@ export default function JsonDiffViewerModal() {
       animate={{ scale: 1, opacity: 1 }}
       exit={{ scale: 0.95, opacity: 0 }}
       transition={{ duration: 0.2 }}
-      className=" md:w-5xl w-full bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-2xl text-sm text-zinc-200 "
+      className=" md:w-[90vw] h-[90vh] w-full bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-2xl text-sm text-zinc-200 "
     >
       <h2 className="my-2 text-xl font-semibold  text-center bg-gradient-to-bl from-white to-zinc-600 bg-clip-text text-transparent">
         Comparador JSON
