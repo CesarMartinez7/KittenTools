@@ -131,7 +131,7 @@ export default function ContainerTextArea({
                 transition: { duration: 0.2 },
               }}
               layout
-              className="backdrop-blur-3xl bg-zinc-900/35 border border-zinc-800 p-3 flex flex-col w-52 shadow-xl shadow-zinc-800 gap-1 rounded absolute right-4"
+              className="backdrop-blur-3xl bg-zinc-900/35 border border-zinc-900 p-3 flex flex-col w-52 shadow-xl shadow-zinc-800 gap-1 rounded absolute right-4 top-5"
             >
               <input
                 ref={inputRefTextOld}
