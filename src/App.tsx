@@ -280,8 +280,8 @@ const App = () => {
                         <JsonViewerLazy
                           data={value}
                           isOpen={openViewerJsonFull}
-                          height="20vh"
-                          maxHeight="20vh"
+                          height="50vh"
+                          maxHeight="50vh"
                         />
                       </div>
                     </section>

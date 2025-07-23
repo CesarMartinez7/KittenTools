@@ -151,24 +151,24 @@ const JsonViewer: React.FC<{
   const handleClickShowTable = () => {
     setShowInterface(false);
     setShowJsonViewer(false);
-    setShowTable((prev) => !prev);
+    setShowTable(true);
   };
   const handleClickShowInterface = () => {
     setShowJsonViewer(false);
     setShowTable(false);
-    setShowInterface((prev) => !prev);
+    setShowInterface(true);
   };
 
   const handleClickShowJson = () => {
     setShowInterface(false);
     setShowTable(false);
-    setShowJsonViewer((prev) => !prev);
+    setShowJsonViewer(true);
   };
 
   // const handleClickShowJson = () => setShow
 
   const handleClickSummary = () => {
-    if (INDENT >= 10) {
+    if (INDENT >= 20) {
       toast.error(
         'No se puede aumentar el identado a mas de 10 espacios para no romper la vista',
       );
@@ -178,7 +178,7 @@ const JsonViewer: React.FC<{
   };
   const handleClickRest = () => {
     setIdent((prev) => {
-      if (prev > 5) {
+      if (prev > 10) {
         toast.error('No se puede reducir más el indentado');
         return prev - 1;
       } else {
@@ -234,8 +234,8 @@ const JsonViewer: React.FC<{
 
   return (
     <div
-      className={`flex flex-col backdrop-blur-2xl text-zinc-400 border border-zinc-800 overflow-hidden shadow-xl rounded-xl  min-w-xl bg-zinc-900/70 `}
-      style={{ width: width }}
+      className={`flex flex-col backdrop-blur-2xl text-zinc-400 border border-zinc-800 overflow-hidden shadow-xl rounded-xl  min-w-xl  bg-zinc-900/70 `}
+      style={{ width: width, height: height, maxHeight: maxHeight }}
     >
       <div className="flex gap-2 py-2   px-4 items-center justify-between border-b border-zinc-800 rounded-t-xl ">
         {/* Botones Opciones */}
@@ -245,7 +245,8 @@ const JsonViewer: React.FC<{
             className="px-2 py-1 rounded-lg text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2"
             onClick={handleClickShowTable}
           >
-            Generar Tabla {`(dev)`}{' '}
+            <Icon icon="tabler:database" width="14" height="14"   />
+            Datos {`(dev)`}{' '}
           </button>
           <button
             className="px-2 py-1 rounded-lg text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2"
@@ -280,13 +281,13 @@ const JsonViewer: React.FC<{
 
         <div className="flex gap-1 ">
           <button
-            className="px-2 py-1 rounded text- bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2"
+            className="px-2 py-0.5 rounded text- bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2"
             onClick={handleClickSummary}
           >
             +
           </button>
           <button
-            className="px-2 py-1 rounded text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2"
+            className="px-2 py-0.5 rounded text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2"
             onClick={handleClickRest}
           >
             -

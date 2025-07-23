@@ -37,10 +37,10 @@ export default function TableData({ data }: { data: unknown }) {
   }, [data]);
 
   return (
-    <motion.div exit={{ opacity: 0 }} className="p-6 h-full min-h-[42vh] max-h-[42vh] ">
-      <div className="relative overflow-x-auto overflow-y-scroll">
-        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-          <thead className="text-xs text-gray-700 uppercase bg-zinc-500 bg-zinc-900 dark:text-gray-400">
+    <motion.div exit={{ opacity: 0 }} className="p-6 h-full overflow-auto ">
+      <div className="relative">
+        <table className="w-full text-xs text-left rtl:text-right text-gray-500 dark:text-gray-400">
+          <thead className="text-xs text-gray-700 uppercase bg-zinc-500 bg-zinc-900 dark:text-gray-400 sticky">
             <tr>
               {columnNames?.map((col, idx) => (
                 <th scope="col" key={idx} className="px-6 py-3" key={col}>
@@ -66,7 +66,7 @@ export default function TableData({ data }: { data: unknown }) {
                         <>
                           {val.slice(1).map((e, idx) => (
                             <td className="px-6 py-4" key={idx}>
-                              {e}
+                              {String(e)}
                             </td>
                           ))}
                         </>
