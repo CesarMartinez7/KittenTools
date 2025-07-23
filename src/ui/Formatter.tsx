@@ -139,22 +139,32 @@ const JsonViewer: React.FC<{
   const { generateInterfaceFromJson } = useInterfaceGenerator();
   const viewerRef = useRef<HTMLDivElement>(null);
 
-
   const [showJsonViewer, setShowJsonViewer] = useState<boolean>(true);
-  const [showTable, setShowTable] = useState<boolean>(false)
-  const [showInterface, setShowInterface] = useState<boolean>(false)
-  
+  const [showTable, setShowTable] = useState<boolean>(false);
+  const [showInterface, setShowInterface] = useState<boolean>(false);
 
   const [INDENT, setIdent] = useState<number>(10);
   const [interfaceGen, setInterfaceGen] = useState<unknown>();
   const [values] = useState<JsonValue>(data);
 
+  const handleClickShowTable = () => {
+    setShowInterface(false);
+    setShowJsonViewer(false);
+    setShowTable((prev) => !prev);
+  };
+  const handleClickShowInterface = () => {
+    setShowJsonViewer(false);
+    setShowTable(false);
+    setShowInterface((prev) => !prev);
+  };
 
+  const handleClickShowJson = () => {
+    setShowInterface(false);
+    setShowTable(false);
+    setShowJsonViewer((prev) => !prev);
+  };
 
-  const handleClickShowTable = () => setShowTable((prev) => !prev)
-  const handleClickShowInterface = () => setShowInterface((prev) => !prev)
   // const handleClickShowJson = () => setShow
-
 
   const handleClickSummary = () => {
     if (INDENT >= 10) {
@@ -227,28 +237,43 @@ const JsonViewer: React.FC<{
       style={{ width: width }}
     >
       <div className="flex gap-2 py-2   px-4 items-center justify-between border-b border-zinc-800 rounded-t-xl ">
-        <div className="flex gap-2 ">
-          <button className="px-2 py-1 rounded-lg text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2" onClick={handleClickShowTable}>
-          Generar Tabla {`(dev)`} </button>
-          <button className="px-2 py-1 rounded-lg text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2" onClick={handleClickShowInterface}>
-          <Icon icon="logos:typescript-icon" width="12" height="12" />
-                <span>Generar interfaz</span> </button>
+        {/* Botones Opciones */}
+
+
+
+        <div className="flex gap-2">
           <button
             className="px-2 py-1 rounded-lg text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2"
-            onClick={() => {
-              setShowJsonViewer((prev) => !prev);
-              if (showJsonViewer) {
-                setInterfaceGen(
-                  generateJsonInterface(JSON.parse(values as string)),
-                );
-              }
-            }}
+            onClick={handleClickShowTable}
           >
+            Generar Tabla {`(dev)`}{" "}
+          </button>
+          <button
+            className="px-2 py-1 rounded-lg text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2"
+            onClick={handleClickShowInterface}
+          >
+            <Icon icon="logos:typescript-icon" width="12" height="12" />
+            <span>Generar interfaz</span>{" "}
+          </button>
+
+          {!showJsonViewer && (
+            <button
+              className="px-2 py-1 rounded-lg text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2"
+              onClick={() => {
+                handleClickShowJson()
+                if (showJsonViewer) {
+                  setInterfaceGen(
+                    generateJsonInterface(JSON.parse(values as string)),
+                  );
+                }
+              }}
+            >
               <>
                 <Icon icon="logos:json" width="12" height="12" />
                 <span>Ver JSON</span>
               </>
-          </button>
+            </button>
+          )}
         </div>
 
         <div className="flex gap-1 ">
@@ -325,9 +350,7 @@ const JsonViewer: React.FC<{
       )}
 
       {/* Mostrar la tabla  */}
-      {showTable && (
-        <TableData data={data} />
-      )}
+      {showTable && <TableData data={data} />}
 
       {/* Mostrar la generacion de interfaces */}
       {showInterface && (
@@ -340,8 +363,6 @@ const JsonViewer: React.FC<{
               minHeight: "42vh",
             }}
           >
-            
-
             {Array.isArray(interfaceGen) ? (
               interfaceGen.map((item, index) => (
                 <div key={index} className="mb-2">

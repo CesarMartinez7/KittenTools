@@ -19,15 +19,13 @@ export default function TableData({ data }: { data: unknown }) {
     setDataClone(parsedData);
 
     if (Array.isArray(parsedData)) {
-      toast.success("Es un array");
+      
       if (parsedData.length > 0 && typeof parsedData[0] === "object") {
         const columns = Object.keys(parsedData[0]);
         let values = [];
         const valuesColumnas = parsedData.forEach((e) => {
           values = [...values, Object.values(e)];
         });
-        toast.success("abajo");
-    
         setValueColumns(values);
         setColumnNames(columns);
         
@@ -40,7 +38,7 @@ export default function TableData({ data }: { data: unknown }) {
   }, [data]);
 
   return (
-    <div className="text-blue-500">
+    <div className="p-6 h-full">
       <div className="relative overflow-x-auto">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-zinc-500 bg-zinc-900 dark:text-gray-400">
