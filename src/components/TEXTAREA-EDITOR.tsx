@@ -103,7 +103,7 @@ export default function ContainerTextArea({
           Editor JSON
         </label>
         <p className="text-zinc-500">
-          <kbd onClick={handleClickKdb}>Ctrl + b para toolbar o Clikeame</kbd>
+          <kbd onClick={handleClickKdb}>Ctrl + b</kbd>
         </p>
       </div>
 

@@ -104,6 +104,7 @@ export default function Console() {
         <input
           type="text"
           value={consoleText}
+          autoFocus={true}
           onChange={(e) => setConsoleText(e.target.value)}
           className="flex-1 bg-zinc-900/50 p-2 rounded text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder='Ej: "https://jsonplaceholder.typicode.com/posts <METHOD> <BODY>"'
