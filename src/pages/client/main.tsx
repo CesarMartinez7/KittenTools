@@ -29,6 +29,9 @@ export default function AppClient() {
   const [code, setCode] = useState<number>();
   const [mimeSelected, setMimeSelected] = useState<number>(0);
   const [bodyJson, setBodyJson] = useState<string>("");
+
+
+  const [endpointUrl, setEndpointUrl] = useState<string>("")
   
   const editorRef = useRef<HTMLDivElement>(null);
 
@@ -97,7 +100,7 @@ export default function AppClient() {
   return (
     <div>
       
-      <div className="w-full gap-2 flex flex-col p-12">
+      <div className="w-full gap-2 flex flex-col p-12 h-screen">
         <form onSubmit={handleRequest}>
           <div className="my-3">
             <span className="text-[12px]">
@@ -116,6 +119,7 @@ export default function AppClient() {
               type="text"
               ref={urlPeticion}
               placeholder="https://....."
+              onChange={(e) => setEndpointUrl(e.target.value) }
               value={"https://jsonplaceholder.typicode.com/posts"}
               className="w-full input-gray"
             />
@@ -124,7 +128,7 @@ export default function AppClient() {
             </button>
           </div>
           <details className="dropdown">
-            <summary className="btn m-1 gray-btn">Metodos</summary>
+            <summary className="btn m-1 ">Metodos</summary>
             {Methodos.map((metodo) => (
               <button
                 key={metodo.name}
@@ -140,7 +144,7 @@ export default function AppClient() {
           </details>
         </form>
 
-        <div className=" ">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 h-screen ">
           <div className=" px-4 py-8">
             <div className="flex flex-wrap gap-2 ">
               {Opciones.map((opcion, index) => (
@@ -175,11 +179,10 @@ export default function AppClient() {
             <div className="border-zinc-800 border-1 rounded-md p-4">
               <div className="flex justify-end">
                 <ButtonResponse code={code} />
-                
               </div>
 
               <div>
-                <JsonViewer data={responseSelected} maxHeight="100%" height="100%"/>
+                <JsonViewer data={responseSelected} maxHeight="90vh" height="100%"/>
               </div>
 
 
