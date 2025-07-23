@@ -34,10 +34,12 @@ const FormatDataTypeLabel = ({ data }: { data: JsonValue }) => {
           href={href}
           target="_blank"
           rel="noopener noreferrer"
-          className={`${base} underline`}
+          className={`${base} underline `}
           title={title}
         >
+          
           {children}
+          
         </a>
       );
     }

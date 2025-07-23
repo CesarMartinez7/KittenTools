@@ -27,10 +27,12 @@ export default function Console() {
       toast.error("Tal vez este mandando mas parametros de lo permitidos.");
     }
 
-    const [endpoint, method = "GET", body = ""] = consoleText.split(" ");
+    const [endpoint, method = "GET", ...body] = consoleText.split(" ");
+
+    const bodyString = body.join(" ");
 
     try {
-      const response = await fetch(endpoint, { method, body: body.trim() });
+      const response = await fetch(endpoint, { method, body: bodyString });
       const dataResponse = response;
       const data = await response.json();
 
@@ -58,10 +60,10 @@ export default function Console() {
   //   }, [history]);
 
   return (
-    <div className="w-screen h-screen bg-zinc- backdrop-blur-3xl flex flex-col">
+    <div className="w-screen h-screen  backdrop-blur-3xl flex flex-col">
       <div
         ref={consoleRef}
-        className="flex-1 p-12 relative overflow-y-auto mask-b-from-70% mask-b-to-100% font-mono text-xs"
+        className="flex-1 p-12 relative overflow-y-auto mask-b-from-90% mask-b-to-100% font-mono text-xs"
       >
         <span>
           {`<ENPOINT - URL> `} <b className="text-amber-300">{`<METHOD>`}</b>{" "}
@@ -70,10 +72,12 @@ export default function Console() {
         {history.map((entry, index) => (
           <div key={index} className="mb-4">
             <div className="text-green-500 my-2 flex justify-between">
-              <span className="text-cyan-400">$</span> {entry.command}{" "}
+            $ {" "}
+              {entry.dataResponse?.url}{" "}
               <span>{entry.dataResponse?.status}</span>{" "}
             </div>
-            <div className="bg-zinc-950 p-4 shadow-2xl rounded-lg">
+
+            <div className="bg-zinc-900/80 p-4 shadow rounded-lg ">
               <JsonNode data={entry.output} INDENT={12} />
             </div>
           </div>
