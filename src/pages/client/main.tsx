@@ -12,6 +12,7 @@ import JsonViewer from "../../ui/Formatter";
 import { useParamsStore } from "./stores/queryparams-store";
 
 import { AnimatePresence, motion } from "motion/react";
+import { Toaster } from "react-hot-toast";
 
 export default function AppClient() {
   const params = useParamsStore((state) => state.valor);
@@ -84,6 +85,7 @@ export default function AppClient() {
 
   return (
     <div>
+        <Toaster/>
       <div className="w-full gap-2 flex flex-col  h-screen z-50 p-6 md:p-12">
         <form onSubmit={handleRequest}>
           <div className="flex-row flex gap-2">

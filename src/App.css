@@ -43,6 +43,10 @@ kbd {
   @apply bg-zinc-900 p-1 border border-zinc-600 rounded-md;
 }
 
+.input-base-editor {
+  @apply focus:bg-zinc-700 p-1;
+}
+
 body {
   font-family: monospace;
 }
