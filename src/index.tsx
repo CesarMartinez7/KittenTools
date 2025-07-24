@@ -4,6 +4,7 @@ import { AppHomeLazy } from "./ui/LAZY_COMPONENT";
 import "./App.css";
 import AppClient from "./pages/client/main";
 import EditorJson from "./components/EDITOR";
+
 const root = document.getElementById("root")!;
 
 ReactDOM.createRoot(root).render(
@@ -21,7 +22,7 @@ ReactDOM.createRoot(root).render(
     <div className="z-50">
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<AppHomeLazy />} />
+        <Route index path="/" element={<AppHomeLazy />}  />
         <Route path="/editor" element={<EditorJson />} />
         <Route path="/client" element={<AppClient />} />
       </Routes>

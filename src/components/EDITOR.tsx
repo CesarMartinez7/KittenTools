@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback, KeyboardEvent } from "react";
-import toast from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function EditorJson() {
   const editorRef = useRef<HTMLDivElement>(null);
@@ -10,6 +10,10 @@ export default function EditorJson() {
   const [focusInput, setFocusInput] = useState<number>(0);
   const [changesDev, setChangesDev] = useState(false);
   const [currentIndexInput, setCurrentIndexInput] = useState<number>(0);
+
+  // MEtodos para manejar y poner tener un mejor uso salto de ipnut
+  const [selectionEnd, setSelectionEnd] = useState<number>();
+  const [valueEnd, setValueEnd] = useState<number>();
 
   useEffect(() => {
     try {
@@ -38,17 +42,9 @@ export default function EditorJson() {
 
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     setChangesDev((prev) => !prev);
-    console.log(e.key)
 
-    if (e.altKey && e.key.toLowerCase() === "d") {
-      toast.success("Seleccionar todo")
-    }
-
-    if (e.key === "Backspace") {
-      console.log("Eliminar nodo anterior");
-    }
-
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && selectionEnd === valueEnd) {
+      toast.error("TOAS FATHER");
       e.preventDefault();
 
       const editor = editorRef.current;
@@ -58,7 +54,7 @@ export default function EditorJson() {
       input.setAttribute("index", editor.children.length);
 
       input.className =
-        "input-base-editor bg-transparent text-white outline-none";
+        "input-base-edito text-red-500 bg-zinc-800  text-white outline-none";
       input.type = "text";
 
       input.addEventListener("keydown", (e) => {
@@ -74,46 +70,50 @@ export default function EditorJson() {
           if (next) next.focus();
         }
 
-        if(e.key === "Backspace" && input.value.length === 0){
-            e.preventDefault()
-            toast.success("Ir a tras")
-            const prev = input.previousElementSibling as HTMLInputElement
-            if(prev) prev.focus()
-        }
-        
+        if (e.key === "Backspace" && input.value.length === 0) {
+          e.preventDefault();
+          toast.success("Ir a tras");
 
+          setValueEnd(input.value.length)
+          setSelectionEnd(input.selectionEnd || 0)
+
+          const prev = input.previousElementSibling as HTMLInputElement;
+          if (prev) prev.focus();
+        }
+
+        if (e.key === "Backspace" && input.value.length === 0) {
+          toast.error(
+            "Elimiar este nodo si e.key === Backspace && input.value.length === 0 ",
+          );
+          input.remove();
+        }
+
+        if (e.key === "Enter" && input.selectionEnd === input.value.length) {
+          toast.success("SIGUIENTE HERMANO ELEMNTEO");
+        }
       });
 
       editor.appendChild(input);
-
       input.focus();
-
       setLineCount(editor.children.length + 1);
     }
   };
 
   return (
     <main className="flex flex-col justify-center items-center h-screen w-full bg-zinc-900">
-      <div className="bg-zinc-800 rounded-lg shadow-lg p-4 space-y-2">
+      <Toaster />
+      <div className="bg-black/20 rounded-lg shadow-lg p-4 space-y-2">
         <div
           ref={editorRef}
-          className="bg-zinc-900 min-h-[200px] max-h-[200px] overflow-auto p-2 flex flex-col w-[80vh] focus:outline-none"
+          className="bg-zinc-900 text-red-500 min-h-[500px] max-h-[500px] overflow-auto p-2 flex flex-col w-[80vh] focus:outline-none"
           tabIndex={0}
           onKeyDown={handleKeyDown}
         />
-
-        <button
-          className="bg-zinc-600 hover:bg-zinc-500 text-white px-4 py-1 rounded transition-colors"
-          onClick={getAllData}
-        >
-          Obtener todos los valores
-        </button>
-
-        {allValues && (
+        {/* {allValues && (
           <p className="text-sm text-white break-all">
             <strong>Valores:</strong> {allValues}
           </p>
-        )}
+        )} */}
 
         <div className="flex justify-between">
           <p className="text-white text-xs">Ln: {lineCount}</p>
