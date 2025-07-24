@@ -1,11 +1,13 @@
-import type React from 'react';
-import { useRef, useState } from 'react';
-import toast from 'react-hot-toast';
-import { JsonNode } from './Formatter';
+import type React from "react";
+import { useRef, useState } from "react";
+import toast from "react-hot-toast";
+import { JsonNode } from "./Formatter";
+import { AnimatePresence } from "motion/react";
+import { motion } from "motion/react";
 
 export default function Console() {
   const [consoleText, setConsoleText] = useState(
-    'https://jsonplaceholder.typicode.com/posts POST',
+    "https://jsonplaceholder.typicode.com/posts POST",
   );
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -23,25 +25,20 @@ export default function Console() {
     e.preventDefault();
 
     if (!consoleText.trim()) {
-      toast.error('Por favor introduzca texto');
+      toast.error("Por favor introduzca texto");
       return;
     }
-    if (consoleText.split(' ').length > 4) {
-      toast.error('Tal vez este mandando mas parametros de lo permitidos.');
+    if (consoleText.split(" ").length > 4) {
+      toast.error("Tal vez este mandando mas parametros de lo permitidos.");
       return;
     }
 
     setIsLoading((prev) => !prev);
-    const [endpoint, method = 'GET' ,...body] = consoleText.split(' ');
-
-    
-
-    
-
-    const bodyString = body.join(' ');
+    const [endpoint, method = "GET", ...body] = consoleText.split(" ");
+    const bodyString = body.join(" ");
 
     try {
-      if (method.toUpperCase() !== 'GET') {
+      if (method.toUpperCase() !== "GET") {
         const response = await fetch(endpoint, {
           method: method,
           body: bodyString,
@@ -74,32 +71,38 @@ export default function Console() {
       setIsLoading((prev) => !prev);
       setHistory((prev) => [
         ...prev,
-        { command: consoleText, output: '❌ Error al hacer la petición' },
+        { command: consoleText, output: "❌ Error al hacer la petición" },
       ]);
     }
   };
 
   return (
     <div className="w-screen h-screen  backdrop-blur-3xl flex flex-col">
-      {isLoading && (
-        <div className="h-screen w-screen justify-center items-center flex absolute backdrop-blur-3xl z-[999] flex-col ">
-          <span className="svg-spinners--gooey-balls-2"></span>
-          Cargando ...
-        </div>
-      )}
+      <AnimatePresence mode="wait">
+        {isLoading && (
+          <motion.div
+            exit={{ opacity: 0 }}
+            className="h-screen w-screen justify-center items-center flex absolute backdrop-blur-3xl z-[999] flex-col "
+          >
+            <span className="svg-spinners--gooey-balls-2"></span>
+            Cargando ...
+          </motion.div>
+        )}
+      </AnimatePresence>
       <div
         ref={consoleRef}
         className="flex-1 p-12 relative overflow-y-auto mask-b-from-90% mask-b-to-100% font-mono text-xs"
       >
         <span>
-          {`<ENPOINT - URL> `} <b className="text-amber-300">{`<METHOD>`}</b>{' '}
-          <b className="text-indigo-500">{`<HEADERS>`}</b>   <b className="text-rose-500">{`<BODY>`}</b>{' '}
+          {`<ENPOINT - URL> `} <b className="text-amber-300">{`<METHOD>`}</b>{" "}
+          <b className="text-indigo-500">{`<HEADERS>`}</b>{" "}
+          <b className="text-rose-500">{`<BODY>`}</b>{" "}
         </span>
         {history.map((entry, index) => (
           <div key={index} className="mb-4">
             <div className="text-green-500 my-2 flex justify-between">
-              $ {entry.dataResponse?.url}{' '}
-              <span>{entry.dataResponse?.status}</span>{' '}
+              $ {entry.dataResponse?.url}{" "}
+              <span>{entry.dataResponse?.status}</span>{" "}
             </div>
 
             <div className="bg-zinc-900/80 p-4 shadow rounded-lg  ">

@@ -12,7 +12,7 @@ import Console from './ui/Console';
 import JWTDecode from './ui/DecodeJWT';
 import { ModalViewer } from './ui/Difftext';
 import { JsonDiffLazy, JsonViewerLazy } from './ui/LAZY_COMPONENT';
-import ModalViewerJSON from './ui/ModalViewer';
+import EditorJson from './components/EDITOR';
 
 const App = () => {
   const [value, setValue] = useState<string | null | undefined>(
@@ -258,6 +258,9 @@ const App = () => {
                       setValue={setValue}
                       classText="h-78"
                     />
+
+                  {/* <EditorJson setAllValues={setValue} allValues={value} /> */}
+
                     <section className="rounded-xl backdrop-blur shadow-2xl bg-zinc-900/80 p-6 flex flex-col gap-y-3">
                       <div className="p-1 flex justify-between">
                         <label className="bg-gradient-to-bl from-white to-zinc-600 bg-clip-text text-transparent">

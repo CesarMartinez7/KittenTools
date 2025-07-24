@@ -30,7 +30,7 @@ export default function LazyListItem({
   }, []);
 
   return (
-    <div ref={ref} className=" ">
+    <div ref={ref} className="">
       {isVisible ? children : 'Cargando...'}
     </div>
   );

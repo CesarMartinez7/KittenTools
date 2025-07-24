@@ -257,7 +257,7 @@ const JsonViewer: React.FC<{
             onClick={handleClickShowTable}
           >
             <Icon icon="tabler:database" width="14" height="14"   />
-            Datos {`(new - dev)`}{' '}
+            Datos Tabla {``}{' '}
           </button>
           <button
             className="px-2 py-1 rounded-lg text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2"
@@ -346,7 +346,7 @@ const JsonViewer: React.FC<{
                       </span>
                       <a
                         href="https://www.w3schools.com/js/js_json_syntax.asp"
-                        className="text-blue-300 text-xs"
+                        className="text-zinc-300 text-xs"
                       >
                         Lee un poco sobre la sintaxis JSON
                       </a>
