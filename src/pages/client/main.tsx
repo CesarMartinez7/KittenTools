@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from "react";
-import axios from "axios";
+import { useState } from "react";
+import axios, { AxiosError } from "axios";
 import { Icon } from "@iconify/react";
 
 import ButtonResponse from "./components/buttonResponse";
@@ -7,92 +7,79 @@ import AddQueryParam from "./components/addQueryParams";
 import { useContext } from "react";
 import { Methodos, Opciones } from "./mapper-ops";
 
-
 import { ParamsContext } from "./components/addQueryParams";
 import JsonViewer from "../../ui/Formatter";
 
 import "./App.css";
 
 export default function AppClient() {
-  const paramsFormat = useContext(ParamsContext);
+  const { paramsFormat } = useContext(ParamsContext);
   const [queryParams, setQueryParams] = useState(paramsFormat || "");
-  const [selectedMethod, setSelectedMethod] = useState("GET");
-  const urlPeticion = useRef<HTMLInputElement>(null);
+  const [selectedMethod, setSelectedMethod] = useState("POST");
+
   const [responseSelected, setResponseSelected] = useState("");
+
   const [changeRequest, setChangeRequest] = useState(false);
-  const [showMethods, setShowMethods] = useState(false);
+
+  // Error axios
+  const [errorAxios, setErrorAxios] = useState<null | string>(null);
+
   const [code, setCode] = useState<number>();
   const [mimeSelected, setMimeSelected] = useState<number>(0);
-  const [bodyJson, setBodyJson] = useState<string>("");
+  const [bodyJson, setBodyJson] = useState<string>("{sdfsdfsa}");
+  const [showMethods, setShowMethods] = useState(false);
 
-  const [endpointUrl, setEndpointUrl] = useState<string>(
-    "https://dummyjson.com/posts/add",
-  );
+  const [endpointUrl, setEndpointUrl] = useState<string>("");
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  useEffect(() => {
-    fetch('https://jsonplaceholder.typicode.com/posts', {
-        method: 'POST',
-        body: JSON.stringify({
-          title: 'foo',
-          body: 'bar',
-          userId: 1,
-        }),
-        headers: {
-          'Content-type': 'application/json; charset=UTF-8',
-        },
-      })
-        .then((response) => response.json())
-        .then((json) => console.log(json));
-      
-  }, []);
-
   const handleRequest = async (e: React.FormEvent) => {
+
+    alert(endpointUrl)
     e.preventDefault();
-    
     try {
-        setIsLoading(true);
-        const params: string = paramsFormat || "";
-
-      // Solo si es tiene params entonces le pasamos lo queryparams
-      const url = urlPeticion.current.value + params;
-
-
+      setIsLoading(true);
+      setErrorAxios(null);
+  
+      let parsedBody;
+      if (["POST", "PUT", "PATCH"].includes(selectedMethod)) {
+        try {
+          parsedBody = JSON.parse(bodyJson);
+        } catch (e) {
+          setIsLoading(false);
+          return;
+        }
+      }
+  
+      const finalUrl = endpointUrl ;
+  
       let response;
-
-      console.log(bodyJson)
       switch (selectedMethod) {
         case "POST":
-          response = await axios.post(url, { data: {
-            title: 'I am in love with someone.',
-            userId: 5,
-            
-          } });
+          response = await axios.post(finalUrl, parsedBody);
           break;
         case "PUT":
-          response = await axios.put(url, { data: bodyJson });
-          break;
-        case "DELETE":
-          response = await axios.delete(url, {data: bodyJson});
+          response = await axios.put(finalUrl, parsedBody);
           break;
         case "PATCH":
-          response = await axios.patch(url, { data: bodyJson });
+          response = await axios.patch(finalUrl, parsedBody);
+          break;
+        case "DELETE":
+          response = await axios.delete(finalUrl);
           break;
         default:
-          response = await axios.get(url);
+          response = await axios.get(finalUrl);
       }
-
-      setCode(response.status);
+  
       setResponseSelected(response.data);
-      setChangeRequest(!changeRequest);
-
-       setIsLoading(false);
-    } catch (error) {
-      setResponseSelected(`Error: ${error.message}`);
-      setIsLoading(false)
-
-      setCode(error.response?.status || 500);
+      setCode(response.status);
+      setIsLoading(false);
+    } catch (error: any) {
+      console.error("Request failed:", error);
+      setCode(error.response?.status);
+      setResponseSelected(JSON.stringify(error.response?.data, null, 2));
+      setErrorAxios(error.message);
+      setIsLoading(false);
     }
   };
 
@@ -100,14 +87,9 @@ export default function AppClient() {
 
   return (
     <div>
-      <div className="relative fixed z-20"></div>
-      <div className="w-full gap-2 flex flex-col p-12 h-screen z-50">
+      <div className="w-full gap-2 flex flex-col  h-screen z-50 p-12">
         <form onSubmit={handleRequest}>
-          <div className="my-3">
-            <span className="text-[12px]">
-              Metodo seleccionado: {selectedMethod}
-            </span>
-          </div>
+          
           <div className="flex-row flex gap-2">
             <button
               type="button"
@@ -118,9 +100,7 @@ export default function AppClient() {
             </button>
             <input
               type="text"
-              ref={urlPeticion}
-              value={endpointUrl}
-              placeholder="https://....."
+              placeholder="-...............................................-"
               onChange={(e) => setEndpointUrl(e.target.value)}
               autoFocus
               className="w-full input-gray"
@@ -129,10 +109,10 @@ export default function AppClient() {
               Enviar
             </button>
           </div>
-          <details className="dropdown">
-            <summary className="btn m-1">Metodos</summary>
+          <details className="dropdown relative bg-zinc-800 backdrop-2xl">
+            <summary className="btn m-1 p-2 ">Metodos</summary>
             {Methodos.map((metodo) => (
-              <button
+              <span
                 key={metodo.name}
                 className={`gray-btn`}
                 onClick={() => {
@@ -141,14 +121,14 @@ export default function AppClient() {
                 }}
               >
                 {metodo.name}
-              </button>
+              </span>
             ))}
           </details>
         </form>
 
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 h-screen ">
-          <div className=" px-5 border rounded border-zinc-800  flex flex-col bg-zinc-900">
-            <div className=" flex flex-wrap gap-2 flex-col">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 h-[80vh]">
+          <div className="  border rounded border-zinc-800 p-2 flex flex-col bg-zinc-900">
+            <div className=" flex flex-wrap gap-2 flex-row">
               {Opciones.map((opcion, index) => (
                 <button
                   key={index}
@@ -162,27 +142,27 @@ export default function AppClient() {
                   {opcion.name}
                 </button>
               ))}
-              {mimeSelected === 1 && (
-                <>
-                  <textarea
-                    onChange={(e) => setBodyJson(e.target.value)}
-                    className="h-full w-full"
-                    name=""
-                    id=""
-                  ></textarea>
-                </>
-              )}
-
-              {mimeSelected === 0 && (
-                <div className="w-full h-full">
-                  <AddQueryParam />
-                </div>
-              )}
-
-              {mimeSelected === 2 && <div>Headers</div>}
-
-              {mimeSelected === 3 && <div>Auth</div>}
             </div>
+            {mimeSelected === 1 && (
+              <>
+                <textarea
+                  onChange={(e) => setBodyJson(e.target.value)}
+                  className="h-full w-full"
+                  name=""
+                  id=""
+                ></textarea>
+              </>
+            )}
+
+            {mimeSelected === 0 && (
+              <div className="w-full h-full">
+                <AddQueryParam />
+              </div>
+            )}
+
+            {mimeSelected === 2 && <div>Headers</div>}
+
+            {mimeSelected === 3 && <div>Auth</div>}
           </div>
 
           {responseSelected ? (
@@ -193,10 +173,11 @@ export default function AppClient() {
 
               <div>
                 {isLoading ? (
-                  <div>Cargando</div>
+                  <div className="absolute">Cargando ..</div>
                 ) : (
                   <JsonViewer
                     data={responseSelected}
+                    width="100%"
                     maxHeight="90vh"
                     height="100%"
                   />
