@@ -1,23 +1,28 @@
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion'; // Corrected import
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import LazyListItem from './LazyListPerform';
+// import LazyListItem from './LazyListPerform'; // LazyListItem is not used in the provided code
 import { Icon } from '@iconify/react/dist/iconify.js';
-export default function TableData({ data }: { data: unknown }) {
+
+interface TableDataProps {
+  data: unknown;
+}
+
+export default function TableData({ data }: TableDataProps) {
   const [dataClone, setDataClone] = useState<any>(null);
   const [columnNames, setColumnNames] = useState<string[] | null>(null);
-  const [valuesColums, setValueColumns] = useState<string[] | null>(null);
-  const [error, setError] = useState<boolean>(true)
+  const [valuesColums, setValueColumns] = useState<any[] | null>(null); 
+  const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
     let parsedData: any;
 
     try {
       parsedData = typeof data === 'string' ? JSON.parse(data) : data;
-      setError(false)
-    } catch (error) {
-      toast.error(`Error al parsear el JSON ${error}`);
-      setError(true)
+      setError(false);
+    } catch (err) {
+      toast.error(`Error al parsear el JSON: ${err}`);
+      setError(true); 
       return;
     }
 
@@ -26,83 +31,80 @@ export default function TableData({ data }: { data: unknown }) {
     if (Array.isArray(parsedData)) {
       if (parsedData.length > 0 && typeof parsedData[0] === 'object') {
         const columns = Object.keys(parsedData[0]);
-        let values : unknown[] = [];
-        const valuesColumnas = parsedData.forEach((e) => {
-          values = [...values, Object.values(e)];
-        });
+        const values: unknown[][] = parsedData.map((item) => Object.values(item)); 
         setValueColumns(values);
         setColumnNames(columns);
+      } else if (parsedData.length === 0) {
+        setColumnNames([]);
+        setValueColumns([]);
+        toast('El array está vacío', { icon: 'ℹ️' });
+      } else {
+        
+        setColumnNames(['Valor']);
+        setValueColumns(parsedData.map((item) => [item]));
+        toast('Es un array de valores planos', { icon: 'ℹ️' });
       }
-    } else if (typeof parsedData === 'object') {
-        console.log(typeof parsedData)
-        toast.success(typeof parsedData)
+    } else if (typeof parsedData === 'object' && parsedData !== null) {
+      const keyObject = Object.keys(parsedData);
+      const valuesObject = Object.values(parsedData);
 
-        const keyObject = Object.keys(parsedData)
-        const valuesObject = Object.values(parsedData)
-
-
-        console.log(keyObject)
-        console.log(valuesObject)
+      setValueColumns([valuesObject]);
 
 
-        setValueColumns(keyObject)
-        setColumnNames(valuesObject)
-
+      setColumnNames(keyObject);
       toast.success('Es un objeto');
-    } else if (typeof parsedData === 'string') {
-      toast.success('Es un string plano');
+    } else if (typeof parsedData === 'string' || typeof parsedData === 'number' || typeof parsedData === 'boolean') {
+    
+
+      setValueColumns([[parsedData]]);
+      setColumnNames(['Valor']);
+      toast.success('Es un valor plano');
+    } else {
+  
+
+      setError(true);
+      toast.error('Tipo de dato no soportado para mostrar en tabla.');
     }
   }, [data]);
 
   return (
     <motion.div exit={{ opacity: 0 }} className="p-6 h-full overflow-auto">
-      {error ? (<div className="relative">
-        <table className="w-full text-xs text-left rtl:text-right text-gray-500 dark:text-gray-400">
-          <thead className="text-xs text-gray-700 uppercase bg-zinc-500 bg-zinc-900 dark:text-gray-400 sticky">
-            <tr>
-              {columnNames?.map((col, idx) => (
-                <th scope="col" key={idx} className="px-6 py-3">
-                  {col}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {valuesColums && (
-              <>
-              
-                {valuesColums?.map((val: Array, idx: number) => (
-                  <>
-                    <tr key={idx} className="bg-white border-b border-zinc-900 bg-zinc-800 ">
-                      <th
-                        scope="row"
-                        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                      >
-                        {val[0]}
-                      </th>
-
-                      {val && (
-                        <>
-                          {val.slice(1).map((e, idx) => (
-                            <td className="px-6 py-4 text-ellipsis" key={idx}>
-                              {String(e)}
-                            </td>
-                          ))}
-                        </>
-                      )}
-                    </tr>
-                  </>
+      {!error ? ( 
+        <div className="relative">
+          <table className="w-full text-xs text-left rtl:text-right text-gray-500 dark:text-gray-400">
+            <thead className="text-xs text-gray-700 uppercase bg-zinc-500 dark:bg-zinc-900 dark:text-gray-400 sticky top-0">
+              <tr>
+                {columnNames?.map((col, idx) => (
+                  <th scope="col" key={idx} className="px-6 py-3">
+                    {col}
+                  </th>
                 ))}
-              </>
-            )}
-          </tbody>
-        </table>
-      </div>) : (<div className='w-full h-full grid place-content-center'>
-        <Icon icon="fxemoji:cat" width="322" height="322" />
-        No puedo generar la tabla, lo siento.   
-        </div>)}
-
-      
+              </tr>
+            </thead>
+            <tbody>
+              {valuesColums &&
+                valuesColums.map((row: any[], rowIndex: number) => (
+                  <tr key={rowIndex} className="bg-white border-b dark:border-zinc-700 dark:bg-zinc-800">
+                    {row.map((cell: any, cellIndex: number) => (
+                      <td
+                        key={`${rowIndex}-${cellIndex}`} // Unique key for cells
+                        className={`px-6 py-4 ${cellIndex === 0 ? 'font-medium text-gray-900 whitespace-nowrap dark:text-white' : 'text-ellipsis'}`}
+                      >
+                        {String(cell)}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div className="w-full h-full grid place-content-center text-center text-gray-500 dark:text-gray-400">
+          <Icon icon="fxemoji:cat" width="322" height="322" />
+          <p className="mt-4 text-xs">No puedo generar la tabla, lo siento.</p>
+          
+        </div>
+      )}
     </motion.div>
   );
 }
