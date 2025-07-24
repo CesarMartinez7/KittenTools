@@ -1,11 +1,12 @@
-import { create } from 'zustand'
+// store/useParamsStore.ts
+import { create } from "zustand";
 
-const useStoreQueryParams = create((set) => ({
-  bears: 0,
-  increasePopulation: () => set((state) => ({ bears: state.bears + 1 })),
-  removeAllBears: () => set({ bears: 0 }),
-  updateBears: (newBears) => set({ bears: newBears }),
-}))
+type ParamsStore = {
+  valor: string;
+  setValor: (nuevo: string) => void;
+};
 
-
-export default useStoreQueryParams
+export const useParamsStore = create<ParamsStore>((set) => ({
+  valor: "ESTOY EN ES TSTORE",
+  setValor: (nuevo) => set({ valor: nuevo }),
+}));

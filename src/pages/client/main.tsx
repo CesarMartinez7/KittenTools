@@ -1,24 +1,23 @@
-import { useState } from "react";
-import axios, { AxiosError } from "axios";
+import "./App.css";
+import { Methodos, Opciones } from "./mapper-ops";
+
+import { useState, type ReactNode } from "react";
+import axios from "axios";
 import { Icon } from "@iconify/react";
 
 import ButtonResponse from "./components/buttonResponse";
 import AddQueryParam from "./components/addQueryParams";
-import { useContext } from "react";
-import { Methodos, Opciones } from "./mapper-ops";
 
-import { ParamsContext } from "./components/addQueryParams";
 import JsonViewer from "../../ui/Formatter";
+import { useParamsStore } from "./stores/queryparams-store";
 
-import "./App.css";
+import { AnimatePresence, motion } from "motion/react";
 
 export default function AppClient() {
-  const { paramsFormat } = useContext(ParamsContext);
-  const [queryParams, setQueryParams] = useState(paramsFormat || "");
+  const params = useParamsStore((state) => state.valor);
+
   const [selectedMethod, setSelectedMethod] = useState("POST");
-
   const [responseSelected, setResponseSelected] = useState("");
-
   const [changeRequest, setChangeRequest] = useState(false);
 
   // Error axios
@@ -26,7 +25,7 @@ export default function AppClient() {
 
   const [code, setCode] = useState<number>();
   const [mimeSelected, setMimeSelected] = useState<number>(0);
-  const [bodyJson, setBodyJson] = useState<string>("{sdfsdfsa}");
+  const [bodyJson, setBodyJson] = useState<string>("");
   const [showMethods, setShowMethods] = useState(false);
 
   const [endpointUrl, setEndpointUrl] = useState<string>("");
@@ -34,13 +33,11 @@ export default function AppClient() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const handleRequest = async (e: React.FormEvent) => {
-
-    alert(endpointUrl)
     e.preventDefault();
     try {
       setIsLoading(true);
       setErrorAxios(null);
-  
+
       let parsedBody;
       if (["POST", "PUT", "PATCH"].includes(selectedMethod)) {
         try {
@@ -50,9 +47,9 @@ export default function AppClient() {
           return;
         }
       }
-  
-      const finalUrl = endpointUrl ;
-  
+
+      const finalUrl = endpointUrl + params;
+
       let response;
       switch (selectedMethod) {
         case "POST":
@@ -70,7 +67,7 @@ export default function AppClient() {
         default:
           response = await axios.get(finalUrl);
       }
-  
+
       setResponseSelected(response.data);
       setCode(response.status);
       setIsLoading(false);
@@ -87,9 +84,8 @@ export default function AppClient() {
 
   return (
     <div>
-      <div className="w-full gap-2 flex flex-col  h-screen z-50 p-12">
+      <div className="w-full gap-2 flex flex-col  h-screen z-50 p-6 md:p-12">
         <form onSubmit={handleRequest}>
-          
           <div className="flex-row flex gap-2">
             <button
               type="button"
@@ -100,7 +96,7 @@ export default function AppClient() {
             </button>
             <input
               type="text"
-              placeholder="-...............................................-"
+              placeholder="Inserta url .."
               onChange={(e) => setEndpointUrl(e.target.value)}
               autoFocus
               className="w-full input-gray"
@@ -109,21 +105,35 @@ export default function AppClient() {
               Enviar
             </button>
           </div>
-          <details className="dropdown relative bg-zinc-800 backdrop-2xl">
-            <summary className="btn m-1 p-2 ">Metodos</summary>
-            {Methodos.map((metodo) => (
-              <span
-                key={metodo.name}
-                className={`gray-btn`}
-                onClick={() => {
-                  setSelectedMethod(metodo.name.toUpperCase());
-                  setShowMethods(false);
-                }}
-              >
-                {metodo.name}
-              </span>
-            ))}
-          </details>
+          <div>
+            <button
+              className="gray-btn w-24"
+              onClick={() => setShowMethods(!showMethods)}
+            >
+              Metodos
+            </button>
+            <AnimatePresence>
+              {showMethods && (
+                <motion.div
+                  exit={{ scale: 0 }}
+                  className={`w-25 absolute p-2 space-y-2 bg-zinc-900 shadow-lg z-50`}
+                >
+                  {Methodos.map((metodo) => (
+                    <span
+                      key={metodo.name}
+                      className={`gray-btn`}
+                      onClick={() => {
+                        setSelectedMethod(metodo.name.toUpperCase());
+                        setShowMethods(false);
+                      }}
+                    >
+                      {metodo.name}
+                    </span>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </form>
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 h-[80vh]">
@@ -143,26 +153,78 @@ export default function AppClient() {
                 </button>
               ))}
             </div>
-            {mimeSelected === 1 && (
-              <>
-                <textarea
-                  onChange={(e) => setBodyJson(e.target.value)}
-                  className="h-full w-full"
-                  name=""
-                  id=""
-                ></textarea>
-              </>
-            )}
 
-            {mimeSelected === 0 && (
-              <div className="w-full h-full">
-                <AddQueryParam />
-              </div>
-            )}
+            <div className="h-full w-full p-4">
+              <AnimatePresence>
+                {mimeSelected === 1 && (
+                  <motion.div exit={{ scale: 0 }} className="h-full w-full">
+                    <div>
+                      <form>
+                        <fieldset>
+                          <legend>
+                            Por favor, selecciona tu método de contacto
+                            preferido:
+                          </legend>
+                          <div>
+                            <input
+                              type="radio"
+                              id="form (url-encoded)"
+                              name="contact"
+                              value="email"
+                            />
+                            <label for="form (url-encoded)">
+                              Form url
+                            </label>
 
-            {mimeSelected === 2 && <div>Headers</div>}
+                            <input
+                              type="radio"
+                              id="json"
+                              name="contact"
+                              value="phone"
+                            />
+                            <label for="json">Json</label>
 
-            {mimeSelected === 3 && <div>Auth</div>}
+                            <input
+                              type="radio"
+                              id="xml"
+                              name="contact"
+                              value="mail"
+                            />
+                            <label for="xml">Xml</label>
+                          </div>
+                          <div>
+                          </div>
+                        </fieldset>
+                      </form>
+                    </div>
+                    <textarea
+                      onChange={(e) => setBodyJson(e.target.value)}
+                      className="h-full w-full"
+                    ></textarea>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <AnimatePresence>
+                {mimeSelected === 0 && (
+                  <motion.div exit={{ scale: 0 }} className="w-full h-full">
+                    <AddQueryParam />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <AnimatePresence>
+                {mimeSelected === 2 && (
+                  <motion.div exit={{ scale: 0 }}>Headers</motion.div>
+                )}
+              </AnimatePresence>
+
+              <AnimatePresence>
+                {mimeSelected === 3 && (
+                  <motion.div exit={{ scale: 0 }}>Auth</motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
 
           {responseSelected ? (

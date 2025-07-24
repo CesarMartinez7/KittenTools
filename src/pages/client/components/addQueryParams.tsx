@@ -1,6 +1,8 @@
 import { useState, useEffect, createContext } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
+import { useParamsStore } from "../stores/queryparams-store";
+
 export const ParamsContext = createContext("");
 
 const AddQueryParam = () => {
@@ -9,8 +11,11 @@ const AddQueryParam = () => {
   // Params finales formateados
   const [paramsFinal, setParamsFinal] = useState<string>("");
 
+    const setValor = useParamsStore((e) => e.setValor)
+
   useEffect(() => {
     setParamsFinal(buildQueryParams());
+    setValor(paramsFinal)
   }, [params]);
 
   const handleAddParam = () => {
@@ -45,11 +50,11 @@ const AddQueryParam = () => {
 
 
   return (
-    <ParamsContext.Provider value={{paramsFinal}}>
+    <>
       <div className="h-full w-full flex flex-col gap-2 my-6">
         <div className="flex gap-2">
-            <p>{paramsFinal}</p>
           <button onClick={handleAddParam} className="btn gray-btn ">
+          <Icon icon="tabler:dog" width="20" height="20" />
             Añadir Parámetros
           </button>
         </div>
@@ -80,7 +85,7 @@ const AddQueryParam = () => {
           </div>
         ))}
       </div>
-    </ParamsContext.Provider>
+    </>
   );
 };
 
