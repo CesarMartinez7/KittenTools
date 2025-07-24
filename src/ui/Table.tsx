@@ -14,8 +14,10 @@ export default function TableData({ data }: { data: unknown }) {
 
     try {
       parsedData = typeof data === 'string' ? JSON.parse(data) : data;
+      setError(false)
     } catch (error) {
       toast.error(`Error al parsear el JSON ${error}`);
+      setError(true)
       return;
     }
 
@@ -97,7 +99,7 @@ export default function TableData({ data }: { data: unknown }) {
         </table>
       </div>) : (<div className='w-full h-full grid place-content-center'>
         <Icon icon="fxemoji:cat" width="322" height="322" />
-        No puedo generar la tabla, lo siento.
+        No puedo generar la tabla, lo siento.   
         </div>)}
 
       
