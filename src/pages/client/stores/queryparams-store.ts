@@ -7,6 +7,6 @@ type ParamsStore = {
 };
 
 export const useParamsStore = create<ParamsStore>((set) => ({
-  valor: 'ESTOY EN ES TSTORE',
+  valor: '',
   setValor: (nuevo) => set({ valor: nuevo }),
 }));
