@@ -91,8 +91,9 @@ export default function Console() {
       </AnimatePresence>
       <div
         ref={consoleRef}
-        className="flex-1 p-12 relative overflow-y-auto mask-b-from-90% mask-b-to-100% font-mono text-xs"
+        className="flex-1 p-12 flex-col relative overflow-y-auto mask-b-from-90% mask-b-to-100% font-mono text-xs"
       >
+        <span className="block my-4 gradient-text text-sm">Si quieres mas potencia puedes utilizar el cliente API de Kitten</span>
         <span>
           {`<ENPOINT - URL> `} <b className="text-amber-300">{`<METHOD>`}</b>{" "}
           <b className="text-indigo-500">{`<HEADERS>`}</b>{" "}

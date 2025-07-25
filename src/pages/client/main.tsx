@@ -337,10 +337,7 @@ export default function AppClient() {
                 <div className="flex-1 overflow-auto p-4">
                   {isLoading ? (
                     <div className="flex items-center justify-center h-full">
-                      <Icon
-                        icon="eos-icons:loading"
-                        className="text-4xl text-indigo-500"
-                      />
+                      <span className="svg-spinners--gooey-balls-2"></span>
                     </div>
                   ) : (
                     <JsonViewer

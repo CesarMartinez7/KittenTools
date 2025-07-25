@@ -43,7 +43,7 @@ export default function ToolBar({
     >
       <ReactSVG className="w-20 h-20 hover:rotate-400 transition-transform duration-700 hover:scale-125 focus:bg-amber-200 drop-shadows-sm  " />
       <h1 className="text-3xl font-bold bg-gradient-to-bl from-white to-zinc-400 bg-clip-text text-transparent">
-        ReactKitt
+        KittenTools
       </h1>
 
       <TextType
