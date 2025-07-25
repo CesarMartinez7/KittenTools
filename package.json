@@ -10,7 +10,7 @@
     "format": "biome format --write",
     "lint": "eslint .",
     "preview": "rsbuild preview",
-    "version": "auto-changelog -p && git add CHANGELOG.md"
+    "version": "auto-changelog --tag-prefix '' --unreleased --commit-limit false && git add CHANGELOG.md"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.11",
@@ -30,7 +30,6 @@
     "react-router": "^7.6.3",
     "tailwindcss": "^4.1.11",
     "three": "^0.178.0",
-    "wouter": "^3.7.1",
     "zustand": "^5.0.6"
   },
   "devDependencies": {
