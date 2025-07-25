@@ -69,11 +69,11 @@ const GridLayout: React.FC<GridLayoutExtendedProps> = ({
   return (
     <motion.div
       exit={{ opacity: 0 }}
-      className={`grid grid-cols-1 md:grid-cols-2 grid-rows-[auto_1fr_auto] gap-4 h-full w-full p-4  mx-auto  ${className}`}
+      className={`grid grid-cols-1 md:grid-cols-2 grid-rows-[auto_1fr_auto] gap-4 h-screen w-full mx-auto ${className}`}
       style={style}
     >
       {/* Toolbar arriba */}
-      <div className="col-span-2">
+      {/* <div className="col-span-2">
         <ToolBar
           classContainerButtons={' flex-row gap-2 flex-col'}
           {...toolbarProps}
@@ -91,7 +91,7 @@ const GridLayout: React.FC<GridLayoutExtendedProps> = ({
           handleCopy={handleCopy}
           handleCopyUrl={handleCopyUrl}
         />
-      </div>
+      </div> */}
       {/* Editor a la izquierda */}
       <div className="col-span-1 row-start-2">
         <ContainerTextArea
@@ -104,6 +104,8 @@ const GridLayout: React.FC<GridLayoutExtendedProps> = ({
         />
       </div>
       {/* Resultado a la derecha */}
+
+
       <div className="col-span-1 row-start-2">
         <ResultadoJsonFormat
           {...resultadoProps}
@@ -117,10 +119,7 @@ const GridLayout: React.FC<GridLayoutExtendedProps> = ({
           isDecode={isDecode}
         />
       </div>
-      {/* Descripción abajo */}
-      <div className="col-span-2 row-start-3">
-        <ContainerDescripcion {...descripcionProps} />
-      </div>
+      
 
       <BaseModal isOpen={openAll} onClose={() => setOpenAll(false)}>
         <JsonViewerLazy

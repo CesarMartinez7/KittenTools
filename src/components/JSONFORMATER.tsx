@@ -16,7 +16,7 @@ export default function ResultadoJsonFormat({
   };
 
   return (
-    <section className="rounded-xl backdrop-blur  shadow-2xl bg-zinc-900/80 p-6 flex flex-col gap-y-3">
+    <section className="rounded-xl backdrop-blur h-full shadow-2xl bg-zinc-900/80 p-6 flex flex-col gap-y-3">
       <div className="p-2 flex justify-between">
         <h3 className="bg-gradient-to-bl from-white to-zinc-600 bg-clip-text text-transparent">
           Resultado Formateado
@@ -31,12 +31,12 @@ export default function ResultadoJsonFormat({
         </div>
       </div>
 
-      <div className="text-sm whitespace-pre-wrap break-words break-all overflow-auto h-fit">
+      <div className="text-sm whitespace-pre-wrap break-words break-all overflow-auto h-full">
         <JsonViewerLazy
           data={value}
           isOpen={openAll}
-          height="20vh"
-          maxHeight="20vh"
+          height="100%"
+          maxHeight="100%"
         />
       </div>
     </section>
