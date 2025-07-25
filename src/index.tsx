@@ -5,7 +5,7 @@ import "./App.css";
 import EditorJson from "./components/EDITOR";
 import AppClient from "./pages/client/main";
 import { Toaster } from "react-hot-toast";
-import Aurora from "./ui/Aurora";
+
 
 const root = document.getElementById("root")!;
 
@@ -13,7 +13,6 @@ ReactDOM.createRoot(root).render(
   <div className="relative ">
     <Toaster
       position="top-right"
-      
       toastOptions={{
         className: "bg-zinc-800! text-zinc-400!",
       }}
