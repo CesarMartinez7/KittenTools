@@ -1,6 +1,6 @@
 import "./App.css";
 import { Methodos, Opciones } from "./mapper-ops";
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import axios from "axios";
 import { Icon } from "@iconify/react";
 import ButtonResponse from "./components/buttonResponse";
@@ -23,7 +23,19 @@ export default function AppClient() {
   const [showMethods, setShowMethods] = useState(false);
   const [endpointUrl, setEndpointUrl] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [contentType, setContentType] = useState<"form" | "json" | "xml">("json");
+  const [contentType, setContentType] = useState<"form" | "json" | "xml">(
+    "json",
+  );
+
+  useEffect(() => {
+    if (localStorage.getItem("request_url")) setEndpointUrl(localStorage.getItem("request_url") || "");
+  }, []);
+
+  const saveLocalStorage = (name: string, value: string) => {
+    if (window.localStorage) {
+      localStorage.setItem(name, value);
+    }
+  };
 
   const handleRequest = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,8 +54,8 @@ export default function AppClient() {
             parsedBody = bodyJson ? JSON.parse(bodyJson) : {};
             config = {
               headers: {
-                "Content-Type": "application/json"
-              }
+                "Content-Type": "application/json",
+              },
             };
           } else if (contentType === "form") {
             const formData = new FormData();
@@ -51,8 +63,8 @@ export default function AppClient() {
             parsedBody = formData;
             config = {
               headers: {
-                "Content-Type": "multipart/form-data"
-              }
+                "Content-Type": "multipart/form-data",
+              },
             };
           }
         } catch (e) {
@@ -115,7 +127,7 @@ export default function AppClient() {
       <div className="w-full gap-4 flex flex-col h-screen p-4 md:p-8">
         <form onSubmit={handleRequest} className="space-y-4">
           <div className="flex flex-col md:flex-row gap-2 w-full">
-            <div className="relative flex-1">
+            <div className="relative ">
               <button
                 type="button"
                 onClick={handleClickShowMethod}
@@ -125,7 +137,7 @@ export default function AppClient() {
               >
                 {selectedMethod}
               </button>
-              
+
               <AnimatePresence>
                 {showMethods && (
                   <motion.div
@@ -140,7 +152,7 @@ export default function AppClient() {
                         key={metodo.name}
                         className={`w-full px-4 py-2 text-left hover:bg-zinc-800 ${
                           selectedMethod === metodo.name.toUpperCase()
-                            ? "bg-indigo-900"
+                            ? "bg-sky-600"
                             : ""
                         }`}
                         onClick={() => {
@@ -155,16 +167,19 @@ export default function AppClient() {
                 )}
               </AnimatePresence>
             </div>
-            
+
             <input
               type="text"
               placeholder="https://api.example.com/endpoint"
-              onChange={(e) => setEndpointUrl(e.target.value)}
+              onChange={(e) => {
+                setEndpointUrl(e.target.value);
+                saveLocalStorage("request_url", e.target.value);
+              }}
               value={endpointUrl}
               autoFocus
               className="flex-1 input-gray"
             />
-            
+
             <button
               type="submit"
               className="gray-btn px-6"
@@ -187,9 +202,7 @@ export default function AppClient() {
                 key={index}
                 type="button"
                 className={`btn btn-sm font-bold cursor-pointer btn-black ${
-                  index === mimeSelected
-                    ? "border-b-2 border-indigo-500"
-                    : ""
+                  index === mimeSelected ? "border-b-2 border-indigo-500" : ""
                 }`}
                 onClick={() => setMimeSelected(index)}
               >
@@ -209,7 +222,7 @@ export default function AppClient() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="flex-1 overflow-auto"
+                    className="flex-1 overflow-y-auto"
                   >
                     <AddQueryParam />
                   </motion.div>
@@ -271,7 +284,7 @@ export default function AppClient() {
                     exit={{ opacity: 0 }}
                     className="flex-1 flex items-center justify-center text-zinc-500"
                   >
-                    <p>Headers configuration coming soon</p>
+                    <p>TODAVIA NO 🐀</p>
                   </motion.div>
                 )}
 
@@ -283,7 +296,7 @@ export default function AppClient() {
                     exit={{ opacity: 0 }}
                     className="flex-1 flex items-center justify-center text-zinc-500"
                   >
-                    <p>Authentication configuration coming soon</p>
+                    <p>Aun no 🐀</p>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -302,7 +315,7 @@ export default function AppClient() {
                     <span className="text-red-500 text-sm">{errorAxios}</span>
                   )}
                 </div>
-                <div className="flex-1 overflow-auto p-4">
+                <div className="flex-1 overflow-au p-4">
                   {isLoading ? (
                     <div className="flex items-center justify-center h-full">
                       <Icon
@@ -315,6 +328,7 @@ export default function AppClient() {
                       data={responseSelected}
                       width="100%"
                       height="100%"
+                      maxHeight="100%"
                     />
                   )}
                 </div>
@@ -327,11 +341,8 @@ export default function AppClient() {
                   height="100"
                   className="mx-auto mb-4 text-zinc-700"
                 />
-                <p className="text-xl mb-2">No response yet</p>
-                <p className="max-w-md">
-                  Enter a URL, select a method, and click "Send" to make a
-                  request. The response will appear here.
-                </p>
+                <p className="text-xl mb-2">.......</p>
+                <p className="max-w-md">Haz peticiones 🐶</p>
               </div>
             )}
           </div>

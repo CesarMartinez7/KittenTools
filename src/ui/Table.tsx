@@ -14,6 +14,7 @@ export default function TableData({ data }: TableDataProps) {
   const [valuesColums, setValueColumns] = useState<any[] | null>(null); 
   const [error, setError] = useState<boolean>(false);
 
+
   useEffect(() => {
     let parsedData: any;
 
