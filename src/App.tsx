@@ -192,11 +192,7 @@ const App = () => {
         )}
 
         <div className=" text-zinc-200 min-h-screen ">
-          <Toaster
-            toastOptions={{
-              className: 'bg-zinc-800! text-zinc-400!',
-            }}
-          />
+        
           <AnimatePresence mode="wait">
             <motion.div
               className={` ${showGrid ? 'max-w-[80vw]' : 'max-w-7xl'} mx-auto flex flex-col lg:flex-row gap-6 min-h-screen p-5`}

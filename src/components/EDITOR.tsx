@@ -107,7 +107,6 @@ export default function EditorJson({ setAllValues, allValues }: EditorProps) {
 
   return (
     <div className="bg-black rounded-lg shadow-lg p-4 space-y-2 w-[80vh] max-w-full">
-      <Toaster />
       <div
         ref={editorRef}
         className="bg-black/90 min-h-[500px] max-h-[500px] overflow-auto p-2 flex flex-col focus:outline-none border border-zinc-700 rounded"
