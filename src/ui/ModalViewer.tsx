@@ -30,8 +30,6 @@ export const overlayVariants = {
 
 const ModalViewerJSON = ({ setOpenAll, openAll, value }: PropsModalViewer) => {
   const handleClickOpenModal = () => {
-    console.log('click');
-    console.log('openAll', openAll);
     setOpenAll(!openAll);
   };
   const modalRef = useRef<HTMLDivElement>(null);

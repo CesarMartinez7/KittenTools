@@ -22,7 +22,6 @@ export default function JsonDiffViewerModal() {
         toast.success('No hay diferencias entre los dos JSON');
       }
 
-      console.log(diffResult);
     } catch {
       toast.error('JSON invalido');
       setError('JSON inválido 🫠');

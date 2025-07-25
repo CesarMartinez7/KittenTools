@@ -80,7 +80,7 @@ export default function ContainerTextArea({
       JSON.parse(clean);
       localStorage.setItem('jsonData', clean);
     } catch {
-      console.log('kjsdfkjdsf');
+      return null;
     }
   };
 

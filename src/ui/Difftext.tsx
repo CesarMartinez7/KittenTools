@@ -110,7 +110,6 @@ export const ModalViewer = () => {
       localStorage.getItem('originalText') &&
       localStorage.getItem('compareText')
     ) {
-      console.log('Cargando textos desde localStorage');
       setOriginalText(localStorage.getItem('originalText') || '');
       setComparateText(localStorage.getItem('compareText') || '');
     }

@@ -12,7 +12,7 @@ export default function ResultadoJsonFormat({
 }: JsonFormatProps) {
   const handleClickOpenModal = () => {
     // Aquí puedes implementar la lógica para abrir un modal o realizar otra acción
-    console.log('Abrir modal o realizar otra acción');
+    return null;
   };
 
   return (

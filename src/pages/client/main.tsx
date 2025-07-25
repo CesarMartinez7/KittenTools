@@ -30,8 +30,7 @@ export default function AppClient() {
   );
 
   useEffect(() => {
-    window.addEventListener('keydown', (e) => {
-      console.log(e.key);
+    window.addEventListener('keydown', (e) => {      
       if (e.key === 'Enter' && e.ctrlKey) {
         toast.success('Generando peticion. ');
       }

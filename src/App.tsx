@@ -80,8 +80,7 @@ const App = () => {
 
   const handleClickminifyJson = () => {
     try {
-      const parseado = JSON.parse(value);
-      console.log(parseado);
+      const parseado = JSON.parse(value);      
       setValue(JSON.stringify(parseado));
 
       toast.success('JSON minificado');
