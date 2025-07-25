@@ -1,6 +1,6 @@
 import "./App.css";
 import { Methodos, Opciones } from "./mapper-ops";
-import { useEffect, useState, type ReactNode } from "react";
+import { use, useEffect, useRef, useState, type ReactNode } from "react";
 import axios from "axios";
 import { Icon } from "@iconify/react";
 import ButtonResponse from "./components/buttonResponse";
@@ -8,10 +8,13 @@ import AddQueryParam from "./components/addQueryParams";
 import JsonViewer from "../../ui/Formatter";
 import { useParamsStore } from "./stores/queryparams-store";
 import { AnimatePresence, motion } from "framer-motion";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function AppClient() {
   const params = useParamsStore((state) => state.valor);
+
+
+  const refForm = useRef<HTMLFormElement>(null)
 
   const [selectedMethod, setSelectedMethod] = useState("GET");
   const [responseSelected, setResponseSelected] = useState("");
@@ -27,6 +30,22 @@ export default function AppClient() {
     "json",
   );
 
+
+  useEffect(() => {
+    window.addEventListener("keydown", (e) => {
+
+        console.log(e.key)
+        if(e.key === "Enter" && e.ctrlKey){
+          toast.success("Generando peticion. ")
+        }
+    })
+
+    return () => {
+      window.removeEventListener("keydown", () => {})
+    }
+  }, [])
+
+
   useEffect(() => {
     if (localStorage.getItem("request_url")) setEndpointUrl(localStorage.getItem("request_url") || "");
   }, []);
@@ -37,7 +56,7 @@ export default function AppClient() {
     }
   };
 
-  const handleRequest = async (e: React.FormEvent) => {
+  const handleRequest = async (e : any) => {
     e.preventDefault();
     if (!endpointUrl) return;
 
@@ -125,7 +144,7 @@ export default function AppClient() {
     <div className="bg-zinc-950 min-h-screen">
       <Toaster position="top-right" />
       <div className="w-full gap-4 flex flex-col h-screen p-4 md:p-8">
-        <form onSubmit={handleRequest} className="space-y-4">
+        <form ref={refForm} onSubmit={handleRequest} className="space-y-4">
           <div className="flex flex-col md:flex-row gap-2 w-full">
             <div className="relative ">
               <button
@@ -141,10 +160,10 @@ export default function AppClient() {
               <AnimatePresence>
                 {showMethods && (
                   <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    initial={{ opacity: 0, y: -50, filter: "blur(1px)" }}
+                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="absolute left-0 top-full mt-0 w-24 bg-zinc-900 shadow-lg z-50 rounded-b-md overflow-hidden"
+                    className="absolute left-0 top-full mt-0 w-24 bg-zinc-900 shadow-lg z-50 rounded-b-md overflow-hidden rounded"
                   >
                     {Methodos.map((metodo) => (
                       <button
@@ -202,7 +221,7 @@ export default function AppClient() {
                 key={index}
                 type="button"
                 className={`btn btn-sm font-bold cursor-pointer btn-black ${
-                  index === mimeSelected ? "border-b-2 border-indigo-500" : ""
+                  index === mimeSelected ? "border-b-2 border-sky-600 bg-red-500" : ""
                 }`}
                 onClick={() => setMimeSelected(index)}
               >
@@ -216,7 +235,7 @@ export default function AppClient() {
           <div className="border rounded border-zinc-800 p-4 flex flex-col bg-zinc-900 overflow-hidden">
             <div className="h-full flex flex-col">
               <AnimatePresence mode="wait">
-                {mimeSelected === 0 && (
+                {mimeSelected === 1 && (
                   <motion.div
                     key="query-params"
                     initial={{ opacity: 0 }}
@@ -228,7 +247,7 @@ export default function AppClient() {
                   </motion.div>
                 )}
 
-                {mimeSelected === 1 && (
+                {mimeSelected === 0 && (
                   <motion.div
                     key="body"
                     initial={{ opacity: 0 }}
@@ -308,14 +327,14 @@ export default function AppClient() {
               <>
                 <div className="p-4 border-b border-zinc-800 flex justify-between items-center">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm text-zinc-400">Status:</span>
+                    <span className="text-xs text-zinc-400">Codigo de estado:</span>
                     <ButtonResponse code={code} />
                   </div>
                   {errorAxios && (
                     <span className="text-red-500 text-sm">{errorAxios}</span>
                   )}
                 </div>
-                <div className="flex-1 overflow-au p-4">
+                <div className="flex-1 overflow-auto p-4">
                   {isLoading ? (
                     <div className="flex items-center justify-center h-full">
                       <Icon
