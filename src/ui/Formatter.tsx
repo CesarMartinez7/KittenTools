@@ -117,8 +117,6 @@ export const JsonNode: React.FC<JsonNodeProps> = ({
   );
 };
 
-
-
 const JsonViewer: React.FC<{
   data: JsonValue;
   isOpen: boolean;
@@ -149,12 +147,11 @@ const JsonViewer: React.FC<{
   const [interfaceGen, setInterfaceGen] = useState<unknown>();
   const [values] = useState<JsonValue>(data);
 
-
   useEffect(() => {
-    setShowJsonViewer(true)
-    setShowInterface(false)
-    setShowTable(false)
-  }, [values])
+    setShowJsonViewer(true);
+    setShowInterface(false);
+    setShowTable(false);
+  }, [values]);
 
   const handleClickShowTable = () => {
     setShowInterface(false);
@@ -162,9 +159,8 @@ const JsonViewer: React.FC<{
     setShowTable(true);
   };
   const handleClickShowInterface = () => {
+    setInterfaceGen(generateJsonInterface(JSON.parse(values as string)));
 
-    setInterfaceGen(generateJsonInterface(JSON.parse(values as string)))
-    
     setShowJsonViewer(false);
     setShowTable(false);
     setShowInterface(true);
@@ -256,7 +252,7 @@ const JsonViewer: React.FC<{
             className="px-2 py-1 rounded-lg text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2"
             onClick={handleClickShowTable}
           >
-            <Icon icon="tabler:database" width="14" height="14"   />
+            <Icon icon="tabler:database" width="14" height="14" />
             Datos Tabla {``}{' '}
           </button>
           <button
@@ -267,26 +263,26 @@ const JsonViewer: React.FC<{
             <span>Generar interfaz</span>{' '}
           </button>
 
-          <AnimatePresence  >
-          {!showJsonViewer && (
-            <motion.button
-              exit={{opacity: 0}}
-              className="px-2 py-1 rounded-lg text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2"
-              onClick={() => {
-                handleClickShowJson();
-                if (showJsonViewer) {
-                  setInterfaceGen(
-                    generateJsonInterface(JSON.parse(values as string)),
-                  );
-                }
-              }}
-            >
-              <>
-                <Icon icon="logos:json" width="12" height="12" />
-                <span>Ver JSON</span>
-              </>
-            </motion.button>
-          )}
+          <AnimatePresence>
+            {!showJsonViewer && (
+              <motion.button
+                exit={{ opacity: 0 }}
+                className="px-2 py-1 rounded-lg text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2"
+                onClick={() => {
+                  handleClickShowJson();
+                  if (showJsonViewer) {
+                    setInterfaceGen(
+                      generateJsonInterface(JSON.parse(values as string)),
+                    );
+                  }
+                }}
+              >
+                <>
+                  <Icon icon="logos:json" width="12" height="12" />
+                  <span>Ver JSON</span>
+                </>
+              </motion.button>
+            )}
           </AnimatePresence>
         </div>
 

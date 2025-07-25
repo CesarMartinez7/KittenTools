@@ -1,13 +1,12 @@
-import type React from "react";
-import { useRef, useState } from "react";
-import toast from "react-hot-toast";
-import { JsonNode } from "./Formatter";
-import { AnimatePresence } from "motion/react";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from 'motion/react';
+import type React from 'react';
+import { useRef, useState } from 'react';
+import toast from 'react-hot-toast';
+import { JsonNode } from './Formatter';
 
 export default function Console() {
   const [consoleText, setConsoleText] = useState(
-    "https://jsonplaceholder.typicode.com/posts POST",
+    'https://jsonplaceholder.typicode.com/posts POST',
   );
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -25,20 +24,20 @@ export default function Console() {
     e.preventDefault();
 
     if (!consoleText.trim()) {
-      toast.error("Por favor introduzca texto");
+      toast.error('Por favor introduzca texto');
       return;
     }
-    if (consoleText.split(" ").length > 4) {
-      toast.error("Tal vez este mandando mas parametros de lo permitidos.");
+    if (consoleText.split(' ').length > 4) {
+      toast.error('Tal vez este mandando mas parametros de lo permitidos.');
       return;
     }
 
     setIsLoading((prev) => !prev);
-    const [endpoint, method = "GET", ...body] = consoleText.split(" ");
-    const bodyString = body.join(" ");
+    const [endpoint, method = 'GET', ...body] = consoleText.split(' ');
+    const bodyString = body.join(' ');
 
     try {
-      if (method.toUpperCase() !== "GET") {
+      if (method.toUpperCase() !== 'GET') {
         const response = await fetch(endpoint, {
           method: method,
           body: bodyString,
@@ -71,7 +70,7 @@ export default function Console() {
       setIsLoading((prev) => !prev);
       setHistory((prev) => [
         ...prev,
-        { command: consoleText, output: "❌ Error al hacer la petición" },
+        { command: consoleText, output: '❌ Error al hacer la petición' },
       ]);
     }
   };
@@ -93,17 +92,19 @@ export default function Console() {
         ref={consoleRef}
         className="flex-1 p-12 flex-col relative overflow-y-auto mask-b-from-90% mask-b-to-100% font-mono text-xs"
       >
-        <span className="block my-4 gradient-text text-sm">Si quieres mas potencia puedes utilizar el cliente API de Kitten</span>
+        <span className="block my-4 gradient-text text-sm">
+          Si quieres mas potencia puedes utilizar el cliente API de Kitten
+        </span>
         <span>
-          {`<ENPOINT - URL> `} <b className="text-amber-300">{`<METHOD>`}</b>{" "}
-          <b className="text-indigo-500">{`<HEADERS>`}</b>{" "}
-          <b className="text-rose-500">{`<BODY>`}</b>{" "}
+          {`<ENPOINT - URL> `} <b className="text-amber-300">{`<METHOD>`}</b>{' '}
+          <b className="text-indigo-500">{`<HEADERS>`}</b>{' '}
+          <b className="text-rose-500">{`<BODY>`}</b>{' '}
         </span>
         {history.map((entry, index) => (
           <div key={index} className="mb-4">
             <div className="text-green-500 my-2 flex justify-between">
-              $ {entry.dataResponse?.url}{" "}
-              <span>{entry.dataResponse?.status}</span>{" "}
+              $ {entry.dataResponse?.url}{' '}
+              <span>{entry.dataResponse?.status}</span>{' '}
             </div>
 
             <div className="bg-zinc-900/80 p-4 shadow rounded-lg  ">

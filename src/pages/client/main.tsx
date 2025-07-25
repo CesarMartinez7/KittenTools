@@ -1,53 +1,50 @@
-import "./App.css";
-import { Methodos, Opciones } from "./mapper-ops";
-import { use, useEffect, useRef, useState, type ReactNode } from "react";
-import axios from "axios";
-import { Icon } from "@iconify/react";
-import ButtonResponse from "./components/buttonResponse";
-import AddQueryParam from "./components/addQueryParams";
-import JsonViewer from "../../ui/Formatter";
-import { useParamsStore } from "./stores/queryparams-store";
-import { AnimatePresence, motion } from "framer-motion";
-import toast, { Toaster } from "react-hot-toast";
+import './App.css';
+import { Icon } from '@iconify/react';
+import axios from 'axios';
+import { AnimatePresence, motion } from 'framer-motion';
+import { type ReactNode, use, useEffect, useRef, useState } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
+import JsonViewer from '../../ui/Formatter';
+import AddQueryParam from './components/addQueryParams';
+import ButtonResponse from './components/buttonResponse';
+import { Methodos, Opciones } from './mapper-ops';
+import { useParamsStore } from './stores/queryparams-store';
 
 export default function AppClient() {
   const params = useParamsStore((state) => state.valor);
 
+  const refForm = useRef<HTMLFormElement>(null);
 
-  const refForm = useRef<HTMLFormElement>(null)
-
-  const [selectedMethod, setSelectedMethod] = useState("GET");
-  const [responseSelected, setResponseSelected] = useState("");
+  const [selectedMethod, setSelectedMethod] = useState('GET');
+  const [responseSelected, setResponseSelected] = useState('');
   const [changeRequest, setChangeRequest] = useState(false);
   const [errorAxios, setErrorAxios] = useState<null | string>(null);
   const [code, setCode] = useState<number>();
   const [mimeSelected, setMimeSelected] = useState<number>(0);
-  const [bodyJson, setBodyJson] = useState<string>("");
+  const [bodyJson, setBodyJson] = useState<string>('');
   const [showMethods, setShowMethods] = useState(false);
-  const [endpointUrl, setEndpointUrl] = useState<string>("");
+  const [endpointUrl, setEndpointUrl] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [contentType, setContentType] = useState<"form" | "json" | "xml">(
-    "json",
+  const [contentType, setContentType] = useState<'form' | 'json' | 'xml'>(
+    'json',
   );
 
-
   useEffect(() => {
-    window.addEventListener("keydown", (e) => {
-
-        console.log(e.key)
-        if(e.key === "Enter" && e.ctrlKey){
-          toast.success("Generando peticion. ")
-        }
-    })
+    window.addEventListener('keydown', (e) => {
+      console.log(e.key);
+      if (e.key === 'Enter' && e.ctrlKey) {
+        toast.success('Generando peticion. ');
+      }
+    });
 
     return () => {
-      window.removeEventListener("keydown", () => {})
-    }
-  }, [])
-
+      window.removeEventListener('keydown', () => {});
+    };
+  }, []);
 
   useEffect(() => {
-    if (localStorage.getItem("request_url")) setEndpointUrl(localStorage.getItem("request_url") || "");
+    if (localStorage.getItem('request_url'))
+      setEndpointUrl(localStorage.getItem('request_url') || '');
   }, []);
 
   const saveLocalStorage = (name: string, value: string) => {
@@ -56,7 +53,7 @@ export default function AppClient() {
     }
   };
 
-  const handleRequest = async (e : any) => {
+  const handleRequest = async (e: any) => {
     e.preventDefault();
     if (!endpointUrl) return;
 
@@ -67,27 +64,27 @@ export default function AppClient() {
       let parsedBody;
       let config = {};
 
-      if (["POST", "PUT", "PATCH"].includes(selectedMethod)) {
+      if (['POST', 'PUT', 'PATCH'].includes(selectedMethod)) {
         try {
-          if (contentType === "json") {
+          if (contentType === 'json') {
             parsedBody = bodyJson ? JSON.parse(bodyJson) : {};
             config = {
               headers: {
-                "Content-Type": "application/json",
+                'Content-Type': 'application/json',
               },
             };
-          } else if (contentType === "form") {
+          } else if (contentType === 'form') {
             const formData = new FormData();
             // Aquí podrías añadir lógica para parsear form data si es necesario
             parsedBody = formData;
             config = {
               headers: {
-                "Content-Type": "multipart/form-data",
+                'Content-Type': 'multipart/form-data',
               },
             };
           }
         } catch (e) {
-          setErrorAxios("Invalid JSON format");
+          setErrorAxios('Invalid JSON format');
           setIsLoading(false);
           return;
         }
@@ -97,16 +94,16 @@ export default function AppClient() {
 
       let response;
       switch (selectedMethod) {
-        case "POST":
+        case 'POST':
           response = await axios.post(finalUrl, parsedBody, config);
           break;
-        case "PUT":
+        case 'PUT':
           response = await axios.put(finalUrl, parsedBody, config);
           break;
-        case "PATCH":
+        case 'PATCH':
           response = await axios.patch(finalUrl, parsedBody, config);
           break;
-        case "DELETE":
+        case 'DELETE':
           response = await axios.delete(finalUrl, config);
           break;
         default:
@@ -116,7 +113,7 @@ export default function AppClient() {
       setResponseSelected(response.data);
       setCode(response.status);
     } catch (error: any) {
-      console.error("Request failed:", error);
+      console.error('Request failed:', error);
       setCode(error.response?.status);
       setResponseSelected(error.response?.data || error.message);
       setErrorAxios(error.message);
@@ -129,14 +126,14 @@ export default function AppClient() {
 
   const formatBodyPlaceholder = () => {
     switch (contentType) {
-      case "json":
+      case 'json':
         return `{\n  "key": "value"\n}`;
-      case "form":
-        return "key=value&anotherKey=anotherValue";
-      case "xml":
-        return "<root>\n  <element>value</element>\n</root>";
+      case 'form':
+        return 'key=value&anotherKey=anotherValue';
+      case 'xml':
+        return '<root>\n  <element>value</element>\n</root>';
       default:
-        return "";
+        return '';
     }
   };
 
@@ -151,7 +148,7 @@ export default function AppClient() {
                 type="button"
                 onClick={handleClickShowMethod}
                 className={`btn-black w-24 h-full flex items-center justify-center ${
-                  showMethods ? "rounded-b-none" : ""
+                  showMethods ? 'rounded-b-none' : ''
                 }`}
               >
                 {selectedMethod}
@@ -160,8 +157,8 @@ export default function AppClient() {
               <AnimatePresence>
                 {showMethods && (
                   <motion.div
-                    initial={{ opacity: 0, y: -50, filter: "blur(1px)" }}
-                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                    initial={{ opacity: 0, y: -50, filter: 'blur(1px)' }}
+                    animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                     exit={{ opacity: 0, y: -10 }}
                     className="absolute left-0 top-full mt-0 w-24 bg-zinc-900 shadow-lg z-50 rounded-b-md overflow-hidden rounded"
                   >
@@ -171,8 +168,8 @@ export default function AppClient() {
                         key={metodo.name}
                         className={`w-full px-4 py-2 text-left hover:bg-zinc-800 ${
                           selectedMethod === metodo.name.toUpperCase()
-                            ? "bg-sky-600"
-                            : ""
+                            ? 'bg-sky-600'
+                            : ''
                         }`}
                         onClick={() => {
                           setSelectedMethod(metodo.name.toUpperCase());
@@ -192,7 +189,7 @@ export default function AppClient() {
               placeholder="https://api.example.com/endpoint"
               onChange={(e) => {
                 setEndpointUrl(e.target.value);
-                saveLocalStorage("request_url", e.target.value);
+                saveLocalStorage('request_url', e.target.value);
               }}
               value={endpointUrl}
               autoFocus
@@ -210,7 +207,7 @@ export default function AppClient() {
                   Enviando...
                 </span>
               ) : (
-                "Enviar"
+                'Enviar'
               )}
             </button>
           </div>
@@ -221,7 +218,9 @@ export default function AppClient() {
                 key={index}
                 type="button"
                 className={`btn btn-sm font-bold cursor-pointer btn-black ${
-                  index === mimeSelected ? "border-b-2 border-sky-600 bg-red-500" : ""
+                  index === mimeSelected
+                    ? 'border-b-2 border-sky-600 bg-red-500'
+                    : ''
                 }`}
                 onClick={() => setMimeSelected(index)}
               >
@@ -261,8 +260,8 @@ export default function AppClient() {
                           <input
                             type="radio"
                             name="contentType"
-                            checked={contentType === "json"}
-                            onChange={() => setContentType("json")}
+                            checked={contentType === 'json'}
+                            onChange={() => setContentType('json')}
                           />
                           JSON
                         </label>
@@ -270,8 +269,8 @@ export default function AppClient() {
                           <input
                             type="radio"
                             name="contentType"
-                            checked={contentType === "form"}
-                            onChange={() => setContentType("form")}
+                            checked={contentType === 'form'}
+                            onChange={() => setContentType('form')}
                           />
                           Form Data
                         </label>
@@ -279,8 +278,8 @@ export default function AppClient() {
                           <input
                             type="radio"
                             name="contentType"
-                            checked={contentType === "xml"}
-                            onChange={() => setContentType("xml")}
+                            checked={contentType === 'xml'}
+                            onChange={() => setContentType('xml')}
                           />
                           XML
                         </label>
@@ -327,7 +326,9 @@ export default function AppClient() {
               <>
                 <div className="p-4 border-b border-zinc-800 flex justify-between items-center">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-zinc-400">Codigo de estado:</span>
+                    <span className="text-xs text-zinc-400">
+                      Codigo de estado:
+                    </span>
                     <ButtonResponse code={code} />
                   </div>
                   {errorAxios && (

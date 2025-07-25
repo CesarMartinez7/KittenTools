@@ -37,6 +37,7 @@ export default function ToolbarButtons({
   return (
     <div className={`w-full flex  gap-1 ${classContainerButtons}`}>
       <button
+        type="button"
         onClick={handleClear}
         className="w-full flex upper font-bold items-center justify-center gap-2 bg-gradient-to-t from-zinc-900 to-zinc-800 hover:bg-zinc-700 text-zinc-300 px-3 py-2 text-sm rounded-lg transition h-[40px]"
       >
@@ -66,7 +67,7 @@ export default function ToolbarButtons({
       >
         <Icon icon="tabler:copy" width="20" /> Copiar
       </button>
-      
+
       <button
         type="button"
         className="w-full flex items-center justify-center gap-2 bg-emerald-500 bg-gradient-to-t from-indigo-700 to-indigo-500 text-white font-bold px-3 py-2 text-sm rounded-lg transition h-[40px]"
@@ -109,14 +110,11 @@ export default function ToolbarButtons({
       <Link
         title="Compartir URL"
         className="w-full flex items-center justify-center gap-2 bg-kanagawa-orange text-black hover:bg-kanagawa-orange/60 font-bold px-3 py-2 text-sm rounded-lg transition h-[40px] disabled:opacity-60 disabled:event-pointer-none "
-        
-        to={"/client"}
+        to={'/client'}
       >
-        <Icon icon="tabler:git-pull-request" width="20" height="20"   />
+        <Icon icon="tabler:git-pull-request" width="20" height="20" />
         Cliente (dev)
       </Link>
-
-      
     </div>
   );
 }

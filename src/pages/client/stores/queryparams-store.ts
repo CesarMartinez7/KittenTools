@@ -1,5 +1,5 @@
 // store/useParamsStore.ts
-import { create } from "zustand";
+import { create } from 'zustand';
 
 type ParamsStore = {
   valor: string;
@@ -7,6 +7,6 @@ type ParamsStore = {
 };
 
 export const useParamsStore = create<ParamsStore>((set) => ({
-  valor: "ESTOY EN ES TSTORE",
+  valor: 'ESTOY EN ES TSTORE',
   setValor: (nuevo) => set({ valor: nuevo }),
 }));

@@ -105,7 +105,6 @@ const GridLayout: React.FC<GridLayoutExtendedProps> = ({
       </div>
       {/* Resultado a la derecha */}
 
-
       <div className="col-span-1 row-start-2">
         <ResultadoJsonFormat
           {...resultadoProps}
@@ -119,7 +118,6 @@ const GridLayout: React.FC<GridLayoutExtendedProps> = ({
           isDecode={isDecode}
         />
       </div>
-      
 
       <BaseModal isOpen={openAll} onClose={() => setOpenAll(false)}>
         <JsonViewerLazy

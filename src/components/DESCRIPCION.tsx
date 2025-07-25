@@ -27,7 +27,7 @@ export default function ContainerDescripcion() {
           <Icon icon="tabler:brand-github" width="20" height="20" />
         </button>
       </div>
-      <p>@CesarMartinez - KittenTool.</p>
+      <p>@CesarMartinez - KittenTools.</p>
     </footer>
   );
 }

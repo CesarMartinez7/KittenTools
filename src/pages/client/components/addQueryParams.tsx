@@ -1,30 +1,30 @@
-import { useState, useEffect, createContext } from "react";
-import { Icon } from "@iconify/react/dist/iconify.js";
+import { Icon } from '@iconify/react/dist/iconify.js';
+import { createContext, useEffect, useState } from 'react';
 
-import { useParamsStore } from "../stores/queryparams-store";
+import { useParamsStore } from '../stores/queryparams-store';
 
-export const ParamsContext = createContext("");
+export const ParamsContext = createContext('');
 
 const AddQueryParam = () => {
   // Params construidos
   const [params, setParams] = useState<{ key: string; value: string }[]>([]);
   // Params finales formateados
-  const [paramsFinal, setParamsFinal] = useState<string>("");
+  const [paramsFinal, setParamsFinal] = useState<string>('');
 
-    const setValor = useParamsStore((e) => e.setValor)
+  const setValor = useParamsStore((e) => e.setValor);
 
   useEffect(() => {
     setParamsFinal(buildQueryParams());
-    setValor(paramsFinal)
+    setValor(paramsFinal);
   }, [params]);
 
   const handleAddParam = () => {
-    setParams([...params, { key: "", value: "" }]);
+    setParams([...params, { key: '', value: '' }]);
   };
 
   const handleParamChange = (
     index: number,
-    field: "key" | "value",
+    field: 'key' | 'value',
     value: string,
   ) => {
     const updatedParams = [...params];
@@ -45,16 +45,15 @@ const AddQueryParam = () => {
         (param) =>
           `${encodeURIComponent(param.key)}=${encodeURIComponent(param.value)}`,
       )
-      .join("&");
+      .join('&');
   };
-
 
   return (
     <>
       <div className="h-full w-full flex flex-col gap-2 my-6">
         <div className="flex gap-2">
           <button onClick={handleAddParam} className="btn gray-btn ">
-          <Icon icon="tabler:dog" width="20" height="20" />
+            <Icon icon="tabler:dog" width="20" height="20" />
             Añadir Parámetros
           </button>
         </div>
@@ -64,7 +63,7 @@ const AddQueryParam = () => {
               type="text"
               placeholder="LLave"
               value={param.key}
-              onChange={(e) => handleParamChange(index, "key", e.target.value)}
+              onChange={(e) => handleParamChange(index, 'key', e.target.value)}
               className="border input input-gray flex-1 "
             />
             <input
@@ -72,7 +71,7 @@ const AddQueryParam = () => {
               placeholder="Valor"
               value={param.value}
               onChange={(e) =>
-                handleParamChange(index, "value", e.target.value)
+                handleParamChange(index, 'value', e.target.value)
               }
               className="w-2/4 input-gray flex-1"
             />
