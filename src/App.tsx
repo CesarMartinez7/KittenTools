@@ -11,6 +11,7 @@ import Console from "./ui/Console";
 import JWTDecode from "./ui/DecodeJWT";
 import { ModalViewer } from "./ui/Difftext";
 import { JsonDiffLazy, JsonViewerLazy } from "./ui/LAZY_COMPONENT";
+import { AuroraStore } from "./stores/aurora";
 
 const App = () => {
   const [value, setValue] = useState<string | null | undefined>(
@@ -23,7 +24,10 @@ const App = () => {
   const [isOpenDiffText, setIsOpenDiffText] = useState<boolean>(false);
   const [isDecode, setIsDecode] = useState<boolean>(false);
   const [showGrid, setShowGrid] = useState(false);
-  const [showAurora, setShowAurora] = useState<boolean>(true);
+
+  const showAurora = AuroraStore((state) => state.valor);
+  const setShowAurora = AuroraStore((state) => state.setShowAurora);
+
   const [showConsole, setShowConsole] = useState<boolean>(false);
 
   const handleCloseAll = () => setOpenViewerJsonFull(false);
@@ -125,20 +129,6 @@ const App = () => {
   };
 
   useEffect(() => {
-    console.warn(navigator.userAgent);
-    if (
-      navigator.userAgent.includes("mobile") ||
-      navigator.userAgent.includes("Android")
-    ) {
-      toast.error(
-        "Esta aplicación no está optimizada para dispositivos móviles. ",
-      );
-      toast.error(
-        "Se removera el fondo de aurora para mejorar el rendimiento.",
-      );
-      setShowAurora(false);
-    }
-
     const keydown = (e: KeyboardEvent) => {
       if (e.key === "x" && e.ctrlKey) {
         if (!showConsole) {
@@ -163,7 +153,9 @@ const App = () => {
       <div className="fixed bottom-4 left-4 z-50  items-center justify-center   text-zinc-300 px-4 py-2 text-sm rounded-xl shadow-lg transition-all flex flex-row gap-2">
         <button
           className=" z-50 flex items-center justify-center gap-2 bg-gradient-to-t from-zinc-900 to-zinc-800 hover:bg-zinc-700 text-zinc-300 px-4 py-2 text-sm rounded-xl shadow-lg transition"
-          onClick={() => setShowAurora((prev) => !prev)}
+          onClick={() => {
+            setShowAurora(showAurora ? false : true);
+          }}
           style={{ minWidth: 120 }}
         >
           <Icon icon="tabler:beer" width="20" height="20" />
