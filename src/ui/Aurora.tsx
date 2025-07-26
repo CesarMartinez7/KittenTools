@@ -139,7 +139,6 @@ export default function Aurora(props: AuroraProps) {
     ) {
       setShowAurora(false);
     }
-    toast.success(`Aurora effect disabled on mobile devices ${showAurora}.`);
   }, []);
 
   useEffect(() => {

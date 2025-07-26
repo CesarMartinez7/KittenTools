@@ -1,5 +1,5 @@
 import type React from "react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import LazyListItem from "../../../ui/LazyListPerform";
 
 const highlightCode = (code: string, language: string) => {
@@ -207,12 +207,10 @@ const CodeEditor = ({
       setCode(newValue);
       onChange?.(newValue);
 
-      setTimeout(() => {
-        if (textareaRef.current) {
-          textareaRef.current.selectionStart =
-            textareaRef.current.selectionEnd = start + 2;
-        }
-      }, 0);
+      if (textareaRef.current) {
+        textareaRef.current.selectionStart = textareaRef.current.selectionEnd =
+          start + 2;
+      }
     }
   };
 
@@ -268,4 +266,4 @@ const CodeEditor = ({
   );
 };
 
-export default CodeEditor;
+export default memo(CodeEditor);
