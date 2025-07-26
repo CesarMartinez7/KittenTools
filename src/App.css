@@ -51,6 +51,9 @@ body {
   font-family: monospace;
 }
 
+
+
+
 :root {
   @apply bg-zinc-800;
 }
@@ -70,11 +73,13 @@ body {
 }
 
 textarea {
-  @apply w-full resize-none rounded-lg border border-zinc-800 p-3 text-sm  text-zinc-50 focus:outline-none focus:ring focus:ring-blue-400 transition;
+  @apply w-full resize-none rounded-lg border border-zinc-800 p-3 text-sm  text-zinc-50 focus:outline-none focus:ring focus:ring-blue-400 transition ring-0;
 }
 
+
+
 body {
-  @apply bg-gradient-to-b from-zinc-950 to-zinc-800/100 text-zinc-200 min-h-screen;
+  @apply bg-gradient-to-b from-zinc-950 to-zinc-800/100 text-zinc-200 min-h-screen ring-0;
 }
 
 .fade-out {

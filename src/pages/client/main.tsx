@@ -1,56 +1,78 @@
-import "./App.css";
-import { Icon } from "@iconify/react";
-import axios from "axios";
-import { AnimatePresence, motion } from "framer-motion";
-import { type ReactNode, use, useEffect, useRef, useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
-import JsonViewer from "../../ui/Formatter";
-import AddQueryParam from "./components/addQueryParams";
-import ButtonResponse from "./components/buttonResponse";
-import { Methodos, Opciones } from "./mapper-ops";
-import { useParamsStore } from "./stores/queryparams-store";
-import { HeadersAddRequest } from "./components/Headers";
+import './App.css';
+import { Icon } from '@iconify/react';
+import axios from 'axios';
+import { AnimatePresence, motion } from 'framer-motion';
+import { type ReactNode, use, useEffect, useRef, useState } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
+import JsonViewer from '../../ui/Formatter';
+import AddQueryParam from './components/addQueryParams';
+import ButtonResponse from './components/buttonResponse';
+import { HeadersAddRequest } from './components/Headers';
+import { Methodos, Opciones } from './mapper-ops';
+import { useStoreHeaders } from './stores/headers-store';
+import { useParamsStore } from './stores/queryparams-store';
 
 export default function AppClient() {
+  const cabeceras = useStoreHeaders((state) => state.valor);
   const params = useParamsStore((state) => state.valor);
-
   const refForm = useRef<HTMLFormElement>(null);
-
-  const [selectedMethod, setSelectedMethod] = useState("GET");
-  const [responseSelected, setResponseSelected] = useState("");
-  const [changeRequest, setChangeRequest] = useState(false);
+  const [selectedMethod, setSelectedMethod] = useState('GET');
+  const [responseSelected, setResponseSelected] = useState('');
   const [errorAxios, setErrorAxios] = useState<null | string>(null);
   const [code, setCode] = useState<number>();
-  const [mimeSelected, setMimeSelected] = useState<number>(0);
-  const [bodyJson, setBodyJson] = useState<string>("");
+  const [mimeSelected, setMimeSelected] = useState<number>(
+    Number(sessionStorage.getItem('mimeSelected')) || 2,
+  );
+  const [bodyJson, setBodyJson] = useState<string>('');
   const [showMethods, setShowMethods] = useState(false);
-  const [endpointUrl, setEndpointUrl] = useState<string>("");
+  const [endpointUrl, setEndpointUrl] = useState<string>(
+    'https://httpbin.org/get',
+  );
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [contentType, setContentType] = useState<"form" | "json" | "xml">(
-    "json",
+  const [contentType, setContentType] = useState<'form' | 'json' | 'xml'>(
+    'json',
   );
 
   useEffect(() => {
-    window.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" && e.ctrlKey) {
-        toast.success("Generando peticion. ");
+    console.log(params);
+    const newParams = params;
+
+    setEndpointUrl((prev) => prev + newParams);
+  }, [params]);
+
+  useEffect(() => {
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && e.ctrlKey) {
+        toast.success('Generando peticion. ');
       }
     });
 
     return () => {
-      window.removeEventListener("keydown", () => {});
+      window.removeEventListener('keydown', () => {});
     };
   }, []);
 
   useEffect(() => {
-    if (localStorage.getItem("request_url"))
-      setEndpointUrl(localStorage.getItem("request_url") || "");
+    if (localStorage.getItem('request_url'))
+      setEndpointUrl(localStorage.getItem('request_url') || '');
   }, []);
 
   const saveLocalStorage = (name: string, value: string) => {
     if (window.localStorage) {
       localStorage.setItem(name, value);
     }
+  };
+
+  const prepareHeaders = (headers: HeaderItem[]) => {
+    return headers.reduce(
+      (acc, header) => {
+        if (header.key.trim() && header.value.trim()) {
+          acc[header.key] = header.value;
+        }
+        return acc;
+      },
+      {} as Record<string, string>,
+    );
   };
 
   const handleRequest = async (e: any) => {
@@ -64,27 +86,32 @@ export default function AppClient() {
       let parsedBody;
       let config = {};
 
-      if (["POST", "PUT", "PATCH"].includes(selectedMethod)) {
+      if (['POST', 'PUT', 'PATCH'].includes(selectedMethod)) {
         try {
-          if (contentType === "json") {
+          if (contentType === 'json') {
+            const headersParse: string[] = JSON.parse(cabeceras);
+
             parsedBody = bodyJson ? JSON.parse(bodyJson) : {};
+
+            console.log(headersParse);
+            toast.success('Mira la consola');
+
             config = {
-              headers: {
-                "Content-Type": "application/json",
-              },
+              headers: prepareHeaders(headersParse),
             };
-          } else if (contentType === "form") {
+          } else if (contentType === 'form') {
             const formData = new FormData();
-            // Aquí podrías añadir lógica para parsear form data si es necesario
             parsedBody = formData;
             config = {
               headers: {
-                "Content-Type": "multipart/form-data",
+                'Content-Type': 'multipart/form-data',
               },
             };
           }
-        } catch (e) {
-          setErrorAxios("Invalid JSON format");
+        } catch (e: any) {
+          // Error de axios obtenidos para ver los errores en cabecera despues
+          console.warn('Error en catch');
+          setErrorAxios(e);
           setIsLoading(false);
           return;
         }
@@ -94,16 +121,16 @@ export default function AppClient() {
 
       let response;
       switch (selectedMethod) {
-        case "POST":
+        case 'POST':
           response = await axios.post(finalUrl, parsedBody, config);
           break;
-        case "PUT":
+        case 'PUT':
           response = await axios.put(finalUrl, parsedBody, config);
           break;
-        case "PATCH":
+        case 'PATCH':
           response = await axios.patch(finalUrl, parsedBody, config);
           break;
-        case "DELETE":
+        case 'DELETE':
           response = await axios.delete(finalUrl, config);
           break;
         default:
@@ -113,7 +140,7 @@ export default function AppClient() {
       setResponseSelected(response.data);
       setCode(response.status);
     } catch (error: any) {
-      console.error("Request failed:", error);
+      console.error('Request failed:', error);
       setCode(error.response?.status);
       setResponseSelected(error.response?.data || error.message);
       setErrorAxios(error.message);
@@ -126,19 +153,23 @@ export default function AppClient() {
 
   const formatBodyPlaceholder = () => {
     switch (contentType) {
-      case "json":
+      case 'json':
         return `{\n  "key": "value"\n}`;
-      case "form":
-        return "key=value&anotherKey=anotherValue";
-      case "xml":
-        return "<root>\n  <element>value</element>\n</root>";
+      case 'form':
+        return 'key=value&anotherKey=anotherValue';
+      case 'xml':
+        return '<root>\n  <element>value</element>\n</root>';
       default:
-        return "";
+        return '';
     }
   };
 
   return (
-    <motion.div className="bg-zinc-950 min-h-screen">
+    <motion.div
+      className=" min-h-screen"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+    >
       <div className="w-full gap-4 flex flex-col h-screen p-4 md:p-8">
         <form ref={refForm} onSubmit={handleRequest} className="space-y-4">
           <div className="flex flex-col md:flex-row gap-2 w-full">
@@ -147,7 +178,7 @@ export default function AppClient() {
                 type="button"
                 onClick={handleClickShowMethod}
                 className={`btn-black w-24 h-full flex items-center justify-center ${
-                  showMethods ? "rounded-b-none" : ""
+                  showMethods ? 'rounded-b-none' : ''
                 }`}
               >
                 {selectedMethod}
@@ -156,10 +187,10 @@ export default function AppClient() {
               <AnimatePresence>
                 {showMethods && (
                   <motion.div
-                    initial={{ opacity: 0, y: -50, filter: "blur(1px)" }}
-                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                    initial={{ opacity: 0, y: -50, filter: 'blur(1px)' }}
+                    animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="absolute left-0 top-full mt-0 w-24 bg-zinc-900 shadow-lg z-50 rounded-b-md overflow-hidden rounded"
+                    className="absolute left-0 top-full mt-0 w-24 bg-zinc-950/90 z-50 rounded-b-md overflow-hidden rounded"
                   >
                     {Methodos.map((metodo) => (
                       <button
@@ -167,8 +198,8 @@ export default function AppClient() {
                         key={metodo.name}
                         className={`w-full px-4 py-2 text-left hover:bg-zinc-800 ${
                           selectedMethod === metodo.name.toUpperCase()
-                            ? "bg-sky-600"
-                            : ""
+                            ? 'bg-sky-600'
+                            : ''
                         }`}
                         onClick={() => {
                           setSelectedMethod(metodo.name.toUpperCase());
@@ -188,7 +219,7 @@ export default function AppClient() {
               placeholder="https://api.example.com/endpoint"
               onChange={(e) => {
                 setEndpointUrl(e.target.value);
-                saveLocalStorage("request_url", e.target.value);
+                saveLocalStorage('request_url', e.target.value);
               }}
               value={endpointUrl}
               autoFocus
@@ -206,7 +237,7 @@ export default function AppClient() {
                   Enviando...
                 </span>
               ) : (
-                "Enviar"
+                'Enviar'
               )}
             </button>
           </div>
@@ -218,8 +249,8 @@ export default function AppClient() {
                 type="button"
                 className={`btn btn-sm font-bold cursor-pointer btn-black ${
                   index === mimeSelected
-                    ? "border-b-2 border-sky-600 bg-red-500"
-                    : ""
+                    ? 'border-b-2 border-sky-600 bg-red-500'
+                    : ''
                 }`}
                 onClick={() => setMimeSelected(index)}
               >
@@ -230,7 +261,7 @@ export default function AppClient() {
         </form>
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 flex-1 overflow-hidden">
-          <div className="border rounded-xl border-zinc-800 p-4 flex flex-col bg-zinc-900 overflow-hidden">
+          <div className="border rounded-xl border-zinc-800 p-4 flex flex-col bg-zinc-900/80 backdrop-blur-3xl overflow-hidden">
             <div className="h-full flex flex-col">
               <AnimatePresence mode="wait">
                 {mimeSelected === 1 && (
@@ -259,8 +290,8 @@ export default function AppClient() {
                           <input
                             type="radio"
                             name="contentType"
-                            checked={contentType === "json"}
-                            onChange={() => setContentType("json")}
+                            checked={contentType === 'json'}
+                            onChange={() => setContentType('json')}
                           />
                           JSON
                         </label>
@@ -268,8 +299,8 @@ export default function AppClient() {
                           <input
                             type="radio"
                             name="contentType"
-                            checked={contentType === "form"}
-                            onChange={() => setContentType("form")}
+                            checked={contentType === 'form'}
+                            onChange={() => setContentType('form')}
                           />
                           Form Data
                         </label>
@@ -277,8 +308,8 @@ export default function AppClient() {
                           <input
                             type="radio"
                             name="contentType"
-                            checked={contentType === "xml"}
-                            onChange={() => setContentType("xml")}
+                            checked={contentType === 'xml'}
+                            onChange={() => setContentType('xml')}
                           />
                           XML
                         </label>
@@ -286,7 +317,7 @@ export default function AppClient() {
                     </div>
                     <textarea
                       onChange={(e) => setBodyJson(e.target.value)}
-                      className="flex-1 w-full p-2 bg-zinc-950/40 text-gray-300 rounded border border-zinc-800 font-mono text-sm"
+                      className="flex-1 w-full p-2  text-gray-300 rounded border border-zinc-800 font-mono text-sm"
                       placeholder={formatBodyPlaceholder()}
                       value={bodyJson}
                     />
@@ -301,7 +332,7 @@ export default function AppClient() {
                     exit={{ opacity: 0 }}
                     className=""
                   >
-                    <HeadersAddRequest/>
+                    <HeadersAddRequest />
                   </motion.div>
                 )}
 
@@ -320,7 +351,7 @@ export default function AppClient() {
             </div>
           </div>
 
-          <div className="border rounded-xl border-zinc-800 bg-zinc-900 overflow-hidden flex flex-col">
+          <div className="border rounded-xl border-zinc-800 bg-zinc-900/80 backdrop-blur-3xl overflow-hidden flex flex-col">
             {responseSelected ? (
               <>
                 <div className="p-4 border-b border-zinc-800 flex justify-between items-center">
@@ -357,7 +388,9 @@ export default function AppClient() {
                   height="100"
                   className="mx-auto mb-4 text-zinc-700"
                 />
-                <p className="text-base mb-2">No hay ser inteligente para saber que tienes que hacer.</p>
+                <p className="text-base mb-2">
+                  Listo para empezar con las peticiones.
+                </p>
                 <p className="max-w-md">Haz peticiones 🐶</p>
               </div>
             )}

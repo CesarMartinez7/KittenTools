@@ -72,7 +72,7 @@ export default function TableData({ data }: TableDataProps) {
       {!error ? (
         <div className="relative">
           <table className="w-full text-xs text-left rtl:text-right text-gray-500 dark:text-gray-400">
-            <thead className="text-xs text-gray-700 uppercase bg-zinc-500 dark:bg-zinc-900 dark:text-gray-400 sticky top-0">
+            <thead className="text-xs text-zinc-400 uppercase bg-zinc-500 dark:bg-zinc-900  sticky top-0">
               <tr>
                 {columnNames?.map((col, idx) => (
                   <th scope="col" key={idx} className="px-6 py-3">

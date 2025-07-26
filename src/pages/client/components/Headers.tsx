@@ -1,119 +1,146 @@
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import { Icon } from "@iconify/react/dist/iconify.js";
-import { AnimatePresence, motion } from "motion/react";
+import { Icon } from '@iconify/react/dist/iconify.js';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
+import { useStoreHeaders } from '../stores/headers-store';
 
-interface listProps {
+interface HeaderItem {
+  id: string;
   key: string;
   value: string;
 }
 
 export function HeadersAddRequest() {
-  const [listHeaders, setListHeaders] = useState<listProps[]>([]);
+  const seaterHeaders = useStoreHeaders((state) => state.setValor);
+  const [headersDeactivate, setHeadersDeactivate] = useState<HeaderItem[]>([]);
 
-  const handleAddNewHeader = () => {
-    toast.success("AñDIENDO CABEZERA NUEVA");
-    const newList = [...listHeaders, { key: "", value: "" }];
+  const [headers, setHeaders] = useState<HeaderItem[]>([]);
 
-    setListHeaders(newList);
+  useEffect(() => {
+    seaterHeaders(JSON.stringify(headers));
+  }, [headers]);
+
+  const addNewHeader = () => {
+    const newHeader = {
+      id: crypto.randomUUID(),
+      key: '',
+      value: '',
+    };
+
+    setHeaders([...headers, newHeader]);
+    toast.success('Nueva cabecera añadida');
   };
 
-  const handleParamChange = (
-    index: number,
-    field: "key" | "value",
-    value: string,
+  const updateHeader = (
+    id: string,
+    field: 'key' | 'value',
+    newValue: string,
   ) => {
-    const updatedParams = [...listHeaders];
-    updatedParams[index][field] = value;
-    setListHeaders(updatedParams);
+    setHeaders(
+      headers.map((header) =>
+        header.id === id ? { ...header, [field]: newValue } : header,
+      ),
+    );
   };
 
-  const handleDeactivateHeaders = (idx: number) => {
-    const updatedHeaders = [...listHeaders];
-    updatedHeaders.splice(idx, 1);
-    setListHeaders(updatedHeaders);
+  const removeHeader = (id: string, isDeactivate: boolean) => {
+    if (isDeactivate) {
+      setHeadersDeactivate(headers.filter((header) => header.id === id));
+      setHeaders(headers.filter((header) => header.id !== id));
+      toast.success('Cabecera desactivada');
+      return;
+    }
+    setHeaders(headers.filter((header) => header.id !== id));
+    toast.success('Cabecera eliminada');
   };
 
-  const handleSetKey = (idx: number, newValue: string) => {
-    toast.success(`DATOS LLEGADOS ${idx}, ${newValue}`)
-    handleParamChange(idx, "key", newValue)    
+  const handleKeySelect = (id: string, selectedKey: string) => {
+    updateHeader(id, 'key', selectedKey);
+    toast.success(`Cabecera establecida: ${selectedKey}`);
   };
 
   return (
-    <div className="relative p-5 border border-zinc-600 overflow-y-auto h-[700px]">
+    <div className="relative   overflow-y-auto max-h-[700px]">
       <button
         type="button"
-        className="btn-black sticky top-0 my-2 left-0 w-full shadow-2xl "
-        onClick={handleAddNewHeader}
+        className="btn-black sticky   my-2 left-0 shadow-2xl"
+        onClick={addNewHeader}
       >
-        Añadir nueva Cabezera
+        <Icon icon="tabler:plus" width="24" height="24" />
+        Añadir nueva cabecera
       </button>
 
-      <div className="flex flex-col gap-y-4">
-        {/* // Ignomramos el valor por ahora */}
-        {listHeaders.map((_, idxX) => (
-          <div key={idxX} className="flex gap-4">
-            <div className="relative">
+      <div className="flex flex-col gap-y-4 mt-4">
+        {headers.map((header) => (
+          <div key={header.id} className="flex gap-4 items-center">
+            <div className="relative flex-1">
               <input
                 type="text"
-                className="input-gray flex-1"
-                placeholder="LLave"
-                onChange={(e) => handleParamChange(idxX, "key", e.target.value)}
+                className="input-gray w-full"
+                placeholder="Clave"
+                value={header.key}
+                onChange={(e) => updateHeader(header.id, 'key', e.target.value)}
               />
               <AnimatePresence mode="wait">
-              <motion.select
-                initial={{ height: "50px" }}
-                className="bg-gray-900 text-white fixed border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block relative p-2.5"
-              >
-                {requestHeaders.map((e, idx) => (
-                  <option value={e} key={idx + e} onClick={() => handleSetKey(idxX, e)}>
-                    {e}
-                  </option>
-                ))}
-              </motion.select>
+                <motion.select
+                  className="absolute overflow-hidden rounded bg-black/60 inset-0 opacity-0 w-full h-full cursor-pointer"
+                  value={header.key}
+                  onChange={(e) => handleKeySelect(header.id, e.target.value)}
+                  whileHover={{ opacity: 1 }}
+                >
+                  <option value="">Seleccionar cabecera común</option>
+                  {requestHeaders.map((headerOption) => (
+                    <option key={headerOption} value={headerOption}>
+                      {headerOption}
+                    </option>
+                  ))}
+                </motion.select>
               </AnimatePresence>
             </div>
+
             <input
               type="text"
               className="input-gray flex-1"
               placeholder="Valor"
-              onChange={(e) => handleParamChange(idxX, "value", e.target.value)}
+              value={header.value}
+              onChange={(e) => updateHeader(header.id, 'value', e.target.value)}
             />
-            <button
-              className="btn-black"
-              onClick={() => handleDeactivateHeaders(idxX)}
-            >
-              <Icon icon="tabler:trash" width="14" height="14" />
-            </button>
-            <button
-              className="btn-black"
-              onClick={() => handleDeactivateHeaders(idx)}
-            >
-              <Icon icon="tabler:check" width="14" height="14" />
-            </button>
+
+            <div className="flex gap-2">
+              <button
+                type="button"
+                className="btn-black p-2"
+                onClick={() => removeHeader(header.id, false)}
+                aria-label="Eliminar cabecera"
+              >
+                <Icon icon="tabler:trash" width="16" height="16" />
+              </button>
+              <button
+                onClick={() => removeHeader(header.id, true)}
+                type="button"
+                className="btn-black p-2"
+                aria-label="Confirmar cabecera"
+              >
+                <Icon icon="tabler:check" width="16" height="16" />
+              </button>
+            </div>
           </div>
         ))}
       </div>
-
-      <p>{JSON.stringify(listHeaders)}</p>
     </div>
   );
 }
 
 const requestHeaders = [
-  "Accept",
-  "Content-Type",
-  "Authorization",
-  "User-Agent",
-  "Origin",
-  "Cookie",
-  "Cache-Control",
-  "Host",
-  "Referer",
-  "Accept-Encoding",
-  "Accept-Language",
+  'Accept',
+  'Content-Type',
+  'Authorization',
+  'User-Agent',
+  'Origin',
+  'Cookie',
+  'Cache-Control',
+  'Host',
+  'Referer',
+  'Accept-Encoding',
+  'Accept-Language',
 ];
-
-// Puedes acceder a ellas así:
-// console.log("Cabeceras de Solicitud:", allHeaders.request);
-// console.log("Cabeceras de Respuesta:", allHeaders.response);

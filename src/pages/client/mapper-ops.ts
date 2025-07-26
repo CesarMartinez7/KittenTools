@@ -8,10 +8,10 @@ export const Methodos = [
 
 export const Opciones = [
   {
-    name: 'Params',
+    name: 'Body',
   },
   {
-    name: 'Body',
+    name: 'Params',
   },
   {
     name: 'Headers',

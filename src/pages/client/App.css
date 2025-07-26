@@ -9,5 +9,5 @@
 }
 
 .btn-black {
-  @apply p-2 rounded-md text-zinc-200 bg-gradient-to-t from-zinc-900 to-zinc-800;
+  @apply p-2 rounded-md text-zinc-200 bg-gradient-to-t from-zinc-900 to-zinc-800 flex items-center;
 }

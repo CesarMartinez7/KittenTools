@@ -1,6 +1,6 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { createContext, useEffect, useState } from 'react';
-
+import toast from 'react-hot-toast';
 import { useParamsStore } from '../stores/queryparams-store';
 
 export const ParamsContext = createContext('');
@@ -15,6 +15,8 @@ const AddQueryParam = () => {
 
   useEffect(() => {
     setParamsFinal(buildQueryParams());
+    toast.success(JSON.stringify(params));
+    toast.success(paramsFinal);
     setValor(paramsFinal);
   }, [params]);
 

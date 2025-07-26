@@ -6,6 +6,7 @@ import ContainerDescripcion from './components/DESCRIPCION';
 import EditorJson from './components/EDITOR';
 import ContainerTextArea from './components/TEXTAREA-EDITOR';
 import ToolBar from './components/TOOLBAR.';
+import { CodeEditor } from './pages/client/components/code-editor';
 import GridLayout from './pages/GridLayout';
 import Aurora from './ui/Aurora';
 import { BaseModal } from './ui/BaseModal';
@@ -80,7 +81,7 @@ const App = () => {
 
   const handleClickminifyJson = () => {
     try {
-      const parseado = JSON.parse(value);      
+      const parseado = JSON.parse(value);
       setValue(JSON.stringify(parseado));
 
       toast.success('JSON minificado');
@@ -182,17 +183,7 @@ const App = () => {
       </div>
 
       <div className="relative">
-        {showAurora && (
-          <Aurora
-            colorStops={['#27272a', '#4fbed6', '#18181b']}
-            blend={0.5}
-            amplitude={1.0}
-            speed={0.5}
-          />
-        )}
-
         <div className=" text-zinc-200 min-h-screen ">
-        
           <AnimatePresence mode="wait">
             <motion.div
               className={` ${showGrid ? 'max-w-[80vw]' : 'max-w-7xl'} mx-auto flex flex-col lg:flex-row gap-6 min-h-screen p-5`}

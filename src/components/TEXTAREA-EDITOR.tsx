@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'motion/react';
 import { type KeyboardEvent, useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
+import { CodeEditor } from '../pages/client/components/code-editor';
 
 interface ContainerArea {
   value: string | null | undefined;
@@ -69,19 +70,8 @@ export default function ContainerTextArea({
     };
   }, []); // Escucha cambioss en value para poder guardar
 
-  const handleChangeTextArea = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (e.target.value.length === 0) {
-      setValue(null);
-      return;
-    }
-    const clean = e.target.value.replace(/\/\//g, '').replace(/n\//gi, '');
-    setValue(clean);
-    try {
-      JSON.parse(clean);
-      localStorage.setItem('jsonData', clean);
-    } catch {
-      return null;
-    }
+  const handleChangeTextArea = (e: string) => {
+    setValue(e);
   };
 
   const handleClickKdb = () => {
@@ -164,13 +154,19 @@ export default function ContainerTextArea({
           )}
         </AnimatePresence>
 
-        <textarea
+        <CodeEditor
+          value={value ?? ''}
+          language="json"
+          onChange={(e) => handleChangeTextArea(e)}
+        />
+
+        {/* <textarea
           autoFocus
           value={value ?? ''}
           onChange={handleChangeTextArea}
           className="h-full w-full resize-none"
           placeholder="Pega o escribe tu JSON aquí"
-        />
+        /> */}
       </div>
     </section>
   );
