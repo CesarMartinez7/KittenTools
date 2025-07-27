@@ -1,5 +1,5 @@
-import { Icon } from '@iconify/react/dist/iconify.js';
-import { Link } from 'react-router';
+import { Icon } from "@iconify/react/dist/iconify.js";
+import { Link } from "react-router";
 
 interface ToolbarButtonsProps {
   handleClear: () => void;
@@ -32,7 +32,7 @@ export default function ToolbarButtons({
   isOpenDiffText,
   setShowConsole,
   showConsole,
-  classContainerButtons = 'flex flex-row',
+  classContainerButtons = "flex flex-row",
 }: ToolbarButtonsProps) {
   return (
     <div className={`w-full flex  gap-1 ${classContainerButtons}`}>
@@ -49,6 +49,15 @@ export default function ToolbarButtons({
       >
         <Icon icon="tabler:box" width="24" height="24" /> Minify
       </button>
+
+      <Link
+        title="Cliente Request"
+        className="w-full flex items-center justify-center gap-2 bg-kanagawa-orange text-black hover:bg-kanagawa-orange/60 font-bold px-3 py-2 text-sm rounded-lg transition h-[40px] disabled:opacity-60 disabled:event-pointer-none "
+        to={"/client"}
+      >
+        <Icon icon="tabler:git-pull-request" width="20" height="20" />
+        Cliente Request
+      </Link>
 
       <button
         title="Compa"
@@ -106,15 +115,6 @@ export default function ToolbarButtons({
         <Icon icon="tabler:git-compare" width="20" height="20" />
         Comparar Texto
       </button>
-
-      <Link
-        title="Compartir URL"
-        className="w-full flex items-center justify-center gap-2 bg-kanagawa-orange text-black hover:bg-kanagawa-orange/60 font-bold px-3 py-2 text-sm rounded-lg transition h-[40px] disabled:opacity-60 disabled:event-pointer-none "
-        to={'/client'}
-      >
-        <Icon icon="tabler:git-pull-request" width="20" height="20" />
-        Cliente (dev)
-      </Link>
     </div>
   );
 }

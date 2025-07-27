@@ -135,7 +135,6 @@ const App = () => {
           setShowConsole(true);
           return;
         }
-
         setShowConsole(false);
       }
     };

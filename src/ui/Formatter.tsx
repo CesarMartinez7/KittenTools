@@ -1,12 +1,12 @@
-import { Icon } from '@iconify/react';
-import { download, generateCsv, mkConfig } from 'export-to-csv';
-import { AnimatePresence, motion } from 'motion/react';
-import type React from 'react';
-import { useEffect, useRef, useState } from 'react';
-import toast from 'react-hot-toast';
-import FormatDataTypeLabel from './formatDataLabel';
-import LazyListItem from './LazyListPerform';
-import TableData from './Table';
+import { Icon } from "@iconify/react";
+import { download, generateCsv, mkConfig } from "export-to-csv";
+import { AnimatePresence, motion } from "motion/react";
+import type React from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import toast from "react-hot-toast";
+import FormatDataTypeLabel from "./formatDataLabel";
+import LazyListItem from "./LazyListPerform";
+import TableData from "./Table";
 
 const csvConfig = mkConfig({ useKeysAsHeaders: true });
 
@@ -34,7 +34,7 @@ export const JsonNode: React.FC<JsonNodeProps> = ({
 }) => {
   const [collapsed, setCollapsed] = useState<boolean>(false);
 
-  const isObject = typeof data === 'object' && data !== null;
+  const isObject = typeof data === "object" && data !== null;
   const isArray = Array.isArray(data);
 
   const toggle = () => setCollapsed(!collapsed);
@@ -57,11 +57,11 @@ export const JsonNode: React.FC<JsonNodeProps> = ({
           >
             {isArray
               ? !collapsed
-                ? '['
-                : '[..]'
+                ? "["
+                : "[..]"
               : !collapsed && !isArray
-                ? '{'
-                : '{..}'}
+                ? "{"
+                : "{..}"}
           </span>
           {!collapsed && (
             <div className="mt-1 space-y-1">
@@ -81,7 +81,7 @@ export const JsonNode: React.FC<JsonNodeProps> = ({
                         </div>
 
                         <span className="text-zinc-400" onClick={toggle}>
-                          {i + 1 === data.length ? ']' : ''}
+                          {i + 1 === data.length ? "]" : ""}
                         </span>
                       </span>
                     </LazyListItem>
@@ -100,8 +100,8 @@ export const JsonNode: React.FC<JsonNodeProps> = ({
 
                       <span className="text-zinc-300">
                         {Object.entries(data as JsonObject).length === idx + 1
-                          ? '}'
-                          : ''}
+                          ? "}"
+                          : ""}
                       </span>
                     </span>
                   ))}
@@ -131,14 +131,11 @@ const JsonViewer: React.FC<{
   isOpen,
   width,
 
-  height = '20vh',
-  maxHeight = '44vh',
+  height = "20vh",
+  maxHeight = "44vh",
   __changed,
 }) => {
-  const [size, setSize] = useState<string>('0.00 KB');
-  // const { generateInterfaceFromJson } = useInterfaceGenerator();
   const viewerRef = useRef<HTMLDivElement>(null);
-
   const [showJsonViewer, setShowJsonViewer] = useState<boolean>(true);
   const [showTable, setShowTable] = useState<boolean>(false);
   const [showInterface, setShowInterface] = useState<boolean>(false);
@@ -172,12 +169,10 @@ const JsonViewer: React.FC<{
     setShowJsonViewer(true);
   };
 
-  // const handleClickShowJson = () => setShow
-
   const handleClickSummary = () => {
     if (INDENT >= 20) {
       toast.error(
-        'No se puede aumentar el identado a mas de 10 espacios para no romper la vista',
+        "No se puede aumentar el identado a mas de 10 espacios para no romper la vista",
       );
       return;
     }
@@ -186,7 +181,7 @@ const JsonViewer: React.FC<{
   const handleClickRest = () => {
     setIdent((prev) => {
       if (prev > 10) {
-        toast.error('No se puede reducir más el indentado');
+        toast.error("No se puede reducir más el indentado");
         return prev - 1;
       } else {
         return prev;
@@ -201,7 +196,7 @@ const JsonViewer: React.FC<{
       if (Array.isArray(value)) {
         if (value.length > 0) {
           const firstItem = value[0];
-          if (typeof firstItem === 'object' && firstItem !== null) {
+          if (typeof firstItem === "object" && firstItem !== null) {
             // array de objetos
             result[key] = [generateJsonInterface(firstItem)];
           } else {
@@ -209,9 +204,9 @@ const JsonViewer: React.FC<{
             result[key] = [`${typeof firstItem}`];
           }
         } else {
-          result[key] = ['any'];
+          result[key] = ["any"];
         }
-      } else if (typeof value === 'object' && value !== null) {
+      } else if (typeof value === "object" && value !== null) {
         result[key] = generateJsonInterface(value); // recursivo
       } else {
         result[key] = typeof value;
@@ -225,18 +220,21 @@ const JsonViewer: React.FC<{
   const handleClickGenerateCSV = () => {
     const csv = generateCsv(csvConfig)(JSON.parse(values as string));
     if (!csv) {
-      toast.error('No se pudo generar el CSV');
+      toast.error("No se pudo generar el CSV");
       return;
     }
     download(csvConfig)(csv);
-    toast.success('CSV generado correctamente');
+    toast.success("CSV generado correctamente");
   };
 
-  // Recalcular el size del json o la data
-  useEffect(() => {
-    const raw = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
-    const bytes = new Blob([raw]).size / 1024;
-    setSize(bytes.toFixed(2) + ' KB');
+  const size = useMemo(() => {
+    const raw = typeof data === "string" ? data : JSON.stringify(data, null, 2);
+    try {
+      const sizeInKB = new TextEncoder().encode(raw).length / 1024;
+      return sizeInKB.toFixed(2) + " KB ";
+    } catch {
+      return "Error";
+    }
   }, [data]);
 
   return (
@@ -253,14 +251,14 @@ const JsonViewer: React.FC<{
             onClick={handleClickShowTable}
           >
             <Icon icon="tabler:database" width="14" height="14" />
-            Datos Tabla {``}{' '}
+            Datos Tabla {``}{" "}
           </button>
           <button
             className="px-2 py-1 rounded-lg text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2"
             onClick={handleClickShowInterface}
           >
             <Icon icon="logos:typescript-icon" width="12" height="12" />
-            <span>Generar interfaz</span>{' '}
+            <span>Generar interfaz</span>{" "}
           </button>
 
           <AnimatePresence>
@@ -311,12 +309,12 @@ const JsonViewer: React.FC<{
             style={{
               maxHeight,
               height,
-              minHeight: '42vh',
+              minHeight: "42vh",
             }}
             ref={viewerRef}
             className="flex-1 overflow-auto px-3 py-4 text-sm  whitespace-break-spaces  "
           >
-            {typeof data === 'string' && data.length > 0 ? (
+            {typeof data === "string" && data.length > 0 ? (
               (() => {
                 try {
                   const parsed = JSON.parse(data);
@@ -378,7 +376,7 @@ const JsonViewer: React.FC<{
               style={{
                 maxHeight,
                 height,
-                minHeight: '42vh',
+                minHeight: "42vh",
               }}
             >
               {Array.isArray(interfaceGen) ? (
@@ -389,7 +387,7 @@ const JsonViewer: React.FC<{
                     </pre>
                   </div>
                 ))
-              ) : typeof interfaceGen === 'object' ? (
+              ) : typeof interfaceGen === "object" ? (
                 <pre className="text-xs text-zinc-300 whitespace-pre-wrap break-words">
                   {JSON.stringify(interfaceGen, null, 2)}
                 </pre>
