@@ -144,6 +144,11 @@ const JsonViewer: React.FC<{
   const [interfaceGen, setInterfaceGen] = useState<unknown>();
   const [values] = useState<JsonValue>(data);
 
+  const handleCopy = () => {
+    navigator.clipboard.writeText(JSON.stringify(values));
+    toast.success("JSON copiado al portapapeles");
+  };
+
   useEffect(() => {
     setShowJsonViewer(true);
     setShowInterface(false);
@@ -167,6 +172,16 @@ const JsonViewer: React.FC<{
     setShowInterface(false);
     setShowTable(false);
     setShowJsonViewer(true);
+  };
+
+  const handleDownloadJson = () => {
+    const elementDownload = document.createElement("a");
+    const jsonString = JSON.stringify(values, null, 2);
+    const blob = new Blob([jsonString], { type: "application/json" });
+    elementDownload.href = URL.createObjectURL(blob);
+    elementDownload.download = "data.json";
+    document.body.appendChild(elementDownload);
+    elementDownload.click();
   };
 
   const handleClickSummary = () => {
@@ -285,17 +300,11 @@ const JsonViewer: React.FC<{
         </div>
 
         <div className="flex gap-1 ">
-          <button
-            className="px-2 py-0.5 rounded text- bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2"
-            onClick={handleClickSummary}
-          >
-            +
+          <button className="btn-small" onClick={handleClickSummary}>
+            <Icon icon={"tabler:plus"} width={"10"} height={"10"} />
           </button>
-          <button
-            className="px-2 py-0.5 rounded text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2"
-            onClick={handleClickRest}
-          >
-            -
+          <button className="btn-small" onClick={handleClickRest}>
+            <Icon icon={"tabler:minus"} width={"10"} height={"10"} />
           </button>
         </div>
       </div>
@@ -405,6 +414,22 @@ const JsonViewer: React.FC<{
 
         <div className="flex gap-2">
           <button
+            title="descargar"
+            className="btn-icon p-2 text-xs bg-zinc-800 rounded-lg "
+            onClick={handleDownloadJson}
+          >
+            <Icon icon={"tabler:download"} width={13} height={13} />
+          </button>
+
+          <button
+            title="copiar"
+            className="btn-icon p-2 text-xs bg-zinc-800 rounded-lg "
+            onClick={handleCopy}
+          >
+            <Icon icon={"tabler:copy"} width={13} height={13} />
+          </button>
+          <button
+            title="generar csv"
             className="btn-icon  p-1 text-xs bg-zinc-800 rounded-lg "
             onClick={handleClickGenerateCSV}
           >

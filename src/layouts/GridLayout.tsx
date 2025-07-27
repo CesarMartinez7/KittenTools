@@ -92,7 +92,7 @@ const GridLayout: React.FC<GridLayoutExtendedProps> = ({
           handleCopyUrl={handleCopyUrl}
         />
       </div> */}
-      {/* Editor a la izquierda */}
+      {/* Editor a la izquierdaa */}
       <div className="col-span-1 row-start-2">
         <ContainerTextArea
           classText="h-full"

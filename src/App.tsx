@@ -1,24 +1,24 @@
-import { Icon } from '@iconify/react/dist/iconify.js';
-import { AnimatePresence, motion } from 'motion/react';
-import { useEffect, useState } from 'react';
-import toast from 'react-hot-toast';
-import ContainerDescripcion from './components/DESCRIPCION';
-import ContainerTextArea from './components/TEXTAREA-EDITOR';
-import ToolBar from './components/TOOLBAR.';
-import GridLayout from './layouts/GridLayout';
-import { AuroraStore } from './stores/aurora';
-import { BaseModal } from './ui/BaseModal';
-import Console from './ui/Console';
-import JWTDecode from './ui/DecodeJWT';
-import { ModalViewer } from './ui/Difftext';
-import { JsonDiffLazy, JsonViewerLazy } from './ui/LAZY_COMPONENT';
+import { Icon } from "@iconify/react/dist/iconify.js";
+import { AnimatePresence, motion } from "motion/react";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import ContainerDescripcion from "./components/DESCRIPCION";
+import ContainerTextArea from "./components/TEXTAREA-EDITOR";
+import ToolBar from "./components/TOOLBAR.";
+import GridLayout from "./layouts/GridLayout";
+import { AuroraStore } from "./stores/aurora";
+import { BaseModal } from "./ui/BaseModal";
+import Console from "./ui/Console";
+import JWTDecode from "./ui/DecodeJWT";
+import { ModalViewer } from "./ui/Difftext";
+import { JsonDiffLazy, JsonViewerLazy } from "./ui/LAZY_COMPONENT";
 
 const App = () => {
   const [value, setValue] = useState<string | null | undefined>(
-    localStorage.getItem('jsonData') || ' ',
+    localStorage.getItem("jsonData") || " ",
   );
   const [isValid, setIsValid] = useState(true);
-  const [error, setErrorMessage] = useState('');
+  const [error, setErrorMessage] = useState("");
   const [openViewerJsonFull, setOpenViewerJsonFull] = useState<boolean>(false);
   const [isOpenDiff, setIsOpenDiff] = useState<boolean>(false);
   const [isOpenDiffText, setIsOpenDiffText] = useState<boolean>(false);
@@ -40,29 +40,29 @@ const App = () => {
     try {
       JSON.parse(value);
       setIsValid(true);
-      setErrorMessage('');
+      setErrorMessage("");
     } catch {
       setIsValid(false);
-      setErrorMessage('JSON inválido. Por favor verifica tu entrada.');
+      setErrorMessage("JSON inválido. Por favor verifica tu entrada.");
     }
   }, [value]);
 
   // Limpiar el input y el formatter
   const handleClear = () => {
-    if (localStorage.getItem('jsonData') === null) {
-      toast.error('No hay nada que limpiar.');
+    if (localStorage.getItem("jsonData") === null) {
+      toast.error("No hay nada que limpiar.");
       return;
     }
-    setValue('');
-    localStorage.removeItem('jsonData');
-    toast.success('Limpiado exitosamente.');
+    setValue("");
+    localStorage.removeItem("jsonData");
+    toast.success("Limpiado exitosamente.");
   };
 
   // Cargue del input del json o txt
   const handleClickCargueJson = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.json,.txt';
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".json,.txt";
 
     input.onchange = (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
@@ -85,9 +85,9 @@ const App = () => {
       const parseado = JSON.parse(value);
       setValue(JSON.stringify(parseado));
 
-      toast.success('JSON minificado');
+      toast.success("JSON minificado");
     } catch {
-      toast.error('JSON inválido para minificar');
+      toast.error("JSON inválido para minificar");
     }
   };
 
@@ -96,41 +96,41 @@ const App = () => {
       try {
         navigator.clipboard
           .writeText(value)
-          .then(() => toast.success('Copiado exitosamente'));
+          .then(() => toast.success("Copiado exitosamente"));
       } catch {
-        toast.error('Ocurrio un error al copiar.');
+        toast.error("Ocurrio un error al copiar.");
       }
       return;
     }
 
-    toast.error('Estas seguro que tienes algo que copiar?');
+    toast.error("Estas seguro que tienes algo que copiar?");
 
-    toast.error('No tienes nada para copiar en tu Text Area.');
+    toast.error("No tienes nada para copiar en tu Text Area.");
   };
 
   const handleCopyUrl = () => {
     try {
       const encoded = btoa(unescape(encodeURIComponent(value)));
       const url = new URL(window.location.href);
-      url.searchParams.set('jsdata', encoded);
+      url.searchParams.set("jsdata", encoded);
       const fullUrl = url.toString();
 
       navigator.clipboard
         .writeText(fullUrl)
         .then(() => {
-          toast.success('Direccion copiada con exito.');
+          toast.success("Direccion copiada con exito.");
         })
         .catch(() => {
-          toast.error('No se pudo copiar la URL');
+          toast.error("No se pudo copiar la URL");
         });
     } catch {
-      toast.error('Error al generar URL compartible');
+      toast.error("Error al generar URL compartible");
     }
   };
 
   useEffect(() => {
     const keydown = (e: KeyboardEvent) => {
-      if (e.key === 'x' && e.ctrlKey) {
+      if (e.key === "x" && e.ctrlKey) {
         if (!showConsole) {
           setShowConsole(true);
           return;
@@ -139,10 +139,10 @@ const App = () => {
       }
     };
 
-    window.addEventListener('keydown', keydown);
+    window.addEventListener("keydown", keydown);
 
     return () => {
-      window.removeEventListener('keydown', keydown);
+      window.removeEventListener("keydown", keydown);
     };
   }, []);
 
@@ -158,7 +158,7 @@ const App = () => {
           style={{ minWidth: 120 }}
         >
           <Icon icon="tabler:beer" width="20" height="20" />
-          {showAurora ? 'Ocultar Aurora' : 'Mostrar Aurora'}
+          {showAurora ? "Ocultar Aurora" : "Mostrar Aurora"}
         </button>
         <button
           className=" left-50 z-50 flex items-center justify-center gap-2 bg-gradient-to-t from-zinc-900 to-zinc-800 hover:bg-zinc-700 text-zinc-300 px-2 py-2 text-sm rounded-xl shadow-lg transition"
@@ -166,7 +166,7 @@ const App = () => {
           style={{ minWidth: 40 }}
         >
           <Icon
-            icon={`tabler:${showGrid ? 'layout-grid' : 'layout'}`}
+            icon={`tabler:${showGrid ? "layout-grid" : "layout"}`}
             width="22"
           />
         </button>
@@ -176,11 +176,11 @@ const App = () => {
         <div className=" text-zinc-200 min-h-screen ">
           <AnimatePresence mode="wait">
             <motion.div
-              className={` ${showGrid ? 'max-w-[80vw]' : 'max-w-7xl'} mx-auto flex flex-col lg:flex-row gap-6 min-h-screen p-5`}
+              className={` ${showGrid ? "max-w-[80vw]" : "max-w-7xl"} mx-auto flex flex-col lg:flex-row gap-6 min-h-screen p-5`}
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
             >
               {showGrid ? (
                 <GridLayout
@@ -228,7 +228,7 @@ const App = () => {
                     />
                     <ContainerDescripcion />
                   </motion.aside>
-                  <main className="flex-1 space-y-6">
+                  <main className="flex-1 space-y-6 max-w-full">
                     <ContainerTextArea
                       value={value}
                       setValue={setValue}

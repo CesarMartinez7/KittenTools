@@ -8,6 +8,14 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 const highlightCode = (code: string, language: string) => {
   let highlightedCode = code;
 
+  const escapeHTML = (str: string) =>
+    str
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
   if (language === "json") {
     // JSON highlighting
     highlightedCode = code
@@ -27,7 +35,8 @@ const highlightCode = (code: string, language: string) => {
       );
   } else if (language === "xml") {
     // XML highlighting
-    highlightedCode = code
+    let escaped = escapeHTML(code);
+    highlightedCode = escaped
       .replace(
         /<!--[\s\S]*?-->/g,
         `<span style="color: ${colors.comment}">$&</span>`,
