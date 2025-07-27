@@ -1,84 +1,84 @@
-import type React from 'react';
-import { memo, useEffect, useRef, useState } from 'react';
-import LazyListItem from '../../../ui/LazyListPerform';
+import type React from "react";
+import { memo, useEffect, useRef, useState } from "react";
+import LazyListItem from "../../../ui/LazyListPerform";
 
 const highlightCode = (code: string, language: string) => {
   const keywords: Record<string, string[]> = {
     javascript: [
-      'function',
-      'const',
-      'let',
-      'var',
-      'if',
-      'else',
-      'for',
-      'while',
-      'return',
-      'class',
-      'extends',
-      'import',
-      'export',
-      'default',
-      'async',
-      'await',
-      'try',
-      'catch',
-      'throw',
-      'new',
-      'this',
-      'super',
-      'static',
+      "function",
+      "const",
+      "let",
+      "var",
+      "if",
+      "else",
+      "for",
+      "while",
+      "return",
+      "class",
+      "extends",
+      "import",
+      "export",
+      "default",
+      "async",
+      "await",
+      "try",
+      "catch",
+      "throw",
+      "new",
+      "this",
+      "super",
+      "static",
     ],
     typescript: [
-      'function',
-      'const',
-      'let',
-      'var',
-      'if',
-      'else',
-      'for',
-      'while',
-      'return',
-      'class',
-      'extends',
-      'import',
-      'export',
-      'default',
-      'async',
-      'await',
-      'try',
-      'catch',
-      'throw',
-      'new',
-      'this',
-      'super',
-      'static',
-      'interface',
-      'type',
-      'enum',
-      'namespace',
-      'public',
-      'private',
-      'protected',
+      "function",
+      "const",
+      "let",
+      "var",
+      "if",
+      "else",
+      "for",
+      "while",
+      "return",
+      "class",
+      "extends",
+      "import",
+      "export",
+      "default",
+      "async",
+      "await",
+      "try",
+      "catch",
+      "throw",
+      "new",
+      "this",
+      "super",
+      "static",
+      "interface",
+      "type",
+      "enum",
+      "namespace",
+      "public",
+      "private",
+      "protected",
     ],
     json: [],
     xml: [],
   };
 
   const colors = {
-    keyword: '#569cd6',
-    string: '#ce9178',
-    comment: '#6a9955',
-    number: '#fdc700',
-    function: '#dcdcaa',
-    tag: '#4ec9b0',
-    attribute: '#b271ea',
-    value: '#ce9178',
+    keyword: "#569cd6",
+    string: "#ce9178",
+    comment: "#6a9955",
+    number: "#fdc700",
+    function: "#dcdcaa",
+    tag: "#4ec9b0",
+    attribute: "#b271ea",
+    value: "#ce9178",
   };
 
   let highlightedCode = code;
 
-  if (language === 'json') {
+  if (language === "json") {
     // JSON highlighting
     highlightedCode = code
       .replace(/"([^"\\]|\\.)*"/g, (match) => {
@@ -95,7 +95,7 @@ const highlightCode = (code: string, language: string) => {
         /\b(-?\d+\.?\d*)\b/g,
         `<span style="color: ${colors.number}">$1</span>`,
       );
-  } else if (language === 'xml') {
+  } else if (language === "xml") {
     // XML highlighting
     highlightedCode = code
       .replace(
@@ -140,7 +140,7 @@ const highlightCode = (code: string, language: string) => {
 
     // Keywords
     langKeywords.forEach((keyword) => {
-      const regex = new RegExp(`\\b(${keyword})\\b`, 'g');
+      const regex = new RegExp(`\\b(${keyword})\\b`, "g");
       highlightedCode = highlightedCode.replace(
         regex,
         `<span style="color: ${colors.keyword}; font-weight: bold">$1</span>`,
@@ -153,7 +153,7 @@ const highlightCode = (code: string, language: string) => {
 
 interface CodeEditorProps {
   value?: string;
-  language?: 'javascript' | 'typescript' | 'json' | 'xml';
+  language?: "javascript" | "typescript" | "json" | "xml";
   onChange?: (value: string | undefined | null) => void;
   height?: string;
   placeholder?: string;
@@ -161,12 +161,12 @@ interface CodeEditorProps {
 }
 
 const CodeEditor = ({
-  value = '',
-  language = 'javascript',
+  value = "",
+  language = "javascript",
   onChange,
-  height = '200px',
-  placeholder = '// Escribe tu código aquí...',
-  classNameContainer = '100%',
+  height = "200px",
+  placeholder = "// Escribe tu código aquí...",
+  classNameContainer = "100%",
 }: CodeEditorProps) => {
   const [code, setCode] = useState(value);
   const [lineCount, setLineCount] = useState(1);
@@ -176,7 +176,7 @@ const CodeEditor = ({
   const lineNumbersRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const lines = code.split('\n').length;
+    const lines = code.split("\n").length;
     setLineCount(lines);
   }, [code]);
 
@@ -201,11 +201,11 @@ const CodeEditor = ({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Tab') {
+    if (e.key === "Tab") {
       e.preventDefault();
       const start = e.currentTarget.selectionStart;
       const end = e.currentTarget.selectionEnd;
-      const newValue = code.substring(0, start) + '  ' + code.substring(end);
+      const newValue = code.substring(0, start) + "  " + code.substring(end);
       setCode(newValue);
       onChange?.(newValue);
 
@@ -259,12 +259,15 @@ const CodeEditor = ({
           className="absolute inset-0 p-2 ring-none ring-0 focus:ring-none text-sm font-mono leading-6 resize-none outline-none bg-r  whitespace-pre-wrap break-words"
           style={{
             height,
-            color: 'transparent',
-            caretColor: '#d4d4d4',
+            color: "transparent",
+            caretColor: "#d4d4d4",
           }}
           spellCheck={false}
           placeholder={placeholder}
         />
+      </div>
+      <div className="absolute right-2 bottom-2 text-xs text-zinc-400 ">
+        {lineCount}
       </div>
     </div>
   );

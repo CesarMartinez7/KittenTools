@@ -1,8 +1,8 @@
 // import LazyListItem from './LazyListPerform'; // LazyListItem is not used in the provided code
-import { Icon } from '@iconify/react/dist/iconify.js';
-import { motion } from 'framer-motion'; // Corrected import
-import { useEffect, useState } from 'react';
-import toast from 'react-hot-toast';
+import { Icon } from "@iconify/react/dist/iconify.js";
+import { motion } from "framer-motion"; // Corrected import
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 interface TableDataProps {
   data: unknown;
@@ -18,7 +18,7 @@ export default function TableData({ data }: TableDataProps) {
     let parsedData: any;
 
     try {
-      parsedData = typeof data === 'string' ? JSON.parse(data) : data;
+      parsedData = typeof data === "string" ? JSON.parse(data) : data;
       setError(false);
     } catch (err) {
       toast.error(`Error al parsear el JSON: ${err}`);
@@ -29,7 +29,7 @@ export default function TableData({ data }: TableDataProps) {
     setDataClone(parsedData);
 
     if (Array.isArray(parsedData)) {
-      if (parsedData.length > 0 && typeof parsedData[0] === 'object') {
+      if (parsedData.length > 0 && typeof parsedData[0] === "object") {
         const columns = Object.keys(parsedData[0]);
         const values: unknown[][] = parsedData.map((item) =>
           Object.values(item),
@@ -39,31 +39,28 @@ export default function TableData({ data }: TableDataProps) {
       } else if (parsedData.length === 0) {
         setColumnNames([]);
         setValueColumns([]);
-        toast('El array está vacío', { icon: 'ℹ️' });
+        toast("El array está vacío", { icon: "ℹ️" });
       } else {
-        setColumnNames(['Valor']);
+        setColumnNames(["Valor"]);
         setValueColumns(parsedData.map((item) => [item]));
-        toast('Es un array de valores planos', { icon: 'ℹ️' });
+        toast("Es un array de valores planos", { icon: "ℹ️" });
       }
-    } else if (typeof parsedData === 'object' && parsedData !== null) {
+    } else if (typeof parsedData === "object" && parsedData !== null) {
       const keyObject = Object.keys(parsedData);
       const valuesObject = Object.values(parsedData);
-
       setValueColumns([valuesObject]);
-
       setColumnNames(keyObject);
-      toast.success('Es un objeto');
     } else if (
-      typeof parsedData === 'string' ||
-      typeof parsedData === 'number' ||
-      typeof parsedData === 'boolean'
+      typeof parsedData === "string" ||
+      typeof parsedData === "number" ||
+      typeof parsedData === "boolean"
     ) {
       setValueColumns([[parsedData]]);
-      setColumnNames(['Valor']);
-      toast.success('Es un valor plano');
+      setColumnNames(["Valor"]);
+      toast.success("Es un valor plano");
     } else {
       setError(true);
-      toast.error('Tipo de dato no soportado para mostrar en tabla.');
+      toast.error("Tipo de dato no soportado para mostrar en tabla.");
     }
   }, [data]);
 
@@ -91,9 +88,19 @@ export default function TableData({ data }: TableDataProps) {
                     {row.map((cell: any, cellIndex: number) => (
                       <td
                         key={`${rowIndex}-${cellIndex}`} // Unique key for cells
-                        className={`px-6 py-4 ${cellIndex === 0 ? 'font-medium text-gray-900 whitespace-nowrap dark:text-white' : 'text-ellipsis'}`}
+                        className={`px-6 py-4 ${cellIndex === 0 ? "font-medium text-gray-900 whitespace-nowrap dark:text-white" : "text-ellipsis"}`}
                       >
-                        {String(cell)}
+                        {typeof cell === "object" && cell !== null ? (
+                          <pre className="whitespace-pre-wrap break-words">
+                            {JSON.stringify(cell, null, 1)}
+                          </pre>
+                        ) : (
+                          <span className="text-ellipsis">
+                            {cell !== null && cell !== undefined
+                              ? cell.toString()
+                              : "null"}
+                          </span>
+                        )}
                       </td>
                     ))}
                   </tr>
