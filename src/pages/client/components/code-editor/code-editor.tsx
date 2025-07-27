@@ -1,9 +1,10 @@
+import { Icon } from "@iconify/react/dist/iconify.js";
 import type React from "react";
 import { memo, useEffect, useRef, useState } from "react";
 import LazyListItem from "../../../../ui/LazyListPerform";
 import colors from "./colors";
 import keywords from "./keyword";
-import { Icon } from "@iconify/react/dist/iconify.js";
+import x from "@iconify-icons/tabler/x";
 
 const highlightCode = (code: string, language: string) => {
   let highlightedCode = code;
@@ -35,7 +36,7 @@ const highlightCode = (code: string, language: string) => {
       );
   } else if (language === "xml") {
     // XML highlighting
-    let escaped = escapeHTML(code);
+    const escaped = escapeHTML(code);
     highlightedCode = escaped
       .replace(
         /<!--[\s\S]*?-->/g,
@@ -222,9 +223,7 @@ const CodeEditor = ({
                   />
                 );
               } catch {
-                return (
-                  <Icon icon="tabler:x" width="10" height="10" color="red" />
-                );
+                return <Icon icon={x} width="10" height="10" color="red" />;
               }
             })()}
           </p>

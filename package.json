@@ -13,6 +13,8 @@
     "version": "auto-changelog --tag-prefix '' --unreleased --commit-limit false && git add CHANGELOG.md"
   },
   "dependencies": {
+    "@iconify-icons/mdi": "^1.2.48",
+    "@iconify-icons/tabler": "^1.2.95",
     "@tailwindcss/postcss": "^4.1.11",
     "axios": "^1.11.0",
     "export-to-csv": "^1.4.0",
