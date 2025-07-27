@@ -1,14 +1,15 @@
-import { motion } from 'framer-motion';
-import { diff } from 'jsondiffpatch';
-import { useState } from 'react';
-import toast from 'react-hot-toast';
-import { JsonViewerLazy } from './LAZY_COMPONENT';
+import { motion } from "framer-motion";
+import { diff } from "jsondiffpatch";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { JsonViewerLazy } from "./LAZY_COMPONENT";
+import { CodeEditorLazy } from "./LAZY_COMPONENT";
 
 export default function JsonDiffViewerModal() {
-  const [json1, setJson1] = useState('');
-  const [json2, setJson2] = useState('');
+  const [json1, setJson1] = useState("");
+  const [json2, setJson2] = useState("");
   const [diffResult, setDiffResult] = useState<object | null>(null);
-  const [error, setError] = useState('Pegue su JSON Aqui');
+  const [error, setError] = useState("Pegue su JSON Aqui");
 
   const handleCompare = () => {
     try {
@@ -16,14 +17,14 @@ export default function JsonDiffViewerModal() {
       const parsed2 = JSON.parse(json2);
       const delta = diff(parsed1, parsed2);
       setDiffResult(delta as object);
-      setError('');
+      setError("");
 
       if (diffResult === undefined) {
-        toast.success('No hay diferencias entre los dos JSON');
+        toast.success("No hay diferencias entre los dos JSON");
       }
     } catch {
-      toast.error('JSON invalido');
-      setError('JSON inválido 🫠');
+      toast.error("JSON invalido");
+      setError("JSON inválido 🫠");
       setDiffResult(null);
     }
   };
@@ -51,28 +52,36 @@ export default function JsonDiffViewerModal() {
       <div className="grid md:grid-cols-2 gap-4  ">
         <div className="flex flex-col">
           <label className="mb-1 text-zinc-400 font-medium">JSON #1</label>
-          <textarea
-            className="bg-zinc-950 text-zinc-100 p-2 rounded-lg h-40  resize-none focus:outline-none focus:ring-2 focus:ring-orange-500"
+
+          <CodeEditorLazy
+            classNameContainer="bg-zinc-950 text-zinc-100  rounded-lg  resize-none focus:outline-none focus:ring-2 focus:ring-orange-500"
             placeholder={error}
+            language="json"
             value={json1}
-            onChange={(e) => handleSetJson(e.target.value, 1)}
-            autoFocus
-            title="Pegue su JSON aquí"
+            onChange={(e) => handleSetJson(e, 1)}
           />
         </div>
 
         <div className="flex flex-col">
           <label className="mb-1 text-zinc-400 font-medium">JSON #2</label>
-          <textarea
+
+          <CodeEditorLazy
+            classNameContainer="bg-zinc-950 text-zinc-100  rounded-lg   resize-none focus:outline-none focus:ring-2 "
+            placeholder={error}
+            language="json"
+            value={json2}
+            onChange={(e) => handleSetJson(e, 2)}
+          />
+          {/* <textarea
             className="bg-zinc-950 text-zinc-100 p-2 rounded-lg h-40  resize-none focus:outline-none focus:ring-2 focus:ring-orange-500"
             placeholder="Pegue su JSON aquí"
             value={json2}
             onChange={(e) => handleSetJson(e.target.value, 2)}
-          />
+          /> */}
         </div>
       </div>
 
-      <div className="text-center mt-4">
+      <div className="text-center ">
         <button
           onClick={handleCompare}
           className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 my-5 rounded-lg shadow transition-colors"
@@ -89,7 +98,8 @@ export default function JsonDiffViewerModal() {
         data={diffResult}
         __changed={diffResult}
         height=""
-        maxHeight="50vh"
+        maxHeight=""
+        minHeight=""
       />
     </motion.div>
   );
