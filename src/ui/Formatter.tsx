@@ -332,19 +332,21 @@ const JsonViewer: React.FC<{
                   return (
                     <div className="text-red-400 absolute inset-0 backdrop-blur-3xl text-center grid place-content-center gap-2 overflow-hidden">
                       <Icon
-                        className="mx-auto"
+                        className="mx-auto text-zinc-500"
                         icon="tabler:alien"
                         width="54"
                         height="54"
                       />
-                      <span className="mx-auto text-zinc-400">
-                        JSON desconocido o invalido.
+                      <span className="block text-center text-zinc-400 font-medium mt-2">
+                        JSON inválido o no reconocido
                       </span>
                       <a
                         href="https://www.w3schools.com/js/js_json_syntax.asp"
-                        className="text-zinc-300 text-xs"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block text-center text-zinc-300 text-xs underline mt-1 hover:text-zinc-200 transition"
                       >
-                        Lee un poco sobre la sintaxis JSON
+                        Aprende sobre la sintaxis JSON
                       </a>
                     </div>
                   );

@@ -123,14 +123,14 @@ export const ModalViewer = () => {
   }, []);
 
   return (
-    <main className="text-white p-6 flex flex-col gap-8 items-center justify-center">
+    <main className="text-white p-6 flex flex-col gap-8 items-center justify-center bg-zinc-900/90 shadow-xl rounded-2xl">
       <div className="flex flex-col items-center gap-4 w-full">
         <h3 className="text-zinc-200 text-center text-lg gradient-text  font-bold">
-          Comparar Texto
+          Comparador de Texto 🚀
         </h3>
-        <div className="grid gap-5 md:grid-cols-2 w-full md:w-6xl max-w-6xl">
+        <div className="grid gap-5 md:grid-cols-2 w-full lg:w-6xl max-w-6xl">
           <div>
-            <p># 1 Texto</p>
+            <p className="my-2"># 1 Texto</p>
             <textarea
               value={originalText}
               onChange={(e) => setOriginalText(e.target.value)}
@@ -139,7 +139,7 @@ export const ModalViewer = () => {
             />
           </div>
           <div>
-            <p># 2 Texto</p>
+            <p className="my-2"># 2 Texto</p>
             <textarea
               value={compareText}
               onChange={(e) => setComparateText(e.target.value)}
@@ -150,10 +150,6 @@ export const ModalViewer = () => {
         </div>
         <TextDiffViewer texto1={originalText} texto2={compareText} />
       </div>
-      <p className="text-zinc-400 text-xs">
-        Las comparaciones están hechas por párrafos (líneas) y palabras. Las
-        letras diferentes se marcarán en colores.
-      </p>
     </main>
   );
 };
@@ -166,14 +162,14 @@ export const TextDiffViewer: React.FC<Props> = ({ texto1, texto2 }) => {
     <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 relative gap-6  text-sm">
       <div>
         <p className="text-zinc-400 mb-2">Texto Original</p>
-        <pre className="bg-zinc-900 text-white p-4 rounded-xl overflow-auto max-h-[300px] shadow h-[300px] whitespace-pre-wrap">
+        <pre className="bg-zinc-950 text-white p-4 rounded-xl overflow-auto max-h-[300px] shadow h-[300px] whitespace-pre-wrap">
           {texto1}
         </pre>
       </div>
 
       <div>
         <h2 className="text-zinc-400 font-semibold mb-2">Diferencias</h2>
-        <div className="bg-zinc-900 p-4 rounded-xl overflow-auto h-[300px] relative max-h-[300px] space-y-4 shadow ">
+        <div className="bg-zinc-950 p-4 rounded-xl overflow-auto h-[300px] relative max-h-[300px] space-y-4 shadow ">
           {changesDetected.length === 0 ? (
             <p className="text-green-500 absolute  top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ">
               No hay Diferencias

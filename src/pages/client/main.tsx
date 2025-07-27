@@ -11,6 +11,7 @@ import { HeadersAddRequest } from "./components/Headers";
 import { Methodos, Opciones } from "./mapper-ops";
 import { useStoreHeaders } from "./stores/headers-store";
 import { useParamsStore } from "./stores/queryparams-store";
+import { CodeEditorLazy } from "../../ui/LAZY_COMPONENT";
 
 export default function AppClient() {
   const cabeceras = useStoreHeaders((state) => state.valor);
@@ -19,6 +20,7 @@ export default function AppClient() {
   const [selectedMethod, setSelectedMethod] = useState("GET");
   const [responseSelected, setResponseSelected] = useState("");
   const [errorAxios, setErrorAxios] = useState<null | string>(null);
+  const [errorRequest, setErrorRequest] = useState<boolean>(false);
   const [code, setCode] = useState<number>();
   const [mimeSelected, setMimeSelected] = useState<number>(
     Number(sessionStorage.getItem("mimeSelected")) || 2,
@@ -100,11 +102,15 @@ export default function AppClient() {
               headers: {
                 "Content-Type": "multipart/form-data",
               },
+              code,
             };
           }
         } catch (e: any) {
           // Error de axios obtenidos para ver los errores en cabecera despues
           console.warn("Error en catch");
+          alert(
+            "Error al parsear el cuerpo de la petición. Asegúrate de que el formato es correcto.",
+          );
           setErrorAxios(e);
           setIsLoading(false);
           return;
@@ -134,10 +140,12 @@ export default function AppClient() {
       setResponseSelected(response.data);
       setCode(response.status);
     } catch (error: any) {
-      console.error("Request failed:", error);
+      setErrorRequest(true);
       setCode(error.response?.status);
-      setResponseSelected(error.response?.data || error.message);
-      setErrorAxios(error.message);
+      setResponseSelected(
+        JSON.stringify(error.response?.data || error.message),
+      );
+      setErrorAxios(JSON.stringify(error));
     } finally {
       setIsLoading(false);
     }
@@ -190,9 +198,7 @@ export default function AppClient() {
                       <button
                         type="button"
                         key={metodo.name}
-                        className={`w-full px-4 py-2 text-left hover:bg-zinc-800 ${
-                          selectedMethod === metodo.name.toUpperCase()
-                            ? "bg-sky-600"
+                        className={`w-full px-4 
                             : ""
                         }`}
                         onClick={() => {
@@ -217,7 +223,7 @@ export default function AppClient() {
               }}
               value={endpointUrl}
               autoFocus
-              className="flex-1 input-gray"
+              className="flex-1 input-gray bg-zinc-800"
             />
 
             <button
@@ -242,9 +248,7 @@ export default function AppClient() {
                 key={index}
                 type="button"
                 className={`btn btn-sm font-bold cursor-pointer btn-black ${
-                  index === mimeSelected
-                    ? "border-b-2 border-sky-600 bg-red-500"
-                    : ""
+                  index === mimeSelected ? "border-b-2 border-sky-600 " : ""
                 }`}
                 onClick={() => setMimeSelected(index)}
               >
@@ -254,6 +258,7 @@ export default function AppClient() {
           </div>
         </form>
 
+        {/* Request barra */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 flex-1 overflow-hidden">
           <div className="border rounded-xl border-zinc-800 p-4 flex flex-col bg-zinc-900/80 backdrop-blur-3xl overflow-hidden">
             <div className="h-full flex flex-col">
@@ -279,8 +284,8 @@ export default function AppClient() {
                     className="flex-1 flex flex-col"
                   >
                     <div className="mb-4">
-                      <div className="flex gap-4 mb-2">
-                        <label className="flex items-center gap-2">
+                      <div className="flex gap-4 mb-2 ">
+                        <label className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
                           <input
                             type="radio"
                             name="contentType"
@@ -309,12 +314,20 @@ export default function AppClient() {
                         </label>
                       </div>
                     </div>
-                    <textarea
+                    <CodeEditorLazy
+                      classNameContainer="w-full h-full overflow-hidden"
+                      height="100%"
+                      language="json"
+                      onChange={(e) => setBodyJson(e)}
+                      value={bodyJson}
+                      placeholder={formatBodyPlaceholder()}
+                    />
+                    {/* <textarea
                       onChange={(e) => setBodyJson(e.target.value)}
                       className="flex-1 w-full p-2  text-gray-300 rounded border border-zinc-800 font-mono text-sm"
                       placeholder={formatBodyPlaceholder()}
                       value={bodyJson}
-                    />
+                    /> */}
                   </motion.div>
                 )}
 
@@ -345,6 +358,7 @@ export default function AppClient() {
             </div>
           </div>
 
+          {/* Response barra */}
           <div className="border rounded-xl border-zinc-800 bg-zinc-900/80 backdrop-blur-3xl overflow-hidden flex flex-col">
             {responseSelected ? (
               <>
@@ -366,7 +380,11 @@ export default function AppClient() {
                     </div>
                   ) : (
                     <JsonViewer
-                      data={responseSelected}
+                      data={
+                        errorRequest
+                          ? JSON.stringify(errorAxios)
+                          : responseSelected
+                      }
                       width="100%"
                       height="100%"
                       maxHeight="100%"

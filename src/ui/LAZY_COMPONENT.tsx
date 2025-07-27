@@ -1,9 +1,9 @@
-import { lazy } from "react";
+import { lazy } from 'react';
 
-export const AppHomeLazy = lazy(() => import("../App"));
-export const JsonDiffLazy = lazy(() => import("./DiffJson"));
-export const JsonViewerLazy = lazy(() => import("./Formatter"));
-export const ModalViwerJSONLazy = lazy(() => import("./ModalViewer"));
+export const AppHomeLazy = lazy(() => import('../App'));
+export const JsonDiffLazy = lazy(() => import('./DiffJson'));
+export const JsonViewerLazy = lazy(() => import('./Formatter'));
+export const ModalViwerJSONLazy = lazy(() => import('./ModalViewer'));
 export const CodeEditorLazy = lazy(
-  () => import("../pages/client/components/code-editor"),
+  () => import('../pages/client/components/code-editor'),
 );

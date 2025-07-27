@@ -1,14 +1,13 @@
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion } from 'motion/react';
 import {
   type KeyboardEvent,
   Suspense,
   useEffect,
   useRef,
   useState,
-} from "react";
-import toast from "react-hot-toast";
-import { CodeEditor } from "../pages/client/components/code-editor";
-import { CodeEditorLazy } from "../ui/LAZY_COMPONENT";
+} from 'react';
+import toast from 'react-hot-toast';
+import { CodeEditorLazy } from '../ui/LAZY_COMPONENT';
 
 interface ContainerArea {
   value: string | null | undefined;
@@ -19,7 +18,7 @@ interface ContainerArea {
 export default function ContainerTextArea({
   setValue,
   value,
-  classText = "",
+  classText = '',
 }: ContainerArea) {
   // Valor a remplazar
   const inputRefTextOld = useRef<HTMLInputElement>(null);
@@ -31,32 +30,32 @@ export default function ContainerTextArea({
   // Evento para replazar el texto
 
   const handleCLickReplaceTextFirst = () => {
-    const from = inputRefTextOld.current?.value || "";
-    const to = inputRefTextNew.current?.value || "";
+    const from = inputRefTextOld.current?.value || '';
+    const to = inputRefTextNew.current?.value || '';
 
-    if (!from) return toast.error("Ingresa un valor a buscar");
+    if (!from) return toast.error('Ingresa un valor a buscar');
 
     if (!value?.includes(from)) {
-      return toast.error("El valor a buscar no se encuentra en el texto");
+      return toast.error('El valor a buscar no se encuentra en el texto');
     }
 
     const result = value?.replace(from, to);
     setValue(result);
-    toast.success("Reemplazo realizado");
+    toast.success('Reemplazo realizado');
   };
 
   const handleCLickReplaceText = () => {
-    const from = inputRefTextOld.current?.value || "";
-    const to = inputRefTextNew.current?.value || "";
+    const from = inputRefTextOld.current?.value || '';
+    const to = inputRefTextNew.current?.value || '';
 
     if (!value?.includes(from)) {
-      return toast.error("El valor a buscar no se encuentra en el texto");
+      return toast.error('El valor a buscar no se encuentra en el texto');
     }
 
-    if (!from) return toast.error("Ingresa un valor a buscar");
+    if (!from) return toast.error('Ingresa un valor a buscar');
     const result = value?.replaceAll(from, to);
     setValue(result);
-    toast.success("Reemplazo realizado");
+    toast.success('Reemplazo realizado');
   };
 
   useEffect(() => {
@@ -64,16 +63,16 @@ export default function ContainerTextArea({
 
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
       // No importa si esta en minuscula la b o en mayuscula siempre se abrira
-      if ((e.ctrlKey && e.key === "b") || (e.ctrlKey && e.key === "B")) {
+      if ((e.ctrlKey && e.key === 'b') || (e.ctrlKey && e.key === 'B')) {
         e.preventDefault();
         setIsOpenBar((prev) => !prev);
       }
     };
 
-    window.addEventListener("keydown", handleGlobalKeyDown);
+    window.addEventListener('keydown', handleGlobalKeyDown);
 
     return () => {
-      window.removeEventListener("keydown", handleGlobalKeyDown);
+      window.removeEventListener('keydown', handleGlobalKeyDown);
     };
   }, []); // Escucha cambioss en value para poder guardar
 
@@ -104,14 +103,14 @@ export default function ContainerTextArea({
         <AnimatePresence mode="wait">
           {isOpenBar && (
             <motion.div
-              initial={{ opacity: 0, y: -10, scale: 0.95, filter: "blur(4px)" }}
+              initial={{ opacity: 0, y: -10, scale: 0.95, filter: 'blur(4px)' }}
               animate={{
                 opacity: 1,
                 y: 0,
                 scale: 1,
-                filter: "blur(0px)",
+                filter: 'blur(0px)',
                 transition: {
-                  type: "spring",
+                  type: 'spring',
                   stiffness: 200,
                   damping: 20,
                 },
@@ -120,7 +119,7 @@ export default function ContainerTextArea({
                 opacity: 0,
                 y: -10,
                 scale: 0.95,
-                filter: "blur(4px)",
+                filter: 'blur(4px)',
                 transition: { duration: 0.2 },
               }}
               layout
@@ -165,7 +164,7 @@ export default function ContainerTextArea({
           fallback={<div className="h-full w-full">Cargando editor...</div>}
         >
           <CodeEditorLazy
-            value={value ?? ""}
+            value={value ?? ''}
             language="json"
             onChange={(e) => handleChangeTextArea(e)}
           />

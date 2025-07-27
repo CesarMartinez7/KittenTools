@@ -1,8 +1,7 @@
-import { Color, Mesh, Program, Renderer, Triangle } from "ogl";
-import { useEffect, useRef } from "react";
-import { useState } from "react";
-import { AuroraStore } from "../stores/aurora";
-import toast from "react-hot-toast";
+import { Color, Mesh, Program, Renderer, Triangle } from 'ogl';
+import { useEffect, useRef, useState } from 'react';
+import toast from 'react-hot-toast';
+import { AuroraStore } from '../stores/aurora';
 
 const VERT = `#version 300 es
 in vec2 position;
@@ -123,7 +122,7 @@ export default function Aurora(props: AuroraProps) {
   const setShowAurora = AuroraStore((state) => state.setShowAurora);
 
   const {
-    colorStops = ["#5227FF", "#7cff67", "#5227FF"],
+    colorStops = ['#5227FF', '#7cff67', '#5227FF'],
     amplitude = 1.0,
     blend = 0.5,
   } = props;
@@ -134,8 +133,8 @@ export default function Aurora(props: AuroraProps) {
 
   useEffect(() => {
     if (
-      navigator.userAgent.includes("mobile") ||
-      navigator.userAgent.includes("Android")
+      navigator.userAgent.includes('mobile') ||
+      navigator.userAgent.includes('Android')
     ) {
       setShowAurora(false);
     }
@@ -154,7 +153,7 @@ export default function Aurora(props: AuroraProps) {
     gl.clearColor(0, 0, 0, 0);
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-    gl.canvas.style.backgroundColor = "transparent";
+    gl.canvas.style.backgroundColor = 'transparent';
 
     let program: Program | undefined;
 
@@ -167,7 +166,7 @@ export default function Aurora(props: AuroraProps) {
         program.uniforms.uResolution.value = [width, height];
       }
     }
-    window.addEventListener("resize", resize);
+    window.addEventListener('resize', resize);
 
     const geometry = new Triangle(gl);
     if (geometry.attributes.uv) {
@@ -216,11 +215,11 @@ export default function Aurora(props: AuroraProps) {
 
     return () => {
       cancelAnimationFrame(animateId);
-      window.removeEventListener("resize", resize);
+      window.removeEventListener('resize', resize);
       if (ctn && gl.canvas.parentNode === ctn) {
         ctn.removeChild(gl.canvas);
       }
-      gl.getExtension("WEBGL_lose_context")?.loseContext();
+      gl.getExtension('WEBGL_lose_context')?.loseContext();
     };
   }, [amplitude]);
 

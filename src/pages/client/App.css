@@ -5,7 +5,7 @@
 }
 
 .input-gray {
-  @apply bg-zinc-800 p-2 border-none rounded;
+  @apply bg-zinc-800/80 backdrop-blur-3xl p-2 border-none rounded;
 }
 
 .btn-black {
