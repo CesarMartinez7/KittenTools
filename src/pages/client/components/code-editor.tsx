@@ -223,7 +223,7 @@ const CodeEditor = ({
       {/* Line Numbers */}
       <div
         ref={lineNumbersRef}
-        className="px-3 py-2 text-sm  overflow-hidden  bg-zinc-900/60 backdrop-blur-3xl text-zinc-400 "
+        className="px-3 py-2 text-sm  overflow-hidden bg-zinc-950/20 border-r border-zinc-800 backdrop-blur-3xl text-zinc-400 "
         style={{ height }}
       >
         {Array.from({ length: lineCount }, (_, i) => (
@@ -266,8 +266,20 @@ const CodeEditor = ({
           placeholder={placeholder}
         />
       </div>
-      <div className="absolute right-2 bottom-2 text-xs text-zinc-400 ">
-        {lineCount}
+      <div className="absolute right-2 bottom-2 flex gap-2 text-[8px] text-zinc-400 ">
+        <p className="text-green-400 block">
+          {(() => {
+            try {
+              JSON.parse(value);
+              return " VALIDO ";
+            } catch {
+              return " INVALIDO ";
+            }
+          })()}
+        </p>
+        {language.toUpperCase() + " | "}
+        {JSON.parse(JSON.stringify(code)).length} caracteres,{" "}
+        {code.split("\n").length} lineas
       </div>
     </div>
   );

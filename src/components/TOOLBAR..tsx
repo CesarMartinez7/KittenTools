@@ -1,6 +1,6 @@
-import ReactSVG from "../ui/react";
-import TextType from "../ui/TextEncode";
-import ToolbarButtons from "./ToolBarButtons";
+import ReactSVG from '../ui/react';
+import TextType from '../ui/TextEncode';
+import ToolbarButtons from './ToolBarButtons';
 
 interface ToolBarProps {
   classNameContainer?: string;
@@ -35,7 +35,7 @@ export default function ToolBar({
   setIsOpenDiffText,
   showConsole,
   setShowConsole,
-  classContainerButtons = "flex ",
+  classContainerButtons = 'flex',
 }: ToolBarProps) {
   return (
     <div
@@ -49,8 +49,8 @@ export default function ToolBar({
       <TextType
         className="text-sm min-h-[60px] max-w-[240px] break-words text-zinc-100 "
         text={[
-          "Utiliza Herramientas hechas para desarrolladores.",
-          "Valida, visualiza, genera, y compara tu JSON de forma elegante.",
+          'Utiliza Herramientas hechas para desarrolladores.',
+          'Valida, visualiza, genera, y compara tu JSON de forma elegante.',
         ]}
         typingSpeed={30}
         pauseDuration={6500}
