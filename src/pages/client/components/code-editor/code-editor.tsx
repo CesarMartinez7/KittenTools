@@ -1,81 +1,11 @@
 import type React from "react";
 import { memo, useEffect, useRef, useState } from "react";
-import LazyListItem from "../../../ui/LazyListPerform";
+import LazyListItem from "../../../../ui/LazyListPerform";
+import colors from "./colors";
+import keywords from "./keyword";
+import { Icon } from "@iconify/react/dist/iconify.js";
 
 const highlightCode = (code: string, language: string) => {
-  const keywords: Record<string, string[]> = {
-    javascript: [
-      "function",
-      "const",
-      "let",
-      "var",
-      "if",
-      "else",
-      "for",
-      "while",
-      "return",
-      "class",
-      "extends",
-      "import",
-      "export",
-      "default",
-      "async",
-      "await",
-      "try",
-      "catch",
-      "throw",
-      "new",
-      "this",
-      "super",
-      "static",
-    ],
-    typescript: [
-      "function",
-      "const",
-      "let",
-      "var",
-      "if",
-      "else",
-      "for",
-      "while",
-      "return",
-      "class",
-      "extends",
-      "import",
-      "export",
-      "default",
-      "async",
-      "await",
-      "try",
-      "catch",
-      "throw",
-      "new",
-      "this",
-      "super",
-      "static",
-      "interface",
-      "type",
-      "enum",
-      "namespace",
-      "public",
-      "private",
-      "protected",
-    ],
-    json: [],
-    xml: [],
-  };
-
-  const colors = {
-    keyword: "#569cd6",
-    string: "#ce9178",
-    comment: "#6a9955",
-    number: "#fdc700",
-    function: "#dcdcaa",
-    tag: "#4ec9b0",
-    attribute: "#b271ea",
-    value: "#ce9178",
-  };
-
   let highlightedCode = code;
 
   if (language === "json") {
@@ -158,6 +88,7 @@ interface CodeEditorProps {
   height?: string;
   placeholder?: string;
   classNameContainer?: string;
+  searchValue?: string;
 }
 
 const CodeEditor = ({
@@ -167,6 +98,7 @@ const CodeEditor = ({
   height = "200px",
   placeholder = "// Escribe tu código aquí...",
   classNameContainer = "100%",
+  searchValue = "",
 }: CodeEditorProps) => {
   const [code, setCode] = useState(value);
   const [lineCount, setLineCount] = useState(1);
@@ -237,12 +169,12 @@ const CodeEditor = ({
       </div>
 
       {/* Editor Container */}
-      <div className="flex-1 relative">
+      <div className="flex-1 relative ">
         {/* Syntax Highlighted Background */}
         <LazyListItem>
           <div
             ref={highlightRef}
-            className="absolute inset-0 p-2 text-sm font-mono leading-6 pointer-events-none overflow-auto whitespace-pre-wrap break-words text-[#d4d4d4]"
+            className="absolute inset-0 p-2 text-sm font-mono leading-6 pointer-events-none overflow-auto whitespace-pre-wrap break-words  text-[#d4d4d4]"
             dangerouslySetInnerHTML={{
               __html: highlightCode(code, language),
             }}
@@ -250,36 +182,47 @@ const CodeEditor = ({
         </LazyListItem>
 
         {/* Transparent Textarea */}
-        <textarea
-          ref={textareaRef}
-          value={code}
-          onChange={handleChange}
-          onScroll={handleScroll}
-          onKeyDown={handleKeyDown}
-          className="absolute inset-0 p-2 ring-none ring-0 focus:ring-none text-sm font-mono leading-6 resize-none outline-none bg-r  whitespace-pre-wrap break-words"
-          style={{
-            height,
-            color: "transparent",
-            caretColor: "#d4d4d4",
-          }}
-          spellCheck={false}
-          placeholder={placeholder}
-        />
-      </div>
-      <div className="absolute right-2 bottom-2 flex gap-2 text-[8px] text-zinc-400 ">
-        <p className="text-green-400 block">
-          {(() => {
-            try {
-              JSON.parse(value);
-              return " VALIDO ";
-            } catch {
-              return " INVALIDO ";
-            }
-          })()}
-        </p>
-        {language.toUpperCase() + " | "}
-        {JSON.parse(JSON.stringify(code)).length} caracteres,{" "}
-        {code.split("\n").length} lineas
+        <LazyListItem>
+          <textarea
+            ref={textareaRef}
+            value={code}
+            onChange={handleChange}
+            onScroll={handleScroll}
+            onKeyDown={handleKeyDown}
+            className="absolute inset-0 p-2 ring-none ring-0 focus:ring-none text-sm font-mono leading-6 resize-none outline-none bg-r  whitespace-pre-wrap break-words"
+            style={{
+              height,
+              color: "transparent",
+              caretColor: "#d4d4d4",
+            }}
+            spellCheck={false}
+            placeholder={placeholder}
+          />
+        </LazyListItem>
+        <div className="absolute right-1 shadow bottom-2 flex gap-2 text-[8px] text-zinc-400 bg-zinc-950 px-2 py-1 rounded-[4px] ">
+          <p className="text-green-400 block">
+            {(() => {
+              try {
+                JSON.parse(value);
+                return (
+                  <Icon
+                    icon="tabler:check"
+                    width="10"
+                    height="10"
+                    color="green"
+                  />
+                );
+              } catch {
+                return (
+                  <Icon icon="tabler:x" width="10" height="10" color="red" />
+                );
+              }
+            })()}
+          </p>
+          {language.toUpperCase() + " | "}
+          {JSON.parse(JSON.stringify(code)).length} caracteres,{" "}
+          {code.split("\n").length} lineas
+        </div>
       </div>
     </div>
   );
