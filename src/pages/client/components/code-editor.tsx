@@ -215,7 +215,7 @@ export const CodeEditor = ({
   };
 
   return (
-    <div className="relative flex border border-zinc-800 text-xs rounded-md overflow-hidden bg-zinc-900/60 ring-none  backdrop-blur-3xl">
+    <div className="relative flex border border-zinc-800 text-xs rounded-md overflow-hidden bg-zinc-900/60 ring-none backdrop-blur-3xl">
       {/* Line Numbers */}
       <div
         ref={lineNumbersRef}

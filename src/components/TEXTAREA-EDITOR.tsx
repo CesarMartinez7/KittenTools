@@ -93,7 +93,7 @@ export default function ContainerTextArea({
         </p>
       </div>
 
-      <div className="relative p-2 h-full ">
+      <div className="relative p-2 h-full z-[777] ">
         <AnimatePresence mode="wait">
           {isOpenBar && (
             <motion.div
@@ -117,7 +117,7 @@ export default function ContainerTextArea({
                 transition: { duration: 0.2 },
               }}
               layout
-              className="backdrop-blur-3xl bg-zinc-900/35 border border-zinc-900 p-3 flex flex-col w-52 shadow-xl shadow-zinc-800 gap-1 rounded absolute right-4 top-5"
+              className="backdrop-blur-3xl bg-zinc-900/35 border border-zinc-900 p-3 flex flex-col w-52 shadow-xl shadow-zinc-800 gap-1 rounded absolute right-4 top-5 absolute z-[778]"
             >
               <input
                 ref={inputRefTextOld}

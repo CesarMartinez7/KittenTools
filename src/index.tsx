@@ -11,7 +11,7 @@ import Aurora from './ui/Aurora';
 const root = document.getElementById('root')!;
 
 ReactDOM.createRoot(root).render(
-  <div className="">
+  <div className="bg-black/50">
     <Toaster
       position="top-right"
       toastOptions={{
