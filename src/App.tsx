@@ -1,45 +1,48 @@
-import { Icon } from "@iconify/react/dist/iconify.js";
-import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import ContainerDescripcion from "./components/DESCRIPCION";
+import { Icon } from '@iconify/react/dist/iconify.js';
+import { AnimatePresence, motion } from 'motion/react';
+import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
+import ContainerDescripcion from './components/DESCRIPCION';
 import {
   BaseModalLazy,
   GridLayoutLazy,
   JsonDiffLazy,
   JsonViewerLazy,
-} from "./components/LAZY_COMPONENT";
-import ContainerTextArea from "./components/TEXTAREA-EDITOR";
-import ToolBar from "./components/TOOLBAR";
-import AuroraStore from "./ui/aurora/aurora";
-import Console from "./ui/Console";
-import JWTDecode from "./ui/DecodeJWT";
-import { ModalViewer } from "./ui/Difftext";
-import { JsonViewerStore } from "./ui/formatter-JSON/stores/jsonviewer";
-import JsonViewer from "./ui/formatter-JSON/Formatter";
+} from './components/LAZY_COMPONENT';
+import ContainerTextArea from './components/TEXTAREA-EDITOR';
+import ToolBar from './components/TOOLBAR';
+import AuroraStore from './ui/aurora/aurora';
+import Console from './ui/Console';
+import JWTDecode from './ui/DecodeJWT';
+import { ModalViewer } from './ui/Difftext';
+import JsonViewer from './ui/formatter-JSON/Formatter';
+import { JsonViewerStore } from './ui/formatter-JSON/stores/jsonviewer';
 
 const App = () => {
   const [value, setValue] = useState<string | null | undefined>(
-    localStorage.getItem("jsonData") || "",
+    localStorage.getItem('jsonData') || '',
   );
   const [isValid, setIsValid] = useState(true);
-  const [error, setErrorMessage] = useState("");
+  const [error, setErrorMessage] = useState('');
   const [openViewerJsonFull, setOpenViewerJsonFull] = useState<boolean>(false);
   const [isOpenDiff, setIsOpenDiff] = useState<boolean>(false);
   const [isOpenDiffText, setIsOpenDiffText] = useState<boolean>(false);
   const [isDecode, setIsDecode] = useState<boolean>(false);
   const [showGrid, setShowGrid] = useState(false);
 
-
   // Download Stores JSONvIEWER
   const openModalDownload = JsonViewerStore(
     (state) => state.isOpenModalDownload,
   );
-  const setOpenModalDownload = JsonViewerStore((state) => state.toogleOpenModalDownload)
+  const setOpenModalDownload = JsonViewerStore(
+    (state) => state.toogleOpenModalDownload,
+  );
 
-  const isDownload = JsonViewerStore((state) => state.isDownload)
-  const toogleDownload = JsonViewerStore((state) => state.toogleDownload)
-  const onChangeNameFileDownload = JsonViewerStore((state) => state.onChangeFileDownload)
+  const isDownload = JsonViewerStore((state) => state.isDownload);
+  const toogleDownload = JsonViewerStore((state) => state.toogleDownload);
+  const onChangeNameFileDownload = JsonViewerStore(
+    (state) => state.onChangeFileDownload,
+  );
 
   // Aurora Stores
   const showAurora = AuroraStore((state) => state.valor);
@@ -47,41 +50,42 @@ const App = () => {
 
   const [showConsole, setShowConsole] = useState<boolean>(false);
 
-  const handleDownloadJson = () => toogleDownload(!isDownload)
+  const handleDownloadJson = () => toogleDownload(!isDownload);
   const handleCloseAll = () => setOpenViewerJsonFull(false);
   const handleCloseDecode = () => setIsDecode(false);
   const handleCloseDiffText = () => setIsOpenDiffText(false);
   const handleCloseDiff = () => setIsOpenDiff(false);
   const handleCloseConsole = () => setShowConsole(false);
-  const handleCloseJsonViewerDowload = () => setOpenModalDownload(!openModalDownload)
+  const handleCloseJsonViewerDowload = () =>
+    setOpenModalDownload(!openModalDownload);
 
   useEffect(() => {
     try {
       JSON.parse(value);
       setIsValid(true);
-      setErrorMessage("");
+      setErrorMessage('');
     } catch {
       setIsValid(false);
-      setErrorMessage("JSON inválido. Por favor verifica tu entrada.");
+      setErrorMessage('JSON inválido. Por favor verifica tu entrada.');
     }
   }, [value]);
 
   // Limpiar el input y el formatter
   const handleClear = () => {
-    if (localStorage.getItem("jsonData") === null) {
-      toast.error("No hay nada que limpiar.");
+    if (localStorage.getItem('jsonData') === null) {
+      toast.error('No hay nada que limpiar.');
       return;
     }
-    setValue("");
-    localStorage.removeItem("jsonData");
-    toast.success("Limpiado exitosamente.");
+    setValue('');
+    localStorage.removeItem('jsonData');
+    toast.success('Limpiado exitosamente.');
   };
 
   // Cargue del input del json o txt
   const handleClickCargueJson = () => {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = ".json,.txt";
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json,.txt';
 
     input.onchange = (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
@@ -107,9 +111,9 @@ const App = () => {
       const parseado = JSON.parse(value);
       setValue(JSON.stringify(parseado));
 
-      toast.success("JSON minificado");
+      toast.success('JSON minificado');
     } catch {
-      toast.error("JSON inválido para minificar");
+      toast.error('JSON inválido para minificar');
     }
   };
 
@@ -118,38 +122,38 @@ const App = () => {
       try {
         navigator.clipboard
           .writeText(value)
-          .then(() => toast.success("Copiado exitosamente"));
+          .then(() => toast.success('Copiado exitosamente'));
       } catch {
-        toast.error("Ocurrio un error al copiar.");
+        toast.error('Ocurrio un error al copiar.');
       }
       return;
     }
-    toast.error("Estas seguro que tienes algo que copiar?");
+    toast.error('Estas seguro que tienes algo que copiar?');
   };
 
   const handleCopyUrl = () => {
     try {
       const encoded = btoa(unescape(encodeURIComponent(value)));
       const url = new URL(window.location.href);
-      url.searchParams.set("jsdata", encoded);
+      url.searchParams.set('jsdata', encoded);
       const fullUrl = url.toString();
 
       navigator.clipboard
         .writeText(fullUrl)
         .then(() => {
-          toast.success("Direccion copiada con exito.");
+          toast.success('Direccion copiada con exito.');
         })
         .catch(() => {
-          toast.error("No se pudo copiar la URL");
+          toast.error('No se pudo copiar la URL');
         });
     } catch {
-      toast.error("Error al generar URL compartible");
+      toast.error('Error al generar URL compartible');
     }
   };
 
   useEffect(() => {
     const keydown = (e: KeyboardEvent) => {
-      if (e.key === "x" && e.ctrlKey) {
+      if (e.key === 'x' && e.ctrlKey) {
         if (!showConsole) {
           setShowConsole(true);
           return;
@@ -158,10 +162,10 @@ const App = () => {
       }
     };
 
-    window.addEventListener("keydown", keydown);
+    window.addEventListener('keydown', keydown);
 
     return () => {
-      window.removeEventListener("keydown", keydown);
+      window.removeEventListener('keydown', keydown);
     };
   }, []);
 
@@ -177,7 +181,7 @@ const App = () => {
           style={{ minWidth: 120 }}
         >
           <Icon icon="tabler:beer" width="20" height="20" />
-          {showAurora ? "Ocultar Aurora" : "Mostrar Aurora"}
+          {showAurora ? 'Ocultar Aurora' : 'Mostrar Aurora'}
         </button>
         <button
           type="button"
@@ -186,7 +190,7 @@ const App = () => {
           onClick={() => setShowGrid((prev) => !prev)}
         >
           <Icon
-            icon={`tabler:${showGrid ? "layout-grid" : "layout"}`}
+            icon={`tabler:${showGrid ? 'layout-grid' : 'layout'}`}
             width="22"
           />
         </button>
@@ -194,12 +198,25 @@ const App = () => {
 
       <div className="relative">
         <div className=" text-zinc-200 min-h-screen ">
-
-          <BaseModalLazy isOpen={openModalDownload} onClose={handleCloseJsonViewerDowload}  >
+          <BaseModalLazy
+            isOpen={openModalDownload}
+            onClose={handleCloseJsonViewerDowload}
+          >
             <div className="bg-zinc-900 p-4 h-42 w-md rounded-xl space-y-3.5">
               <h4 className="text-center ">Descargar Json</h4>
-              <input className="input-gray w-full" placeholder="Nombre Archivo"  type="text"  onChange={(e) => onChangeNameFileDownload(e.target.value) }  />
-              <button className="bg-blue-500 w-full p-2 rounded" onClick={handleDownloadJson} >Descargar</button>
+              <input
+                className="input-gray w-full"
+                value
+                placeholder="Nombre Archivo"
+                type="text"
+                onChange={(e) => onChangeNameFileDownload(e.target.value)}
+              />
+              <button
+                className="bg-blue-500 w-full p-2 rounded"
+                onClick={handleDownloadJson}
+              >
+                Descargar
+              </button>
             </div>
           </BaseModalLazy>
 
@@ -208,18 +225,18 @@ const App = () => {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
               className="absolute inset-0"
             ></motion.div>
           )}
 
           <AnimatePresence mode="wait">
             <motion.div
-              className={` ${showGrid ? "max-w-[100vw] min-w-[80vw]" : "max-w-7xl"} mx-auto flex flex-col lg:flex-row gap-6 h-full md:p-5`}
+              className={` ${showGrid ? 'max-w-[100vw] min-w-[80vw]' : 'max-w-7xl'} mx-auto flex flex-col lg:flex-row gap-6 h-full md:p-5`}
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
             >
               {showGrid ? (
                 <GridLayoutLazy

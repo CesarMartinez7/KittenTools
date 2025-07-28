@@ -69,8 +69,7 @@ const GridLayout: React.FC<GridLayoutExtendedProps> = ({
       className={`grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 grid-rows-[auto_1fr_auto] gap-4  w-full mx-auto ${className}`}
       style={style}
     >
-  
-      <div >
+      <div>
         <ContainerTextArea
           heightEditor="80vh"
           classText="h-full"
@@ -84,7 +83,7 @@ const GridLayout: React.FC<GridLayoutExtendedProps> = ({
 
       {/* Resultado a la derecha */}
 
-      <div >
+      <div>
         <ResultadoJsonFormat
           {...resultadoProps}
           value={value}

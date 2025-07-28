@@ -141,10 +141,14 @@ const JsonViewer: React.FC<{
   const [showTable, setShowTable] = useState<boolean>(false);
   const [showInterface, setShowInterface] = useState<boolean>(false);
 
-  const openModalDownload = JsonViewerStore((state) => state.isOpenModalDownload)
-  const setOpenModalDownload = JsonViewerStore((state) => state.toogleOpenModalDownload)
-  const nameDownloadFile = JsonViewerStore((state) => state.nameFileDownload)
-  const isDownload = JsonViewerStore((state) => state.isDownload)
+  const openModalDownload = JsonViewerStore(
+    (state) => state.isOpenModalDownload,
+  );
+  const setOpenModalDownload = JsonViewerStore(
+    (state) => state.toogleOpenModalDownload,
+  );
+  const nameDownloadFile = JsonViewerStore((state) => state.nameFileDownload);
+  const isDownload = JsonViewerStore((state) => state.isDownload);
 
   const [INDENT, setIdent] = useState<number>(6);
   const [interfaceGen, setInterfaceGen] = useState<unknown>();
@@ -179,7 +183,7 @@ const JsonViewer: React.FC<{
     setShowJsonViewer(false);
     setShowTable(true);
   };
-  
+
   const handleClickShowInterface = () => {
     setInterfaceGen(generateJsonInterface(JSON.parse(values as string)));
     setShowJsonViewer(false);
@@ -194,20 +198,19 @@ const JsonViewer: React.FC<{
   };
 
   const handleDownloadJson = () => {
-    alert("osdfsd")
-    setOpenModalDownload(true)
+    alert('osdfsd');
+    setOpenModalDownload(true);
 
-
-    if(!isDownload){
-      toast.success("Se puede descargar")
+    if (!isDownload) {
+      toast.success('Se puede descargar');
     }
-    toast.error(String(openModalDownload))
+    toast.error(String(openModalDownload));
 
     const elementDownload = document.createElement('a');
     const jsonString = JSON.stringify(values, null, 2);
     const blob = new Blob([jsonString], { type: 'application/json' });
     elementDownload.href = URL.createObjectURL(blob);
-    elementDownload.download = nameDownloadFile || "data-default.json";
+    elementDownload.download = nameDownloadFile || 'data-default.json';
     document.body.appendChild(elementDownload);
     elementDownload.click();
   };
@@ -437,7 +440,7 @@ const JsonViewer: React.FC<{
                   </div>
                 ))
               ) : typeof interfaceGen === 'object' ? (
-                <pre className="text-xs  whitespace-pre-wrap break-words text-green-400">
+                <pre className="text-xs h-full overflow-hidden whitespace-pre-wrap break-words text-green-400">
                   {JSON.stringify(interfaceGen, null, 2)}
                 </pre>
               ) : null}

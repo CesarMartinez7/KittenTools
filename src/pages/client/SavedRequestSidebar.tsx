@@ -122,8 +122,7 @@ export function SavedRequestsSidebar({
             onClick={handleSaveRequest}
             className="gray-btn w-full mb-4 flex items-center justify-center gap-2"
           >
-            <Icon icon="material-symbols:save-outline" /> Guardar Peticiin
-            Actual
+            <Icon icon="material-symbols:save-outline" /> Guardar Peticion
           </button>
           <div className="flex-1 overflow-y-auto space-y-2">
             {savedRequests.length === 0 ? (
