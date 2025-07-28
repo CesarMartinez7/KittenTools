@@ -52,15 +52,14 @@ export default function ToolBar({
         text={[
           'Utiliza Herramientas hechas para desarrolladores.',
           'Valida, visualiza, genera, y compara tu JSON de forma elegante.',
+          "Herramientas hechas para el desarrollo facil"
         ]}
         typingSpeed={30}
         pauseDuration={6500}
         showCursor={true}
-        cursorCharacter="|"
+        cursorCharacter="_"
       />
-      {/* <p className="text-sm  max-w-[240px] break-words  bg-gradient-to-bl from-white to-zinc-600 bg-clip-text text-transparent ">
-        Valida, visualiza, genera, y compara tu JSON de forma elegante.
-      </p> */}
+   
       <ToolbarButtons
         showConsole={showConsole}
         setShowConsole={setShowConsole}

@@ -80,9 +80,15 @@ const CodeEditor = ({
   const handleScroll = () => {
     if (textareaRef.current && lineNumbersRef.current && highlightRef.current) {
       const scrollTop = textareaRef.current.scrollTop;
-      const scrollLeft = textareaRef.current.scrollLeft;
+       const scrollLeft = textareaRef.current.scrollLeft;
+
+      
       lineNumbersRef.current.scrollTop = scrollTop;
+      textareaRef.current.scrollTop = scrollTop
       highlightRef.current.scrollTop = scrollTop;
+
+
+      // Left scroll
       highlightRef.current.scrollLeft = scrollLeft;
     }
   };
@@ -229,8 +235,8 @@ const CodeEditor = ({
               ref={highlightRef}
               className="absolute inset-0 p-2 text-sm font-mono leading-6 pointer-events-none overflow-auto whitespace-pre-wrap break-words  text-[#d4d4d4]"
               dangerouslySetInnerHTML={{
-                __html: highlightCode(code, language),
-              }}
+                __html:   highlightCode(code, language),
+              }}            
             />
           </LazyListItem>
 
@@ -302,7 +308,7 @@ const CodeEditor = ({
 
           <span className="hidden sm:inline">
             {language.toUpperCase()} | {code.length} caracteres |{' '}
-            {code.split('\n').length} líneas
+            {lineCount} líneas
           </span>
         </div>
       </div>

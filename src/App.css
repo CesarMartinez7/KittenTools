@@ -83,8 +83,9 @@ body {
   font-family: monospace;
 }
 
+
 :root {
-  @apply bg-zinc-800;
+  @apply bg-black/95;
 }
 
 .gradient-black-btn {
