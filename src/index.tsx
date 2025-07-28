@@ -18,7 +18,7 @@ ReactDOM.createRoot(root).render(
     />
     <div className="re z-0 fixed">
       <Aurora
-        colorStops={['#27272a', '#4fbed6', '#11181b']}
+        colorStops={['#27272a', '#00d1b2', '#11181b']}
         blend={0.5}
         amplitude={1.0}
         speed={0.5}
