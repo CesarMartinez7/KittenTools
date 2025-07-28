@@ -8,15 +8,15 @@ export const Methodos = [
 
 export const Opciones = [
   {
-    name: 'Body',
+    name: 'Cuerpo de Peticion',
   },
   {
-    name: 'Params',
+    name: 'Parametros',
   },
   {
-    name: 'Headers',
+    name: 'Cabeceras',
   },
   {
-    name: 'Auth',
+    name: 'Autenticacion',
   },
 ];

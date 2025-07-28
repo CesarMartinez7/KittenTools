@@ -1,7 +1,13 @@
-import { useEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react';
+import {
+  type Dispatch,
+  type SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import toast from 'react-hot-toast';
 import { useStoreHeaders } from '../stores/headers-store';
 import { useParamsStore } from '../stores/queryparams-store';
-import toast from 'react-hot-toast';
 
 interface ValuesRetornoClient {
   params: string;
@@ -55,12 +61,10 @@ const useClientStore = (): RetornoClient => {
 
   const refForm = useRef<HTMLFormElement | null>(null);
 
-  
   useEffect(() => {
     setEndpointUrl((prev) => prev + params);
   }, [params]);
 
-  
   useEffect(() => {
     const url = localStorage.getItem('request_url');
     if (url) setEndpointUrl(url);

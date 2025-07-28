@@ -162,7 +162,7 @@ const JsonViewer: React.FC<{
   const handleCopy = () => {
     try {
       const obj = JSON.parse(data as string);
-      const formateado = JSON.stringify(obj, null, 2); 
+      const formateado = JSON.stringify(obj, null, 2);
       navigator.clipboard
         .writeText(formateado)
         .then(() => toast.success('JSON COPIADO CON ÉXITO'))
