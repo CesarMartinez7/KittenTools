@@ -41,7 +41,7 @@ export const JsonNode: React.FC<JsonNodeProps> = ({
 
   return (
     <div
-      className="text-sm break-words whitespace-pre-wrap border-l  border-zinc-800 px-3  "
+      className="text-sm break-words whitespace-pre-wrap  px-3  "
       style={{ marginLeft: depth * INDENT }}
     >
       {name !== undefined && (
@@ -294,7 +294,7 @@ const JsonViewer: React.FC<{
           >
             <Icon icon="tabler:database" width="14" height="14" />
 
-            <span className="md:block hidden">Datos Tabla</span>
+            <span className="md:block hidden">Datos</span>
           </button>
           <button
             className="px-2 py-1 rounded-lg text-xs  bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2"
@@ -425,7 +425,7 @@ const JsonViewer: React.FC<{
                   </div>
                 ))
               ) : typeof interfaceGen === "object" ? (
-                <pre className="text-xs text-zinc-300 whitespace-pre-wrap break-words">
+                <pre className="text-xs  whitespace-pre-wrap break-words text-green-400">
                   {JSON.stringify(interfaceGen, null, 2)}
                 </pre>
               ) : null}

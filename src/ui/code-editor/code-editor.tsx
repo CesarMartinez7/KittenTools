@@ -9,7 +9,7 @@ import highlightCode from './higlight-code';
 import type { CodeEditorProps } from './types';
 
 const CodeEditor = ({
-  value = '',
+  value = 'dsfdsf',
   language = 'javascript',
   onChange,
   height = '200px',
@@ -88,7 +88,7 @@ const CodeEditor = ({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === '{' || '}') {
+    if (e.key === "Enter" ) {
       handleJsonSchema();
     }
 
@@ -108,7 +108,7 @@ const CodeEditor = ({
   };
 
   const handleJsonSchema = () => {
-    setCode(JSON.stringify(JSON.parse(code), null, 2));
+    setCode(JSON.stringify(JSON.parse(code), null, 4));
   };
 
   const handleCLickReplaceTextFirst = () => {
@@ -184,14 +184,14 @@ const CodeEditor = ({
             />
             <div className="flex h-6 gap-2 text-wrap whitespace-normal">
               <button
-                className="bg-gradient-to-r flex-1 from-green-500 to-green-500 p-1 rounded-md text-xs truncate"
+                className="bg-gradient-to-r flex-1 from-green-400 to-green-500 p-1 rounded-md text-xs truncate"
                 onClick={handleCLickReplaceTextFirst}
                 title="Reemplazar solo la primera coincidencia"
               >
                 Reemplazar primero
               </button>
               <button
-                className="bg-gradient-to-r flex-1 from-blue-400 to-blue-900 p-1 rounded-md text-xs truncate"
+                className="bg-gradient-to-r flex-1 from-sky-400 to-sky-900 p-1 rounded-md text-xs truncate"
                 onClick={handleCLickReplaceText}
                 title="Reemplazar todas las coincidencias"
               >
@@ -301,7 +301,7 @@ const CodeEditor = ({
           </span>
 
           <span className="hidden sm:inline">
-            {language.toUpperCase()} | {JSON.stringify(code).length} caracteres
+            {language.toUpperCase()} | {code.length} caracteres
             | {code.split('\n').length} líneas
           </span>
         </div>

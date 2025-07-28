@@ -42,7 +42,7 @@ export default function ContainerTextArea({
           <CodeEditorLazy
             height={heightEditor}
             classNameContainer={classNameContainerEditor}
-            value={value ?? ''}
+            value={value}
             language="json"
             minHeight=""
             onChange={(e) => handleChangeTextArea(e)}
