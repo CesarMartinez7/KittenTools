@@ -28,17 +28,15 @@ export interface RequestItem {
   body: string;
   headers: HeaderItem[];
   queryParams: QueryParamItem[];
-  contentType: 'javascript' | 'typescript' | 'json' | 'xml' | 'form';
+  contentType: 'javascript' | 'json' | 'xml' | 'form';
 }
 // --- Fin Definiciones de Tipos ---
 
 // --- Props para el Sidebar ---
 interface SavedRequestsSidebarProps {
   isOpen: boolean;
-  onClose: () => void;
-  // Callback para cuando se carga una petición. Pasa los datos de la petición.
+  onClose: () => void
   onLoadRequest: (request: RequestItem) => void;
-  // Los siguientes son opcionales, para permitir guardar la petición actual desde el sidebar
   currentUrl?: string;
   currentMethod?: string;
   currentBody?: string;
@@ -80,20 +78,26 @@ export function SavedRequestsSidebar({
   }, [savedRequests]);
 
   const handleAddNewRequest = () => {
+    setOpenModalNewRequest((pre) => !pre)
+    
+  };
+
+
+  const handleFormNewRequest = (name: string, url: string, method: string, body: string, headers: HeaderItem[], queryparams: string, contentType: RequestItem) => {
     const newRequest: RequestItem = {
       id: Date.now().toString(),
-      name: ' ',
-      url: currentUrl,
-      method: currentMethod,
-      body: currentBody,
-      headers: currentHeaders,
-      queryParams: currentQueryParams,
-      contentType: currentContentType,
+      name,
+      url,
+      method,
+      body,
+      headers,
+      queryparams,
+      contentType
     };
 
     setSavedRequests((prev) => [...prev, newRequest]);
     toast.success('Petición guardada con éxito.');
-  };
+  }
 
   const handleSaveRequest = () => {
     const requestName = prompt('Nombre para la petición guardada:');
@@ -147,8 +151,8 @@ export function SavedRequestsSidebar({
             <input type="text" className="input-gray" />
 
             <input type="text" className="input-gray" />
-            <button className="bg-orange-400 p-2 text-black font-bold text-lg">
-              Crear
+            <button className="bg-orange-400 p-2 text-black font-bold text-lg" onClick={handleFormNewRequest}>
+              Crear Peticion
             </button>
           </form>
         </div>
