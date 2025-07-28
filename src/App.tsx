@@ -10,8 +10,7 @@ import {
   JsonViewerLazy,
 } from './components/LAZY_COMPONENT';
 import ContainerTextArea from './components/TEXTAREA-EDITOR';
-import ToolBar from './components/TOOLBAR';
-import GridLayout from './layouts/GridLayout';
+import ToolBar from './components/TOOLBAR';;
 import AuroraStore from './ui/aurora/aurora';
 import Console from './ui/Console';
 import JWTDecode from './ui/DecodeJWT';
@@ -181,7 +180,7 @@ const App = () => {
         <div className=" text-zinc-200 min-h-screen ">
           <AnimatePresence mode="wait">
             <motion.div
-              className={` ${showGrid ? 'max-w-[80vw]' : 'max-w-7xl'} mx-auto flex flex-col lg:flex-row gap-6 min-h-screen p-5`}
+              className={` ${showGrid ? 'max-w-[100vw] min-w-[80vw]' : 'max-w-7xl'} mx-auto flex flex-col lg:flex-row gap-6 h-full md:p-12`}
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}

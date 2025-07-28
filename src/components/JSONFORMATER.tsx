@@ -35,8 +35,8 @@ export default function ResultadoJsonFormat({
         <JsonViewerLazy
           data={value}
           isOpen={openAll}
-          height="100%"
-          maxHeight="100%"
+          height="80vh"
+          maxHeight="90vh"
         />
       </div>
     </section>
