@@ -13,7 +13,7 @@ const CodeEditor = ({
   language = 'javascript',
   onChange,
   height = '200px',
-  minHeight = "68vh",
+  minHeight = '68vh',
   placeholder = '// Escribe tu código aquí...',
   classNameContainer = '100%',
 }: CodeEditorProps) => {
@@ -49,14 +49,12 @@ const CodeEditor = ({
     };
   }, []); // Effect
 
-
   // hacer una funcion o metodo para que se encargue de las cosas que se pueden hacer dependiendo del languaje
 
   const ValidateFunciones = (language: string, funcion: Function) => {
-    console.log(language)
-    console.log(funcion)
-
-  }
+    console.log(language);
+    console.log(funcion);
+  };
 
   const handleClickminifyJson = () => {
     try {
@@ -90,8 +88,8 @@ const CodeEditor = ({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === '{' || "}") {
-      handleJsonSchema()
+    if (e.key === '{' || '}') {
+      handleJsonSchema();
     }
 
     if (e.key === 'Tab') {

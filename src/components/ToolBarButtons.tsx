@@ -2,8 +2,8 @@ import { Icon } from '@iconify/react/dist/iconify.js';
 import codeblockjson from '@iconify-icons/mdi/code-block-json';
 import aircoditiong from '@iconify-icons/tabler/air-conditioning';
 import arrowsdiff from '@iconify-icons/tabler/arrows-diff';
-import copy from "@iconify-icons/tabler/copy"
-import gitcomparate from "@iconify-icons/tabler/git-compare"
+import copy from '@iconify-icons/tabler/copy';
+import gitcomparate from '@iconify-icons/tabler/git-compare';
 import gitpullrequest from '@iconify-icons/tabler/git-pull-request';
 import terminal from '@iconify-icons/tabler/terminal';
 import { Link } from 'react-router';

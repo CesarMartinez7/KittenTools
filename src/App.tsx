@@ -15,7 +15,7 @@ import { JsonDiffLazy, JsonViewerLazy } from './ui/LAZY_COMPONENT';
 
 const App = () => {
   const [value, setValue] = useState<string | null | undefined>(
-    localStorage.getItem('jsonData') || ' ',
+    localStorage.getItem('jsonData') || '',
   );
   const [isValid, setIsValid] = useState(true);
   const [error, setErrorMessage] = useState('');
