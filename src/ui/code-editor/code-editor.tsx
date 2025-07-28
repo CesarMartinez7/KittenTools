@@ -48,6 +48,15 @@ const CodeEditor = ({
     };
   }, []); // Effect
 
+
+  // hacer una funcion o metodo para que se encargue de las cosas que se pueden hacer dependiendo del languaje
+
+  const ValidateFunciones = (language: string, funcion: Function) => {
+    console.log(language)
+    console.log(funcion)
+
+  }
+
   const handleClickminifyJson = () => {
     try {
       const parseado = JSON.parse(value);
