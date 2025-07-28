@@ -342,37 +342,47 @@ const CodeEditor = ({
         </div>
       </div>
 
-      {/* Footer toobar tools */}
+      {/* Footer toobar abajo */}
+      <div className="relative flex justify-between items-center text-[8px] text-zinc-400 bg-zinc-950/70 border-t border-zinc-800 px-2 py-1.5 shadow-sm">
+        {/* Botones a la izquieaa */}
+        <div className="flex items-center gap-1">
+          <button
+            className="bg-zinc-800 hover:bg-zinc-700 px-2.5 py-1 rounded flex items-center gap-1 transition"
+            onClick={handleJsonSchema}
+          >
+            <Icon icon="tabler:braces" width={14} />
+            <span className="hidden sm:inline">Identar</span>
+          </button>
 
-      <div className="relative flex justify-end items-center-safe shadow  gap-2 text-[8px] text-zinc-400 bg-zinc-950/70 border-t border-0 border-zinc-800  px-2 py-2  ">
-        <button
-          className="bg-zinc-900 p-1 rounded absolute left-3"
-          onClick={handleJsonSchema}
-        >
-          Identar JSON
-        </button>
-        <span className="text-green-400 ">
-          {(() => {
-            try {
-              JSON.parse(value);
-              return (
-                <Icon
-                  icon="tabler:check"
-                  width="17"
-                  height="17"
-                  color="green"
-                />
-              );
-            } catch {
-              return <Icon icon={x} width="17" height="17" color="red" />;
-            }
-          })()}
-        </span>
-        <span>
-          {language.toUpperCase() + " | "}
-          {JSON.parse(JSON.stringify(code)).length} caracteres,{" "}
-          {code.split("\n").length} lineas
-        </span>
+          <button
+            title="Abrir barra de reemplazo"
+            className="bg-zinc-800 hover:bg-zinc-700 px-2.5 py-1 rounded flex items-center gap-1 transition"
+            onClick={() => setIsOpenBar((prev) => !prev)}
+          >
+            <Icon icon="tabler:replace" width={14} />
+            <span className="hidden sm:inline">Reemplazar</span>
+          </button>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span className="text-green-400">
+            {(() => {
+              try {
+                JSON.parse(value);
+                return <Icon icon="tabler:check" width={13} height={13} />;
+              } catch {
+                return (
+                  <Icon icon="tabler:x" width={13} height={13} color="red" />
+                );
+              }
+            })()}
+          </span>
+
+          <span className="hidden sm:inline">
+            {language.toUpperCase()} | {JSON.stringify(code).length} caracteres
+            | {code.split("\n").length} líneas
+          </span>
+        </div>
       </div>
     </main>
   );
