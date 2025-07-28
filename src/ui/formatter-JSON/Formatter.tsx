@@ -161,8 +161,8 @@ const JsonViewer: React.FC<{
 
   const handleCopy = () => {
     try {
-      const obj = JSON.parse(data as string); // ← Lo parseas
-      const formateado = JSON.stringify(obj, null, 2); // ← Lo formateas de nuevo como texto limpio
+      const obj = JSON.parse(data as string);
+      const formateado = JSON.stringify(obj, null, 2); 
       navigator.clipboard
         .writeText(formateado)
         .then(() => toast.success('JSON COPIADO CON ÉXITO'))
@@ -201,7 +201,7 @@ const JsonViewer: React.FC<{
     alert('osdfsd');
     setOpenModalDownload(true);
 
-    if (!isDownload) {
+    if (isDownload) {
       toast.success('Se puede descargar');
     }
     toast.error(String(openModalDownload));
@@ -237,7 +237,6 @@ const JsonViewer: React.FC<{
 
   function generateJsonInterface(obj: any) {
     const result = {};
-
     for (const [key, value] of Object.entries(obj)) {
       if (Array.isArray(value)) {
         if (value.length > 0) {
