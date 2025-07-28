@@ -1,11 +1,11 @@
-import { Icon } from "@iconify/react/dist/iconify.js";
-import { Link } from "react-router";
-import box from "@iconify-icons/tabler/box";
-import gitpullrequest from "@iconify-icons/tabler/git-pull-request";
-import terminal from "@iconify-icons/tabler/terminal";
-import arrowsdiff from "@iconify-icons/tabler/arrows-diff";
-import aircoditiong from "@iconify-icons/tabler/air-conditioning";
-import codeblockjson from "@iconify-icons/mdi/code-block-json";
+import { Icon } from '@iconify/react/dist/iconify.js';
+import codeblockjson from '@iconify-icons/mdi/code-block-json';
+import aircoditiong from '@iconify-icons/tabler/air-conditioning';
+import arrowsdiff from '@iconify-icons/tabler/arrows-diff';
+import box from '@iconify-icons/tabler/box';
+import gitpullrequest from '@iconify-icons/tabler/git-pull-request';
+import terminal from '@iconify-icons/tabler/terminal';
+import { Link } from 'react-router';
 
 interface ToolbarButtonsProps {
   handleClear: () => void;
@@ -38,7 +38,7 @@ export default function ToolbarButtons({
   isOpenDiffText,
   setShowConsole,
   showConsole,
-  classContainerButtons = "flex flex-row",
+  classContainerButtons = 'flex flex-row',
 }: ToolbarButtonsProps) {
   return (
     <div className={`w-full flex  gap-1 ${classContainerButtons}`}>
@@ -59,7 +59,7 @@ export default function ToolbarButtons({
       <Link
         title="Cliente Request"
         className="w-full flex items-center justify-center gap-2 bg-kanagawa-orange text-black hover:bg-kanagawa-orange/60 font-bold px-3 py-2 text-sm rounded-lg transition h-[40px] disabled:opacity-60 disabled:event-pointer-none "
-        to={"/client"}
+        to={'/client'}
       >
         <Icon icon={gitpullrequest} width="20" height="20" />
         Cliente Request

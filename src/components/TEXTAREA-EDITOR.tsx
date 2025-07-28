@@ -1,16 +1,20 @@
-import { CodeEditorLazy } from "../ui/LAZY_COMPONENT";
-import { Suspense } from "react";
+import { Suspense } from 'react';
+import { CodeEditorLazy } from '../ui/LAZY_COMPONENT';
 
 interface ContainerArea {
   value: string | null | undefined;
   setValue: React.Dispatch<React.SetStateAction<string | null | undefined>>;
   classText: string;
+  heightEditor: string;
+  classNameContainerEditor: string;
 }
 
 export default function ContainerTextArea({
   setValue,
   value,
-  classText = "",
+  classText = '',
+  heightEditor = '200px',
+  classNameContainerEditor = '',
 }: ContainerArea) {
   const handleChangeTextArea = (e: string) => {
     setValue(e);
@@ -29,10 +33,16 @@ export default function ContainerTextArea({
 
       <div className="relative p-2 h-full z-[777] ">
         <Suspense
-          fallback={<div className="h-full w-full">Cargando editor...</div>}
+          fallback={
+            <div className="h-full w-full animate-pulse ">
+              Cargando editor...
+            </div>
+          }
         >
           <CodeEditorLazy
-            value={value ?? ""}
+            height={heightEditor}
+            classNameContainer={classNameContainerEditor}
+            value={value ?? ''}
             language="json"
             onChange={(e) => handleChangeTextArea(e)}
           />

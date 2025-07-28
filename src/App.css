@@ -124,7 +124,7 @@ body {
 }
 
 .btn-icon {
-  @apply text-xs bg-zinc-800 rounded-lg  hover:bg-zinc-950 transition-colors hover:shadow-2xl;
+  @apply text-xs bg-zinc-800 rounded-lg p-1  hover:bg-zinc-950 transition-colors hover:shadow-2xl;
 }
 
 .gradient-text {

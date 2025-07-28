@@ -4,7 +4,7 @@ import { AppHomeLazy } from './ui/LAZY_COMPONENT';
 import './App.css';
 import { Toaster } from 'react-hot-toast';
 import AppClient from './pages/client/main';
-import Aurora from './ui/Aurora';
+import Aurora from './ui/aurora/Aurora.tsx';
 
 const root = document.getElementById('root')!;
 

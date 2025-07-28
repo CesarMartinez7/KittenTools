@@ -4,7 +4,7 @@ import axios from 'axios';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
-import JsonViewer from '../../ui/Formatter';
+import JsonViewer from '../../ui/formatter-JSON/Formatter';
 import { CodeEditorLazy } from '../../ui/LAZY_COMPONENT';
 import AddQueryParam from './components/addQueryParams';
 import ButtonResponse from './components/buttonResponse';

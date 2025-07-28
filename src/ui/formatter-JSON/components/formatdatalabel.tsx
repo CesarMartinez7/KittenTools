@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import type { JsonValue } from '../types/models';
+import type { JsonValue } from '../../../types/models';
 
 const FormatDataTypeLabel = ({ data }: { data: JsonValue }) => {
   const [collapsedLabel, setCollapsedLabel] = useState(true);
 
-  // ❗ Mantén esta clase tal como la tienes, no se modifica
   const LabelBadge = ({ type }: { type: string }) => (
     <b className="text-[9px] p-1 rounded-md text-zinc-200 bg-gradient-to-t from-zinc-900 to-zinc-700">
       {type}

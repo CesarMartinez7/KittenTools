@@ -69,7 +69,7 @@ const GridLayout: React.FC<GridLayoutExtendedProps> = ({
   return (
     <motion.div
       exit={{ opacity: 0 }}
-      className={`grid grid-cols-1 md:grid-cols-2 grid-rows-[auto_1fr_auto] gap-4 h-screen w-full mx-auto ${className}`}
+      className={`grid grid-cols-1 md:grid-cols-2 grid-rows-[auto_1fr_auto] gap-4  w-full mx-auto ${className}`}
       style={style}
     >
       {/* Toolbar arriba */}
@@ -95,6 +95,7 @@ const GridLayout: React.FC<GridLayoutExtendedProps> = ({
       {/* Editor a la izquierdaa */}
       <div className="col-span-1 row-start-2">
         <ContainerTextArea
+          heightEditor="80vh"
           classText="h-full"
           {...textAreaProps}
           value={value}

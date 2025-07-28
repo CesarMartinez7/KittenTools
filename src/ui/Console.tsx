@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import type React from 'react';
 import { useRef, useState } from 'react';
 import toast from 'react-hot-toast';
-import { JsonNode } from './Formatter';
+import { JsonNode } from './formatter-JSON/Formatter';
 
 export default function Console() {
   const [consoleText, setConsoleText] = useState(

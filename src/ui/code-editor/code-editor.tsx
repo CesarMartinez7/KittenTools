@@ -1,107 +1,19 @@
-import { Icon } from "@iconify/react/dist/iconify.js";
-import type React from "react";
-import { memo, useEffect, useMemo, useRef, useState } from "react";
-import LazyListItem from "../../../../ui/LazyListPerform";
-import colors from "./colors";
-import keywords from "./keyword";
-import x from "@iconify-icons/tabler/x";
-import { AnimatePresence } from "motion/react";
-import toast from "react-hot-toast";
-import { motion } from "motion/react";
-import { type CodeEditorProps } from "./types";
-
-const highlightCode = (code: string, language: string) => {
-  let highlightedCode = code;
-
-  const escapeHTML = (str: string) =>
-    str
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-
-  if (language === "json") {
-    // JSON highlighting
-    highlightedCode = code
-      .replace(/"([^"\\]|\\.)*"/g, (match) => {
-        if (match.endsWith('":') || match.endsWith('": ')) {
-          return `<span style="color: ${colors.attribute}">${match}</span>`;
-        }
-        return `<span style="color: ${colors.string}">${match}</span>`;
-      })
-      .replace(
-        /\b(true|false|null)\b/g,
-        `<span style="color: ${colors.keyword}">$1</span>`,
-      )
-      .replace(
-        /\b(-?\d+\.?\d*)\b/g,
-        `<span style="color: ${colors.number}">$1</span>`,
-      );
-  } else if (language === "xml") {
-    // XML highlighting
-    const escaped = escapeHTML(code);
-    highlightedCode = escaped
-      .replace(
-        /<!--[\s\S]*?-->/g,
-        `<span style="color: ${colors.comment}">$&</span>`,
-      )
-      .replace(
-        /<\/?([a-zA-Z][a-zA-Z0-9]*)/g,
-        `<span style="color: ${colors.tag}">&lt;$1</span>`,
-      )
-      .replace(
-        /([a-zA-Z-]+)=/g,
-        `<span style="color: ${colors.attribute}">$1</span>=`,
-      )
-      .replace(/"([^"]*)"/g, `<span style="color: ${colors.value}">"$1"</span>`)
-      .replace(/>/g, `<span style="color: ${colors.tag}">&gt;</span>`);
-  } else {
-    // JavaScript/TypeScript highlighting
-    const langKeywords = keywords[language] || keywords.javascript;
-
-    highlightedCode = code
-      // Comentarios
-      .replace(
-        /(\/\/.*$|\/\*[\s\S]*?\*\/)/gm,
-        `<span style="color: ${colors.comment}">$1</span>`,
-      )
-      // Strings
-      .replace(
-        /(['"`])((?:(?!\1)[^\\]|\\.)*)(\1)/g,
-        `<span style="color: ${colors.string}">$1$2$3</span>`,
-      )
-      // Números
-      .replace(
-        /\b(\d+\.?\d*)\b/g,
-        `<span style="color: ${colors.number}">$1</span>`,
-      )
-      // Funciones
-      .replace(
-        /\b(\w+)(?=\s*\()/g,
-        `<span style="color: ${colors.function}">$1</span>`,
-      );
-
-    // Keywords
-    langKeywords.forEach((keyword) => {
-      const regex = new RegExp(`\\b(${keyword})\\b`, "g");
-      highlightedCode = highlightedCode.replace(
-        regex,
-        `<span style="color: ${colors.keyword}; font-weight: bold">$1</span>`,
-      );
-    });
-  }
-
-  return highlightedCode;
-};
+import { Icon } from '@iconify/react/dist/iconify.js';
+import { AnimatePresence, motion } from 'motion/react';
+import type React from 'react';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
+import toast from 'react-hot-toast';
+import LazyListItem from '../LazyListPerform';
+import highlightCode from './higlight-code';
+import type { CodeEditorProps } from './types';
 
 const CodeEditor = ({
-  value = "",
-  language = "javascript",
+  value = '',
+  language = 'javascript',
   onChange,
-  height = "200px",
-  placeholder = "// Escribe tu código aquí...",
-  classNameContainer = "100%",
+  height = '200px',
+  placeholder = '// Escribe tu código aquí...',
+  classNameContainer = '100%',
 }: CodeEditorProps) => {
   const inputRefTextOld = useRef<HTMLInputElement>(null);
   const inputRefTextNew = useRef<HTMLInputElement>(null);
@@ -114,24 +26,24 @@ const CodeEditor = ({
   const lineNumbersRef = useRef<HTMLDivElement>(null);
 
   const lineCount = useMemo(() => {
-    return code.split("\n").length;
+    return code.split('\n').length;
   }, [code]);
 
   useEffect(() => {
     refSection.current?.focus();
 
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
-      // No importa si esta en minuscula la b o en mayuscula siempre se abrira
-      if ((e.ctrlKey && e.key === "b") || (e.ctrlKey && e.key === "B")) {
+      // No importa si esta en minuscuela la b o en mayuscula siempre se abrira
+      if ((e.ctrlKey && e.key === 'b') || (e.ctrlKey && e.key === 'B')) {
         e.preventDefault();
         setIsOpenBar((prev) => !prev);
       }
     };
 
-    window.addEventListener("keydown", handleGlobalKeyDown);
+    window.addEventListener('keydown', handleGlobalKeyDown);
 
     return () => {
-      window.removeEventListener("keydown", handleGlobalKeyDown);
+      window.removeEventListener('keydown', handleGlobalKeyDown);
     };
   }, []); // E
 
@@ -156,11 +68,17 @@ const CodeEditor = ({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Tab") {
+    // if (e.key === '{') {
+    //   e.preventDefault();
+    //   toast.error(value);
+    //   toast.success(JSON.stringify(e));
+    // }
+
+    if (e.key === 'Tab') {
       e.preventDefault();
       const start = e.currentTarget.selectionStart;
       const end = e.currentTarget.selectionEnd;
-      const newValue = code.substring(0, start) + "  " + code.substring(end);
+      const newValue = code.substring(0, start) + '  ' + code.substring(end);
       setCode(newValue);
       onChange?.(newValue);
 
@@ -176,32 +94,32 @@ const CodeEditor = ({
   };
 
   const handleCLickReplaceTextFirst = () => {
-    const from = inputRefTextOld.current?.value || "";
-    const to = inputRefTextNew.current?.value || "";
+    const from = inputRefTextOld.current?.value || '';
+    const to = inputRefTextNew.current?.value || '';
 
-    if (!from) return toast.error("Ingresa un valor a buscar");
+    if (!from) return toast.error('Ingresa un valor a buscar');
 
     if (!value?.includes(from)) {
-      return toast.error("El valor a buscar no se encuentra en el texto");
+      return toast.error('El valor a buscar no se encuentra en el texto');
     }
 
     const result = value?.replace(from, to);
     setCode(result);
-    toast.success("Reemplazo realizado");
+    toast.success('Reemplazo realizado');
   };
 
   const handleCLickReplaceText = () => {
-    const from = inputRefTextOld.current?.value || "";
-    const to = inputRefTextNew.current?.value || "";
+    const from = inputRefTextOld.current?.value || '';
+    const to = inputRefTextNew.current?.value || '';
 
     if (!value?.includes(from)) {
-      return toast.error("El valor a buscar no se encuentra en el texto");
+      return toast.error('El valor a buscar no se encuentra en el texto');
     }
 
-    if (!from) return toast.error("Ingresa un valor a buscar");
+    if (!from) return toast.error('Ingresa un valor a buscar');
     const result = value?.replaceAll(from, to);
     setCode(result);
-    toast.success("Reemplazo realizado");
+    toast.success('Reemplazo realizado');
   };
 
   return (
@@ -209,14 +127,14 @@ const CodeEditor = ({
       <AnimatePresence mode="wait">
         {isOpenBar && (
           <motion.div
-            initial={{ opacity: 0, y: -10, scale: 0.95, filter: "blur(4px)" }}
+            initial={{ opacity: 0, y: -10, scale: 0.95, filter: 'blur(4px)' }}
             animate={{
               opacity: 1,
               y: 0,
               scale: 1,
-              filter: "blur(0px)",
+              filter: 'blur(0px)',
               transition: {
-                type: "spring",
+                type: 'spring',
                 stiffness: 200,
                 damping: 20,
               },
@@ -225,7 +143,7 @@ const CodeEditor = ({
               opacity: 0,
               y: -10,
               scale: 0.95,
-              filter: "blur(4px)",
+              filter: 'blur(4px)',
               transition: { duration: 0.2 },
             }}
             layout
@@ -310,35 +228,13 @@ const CodeEditor = ({
               className="absolute inset-0 p-2 ring-none ring-0 focus:ring-none text-sm font-mono leading-6 resize-none outline-none bg-r whitespace-pre-wrap break-words"
               style={{
                 height,
-                color: "transparent",
-                caretColor: "#d4d4d4",
+                color: 'transparent',
+                caretColor: '#d4d4d4',
               }}
               spellCheck={false}
               placeholder={placeholder}
             />
           </LazyListItem>
-          {/* <div className="absolute right-1 shadow bottom-2 flex gap-2 text-[8px] text-zinc-400 bg-zinc-950 px-2 py-1 rounded-[4px] ">
-            <p className="text-green-400 block">
-              {(() => {
-                try {
-                  JSON.parse(value);
-                  return (
-                    <Icon
-                      icon="tabler:check"
-                      width="10"
-                      height="10"
-                      color="green"
-                    />
-                  );
-                } catch {
-                  return <Icon icon={x} width="10" height="10" color="red" />;
-                }
-              })()}
-            </p>
-            {language.toUpperCase() + " | "}
-            {JSON.parse(JSON.stringify(code)).length} caracteres,{" "}
-            {code.split("\n").length} lineas
-          </div> */}
         </div>
       </div>
 
@@ -380,7 +276,7 @@ const CodeEditor = ({
 
           <span className="hidden sm:inline">
             {language.toUpperCase()} | {JSON.stringify(code).length} caracteres
-            | {code.split("\n").length} líneas
+            | {code.split('\n').length} líneas
           </span>
         </div>
       </div>

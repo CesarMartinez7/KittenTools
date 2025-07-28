@@ -1,7 +1,7 @@
 import { Color, Mesh, Program, Renderer, Triangle } from 'ogl';
 import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
-import { AuroraStore } from '../stores/aurora';
+import AuroraStore from './aurora';
 
 const VERT = `#version 300 es
 in vec2 position;

@@ -5,7 +5,9 @@ type AuroraProps = {
   setShowAurora: (nuevo: boolean) => void;
 };
 
-export const AuroraStore = create<AuroraProps>((set) => ({
+const AuroraStore = create<AuroraProps>((set) => ({
   valor: true,
   setShowAurora: (nuevo) => set({ valor: nuevo ? true : false }),
 }));
+
+export default AuroraStore;
