@@ -6,7 +6,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import LazyListItem from '../LazyListPerform';
 import TableData from '../Table';
-import FormatDataTypeLabel from './components/formatDataLabel';
+import FormatDataTypeLabel from './components/formatdatalabel';
 
 const csvConfig = mkConfig({ useKeysAsHeaders: true });
 
