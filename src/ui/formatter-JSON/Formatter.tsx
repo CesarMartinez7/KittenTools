@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import type React from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
-import FormatDataTypeLabel from './components/formatDataLabel';
+import FormatDataTypeLabel from './components/formatdataLabel';
 import TableData from '../Table';
 import LazyListItem from '../LazyListPerform';
 
