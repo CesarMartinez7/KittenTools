@@ -254,10 +254,10 @@ const JsonViewer: React.FC<{
 
   return (
     <div
-      className={`flex flex-col backdrop-blur-2xl text-zinc-400 border border-zinc-800 overflow- shadow-xl rounded-xl bg-zinc-900/70 `}
+      className={`flex flex-col backdrop-blur-2xl text-zinc-400 border border-zinc-800 overflow- shadow-xl rounded-xl bg-zinc-900 `}
       style={{ width: width, height: height, maxHeight: maxHeight }}
     >
-      <div className="flex gap-2 py-2   px-4 items-center justify-between border-b border-zinc-800 rounded-t-xl ">
+      <div className="flex gap-2 py-2 px-4 items-center justify-between border-b border-zinc-800 rounded-t-xl ">
         {/* Botones Opciones */}
 
         <div className="flex gap-2">
