@@ -44,6 +44,7 @@ export default function ContainerTextArea({
             classNameContainer={classNameContainerEditor}
             value={value ?? ''}
             language="json"
+            minHeight=''
             onChange={(e) => handleChangeTextArea(e)}
           />
         </Suspense>

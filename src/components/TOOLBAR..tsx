@@ -43,7 +43,7 @@ export default function ToolBar({
       className={`p-8 shadow-2xl rounded-2xl backdrop-blur-xl flex flex-col items-center h-full justify-center text-center space-y-4 w-full bg-zinc-900/60 `}
     >
       
-      <Icon icon="game-icons:thorny-vine" width="60s" height="60" />
+      <Icon icon="game-icons:thorny-vine" width="60" height="60" />
       <h1 className="text-3xl font-bold bg-gradient-to-bl from-white to-zinc-400 bg-clip-text text-transparent">
         KittenTools
       </h1>
