@@ -299,7 +299,7 @@ export default function AppClient() {
               )}
             </button>
           </div>
-          <div className="flex gap-2 bg-zinc-900 px-4 pt-3 rounded-t-lg border-b border-zinc-800">
+          <div className="flex gap-2 bg-zinc-900  pt-2 rounded-t-lg border-b border-zinc-800">
             {Opciones.map((opcion, index) => (
               <button
                 key={index}
