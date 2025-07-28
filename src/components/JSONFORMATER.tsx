@@ -1,5 +1,5 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
-import { JsonViewerLazy } from '../ui/LAZY_COMPONENT';
+import { JsonViewerLazy } from './LAZY_COMPONENT';
 
 interface JsonFormatProps {
   value: string | null | undefined;

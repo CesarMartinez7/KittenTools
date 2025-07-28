@@ -2,7 +2,7 @@ import { jwtDecode } from 'jwt-decode';
 import { AnimatePresence, motion } from 'motion/react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-import { JsonViewerLazy } from './LAZY_COMPONENT';
+import { JsonViewerLazy } from '../components/LAZY_COMPONENT';
 export default function JWTDecode() {
   const [jwt, setJwt] = useState<string>('');
   const [decode, setDecode] = useState<string | null>(null);

@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { CodeEditorLazy } from '../ui/LAZY_COMPONENT';
+import { CodeEditorLazy } from './LAZY_COMPONENT';
 
 interface ContainerArea {
   value: string | null | undefined;

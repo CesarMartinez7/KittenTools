@@ -27,6 +27,25 @@ const CodeEditor = ({
   const highlightRef = useRef<HTMLDivElement>(null);
   const lineNumbersRef = useRef<HTMLDivElement>(null);
 
+  // Logica de intersection Observer con clases
+
+  // const options = {
+  //   root: document.querySelector(".list-name"),
+  //   rootMargin: "0px",
+  //   scrollMargin: "0px",
+  //   threshold: 1.0,
+  // };
+
+  // const observer = new IntersectionObserver((entries, observer) => {
+  //   entries.forEach((entry) => {
+  //     if (entry.isIntersecting) {
+  //       let elemt = entry.target;
+  //     }
+  //   });
+  // }, options);
+
+  // observer.observe(document.querySelectorAll(".list-name"))
+
   const lineCount = useMemo(() => {
     return code.split('\n').length;
   }, [code]);
@@ -80,13 +99,11 @@ const CodeEditor = ({
   const handleScroll = () => {
     if (textareaRef.current && lineNumbersRef.current && highlightRef.current) {
       const scrollTop = textareaRef.current.scrollTop;
-       const scrollLeft = textareaRef.current.scrollLeft;
+      const scrollLeft = textareaRef.current.scrollLeft;
 
-      
       lineNumbersRef.current.scrollTop = scrollTop;
-      textareaRef.current.scrollTop = scrollTop
+      textareaRef.current.scrollTop = scrollTop;
       highlightRef.current.scrollTop = scrollTop;
-
 
       // Left scroll
       highlightRef.current.scrollLeft = scrollLeft;
@@ -235,8 +252,8 @@ const CodeEditor = ({
               ref={highlightRef}
               className="absolute inset-0 p-2 text-sm font-mono leading-6 pointer-events-none overflow-auto whitespace-pre-wrap break-words  text-[#d4d4d4]"
               dangerouslySetInnerHTML={{
-                __html:   highlightCode(code, language),
-              }}            
+                __html: highlightCode(code, language),
+              }}
             />
           </LazyListItem>
 
@@ -307,8 +324,8 @@ const CodeEditor = ({
           </span>
 
           <span className="hidden sm:inline">
-            {language.toUpperCase()} | {code.length} caracteres |{' '}
-            {lineCount} líneas
+            {language.toUpperCase()} | {code.length} caracteres | {lineCount}{' '}
+            líneas
           </span>
         </div>
       </div>

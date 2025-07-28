@@ -1,6 +1,6 @@
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Route, Routes } from 'react-router';
-import { AppHomeLazy } from './ui/LAZY_COMPONENT';
+import { AppHomeLazy } from './components/LAZY_COMPONENT.tsx';
 import './App.css';
 import { Toaster } from 'react-hot-toast';
 import AppClient from './pages/client/main';

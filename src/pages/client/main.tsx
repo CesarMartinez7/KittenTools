@@ -4,29 +4,37 @@ import axios from 'axios';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
+import { CodeEditorLazy } from '../../components/LAZY_COMPONENT';
 import JsonViewer from '../../ui/formatter-JSON/Formatter';
-import { CodeEditorLazy } from '../../ui/LAZY_COMPONENT';
 import AddQueryParam from './components/addQueryParams';
 import ButtonResponse from './components/buttonResponse';
 import { HeadersAddRequest } from './components/Headers';
 import { Methodos, Opciones } from './mapper-ops';
+import { SavedRequestsSidebar } from './SavedRequestSidebar';
 import { useStoreHeaders } from './stores/headers-store';
 import { useParamsStore } from './stores/queryparams-store';
 
 export default function AppClient() {
   const cabeceras = useStoreHeaders((state) => state.valor);
   const params = useParamsStore((state) => state.valor);
+  const [isOpenSiderBar, setIsOpenSiderbar] = useState<boolean>(true);
+
+  const handleOpenSideBar = () => setIsOpenSiderbar((prev) => !prev);
+
   const refForm = useRef<HTMLFormElement>(null);
   const [selectedMethod, setSelectedMethod] = useState('GET');
   const [responseSelected, setResponseSelected] = useState('');
+
   const [errorAxios, setErrorAxios] = useState<null | string>(null);
   const [errorRequest, setErrorRequest] = useState<boolean>(false);
   const [code, setCode] = useState<number>();
+
   const [mimeSelected, setMimeSelected] = useState<number>(
     Number(sessionStorage.getItem('mimeSelected')) || 0,
   );
   const [bodyJson, setBodyJson] = useState<string>('');
   const [showMethods, setShowMethods] = useState(false);
+
   const [endpointUrl, setEndpointUrl] = useState<string>(
     'https://httpbin.org/get',
   );
@@ -64,7 +72,7 @@ export default function AppClient() {
     }
   };
 
-  const prepareHeaders = (headers: HeaderItem[]) => {
+  const prepareHeaders = (headers: any) => {
     return headers.reduce(
       (acc, header) => {
         if (header.key.trim() && header.value.trim()) {
@@ -150,7 +158,6 @@ export default function AppClient() {
       setIsLoading(false);
     }
   };
-
   const handleClickShowMethod = () => setShowMethods((prev) => !prev);
 
   const formatBodyPlaceholder = () => {
@@ -168,11 +175,19 @@ export default function AppClient() {
 
   return (
     <motion.div
-      className=" min-h-screen"
+      className="min-h-screen flex"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
     >
-      <div className="w-full gap-4 flex flex-col h-screen p-4 md:p-8">
+      <SavedRequestsSidebar
+        currentUrl={endpointUrl}
+        currentBody={bodyJson}
+        currentHeaders={cabeceras}
+        currentMethod={selectedMethod}
+        isOpen={isOpenSiderBar}
+        onClose={handleOpenSideBar}
+      />
+      <div className="w-full flex flex-col h-screen px-8 p-4">
         <form ref={refForm} onSubmit={handleRequest} className="space-y-4">
           <div className="flex flex-col md:flex-row gap-2 w-full">
             <div className="relative ">
@@ -198,9 +213,7 @@ export default function AppClient() {
                       <button
                         type="button"
                         key={metodo.name}
-                        className={`w-full px-4 
-                            : ""
-                        }`}
+                        className={`w-full p-2 ${metodo.name === selectedMethod ? "bg-blue-500" : ""}  `}
                         onClick={() => {
                           setSelectedMethod(metodo.name.toUpperCase());
                           setShowMethods(false);
@@ -242,7 +255,7 @@ export default function AppClient() {
             </button>
           </div>
 
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 bg-zinc-900/80 backdrop-blur-3xl w-fit pt-3 px-4 rounded-t-lg">
             {Opciones.map((opcion, index) => (
               <button
                 key={index}
@@ -260,7 +273,7 @@ export default function AppClient() {
 
         {/* Request barra */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 flex-1 overflow-hidden">
-          <div className="border rounded-xl border-zinc-800 p-6 flex flex-col bg-zinc-900/80 backdrop-blur-3xl overflow-hidden">
+          <div className="border rounded-b-xl border-zinc-800 p-6 flex flex-col bg-zinc-900/80 backdrop-blur-3xl overflow-hidden">
             <div className="h-full flex flex-col">
               <AnimatePresence mode="wait">
                 {mimeSelected === 1 && (
@@ -284,7 +297,7 @@ export default function AppClient() {
                     className="flex-1 flex flex-col"
                   >
                     <div className="mb-">
-                      <div className="p-3 border-b border-zinc-800 flex justify-between items-center">
+                      <div className="p-3 flex justify-between items-center">
                         <div className="flex gap-4 ">
                           <label className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
                             <input

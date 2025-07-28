@@ -3,15 +3,19 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import ContainerDescripcion from './components/DESCRIPCION';
+import {
+  BaseModalLazy,
+  GridLayoutLazy,
+  JsonDiffLazy,
+  JsonViewerLazy,
+} from './components/LAZY_COMPONENT';
 import ContainerTextArea from './components/TEXTAREA-EDITOR';
+import ToolBar from './components/TOOLBAR';
 import GridLayout from './layouts/GridLayout';
 import AuroraStore from './ui/aurora/aurora';
-import { BaseModal } from './ui/BaseModal';
 import Console from './ui/Console';
 import JWTDecode from './ui/DecodeJWT';
 import { ModalViewer } from './ui/Difftext';
-import { JsonDiffLazy, JsonViewerLazy } from './ui/LAZY_COMPONENT';
-import ToolBar from './components/TOOLBAR';
 
 const App = () => {
   const [value, setValue] = useState<string | null | undefined>(
@@ -184,7 +188,7 @@ const App = () => {
               transition={{ type: 'spring', stiffness: 300, damping: 30 }}
             >
               {showGrid ? (
-                <GridLayout
+                <GridLayoutLazy
                   value={value}
                   setValue={setValue}
                   isValid={isValid}
@@ -269,7 +273,7 @@ const App = () => {
           </AnimatePresence>
         </div>
 
-        <BaseModal isOpen={openViewerJsonFull} onClose={handleCloseAll}>
+        <BaseModalLazy isOpen={openViewerJsonFull} onClose={handleCloseAll}>
           <JsonViewerLazy
             maxHeight="90vh"
             width="90vw"
@@ -277,23 +281,23 @@ const App = () => {
             data={value}
             isOpen={openViewerJsonFull}
           />
-        </BaseModal>
+        </BaseModalLazy>
 
-        <BaseModal isOpen={isDecode} onClose={handleCloseDecode}>
+        <BaseModalLazy isOpen={isDecode} onClose={handleCloseDecode}>
           <JWTDecode />
-        </BaseModal>
+        </BaseModalLazy>
 
-        <BaseModal isOpen={isOpenDiffText} onClose={handleCloseDiffText}>
+        <BaseModalLazy isOpen={isOpenDiffText} onClose={handleCloseDiffText}>
           <ModalViewer />
-        </BaseModal>
+        </BaseModalLazy>
 
-        <BaseModal isOpen={isOpenDiff} onClose={handleCloseDiff}>
+        <BaseModalLazy isOpen={isOpenDiff} onClose={handleCloseDiff}>
           <JsonDiffLazy />
-        </BaseModal>
+        </BaseModalLazy>
 
-        <BaseModal isOpen={showConsole} onClose={handleCloseConsole}>
+        <BaseModalLazy isOpen={showConsole} onClose={handleCloseConsole}>
           <Console />
-        </BaseModal>
+        </BaseModalLazy>
       </div>
     </>
   );

@@ -7,7 +7,7 @@ interface BaseModalProps {
   children: React.ReactNode;
 }
 
-export const BaseModal = ({ isOpen, onClose, children }: BaseModalProps) => {
+const BaseModal = ({ isOpen, onClose, children }: BaseModalProps) => {
   const modalVariants = {
     hidden: { opacity: 0, scale: 0.95 },
     visible: {
@@ -50,3 +50,5 @@ export const BaseModal = ({ isOpen, onClose, children }: BaseModalProps) => {
     </AnimatePresence>
   );
 };
+
+export default BaseModal;

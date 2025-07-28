@@ -1,11 +1,8 @@
 import { motion } from 'motion/react';
 import type React from 'react';
-import ContainerDescripcion from '../components/DESCRIPCION';
 import ResultadoJsonFormat from '../components/JSONFORMATER';
+import { BaseModalLazy, JsonViewerLazy } from '../components/LAZY_COMPONENT';
 import ContainerTextArea from '../components/TEXTAREA-EDITOR';
-import ToolBar from '../components/TOOLBAR';
-import { BaseModal } from '../ui/BaseModal';
-import { JsonViewerLazy } from '../ui/LAZY_COMPONENT';
 
 export interface GridLayoutProps {
   toolbarProps?: {
@@ -120,14 +117,14 @@ const GridLayout: React.FC<GridLayoutExtendedProps> = ({
         />
       </div>
 
-      <BaseModal isOpen={openAll} onClose={() => setOpenAll(false)}>
+      <BaseModalLazy isOpen={openAll} onClose={() => setOpenAll(false)}>
         <JsonViewerLazy
           maxHeight="70vh"
           height="60vh"
           data={value}
           isOpen={true}
         />
-      </BaseModal>
+      </BaseModalLazy>
     </motion.div>
   );
 };
