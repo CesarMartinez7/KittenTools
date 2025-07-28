@@ -179,6 +179,8 @@ export default function AppClient() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
     >
+
+  
       <SavedRequestsSidebar
         currentUrl={endpointUrl}
         currentBody={bodyJson}

@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import LazyListItem from '../LazyListPerform';
 import TableData from '../Table';
 import FormatDataTypeLabel from './components/formatlabel.tsx';
+import { JsonViewerStore } from './stores/jsonviewer.ts';
 
 const csvConfig = mkConfig({ useKeysAsHeaders: true });
 
@@ -22,7 +23,7 @@ interface JsonNodeProps {
   open: boolean;
   isChange: boolean;
   isInterface: boolean;
-  __Changed: string;
+  __Changed?: string;
 }
 
 export const JsonNode: React.FC<JsonNodeProps> = ({
@@ -140,8 +141,12 @@ const JsonViewer: React.FC<{
   const [showTable, setShowTable] = useState<boolean>(false);
   const [showInterface, setShowInterface] = useState<boolean>(false);
 
-  const [openModalDownload, setOpenModalDownload] = useState<boolean>(false);
-  const [INDENT, setIdent] = useState<number>(10);
+  const openModalDownload = JsonViewerStore((state) => state.isOpenModalDownload)
+  const setOpenModalDownload = JsonViewerStore((state) => state.toogleOpenModalDownload)
+  const nameDownloadFile = JsonViewerStore((state) => state.nameFileDownload)
+  const isDownload = JsonViewerStore((state) => state.isDownload)
+
+  const [INDENT, setIdent] = useState<number>(6);
   const [interfaceGen, setInterfaceGen] = useState<unknown>();
 
   // Cambio a useMemo en vez de useEffect para evitar mis rerenders
@@ -174,6 +179,7 @@ const JsonViewer: React.FC<{
     setShowJsonViewer(false);
     setShowTable(true);
   };
+  
   const handleClickShowInterface = () => {
     setInterfaceGen(generateJsonInterface(JSON.parse(values as string)));
     setShowJsonViewer(false);
@@ -188,13 +194,20 @@ const JsonViewer: React.FC<{
   };
 
   const handleDownloadJson = () => {
-    setOpenModalDownload((prev) => !prev);
+    alert("osdfsd")
+    setOpenModalDownload(true)
+
+
+    if(!isDownload){
+      toast.success("Se puede descargar")
+    }
+    toast.error(String(openModalDownload))
 
     const elementDownload = document.createElement('a');
     const jsonString = JSON.stringify(values, null, 2);
     const blob = new Blob([jsonString], { type: 'application/json' });
     elementDownload.href = URL.createObjectURL(blob);
-    elementDownload.download = 'data.json';
+    elementDownload.download = nameDownloadFile || "data-default.json";
     document.body.appendChild(elementDownload);
     elementDownload.click();
   };
@@ -449,18 +462,18 @@ const JsonViewer: React.FC<{
           </button>
 
           <button
-            title="copiar"
+            title="Copiar"
             className="btn-icon p-1.5 text-xs bg-zinc-800 rounded-lg "
             onClick={handleCopy}
           >
             <Icon icon={'tabler:copy'} width={13} height={13} />
           </button>
           <button
-            title="generar csv"
+            title="Generar CSV"
             className="btn-icon  p-1 text-xs bg-zinc-800 rounded-lg "
             onClick={handleClickGenerateCSV}
           >
-            Generar CSV
+            <Icon icon="tabler:csv" width="15" height="15" />
           </button>
         </div>
       </div>
