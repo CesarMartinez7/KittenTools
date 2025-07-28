@@ -45,8 +45,6 @@ export default function JsonDiffViewerModal() {
       transition={{ duration: 0.2 }}
       className=" md:w-[90vw] h-[90vh] w-full bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-2xl text-sm text-zinc-200 "
     >
-
-      
       <h2 className="my-2 text-xl font-semibold  text-center bg-gradient-to-bl from-white to-zinc-600 bg-clip-text text-transparent">
         Comparador JSON
       </h2>
@@ -55,7 +53,7 @@ export default function JsonDiffViewerModal() {
           <label className="mb-1 text-zinc-400 font-medium">JSON #1</label>
 
           <CodeEditorLazy
-            minHeight='200px'
+            minHeight="200px"
             classNameContainer="bg-zinc-950 text-zinc-100  rounded-lg  resize-none focus:outline-none focus:ring-2 focus:ring-orange-500"
             placeholder={error}
             language="json"
@@ -68,7 +66,7 @@ export default function JsonDiffViewerModal() {
           <label className="mb-1 text-zinc-400 font-medium">JSON #2</label>
 
           <CodeEditorLazy
-            minHeight='200px'
+            minHeight="200px"
             classNameContainer="bg-zinc-950 text-zinc-100  rounded-lg  resize-none focus:outline-none focus:ring-2 "
             placeholder={error}
             language="json"

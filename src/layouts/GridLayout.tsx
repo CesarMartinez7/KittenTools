@@ -3,7 +3,7 @@ import type React from 'react';
 import ContainerDescripcion from '../components/DESCRIPCION';
 import ResultadoJsonFormat from '../components/JSONFORMATER';
 import ContainerTextArea from '../components/TEXTAREA-EDITOR';
-import ToolBar from '../components/TOOLBAR.';
+import ToolBar from '../components/TOOLBAR';
 import { BaseModal } from '../ui/BaseModal';
 import { JsonViewerLazy } from '../ui/LAZY_COMPONENT';
 

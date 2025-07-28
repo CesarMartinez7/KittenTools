@@ -88,7 +88,7 @@ const CodeEditor = ({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" ) {
+    if (e.key === 'Enter') {
       handleJsonSchema();
     }
 
@@ -208,7 +208,7 @@ const CodeEditor = ({
         {/* Line Numbers */}
         <div
           ref={lineNumbersRef}
-          className="px-3 py-2 text-sm overflow-hidden bg-zinc-950/20 border-r border-zinc-800 backdrop-blur-3xl text-zinc-400 "
+          className="px-3 py-2 text-sm overflow-hidden bg-zinc-950/20 border- rounded-tl-xl border-zinc-800 backdrop-blur-3xl text-zinc-400 "
           style={{ height, minHeight }}
         >
           {Array.from({ length: lineCount }, (_, i) => (
@@ -301,8 +301,8 @@ const CodeEditor = ({
           </span>
 
           <span className="hidden sm:inline">
-            {language.toUpperCase()} | {code.length} caracteres
-            | {code.split('\n').length} líneas
+            {language.toUpperCase()} | {code.length} caracteres |{' '}
+            {code.split('\n').length} líneas
           </span>
         </div>
       </div>

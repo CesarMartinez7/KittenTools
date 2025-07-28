@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import ContainerDescripcion from './components/DESCRIPCION';
 import ContainerTextArea from './components/TEXTAREA-EDITOR';
-import ToolBar from './components/TOOLBAR.';
 import GridLayout from './layouts/GridLayout';
 import AuroraStore from './ui/aurora/aurora';
 import { BaseModal } from './ui/BaseModal';
@@ -12,6 +11,7 @@ import Console from './ui/Console';
 import JWTDecode from './ui/DecodeJWT';
 import { ModalViewer } from './ui/Difftext';
 import { JsonDiffLazy, JsonViewerLazy } from './ui/LAZY_COMPONENT';
+import ToolBar from './components/TOOLBAR';
 
 const App = () => {
   const [value, setValue] = useState<string | null | undefined>(
@@ -105,10 +105,7 @@ const App = () => {
       }
       return;
     }
-
     toast.error('Estas seguro que tienes algo que copiar?');
-
-    toast.error('No tienes nada para copiar en tu Text Area.');
   };
 
   const handleCopyUrl = () => {
