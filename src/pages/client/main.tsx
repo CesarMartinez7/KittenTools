@@ -31,7 +31,7 @@ export default function AppClient() {
     'https://httpbin.org/get',
   );
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [contentType, setContentType] = useState<'form' | 'json' | 'xml'>(
+  const [contentType, setContentType] = useState<'javascript' | 'typescript' | 'json' | 'xml' | "form">(
     'json',
   );
 
@@ -261,6 +261,9 @@ export default function AppClient() {
         {/* Request barra */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 flex-1 overflow-hidden">
           <div className="border rounded-xl border-zinc-800 p-6 flex flex-col bg-zinc-900/80 backdrop-blur-3xl overflow-hidden">
+
+            
+
             <div className="h-full flex flex-col">
               <AnimatePresence mode="wait">
                 {mimeSelected === 1 && (
@@ -283,8 +286,10 @@ export default function AppClient() {
                     exit={{ opacity: 0 }}
                     className="flex-1 flex flex-col"
                   >
-                    <div className="mb-4">
-                      <div className="flex gap-4 mb-2 ">
+                    <div className="mb-">
+
+                    <div className='p-3 border-b border-zinc-800 flex justify-between items-center'>
+                    <div className="flex gap-4 ">
                         <label className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
                           <input
                             type="radio"
@@ -313,10 +318,13 @@ export default function AppClient() {
                           XML
                         </label>
                       </div>
+                  </div>
+                  
+
+                      
                     </div>
                     <CodeEditorLazy
-                      classNameContainer="w-full h-full overflow-hidden"
-                      height="100%"
+                      height='100%'
                       language={contentType}
                       onChange={(e) => setBodyJson(e)}
                       value={bodyJson}

@@ -13,6 +13,7 @@ const CodeEditor = ({
   language = 'javascript',
   onChange,
   height = '200px',
+  minHeight = "68vh",
   placeholder = '// Escribe tu código aquí...',
   classNameContainer = '100%',
 }: CodeEditorProps) => {
@@ -204,13 +205,13 @@ const CodeEditor = ({
       </AnimatePresence>
 
       <div
-        className={`relative flex  text-xs  overflow-hidden bg-zinc-900/60 ring-none backdrop-blur-3xl ${classNameContainer} `}
+        className={`relativ flex  text-xs overflow-hidden bg-zinc-900/60 ring-none backdrop-blur-3xl ${classNameContainer} `}
       >
         {/* Line Numbers */}
         <div
           ref={lineNumbersRef}
           className="px-3 py-2 text-sm overflow-hidden bg-zinc-950/20 border-r border-zinc-800 backdrop-blur-3xl text-zinc-400 "
-          style={{ height }}
+          style={{ height, minHeight }}
         >
           {Array.from({ length: lineCount }, (_, i) => (
             <div
