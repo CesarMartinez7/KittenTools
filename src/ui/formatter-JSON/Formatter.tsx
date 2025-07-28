@@ -4,9 +4,9 @@ import { AnimatePresence, motion } from 'motion/react';
 import type React from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
-import LazyListItem from '../LazyListPerform';
-import TableData from '../Table';
 import FormatDataTypeLabel from './components/formatDataLabel.tsx';
+import TableData from '../Table';
+import LazyListItem from '../LazyListPerform';
 
 const csvConfig = mkConfig({ useKeysAsHeaders: true });
 
