@@ -122,13 +122,13 @@ export function SavedRequestsSidebar({
             onClick={handleSaveRequest}
             className="gray-btn w-full mb-4 flex items-center justify-center gap-2"
           >
-            <Icon icon="material-symbols:save-outline" /> Guardar Petición
+            <Icon icon="material-symbols:save-outline" /> Guardar Peticiin
             Actual
           </button>
           <div className="flex-1 overflow-y-auto space-y-2">
             {savedRequests.length === 0 ? (
               <p className="text-zinc-500 text-sm text-center py-4">
-                No hay peticiones guardadas aún.
+                No hay peticiones guardadas todavia.
               </p>
             ) : (
               savedRequests.map((req) => (
