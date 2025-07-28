@@ -6,7 +6,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import LazyListItem from '../LazyListPerform';
 import TableData from '../Table';
-import FormatDataTypeLabel from './components/formatdatalabel';
+import FormatDataTypeLabel from './components/formatDataLabel.tsx';
 
 const csvConfig = mkConfig({ useKeysAsHeaders: true });
 
@@ -284,14 +284,15 @@ const JsonViewer: React.FC<{
             onClick={handleClickShowTable}
           >
             <Icon icon="tabler:database" width="14" height="14" />
-            Datos Tabla {``}{' '}
+
+            <span className="md:block hidden">Datos Tabla</span>
           </button>
           <button
-            className="px-2 py-1 rounded-lg text-xs bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2"
+            className="px-2 py-1 rounded-lg text-xs  bg-zinc-800 hover:bg-zinc-800/35 hover:border-zinc-900 flex items-center justify-center gap-2"
             onClick={handleClickShowInterface}
           >
             <Icon icon="logos:typescript-icon" width="12" height="12" />
-            <span>Generar interfaz</span>{' '}
+            <span className="md:block hidden">Generar interfaz</span>{' '}
           </button>
 
           <AnimatePresence>

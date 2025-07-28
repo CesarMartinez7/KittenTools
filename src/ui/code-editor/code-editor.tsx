@@ -1,4 +1,5 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
+import bolt from '@iconify-icons/tabler/bolt';
 import { AnimatePresence, motion } from 'motion/react';
 import type React from 'react';
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
@@ -45,7 +46,18 @@ const CodeEditor = ({
     return () => {
       window.removeEventListener('keydown', handleGlobalKeyDown);
     };
-  }, []); // E
+  }, []); // Effect
+
+  const handleClickminifyJson = () => {
+    try {
+      const parseado = JSON.parse(value);
+      setCode(JSON.stringify(parseado));
+
+      toast.success('JSON minificado');
+    } catch {
+      toast.error('JSON inválido para minificar');
+    }
+  };
 
   useEffect(() => {
     setCode(value);
@@ -68,11 +80,9 @@ const CodeEditor = ({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    // if (e.key === '{') {
-    //   e.preventDefault();
-    //   toast.error(value);
-    //   toast.success(JSON.stringify(e));
-    // }
+    if (e.key === '{' || "}") {
+      handleJsonSchema()
+    }
 
     if (e.key === 'Tab') {
       e.preventDefault();
@@ -185,12 +195,12 @@ const CodeEditor = ({
       </AnimatePresence>
 
       <div
-        className={`relative flex  text-xs rounded-md overflow-hidden bg-zinc-900/60 ring-none backdrop-blur-3xl ${classNameContainer} `}
+        className={`relative flex  text-xs  overflow-hidden bg-zinc-900/60 ring-none backdrop-blur-3xl ${classNameContainer} `}
       >
         {/* Line Numbers */}
         <div
           ref={lineNumbersRef}
-          className="px-3 py-2 text-sm  overflow-hidden bg-zinc-950/20 border-r border-zinc-800 backdrop-blur-3xl text-zinc-400 "
+          className="px-3 py-2 text-sm overflow-hidden bg-zinc-950/20 border-r border-zinc-800 backdrop-blur-3xl text-zinc-400 "
           style={{ height }}
         >
           {Array.from({ length: lineCount }, (_, i) => (
@@ -243,7 +253,7 @@ const CodeEditor = ({
         {/* Botones a la izquieaa */}
         <div className="flex items-center gap-1">
           <button
-            className="bg-zinc-800 hover:bg-zinc-700 px-2.5 py-1 rounded flex items-center gap-1 transition"
+            className="bg-zinc-900 hover:bg-zinc-700 px-2.5 py-1 rounded flex items-center gap-1 transition"
             onClick={handleJsonSchema}
           >
             <Icon icon="tabler:braces" width={14} />
@@ -251,8 +261,16 @@ const CodeEditor = ({
           </button>
 
           <button
+            className="bg-zinc-900 hover:bg-zinc-700 px-2.5 py-1 rounded flex items-center gap-1 transition"
+            onClick={handleClickminifyJson}
+          >
+            <Icon icon={bolt} width={14} />
+            <span className="hidden sm:inline">Minify</span>
+          </button>
+
+          <button
             title="Abrir barra de reemplazo"
-            className="bg-zinc-800 hover:bg-zinc-700 px-2.5 py-1 rounded flex items-center gap-1 transition"
+            className="bg-zinc-900 hover:bg-zinc-700 px-2.5 py-1 rounded flex items-center gap-1 transition"
             onClick={() => setIsOpenBar((prev) => !prev)}
           >
             <Icon icon="tabler:replace" width={14} />

@@ -2,7 +2,8 @@ import { Icon } from '@iconify/react/dist/iconify.js';
 import codeblockjson from '@iconify-icons/mdi/code-block-json';
 import aircoditiong from '@iconify-icons/tabler/air-conditioning';
 import arrowsdiff from '@iconify-icons/tabler/arrows-diff';
-import box from '@iconify-icons/tabler/box';
+import copy from "@iconify-icons/tabler/copy"
+import gitcomparate from "@iconify-icons/tabler/git-compare"
 import gitpullrequest from '@iconify-icons/tabler/git-pull-request';
 import terminal from '@iconify-icons/tabler/terminal';
 import { Link } from 'react-router';
@@ -49,21 +50,37 @@ export default function ToolbarButtons({
       >
         <Icon icon={aircoditiong} width="20" /> Limpiar
       </button>
+
       <button
+        onClick={handleCopy}
+        className="w-full flex font-bold items-center bg-gradient-to-t from-sky-500 to-sky-600 hover:bg-blue-400  justify-center gap-2  text-white px-3 py-2 text-sm rounded-lg transition h-[40px]"
+      >
+        <Icon icon={copy} width="20" /> Copiar
+      </button>
+      <Link
         className="w-full flex items-center justify-center gap-2 bg-emerald-500 bg-gradient-to-t from-emerald-600 to-emerald-300 hover:bg-emerald-400 text-zinc-900 font-bold px-3 py-2 text-sm rounded-lg transition h-[40px]"
         onClick={handleClickminifyJson}
-      >
-        <Icon icon={box} width="24" height="24" /> Minify
-      </button>
-
-      <Link
-        title="Cliente Request"
-        className="w-full flex items-center justify-center gap-2 bg-kanagawa-orange text-black hover:bg-kanagawa-orange/60 font-bold px-3 py-2 text-sm rounded-lg transition h-[40px] disabled:opacity-60 disabled:event-pointer-none "
         to={'/client'}
       >
         <Icon icon={gitpullrequest} width="20" height="20" />
         Cliente Request
       </Link>
+
+      {/* <Link
+        title="Cliente Request"
+        className="w-full flex items-center justify-center gap-2 bg-kanagawa-orange text-black hover:bg-kanagawa-orange/60 font-bold px-3 py-2 text-sm rounded-lg transition h-[40px] disabled:opacity-60 disabled:event-pointer-none "
+        to={'/client'}
+      >
+      </Link> */}
+
+      <button
+        type="button"
+        className="w-full flex items-center justify-center gap-2 bg-emerald-500 bg-gradient-to-t from-indigo-700 to-indigo-500 text-white font-bold px-3 py-2 text-sm rounded-lg transition h-[40px]"
+        onClick={handleClickCargueJson}
+      >
+        <Icon icon={codeblockjson} width="20" height="20" />
+        Cargar JSON
+      </button>
 
       <button
         title="Compa"
@@ -76,21 +93,6 @@ export default function ToolbarButtons({
         CURL WEB
       </button>
 
-      <button
-        onClick={handleCopy}
-        className="w-full flex font-bold items-center bg-gradient-to-t from-sky-500 to-sky-600 hover:bg-blue-400  justify-center gap-2  text-white px-3 py-2 text-sm rounded-lg transition h-[40px]"
-      >
-        <Icon icon="tabler:copy" width="20" /> Copiar
-      </button>
-
-      <button
-        type="button"
-        className="w-full flex items-center justify-center gap-2 bg-emerald-500 bg-gradient-to-t from-indigo-700 to-indigo-500 text-white font-bold px-3 py-2 text-sm rounded-lg transition h-[40px]"
-        onClick={handleClickCargueJson}
-      >
-        <Icon icon={codeblockjson} width="20" height="20" />
-        Cargar JSON
-      </button>
       <button
         title="Compa"
         className="w-full flex  items-center justify-center gap-2 bg-kanagawa-cyan text-black hover:bg-kanagawa-cyan/60 font-bold px-3 py-2 text-sm rounded-lg transition h-[40px]"
@@ -118,7 +120,7 @@ export default function ToolbarButtons({
           setIsOpenDiffText(!isOpenDiffText);
         }}
       >
-        <Icon icon="tabler:git-compare" width="20" height="20" />
+        <Icon icon={gitcomparate} width="20" height="20" />
         Comparar Texto
       </button>
     </div>

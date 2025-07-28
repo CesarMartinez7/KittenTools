@@ -65,18 +65,12 @@ export default function JsonDiffViewerModal() {
           <label className="mb-1 text-zinc-400 font-medium">JSON #2</label>
 
           <CodeEditorLazy
-            classNameContainer="bg-zinc-950 text-zinc-100  rounded-lg   resize-none focus:outline-none focus:ring-2 "
+            classNameContainer="bg-zinc-950 text-zinc-100  rounded-lg  resize-none focus:outline-none focus:ring-2 "
             placeholder={error}
             language="json"
             value={json2}
             onChange={(e) => handleSetJson(e, 2)}
           />
-          {/* <textarea
-            className="bg-zinc-950 text-zinc-100 p-2 rounded-lg h-40  resize-none focus:outline-none focus:ring-2 focus:ring-orange-500"
-            placeholder="Pegue su JSON aquí"
-            value={json2}
-            onChange={(e) => handleSetJson(e.target.value, 2)}
-          /> */}
         </div>
       </div>
 
@@ -93,13 +87,7 @@ export default function JsonDiffViewerModal() {
         <p className="text-center p-4">No hay Cambios</p>
       )}
 
-      <JsonViewerLazy
-        data={diffResult}
-        __changed={diffResult}
-        height=""
-        maxHeight=""
-        minHeight=""
-      />
+      <JsonViewerLazy data={diffResult} __changed={diffResult} />
     </motion.div>
   );
 }
