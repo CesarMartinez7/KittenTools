@@ -10,10 +10,7 @@ import { HeadersAddRequest } from './components/Headers';
 import { SavedRequestsSidebar } from './components/SavedRequestSidebar';
 import ClientCustomHook from './hooks/client-hook';
 import { Methodos, Opciones } from './mapper-ops';
-import { random } from 'gsap';
-import toast from 'react-hot-toast';
-import type { HeaderItem, RequestItem } from './types/types';
-import { useStoreHeaders } from './stores/headers-store';
+import type { RequestItem } from './types/types';
 
 export default function AppClient() {
   const { value, setter } = ClientCustomHook();
@@ -48,15 +45,15 @@ export default function AppClient() {
   } = setter;
 
   // State for code (HTTP status) and selected MIME type for request body options
-  const [statusCode, setStatusCode] = useState(); // Renamed 'code' to 'statusCode' for clarity
+  const [statusCode,setStatusCode] = useState<boolean>(); // Renamed 'code' to 'statusCode' for clarity
   const [mimeSelected, setMimeSelected] = useState(
     Number(sessionStorage.getItem('mimeSelected')) || 0,
   );
 
   // Memoized function to save to localStorage
-  const saveToLocalStorage = useCallback((name, value) => {
-    localStorage.setItem(name, value);
-  }, []);
+  // const saveToLocalStorage = useCallback((name, value) => {
+  //   localStorage.setItem(name, value);
+  // }, []);
 
   const prepareHeaders = useCallback((headers) => {
     try {
@@ -111,7 +108,7 @@ export default function AppClient() {
         }
       }
 
-      const finalUrl = `${endpointUrl}${params}`; // Using template literals for clarity
+      const finalUrl = `${endpointUrl}${params}`;
 
       try {
         let response;
@@ -167,14 +164,12 @@ export default function AppClient() {
     [setShowMethods],
   );
 
-
   const onLoadRequest = (req: RequestItem) => {
-    
-    setBodyJson(req.body)
-    setContentType(req.contentType)
-    setEndpointUrl(req.url)
-  }
-
+    setBodyJson(req.body);
+    setContentType(req.contentType);
+    setEndpointUrl(req.url);
+    setSelectedMethod(req.method);
+  };
 
   const formatBodyPlaceholder = useMemo(() => {
     switch (contentType) {
@@ -233,7 +228,7 @@ export default function AppClient() {
       />
       <div className="w-full flex flex-col px-4 md:px-8 py-4">
         <form ref={refForm} onSubmit={handleRequest} className="space-y-4 mb-4">
-          <div className="flex flex-col md:flex-row gap-3 items-center">
+          <div className="flex flex-col md:flex-row gap-3 md:items-center">
             <div className="relative">
               <button
                 type="button"
@@ -280,7 +275,7 @@ export default function AppClient() {
             />
             <button
               type="submit"
-              className="gray-btn px-6 py-2 rounded-md font-semibold bg-sky-600 hover:bg-sky-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-black px-6 py-2 rounded-md font-semibold bg-sky-600 hover:bg-sky-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isLoading}
             >
               {isLoading ? (
@@ -293,13 +288,13 @@ export default function AppClient() {
               )}
             </button>
           </div>
-          <div className="flex gap-2 bg-zinc-900  rounded-t-lg border-b border-zinc-800">
+          <div className="flex gap-2 text-white bg-zinc-900/90 rounded-t-lg border-b border-zinc-800">
             {Opciones.map((opcion, index) => (
               <button
                 key={crypto.randomUUID()}
                 type="button"
                 className={`btn btn-sm text-sm py-2 px-4 rounded-t-lg transition-colors duration-200
-                  ${index === mimeSelected ? 'border-b-2 border-sky-500 text-sky-500 font-semibold bg-zinc-800' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}
+                  ${index === mimeSelected ? 'border-b-2 border-sky-500 text-sky-500 font-semibold bg-zinc-900' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}
                 onClick={() => setMimeSelected(index)}
               >
                 {opcion.name}
@@ -307,9 +302,9 @@ export default function AppClient() {
             ))}
           </div>
         </form>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 flex-1 overflow-hidden h-[40vh]">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 flex-1 ">
           <div className="bg-zinc-900 p-6 rounded-xl border border-zinc-800 flex flex-col shadow-lg">
-            <AnimatePresence mode="wait">
+            <AnimatePresence mode="wait" key={"uja"}>
               {mimeSelected === 0 && ( // Body
                 <motion.div
                   key="body-section-body"
@@ -322,11 +317,10 @@ export default function AppClient() {
                   <div className="flex gap-4 mb-3">
                     {['json', 'form', 'xml'].map((type, idx) => (
                       <label
-                      key={idx}
+                        key={idx}
                         className="text-sm text-gray-300 flex items-center gap-2 cursor-pointer"
                       >
                         <input
-                          
                           type="radio"
                           name="contentType"
                           checked={contentType === type}

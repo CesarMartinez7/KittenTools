@@ -82,8 +82,6 @@ const AddQueryParam = () => {
           </div>
         )}
 
-        <p>Valor de store {typeof valor}</p>
-
         {params.map((param, index) => (
           <div key={index} className="flex gap-2 justify-between">
             <input
@@ -107,12 +105,10 @@ const AddQueryParam = () => {
           </div>
         ))}
 
-        <pre className="bg-zinc-600 p-12 text-xs">
+        {/* <pre className="bg-zinc-600 p-12 text-xs">
           {JSON.stringify(params, null, 2)}
-        </pre>
+        </pre> */}
       </div>
-
-      <p>Porno</p>
     </>
   );
 };

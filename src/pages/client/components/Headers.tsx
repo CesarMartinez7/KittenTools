@@ -70,68 +70,73 @@ export function HeadersAddRequest() {
         Añadir nueva cabecera
       </button>
 
-      {headers.length === 0 && (
-        <div className="h-full flex justify-center-safe items-center bg-amber-300 w-full">
-          <span>No existen parametros cargados.</span>
-        </div>
-      )}
+      <div className="h-full">
+        {headers.length === 0 && (
+          <div className="h-full flex justify-center-safe items-center  w-full">
+            <span>No existen Cabeceras cargadas.</span>
+          </div>
+        )}
+        <div className="flex flex-col gap-y-4 mt-4">
+          {headers.map((header) => (
+            <div key={header.id + Math.random()} className="flex gap-4 items-center">
+              <div className="relative flex-1">
+                <input
+                  type="text"
+                  className="input-gray w-full"
+                  placeholder="Clave"
+                  value={header.key}
+                  onChange={(e) =>
+                    updateHeader(header.id, 'key', e.target.value)
+                  }
+                />
+                <AnimatePresence mode="wait">
+                  <motion.select
+                    className="absolute bg-black overflow-hidden rounded  inset-0 opacity-0 w-full h-full cursor-pointer"
+                    value={header.key}
+                    onChange={(e) => handleKeySelect(header.id, e.target.value)}
+                    whileHover={{ opacity: 1 }}
+                  >
+                    <option value="">Seleccionar cabecera común</option>
+                    {requestHeaders.map((headerOption) => (
+                      <option key={headerOption} value={headerOption}>
+                        {headerOption}
+                      </option>
+                    ))}
+                  </motion.select>
+                </AnimatePresence>
+              </div>
 
-      <div className="flex flex-col gap-y-4 mt-4">
-        {headers.map((header) => (
-          <div key={header.id} className="flex gap-4 items-center">
-            <div className="relative flex-1">
               <input
                 type="text"
-                className="input-gray w-full"
-                placeholder="Clave"
-                value={header.key}
-                onChange={(e) => updateHeader(header.id, 'key', e.target.value)}
+                className="input-gray flex-1"
+                placeholder="Valor"
+                value={header.value}
+                onChange={(e) =>
+                  updateHeader(header.id, 'value', e.target.value)
+                }
               />
-              <AnimatePresence mode="wait">
-                <motion.select
-                  className="absolute overflow-hidden rounded  inset-0 opacity-0 w-full h-full cursor-pointer"
-                  value={header.key}
-                  onChange={(e) => handleKeySelect(header.id, e.target.value)}
-                  whileHover={{ opacity: 1 }}
+
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  className="btn-black p-2"
+                  onClick={() => removeHeader(header.id, false)}
+                  aria-label="Eliminar cabecera"
                 >
-                  <option value="">Seleccionar cabecera común</option>
-                  {requestHeaders.map((headerOption) => (
-                    <option key={headerOption} value={headerOption}>
-                      {headerOption}
-                    </option>
-                  ))}
-                </motion.select>
-              </AnimatePresence>
+                  <Icon icon="tabler:trash" width="16" height="16" />
+                </button>
+                <button
+                  onClick={() => removeHeader(header.id, true)}
+                  type="button"
+                  className="btn-black p-2"
+                  aria-label="Confirmar cabecera"
+                >
+                  <Icon icon="tabler:check" width="16" height="16" />
+                </button>
+              </div>
             </div>
-
-            <input
-              type="text"
-              className="input-gray flex-1"
-              placeholder="Valor"
-              value={header.value}
-              onChange={(e) => updateHeader(header.id, 'value', e.target.value)}
-            />
-
-            <div className="flex gap-2">
-              <button
-                type="button"
-                className="btn-black p-2"
-                onClick={() => removeHeader(header.id, false)}
-                aria-label="Eliminar cabecera"
-              >
-                <Icon icon="tabler:trash" width="16" height="16" />
-              </button>
-              <button
-                onClick={() => removeHeader(header.id, true)}
-                type="button"
-                className="btn-black p-2"
-                aria-label="Confirmar cabecera"
-              >
-                <Icon icon="tabler:check" width="16" height="16" />
-              </button>
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

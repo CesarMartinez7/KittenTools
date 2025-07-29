@@ -8,12 +8,12 @@ import Aurora from './ui/aurora/Aurora.tsx';
 
 const root = document.getElementById('root')!;
 
-ReactDOM.createRoot(root).render(
+ReactDOM.createRoot(root)!.render(
   <div className="bg-black/50">
     <Toaster
-      position="top-right"
+      position="top-left"
       toastOptions={{
-        className: 'bg-zinc-800! text-zinc-400!',
+        className: 'bg-zinc-800! text-white!',
       }}
     />
     <div className="re z-0 fixed">

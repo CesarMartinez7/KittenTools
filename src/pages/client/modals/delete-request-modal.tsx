@@ -4,6 +4,7 @@ import type BaseModalProps from '../../../ui/base-modal/types';
 interface ModalDeleteProps extends BaseModalProps {
   handleDeleteRequest: (id: string) => void;
   id: string;
+  name: string;
 }
 
 export default function ModalDeleteRequest({
@@ -11,17 +12,19 @@ export default function ModalDeleteRequest({
   isOpen,
   handleDeleteRequest,
   id,
+  name,
 }: ModalDeleteProps) {
   return (
-    <BaseModalLazy onClose={onClose} isOpen={isOpen}>
+    <BaseModalLazy key={"ijum44"} onClose={onClose} isOpen={isOpen}>
       <div className="bg-zinc-900 p-6 rounded-2xl text-zinc-100 shadow-lg max-w-sm w-full">
         <h2 className="text-xl font-semibold mb-4 text-center">
-          ¿Eliminar petición?
+          ¿Eliminar petición? 
         </h2>
         <p className="text-sm text-zinc-400 mb-6 text-center">
           Esta acción no se puede deshacer. ¿Estás seguro de que quieres
           continuar?
         </p>
+
         <div className="flex gap-3">
           <button
             onClick={() => handleDeleteRequest(id)}
@@ -31,7 +34,7 @@ export default function ModalDeleteRequest({
           </button>
           <button
             onClick={onClose}
-            className="flex-1 py-2 rounded-lg bg-zinc-700 hover:bg-zinc-600 text-zinc-200 transition-colors"
+            className="flex-1 py-2 rounded-lg bg-zinc-950 hover:bg-zinc-800 text-zinc-200 transition-colors"
           >
             Cancelar
           </button>

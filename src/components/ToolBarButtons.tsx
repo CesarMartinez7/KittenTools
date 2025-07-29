@@ -104,7 +104,8 @@ export default function ToolbarButtons({
         Comparar JSON
       </button>
       <button
-        title="Compa"
+        type="button"
+        title="JWT Decoder"
         className="w-full flex items-center justify-center gap-2  bg-gradient-to-t from-kanagawa-muted/10 to-kanagawa-muted/30 text-white hover:bg-kanagawa-cyan/60 font-bold px-3 py-2 text-sm rounded-lg transition h-[40px]"
         onClick={() => {
           setIsDecode(!isDecode);
@@ -114,7 +115,8 @@ export default function ToolbarButtons({
         Decode JWT
       </button>
       <button
-        title="Compa"
+        type="button"
+        title="Comparador de Texto"
         className="w-full flex  items-center justify-center gap-2 bg-amber-400 bg-gradient-to-t from-amber-400 to-amber-500 text-black h-[40px] hover:bg-kanagawa-cyan/60 font-bold px-3 py-2 text-sm rounded-lg transition"
         onClick={() => {
           setIsOpenDiffText(!isOpenDiffText);
