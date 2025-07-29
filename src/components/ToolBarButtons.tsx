@@ -59,7 +59,6 @@ export default function ToolbarButtons({
       </button>
       <Link
         className="w-full flex items-center justify-center gap-2 bg-emerald-500 bg-gradient-to-t from-emerald-600 to-emerald-300 hover:bg-emerald-400 text-zinc-900 font-bold px-3 py-2 text-sm rounded-lg transition h-[40px]"
-        onClick={handleClickminifyJson}
         to={'/client'}
       >
         <Icon icon={gitpullrequest} width="20" height="20" />

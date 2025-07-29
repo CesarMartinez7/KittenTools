@@ -1,27 +1,32 @@
-import { Icon } from '@iconify/react/dist/iconify.js';
-import bolt from '@iconify-icons/tabler/bolt';
-import { AnimatePresence, motion } from 'motion/react';
-import type React from 'react';
-import { memo, useEffect, useMemo, useRef, useState } from 'react';
-import toast from 'react-hot-toast';
-import LazyListItem from '../LazyListPerform';
-import highlightCode from './higlight-code';
-import { useTextReplace } from './methods-global-editor/useTextReplace';
-import { useJsonHook } from './methods-json/method';
-import type { CodeEditorProps } from './types';
+import { Icon } from "@iconify/react/dist/iconify.js";
+import bolt from "@iconify-icons/tabler/bolt";
+import { AnimatePresence, motion } from "motion/react";
+import type React from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
+import toast from "react-hot-toast";
+import LazyListItem from "../LazyListPerform";
+import highlightCode from "./higlight-code";
+import { useTextReplace } from "./methods-global-editor/useTextReplace";
+import { useJsonHook } from "./methods-json/method";
+import type { CodeEditorProps } from "./types";
 
 const CodeEditor = ({
-  value = '',
-  language = 'json',
+  value = "",
+  language = "json",
   onChange,
-  height = '200px',
-  minHeight = '68vh',
-  placeholder = '// Escribe tu código aqui...',
-  classNameContainer = '',
+  height = "200px",
+  minHeight = "68vh",
+  placeholder = "// Escribe tu código aqui...",
+  classNameContainer = "",
 }: CodeEditorProps) => {
+  // Referencias al DOOM
   const inputRefTextOld = useRef<HTMLInputElement>(null);
   const inputRefTextNew = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const highlightRef = useRef<HTMLDivElement>(null);
+  const lineNumbersRef = useRef<HTMLDivElement>(null);
   const refSection = useRef<HTMLDivElement>(null);
+
   const [isOpenBar, setIsOpenBar] = useState<boolean>(false);
   const [code, setCode] = useState(value);
 
@@ -31,62 +36,53 @@ const CodeEditor = ({
     setCode: setCode,
   });
 
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const highlightRef = useRef<HTMLDivElement>(null);
-  const lineNumbersRef = useRef<HTMLDivElement>(null);
-
   const lineCount = useMemo(() => {
-    return code.split('\n').length;
+    return code.split("\n").length;
   }, [code]);
 
+  // Efecttos
   useEffect(() => {
     textareaRef.current?.focus();
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
       // No importa si esta en minuscuela la b o en mayuscula siempre se abrira
-      if ((e.ctrlKey && e.key === 'b') || (e.ctrlKey && e.key === 'B')) {
+      if ((e.ctrlKey && e.key === "b") || (e.ctrlKey && e.key === "B")) {
         e.preventDefault();
         setIsOpenBar((prev) => !prev);
       }
     };
 
-    window.addEventListener('keydown', handleGlobalKeyDown);
+    window.addEventListener("keydown", handleGlobalKeyDown);
 
     return () => {
-      window.removeEventListener('keydown', handleGlobalKeyDown);
+      window.removeEventListener("keydown", handleGlobalKeyDown);
     };
   }, []); // Effect
-
-  
-  const HandlersMinifyBody = () => {
-    if (language === 'json') {
-      return minifyJson();
-    }
-
-    if (language === 'xml') {
-      return toast.error('Aun no hay funcion para minificar XML AUN');
-    }
-
-    return toast.error(
-      'Es diferente a json por lo ucal no se se puede minifycar',
-    );
-  };
-
-  const HandlersIdentarBody = () => {
-    if(language === "json")
-      return JsonSchema()
-
-    if(language === "xml") {
-      return toast.error("No hay herramienta para Identar Xml aun")
-    }
-
-  }
-
-
-  
 
   useEffect(() => {
     setCode(value);
   }, [value]);
+
+  const HandlersMinifyBody = () => {
+    if (language === "json") {
+      return minifyJson();
+    }
+
+    if (language === "xml") {
+      return toast.error("Aun no hay funcion para minificar XML AUN");
+    }
+
+    return toast.error(
+      "Es diferente a json por lo ucal no se se puede minifycar",
+    );
+  };
+
+  const HandlersIdentarBody = () => {
+    if (language === "json") return JsonSchema();
+
+    if (language === "xml") {
+      return toast.error("No hay herramienta para Identar Xml aun");
+    }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value;
@@ -98,21 +94,18 @@ const CodeEditor = ({
     if (textareaRef.current && lineNumbersRef.current && highlightRef.current) {
       const scrollTop = textareaRef.current.scrollTop;
       const scrollLeft = textareaRef.current.scrollLeft;
-
-
       lineNumbersRef.current.scrollTop = scrollTop;
-highlightRef.current.scrollTop = scrollTop;
-highlightRef.current.scrollLeft = scrollLeft;
-
+      highlightRef.current.scrollTop = scrollTop;
+      highlightRef.current.scrollLeft = scrollLeft;
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Tab') {
+    if (e.key === "Tab") {
       e.preventDefault();
       const start = e.currentTarget.selectionStart;
       const end = e.currentTarget.selectionEnd;
-      const newValue = code.substring(0, start) + '  ' + code.substring(end);
+      const newValue = code.substring(0, start) + "  " + code.substring(end);
       setCode(newValue);
       onChange?.(newValue);
 
@@ -123,47 +116,51 @@ highlightRef.current.scrollLeft = scrollLeft;
     }
   };
 
-  const handleCLickReplaceTextFirst = () => {
-    const from = inputRefTextOld.current?.value || '';
-    const to = inputRefTextNew.current?.value || '';
+  const handleOpenRemplazoBar = () => {
+    setIsOpenBar((prev) => !prev)
+  }
 
-    if (!from) return toast.error('Ingresa un valor a buscar');
+  const handleCLickReplaceTextFirst = () => {
+    const from = inputRefTextOld.current?.value || "";
+    const to = inputRefTextNew.current?.value || "";
+
+    if (!from) return toast.error("Ingresa un valor a buscar");
 
     if (!value?.includes(from)) {
-      return toast.error('El valor a buscar no se encuentra en el texto');
+      return toast.error("El valor a buscar no se encuentra en el texto");
     }
 
     const result = value?.replace(from, to);
     setCode(result);
-    toast.success('Reemplazo realizado');
+    toast.success("Reemplazo realizado");
   };
 
-
-  const lineNumberElements = useMemo(() => (
-    Array.from({ length: lineCount }, (_, i) => (
-      <div key={i} className="leading-6 text-right min-w-[2rem] font-mono">
-        {i + 1}
-      </div>
-    ))
-  ), [lineCount]);
-  
+  const lineNumberElements = useMemo(
+    () =>
+      Array.from({ length: lineCount }, (_, i) => (
+        <div key={i} className="leading-6 text-right min-w-[2rem] font-mono">
+          {i + 1}
+        </div>
+      )),
+    [lineCount],
+  );
 
   const handleCLickReplaceText = () => {
-    const from = inputRefTextOld.current?.value || '';
-    const to = inputRefTextNew.current?.value || '';
+    const from = inputRefTextOld.current?.value || "";
+    const to = inputRefTextNew.current?.value || "";
 
     if (!value?.includes(from)) {
-      return toast.error('El valor a buscar no se encuentra en el texto');
+      return toast.error("El valor a buscar no se encuentra en el texto");
     }
 
-    if (!from) return toast.error('Ingresa un valor a buscar');
+    if (!from) return toast.error("Ingresa un valor a buscar");
     const result = value?.replaceAll(from, to);
     setCode(result);
-    toast.success('Reemplazo realizado');
+    toast.success("Reemplazo realizado");
   };
 
   return (
-    <main className="border rounded-xl overflow-hidden border-zinc-800">
+    <main className="border rounded-xl overflow-hidden border-zinc-800 relative">
       <AnimatePresence mode="wait">
         {isOpenBar && (
           <motion.div
@@ -172,9 +169,9 @@ highlightRef.current.scrollLeft = scrollLeft;
               opacity: 1,
               y: 0,
               scale: 1,
-              filter: 'blur(0px)',
+              filter: "blur(0px)",
               transition: {
-                type: 'spring',
+                type: "spring",
                 stiffness: 200,
                 damping: 20,
               },
@@ -183,7 +180,7 @@ highlightRef.current.scrollLeft = scrollLeft;
               opacity: 0,
               y: -10,
               scale: 0.95,
-              filter: 'blur(4px)',
+              filter: "blur(4px)",
               transition: { duration: 0.2 },
             }}
             layout
@@ -233,13 +230,12 @@ highlightRef.current.scrollLeft = scrollLeft;
           className="px-3 py-2 text-sm overflow-hidden bg-zinc-950/20 border- rounded-tl-xl border-zinc-800 backdrop-blur-3xl text-zinc-400 "
           style={{ height, minHeight }}
         >
-          
           {lineNumberElements}
         </div>
 
         {/* Editor Container */}
         <div className="flex-1 relative ">
-          {/* Syntax Highlighted Background */}
+    
           <LazyListItem>
             <div
               ref={highlightRef}
@@ -249,9 +245,7 @@ highlightRef.current.scrollLeft = scrollLeft;
               }}
             />
           </LazyListItem>
-
-          {/* Transparent Textarea */}
-
+ 
           <LazyListItem>
             <textarea
               autoFocus
@@ -263,8 +257,8 @@ highlightRef.current.scrollLeft = scrollLeft;
               className="absolute inset-0 p-2 ring-none ring-0 focus:ring-none text-sm font-mono leading-6 resize-none outline-none bg-r whitespace-pre-wrap break-words"
               style={{
                 height,
-                color: 'transparent',
-                caretColor: '#d4d4d4',
+                color: "transparent",
+                caretColor: "#d4d4d4",
               }}
               spellCheck={false}
               placeholder={placeholder}
@@ -296,7 +290,7 @@ highlightRef.current.scrollLeft = scrollLeft;
           <button
             title="Abrir barra de reemplazo"
             className="bg-zinc-900 hover:bg-zinc-700 px-2.5 py-1 rounded flex items-center gap-1 transition"
-            onClick={() => setIsOpenBar((prev) => !prev)}
+            onClick={handleOpenRemplazoBar}
           >
             <Icon icon="tabler:replace" width={14} />
             <span className="hidden sm:inline">Reemplazar</span>
@@ -308,7 +302,7 @@ highlightRef.current.scrollLeft = scrollLeft;
             {(() => {
               try {
                 JSON.parse(value);
-                return <Icon icon="tabler:check" width={13} height={13} />;
+                return <Icon icon="tabler:check" width={15} height={15} />;
               } catch {
                 return (
                   <Icon icon="tabler:x" width={13} height={13} color="red" />
@@ -318,7 +312,7 @@ highlightRef.current.scrollLeft = scrollLeft;
           </span>
 
           <span className="hidden sm:inline">
-            {language.toUpperCase()} | {code.length} caracteres | {lineCount}{' '}
+            {language.toUpperCase()} | {code.length} caracteres | {lineCount}{" "}
             líneas
           </span>
         </div>
