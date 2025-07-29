@@ -3,8 +3,8 @@ import { BrowserRouter, Route, Routes } from 'react-router';
 import { AppHomeLazy } from './components/LAZY_COMPONENT.tsx';
 import './App.css';
 import { Toaster } from 'react-hot-toast';
-import Aurora from './ui/aurora/Aurora.tsx';
 import { AppClientRouteLazy } from './pages/lazy.tsx';
+import Aurora from './ui/aurora/Aurora.tsx';
 
 const root = document.getElementById('root')!;
 
@@ -29,7 +29,7 @@ ReactDOM.createRoot(root).render(
       <BrowserRouter>
         <Routes>
           <Route index path="/" element={<AppHomeLazy />} />
-          <Route path="/client" element={<AppClientRouteLazy/>} />
+          <Route path="/client" element={<AppClientRouteLazy />} />
         </Routes>
       </BrowserRouter>
     </div>

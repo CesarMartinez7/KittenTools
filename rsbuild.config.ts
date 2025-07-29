@@ -4,8 +4,7 @@ import { pluginReact } from '@rsbuild/plugin-react';
 export default defineConfig({
   plugins: [pluginReact()],
   html: {
-    title: 'ReactMatter - Formateador de JSON',
+    title: 'KittenTools',
     favicon: './src/public/toby.svg',
-    template: './src/public/index.html',
   },
 });

@@ -1,4 +1,4 @@
-import { lazy } from "react";
+import { lazy } from 'react';
 
 // AQUI VAN TODAS MI RUTAS LAZY PROXIMAMENTE DEBERIAN HACER EL TEMPLATE DE LOS FALLBACK LOADING
-export const AppClientRouteLazy = lazy(() => import("./client/main"))
+export const AppClientRouteLazy = lazy(() => import('./client/main'));

@@ -8,25 +8,25 @@ export default function ContainerDescripcion() {
         Desarrollandose con tecnologias{' '}
       </p>
       <div className="flex gap-2">
-        <button className="btn-icon">
+        <span className="btn-icon">
           <Icon icon="tabler:brand-tailwind" width="24" height="24" />
-        </button>
+        </span>
 
-        <button className="btn-icon">
+        <span className="btn-icon">
           <Icon icon="tabler:brand-react" width="24" height="24" />
-        </button>
+        </span>
 
-        <button className="btn-icon">
+        <span className="btn-icon">
           <Icon icon={typescript} width="24" height="24" />
-        </button>
+        </span>
 
-        <button className="btn-icon">
+        <span className="btn-icon">
           <Icon icon="tabler:brand-nodejs" width="24" height="24" />
-        </button>
+        </span>
 
-        <button className="btn-icon">
+        <span className="btn-icon">
           <Icon icon="tabler:brand-github" width="20" height="20" />
-        </button>
+        </span>
       </div>
       <p>@CesarMartinez - KittenTools.</p>
     </footer>
