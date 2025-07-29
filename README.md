@@ -44,3 +44,14 @@ Mejorar textos para ser mas claro -- PEDIR AYUDA A CHATGPT
 Arreglar el bug de los params cuando se elimina no se actualiza si no que se elimina
 Añadir History de peticiones,
 Añadir errors y types of response en resspuesta cliente
+
+
+
+Añadir loading request time
+añadir interfaze loading first carga page
+Arreglar lo de los parametros,
+Añadir Molda de peticion save current
+Añadir claridad en texto con ayuda de 
+Uso de autenticacion con prioridad en Headers
+Store maximize Code web principal
+Mejorar responsivo en modales
