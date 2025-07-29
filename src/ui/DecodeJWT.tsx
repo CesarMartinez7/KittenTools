@@ -1,4 +1,4 @@
-import { jwtDecode } from 'jwt-decode';
+import { jwtDecode, type JwtPayload } from 'jwt-decode';
 import { AnimatePresence, motion } from 'motion/react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
@@ -13,7 +13,8 @@ export default function JWTDecode() {
 
   const handleCheck = () => {
     try {
-      setDecode(jwtDecode(jwt));
+      
+      setDecode(jwtDecode(jwt, {header: true} ));
     } catch {
       toast.error('JWT invalido o mal formateado');
     }
@@ -21,7 +22,7 @@ export default function JWTDecode() {
 
   return (
     <div className="p-4 rounded-lg bg-zinc-900/90 shadow-xl text-white flex flex-col gap-2 w-2xl">
-      <label htmlFor="jwt" className="gradient-text mx-auto text-lg my-4 ">
+      <label htmlFor="jwt" className="gradient-text mx-auto text-xl my-4 font-black first-letter:text-2xl ">
         Decodificador JWT
       </label>
       <textarea
@@ -38,6 +39,8 @@ export default function JWTDecode() {
         Decodificar
       </button>
 
+
+    
       <AnimatePresence mode="wait">
         {jwt && decode && (
           <motion.div
@@ -46,9 +49,9 @@ export default function JWTDecode() {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
             transition={{ duration: 0.25, ease: 'easeOut' }}
-            className="max-h-[70vh] overflow-auto" // opcional: scroll si el JWT es gigante
+            className="h-2/4 overflow-auto" // opcional: scroll si el JWT es gigante
           >
-            <JsonViewerLazy data={decode} />
+            <JsonViewerLazy data={decode} maxHeight='' height='' />
           </motion.div>
         )}
       </AnimatePresence>

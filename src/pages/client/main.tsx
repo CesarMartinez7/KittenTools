@@ -302,7 +302,7 @@ export default function AppClient() {
             ))}
           </div>
         </form>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 flex-1 ">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 flex-1">
           <div className="bg-zinc-900 p-6 rounded-xl border border-zinc-800 flex flex-col shadow-lg">
             <AnimatePresence mode="wait" key={"uja"}>
               {mimeSelected === 0 && ( // Body

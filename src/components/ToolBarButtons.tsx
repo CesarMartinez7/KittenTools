@@ -63,7 +63,7 @@ export default function ToolbarButtons({
         to={'/client'}
       >
         <Icon icon={gitpullrequest} width="20" height="20" />
-        Cliente Request
+        Online Request
       </Link>
 
       {/* <Link
@@ -112,7 +112,7 @@ export default function ToolbarButtons({
         }}
       >
         <Icon icon="tabler:bomb-filled" width="20" height="20" />
-        Decode JWT
+        Decodificar JWT
       </button>
       <button
         type="button"
