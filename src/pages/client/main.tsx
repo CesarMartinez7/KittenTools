@@ -2,16 +2,14 @@ import './App.css';
 import { Icon } from '@iconify/react';
 import axios from 'axios';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'; // Added useMemo for optimization
-import toast from 'react-hot-toast';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { CodeEditorLazy } from '../../components/LAZY_COMPONENT';
 import JsonViewer from '../../ui/formatter-JSON/Formatter';
 import AddQueryParam from './components/addQueryParams';
-import ButtonResponse from './components/buttonResponse';
 import { HeadersAddRequest } from './components/Headers';
+import { SavedRequestsSidebar } from './components/SavedRequestSidebar';
 import ClientCustomHook from './hooks/client-hook';
 import { Methodos, Opciones } from './mapper-ops';
-import { SavedRequestsSidebar } from './SavedRequestSidebar';
 
 export default function AppClient() {
   const { value, setter } = ClientCustomHook();
@@ -56,7 +54,6 @@ export default function AppClient() {
     localStorage.setItem(name, value);
   }, []);
 
-  // Helper to prepare headers from the structured format
   const prepareHeaders = useCallback((headers) => {
     try {
       const parsedHeaders = JSON.parse(headers);
@@ -68,7 +65,7 @@ export default function AppClient() {
       }, {});
     } catch (e) {
       console.error('Error parsing headers:', e);
-      return {}; // Return empty object on error
+      return {};
     }
   }, []);
 
@@ -82,7 +79,7 @@ export default function AppClient() {
 
       setIsLoading(true);
       setErrorAxios(null);
-      setErrorRequest(false); // Reset error state
+      setErrorRequest(false);
 
       let parsedBody = null;
       const config = { headers: {} };
@@ -209,12 +206,14 @@ export default function AppClient() {
     >
       <div
         ref={containerRef}
-        onMouseDown={(e) => {
-          if (containerRef.current?.style.height !== '200px') {
-            containerRef.current.style.height = '200px';
-            return;
+        onMouseDown={() => {
+          if (containerRef.current) {
+            if (containerRef.current?.style.height !== '200px') {
+              containerRef.current.style.height = '200px';
+              return;
+            }
+            containerRef.current.style.height = '21px';
           }
-          containerRef.current.style.height = '21px';
         }}
         className="fixed bottom-0 bg-zinc-950 transition-all border-t border-t-zinc-800 w-full z-[99] "
       >
@@ -402,8 +401,10 @@ export default function AppClient() {
                   {isLoading ? (
                     <div className="flex justify-center items-center h-full">
                       <Icon
-                        icon="svg-spinners:gooey-balls-2"
-                        className="text-sky-500 w-16 h-16"
+                        icon="eos-icons:loading"
+                        width={50}
+                        height={50}
+                        className="animate-spin"
                       />
                     </div>
                   ) : (

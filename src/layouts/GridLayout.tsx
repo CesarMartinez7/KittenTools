@@ -17,8 +17,8 @@ export interface GridLayoutProps {
 }
 
 export interface GridLayoutExtendedProps extends GridLayoutProps {
-  value: string;
-  setValue: React.Dispatch<React.SetStateAction<string>>;
+  value: string | undefined | null;
+  setValue: React.Dispatch<React.SetStateAction<string | undefined | null>>;
   isValid: boolean;
   error: string | null;
   openAll: boolean;

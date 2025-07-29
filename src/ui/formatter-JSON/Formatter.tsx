@@ -11,7 +11,14 @@ import { JsonViewerStore } from './stores/jsonviewer.ts';
 
 const csvConfig = mkConfig({ useKeysAsHeaders: true });
 
-type JsonValue = string | number | boolean | null | JsonObject | JsonArray;
+type JsonValue =
+  | string
+  | number
+  | boolean
+  | null
+  | JsonObject
+  | JsonArray
+  | undefined;
 type JsonObject = { [key: string]: JsonValue };
 type JsonArray = JsonValue[];
 
@@ -198,7 +205,6 @@ const JsonViewer: React.FC<{
   };
 
   const handleDownloadJson = () => {
-    alert('osdfsd');
     setOpenModalDownload(true);
 
     if (isDownload) {
@@ -263,13 +269,17 @@ const JsonViewer: React.FC<{
 
   // Arreglar esta puta mrd
   const handleClickGenerateCSV = () => {
-    const csv = generateCsv(csvConfig)(JSON.parse(values as string));
-    if (!csv) {
-      toast.error('No se pudo generar el CSV');
-      return;
+    try {
+      const csv = generateCsv(csvConfig)(JSON.parse(values as string));
+      if (!csv) {
+        toast.error('No se pudo generar el CSV');
+        return;
+      }
+      download(csvConfig)(csv);
+      toast.success('CSV generado correctamente');
+    } catch (e) {
+      toast.error('Ocurrio un error al descargar el CSV');
     }
-    download(csvConfig)(csv);
-    toast.success('CSV generado correctamente');
   };
 
   const size = useMemo(() => {
@@ -284,7 +294,7 @@ const JsonViewer: React.FC<{
 
   return (
     <div
-      className={`flex flex-col backdrop-blur-2xl text-zinc-400 border border-zinc-800 overflow- shadow-xl rounded-xl bg-zinc-900 `}
+      className={`flex flex-col backdrop-blur-2xl text-zinc-400 border border-zinc-800  shadow-xl rounded-xl bg-zinc-900 `}
       style={{ width: width, height: height, maxHeight: maxHeight }}
     >
       <AnimatePresence mode="wait">
@@ -342,6 +352,13 @@ const JsonViewer: React.FC<{
         </div>
 
         <div className="flex gap-1 ">
+          <button
+            className="btn-small"
+            title="Maximizar JsonEditor"
+            onClick={handleClickRest}
+          >
+            <Icon icon={'tabler:maximize'} width={'10'} height={'10'} />
+          </button>
           <button className="btn-small" onClick={handleClickSummary}>
             <Icon icon={'tabler:plus'} width={'10'} height={'10'} />
           </button>

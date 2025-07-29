@@ -20,7 +20,7 @@ export default function JWTDecode() {
   };
 
   return (
-    <div className="p-4 rounded-lg bg-zinc-900/90 shadow shadow-xl text-white flex flex-col gap-2 w-2xl">
+    <div className="p-4 rounded-lg bg-zinc-900/90 shadow-xl text-white flex flex-col gap-2 w-2xl">
       <label htmlFor="jwt" className="gradient-text mx-auto text-lg my-4 ">
         Decodificador JWT
       </label>
@@ -28,7 +28,7 @@ export default function JWTDecode() {
         id="jwt"
         value={jwt}
         onChange={handleChange}
-        className="w-full h-40 p-2 rounded bg-zinc-800 text-sm text-white resize-none"
+        className="w-full h-40 p-2 rounded bg-zinc-800/60 border border-zinc-800 text-sm text-white resize-none"
         placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
       />
       <button

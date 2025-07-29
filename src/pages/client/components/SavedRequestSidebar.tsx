@@ -1,18 +1,10 @@
 import { Icon } from '@iconify/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import BaseModal from '../../ui/base-modal/BaseModal';
-import { Methodos } from './mapper-ops';
-import ModalDeleteRequest from './modals/delete-request-modal';
-import AddNewRequestModal from './modals/new-request-modal';
-import type {
-  HeaderItem,
-  QueryParamItem,
-  RequestItem,
-  SavedRequestsSidebarProps,
-} from './types/types';
+import ModalDeleteRequest from '../modals/delete-request-modal';
+import AddNewRequestModal from '../modals/new-request-modal';
+import type { RequestItem, SavedRequestsSidebarProps } from '../types/types';
 
 export function SavedRequestsSidebar({
   isOpen,
@@ -24,11 +16,11 @@ export function SavedRequestsSidebar({
   currentQueryParams = [],
   currentContentType = 'json',
 }: SavedRequestsSidebarProps) {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  // const {
+  //   register,
+  //   handleSubmit,
+  //   formState: { errors },
+  // } = useForm();
 
   // Manejar si el formulario se ve o no en la modal
   const [openModalNewRequest, setOpenModalNewRequest] =
@@ -112,20 +104,24 @@ export function SavedRequestsSidebar({
   };
 
   const handleToogleModal = () => setOpenModalNewRequest((prev) => !prev);
-  const handleToogleDeleteModal = () => setOpenModalDeleteRequest((prev) => !prev);
+  const handleToogleDeleteModal = () =>
+    setOpenModalDeleteRequest((prev) => !prev);
 
   return (
-    <AnimatePresence>
+    <AnimatePresence key={'modales-inicio'}>
       <AddNewRequestModal
         handleToogleModal={handleToogleModal}
         openModalNewRequest={openModalNewRequest}
         onSubmit={onSubmit}
       />
 
-      <ModalDeleteRequest isOpen={openModalDeleteRequest} onClose={handleToogleDeleteModal} />
+      <ModalDeleteRequest
+        isOpen={openModalDeleteRequest}
+        onClose={handleToogleDeleteModal}
+      />
 
       {isOpen && (
-        <motion.div className="top-0 left-0 h-screen w-64 bg-zinc-900/50 backdrop-blur-3xl border-r border-zinc-800 p-6 z-50 flex flex-col shadow-lg">
+        <motion.div className="top-0 left-0 h-screen w-64 bg-zinc-900/50 backdrop-blur-3xl border-r border-zinc-800 p-6 z-50 md:flex flex-col shadow-lg ">
           <div className="flex justify-start items-center my-8">
             <Icon icon="game-icons:thorny-vine" width="60" height="60" />
           </div>
