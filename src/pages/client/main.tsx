@@ -190,7 +190,7 @@ export default function AppClient() {
 
   return (
     <motion.div
-      className="min-h-screen flex text-white"
+      className="min-h-screen  flex text-white"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
     >
@@ -335,7 +335,7 @@ export default function AppClient() {
                   </div>
                   <div className="flex-1 min-h-0">
                     <CodeEditorLazy
-                      height=''
+                      height=""
                       language={contentType}
                       value={bodyJson}
                       onChange={setBodyJson}

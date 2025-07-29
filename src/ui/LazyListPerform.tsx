@@ -1,11 +1,7 @@
 // LazyListItem.tsx
 import { memo, useEffect, useRef, useState } from 'react';
 
- function LazyListItem({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+function LazyListItem({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement | null>(null);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -36,5 +32,4 @@ import { memo, useEffect, useRef, useState } from 'react';
   );
 }
 
-
-export default memo(LazyListItem)
+export default memo(LazyListItem);
