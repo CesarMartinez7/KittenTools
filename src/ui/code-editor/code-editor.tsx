@@ -27,25 +27,6 @@ const CodeEditor = ({
   const highlightRef = useRef<HTMLDivElement>(null);
   const lineNumbersRef = useRef<HTMLDivElement>(null);
 
-  // Logica de intersection Observer con clases
-
-  // const options = {
-  //   root: document.querySelector(".list-name"),
-  //   rootMargin: "0px",
-  //   scrollMargin: "0px",
-  //   threshold: 1.0,
-  // };
-
-  // const observer = new IntersectionObserver((entries, observer) => {
-  //   entries.forEach((entry) => {
-  //     if (entry.isIntersecting) {
-  //       let elemt = entry.target;
-  //     }
-  //   });
-  // }, options);
-
-  // observer.observe(document.querySelectorAll(".list-name"))
-
   const lineCount = useMemo(() => {
     return code.split('\n').length;
   }, [code]);
@@ -100,15 +81,17 @@ const CodeEditor = ({
     if (textareaRef.current && lineNumbersRef.current && highlightRef.current) {
       const scrollTop = textareaRef.current.scrollTop;
       const scrollLeft = textareaRef.current.scrollLeft;
-
+  
       lineNumbersRef.current.scrollTop = scrollTop;
       textareaRef.current.scrollTop = scrollTop;
       highlightRef.current.scrollTop = scrollTop;
-
+  
       // Left scroll
       highlightRef.current.scrollLeft = scrollLeft;
     }
   };
+  
+  
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Tab') {
@@ -160,7 +143,7 @@ const CodeEditor = ({
   };
 
   return (
-    <main className="border rounded-xl overflow-hidden border-zinc-800 relative ">
+    <main className="border rounded-xl overflow-hidden border-zinc-800">
       <AnimatePresence mode="wait">
         {isOpenBar && (
           <motion.div
@@ -184,8 +167,7 @@ const CodeEditor = ({
               transition: { duration: 0.2 },
             }}
             layout
-            className="backdrop-blur-3xl bg-zinc-900/35 border border-zinc-900 p-3 flex flex-col w-52 shadow-xl shadow-zinc-800 rounded right-4 top-5 absolute z-[778] gap-3
-            "
+            className="backdrop-blur-3xl bg-zinc-900/35 border border-zinc-900 p-3 flex flex-col w-52 shadow-xl shadow-zinc-800 gap-1 rounded  right-4 top-5 absolute z-[778]"
           >
             <input
               ref={inputRefTextOld}

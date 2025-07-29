@@ -1,18 +1,18 @@
-import colors from './colors';
-import keywords from './keyword';
+import colors from "./colors";
+import keywords from "./keyword";
 
 const highlightCode = (code: string, language: string) => {
   let highlightedCode = code;
 
   const escapeHTML = (str: string) =>
     str
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
 
-  if (language === 'json') {
+  if (language === "json") {
     // JSON highlighting
     highlightedCode = code
       .replace(/"([^"\\]|\\.)*"/g, (match) => {
@@ -29,24 +29,21 @@ const highlightCode = (code: string, language: string) => {
         /\b(-?\d+\.?\d*)\b/g,
         `<span style="color: ${colors.number}">$1</span>`,
       );
-  } else if (language === 'xml') {
-    // XML highlighting
-    const escaped = escapeHTML(code);
-    highlightedCode = escaped
+  } else if (language === "xml") {
+    highlightedCode = escapeHTML(code)
       .replace(
         /<!--[\s\S]*?-->/g,
         `<span style="color: ${colors.comment}">$&</span>`,
       )
       .replace(
-        /<\/?([a-zA-Z][a-zA-Z0-9]*)/g,
-        `<span style="color: ${colors.tag}">&lt;$1</span>`,
+        /(&lt;\/?)([a-zA-Z][\w:-]*)/g,
+        `$1<span style="color: ${colors.tag}">$2</span>`,
       )
       .replace(
-        /([a-zA-Z-]+)=/g,
-        `<span style="color: ${colors.attribute}">$1</span>=`,
+        /([a-zA-Z_:][\w:-]*)=(&quot;[^&]*?&quot;)/g,
+        `<span style="color: ${colors.attribute}">$1</span>=<span style="color: ${colors.value}">$2</span>`,
       )
-      .replace(/"([^"]*)"/g, `<span style="color: ${colors.value}">"$1"</span>`)
-      .replace(/>/g, `<span style="color: ${colors.tag}">&gt;</span>`);
+      .replace(/&gt;/g, `<span style="color: ${colors.tag}">&gt;</span>`);
   } else {
     // JavaScript/TypeScript highlighting
     const langKeywords = keywords[language] || keywords.javascript;
@@ -75,7 +72,7 @@ const highlightCode = (code: string, language: string) => {
 
     // Keywords
     langKeywords.forEach((keyword) => {
-      const regex = new RegExp(`\\b(${keyword})\\b`, 'g');
+      const regex = new RegExp(`\\b(${keyword})\\b`, "g");
       highlightedCode = highlightedCode.replace(
         regex,
         `<span style="color: ${colors.keyword}; font-weight: bold">$1</span>`,

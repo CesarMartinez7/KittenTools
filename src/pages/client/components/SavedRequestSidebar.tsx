@@ -180,7 +180,6 @@ export function SavedRequestsSidebar({
                     }}
                   >
                     <p className="font-semibold text-white truncate">
-                      {/* {req.name} {req.id} */}
                       {req.name}
                     </p>
                     <p className="text-xs text-zinc-400 truncate">
