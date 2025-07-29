@@ -14,19 +14,26 @@ export default function ModalDeleteRequest({
 }: ModalDeleteProps) {
   return (
     <BaseModalLazy onClose={onClose} isOpen={isOpen}>
-      <div className="bg-zinc-900 p-4 text-white rounded ">
-        <span className="text-lg block my-5">
-          Estas seguro que deseas eliminar esta peticion?
-        </span>
-        <div className="flex gap-2">
+      <div className="bg-zinc-900 p-6 rounded-2xl text-zinc-100 shadow-lg max-w-sm w-full">
+        <h2 className="text-xl font-semibold mb-4 text-center">
+          ¿Eliminar petición?
+        </h2>
+        <p className="text-sm text-zinc-400 mb-6 text-center">
+          Esta acción no se puede deshacer. ¿Estás seguro de que quieres
+          continuar?
+        </p>
+        <div className="flex gap-3">
           <button
-            className="bg-green-700 text-green-300  p-1 rounded   flex-1 flex-shrink "
             onClick={() => handleDeleteRequest(id)}
+            className="flex-1 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-medium transition-colors"
           >
-            Si
+            Sí, eliminar
           </button>
-          <button className="bg-green-700 text-green-300  p-1 rounded   flex-1">
-            No
+          <button
+            onClick={onClose}
+            className="flex-1 py-2 rounded-lg bg-zinc-700 hover:bg-zinc-600 text-zinc-200 transition-colors"
+          >
+            Cancelar
           </button>
         </div>
       </div>

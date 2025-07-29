@@ -10,6 +10,10 @@ import { HeadersAddRequest } from './components/Headers';
 import { SavedRequestsSidebar } from './components/SavedRequestSidebar';
 import ClientCustomHook from './hooks/client-hook';
 import { Methodos, Opciones } from './mapper-ops';
+import { random } from 'gsap';
+import toast from 'react-hot-toast';
+import type { HeaderItem, RequestItem } from './types/types';
+import { useStoreHeaders } from './stores/headers-store';
 
 export default function AppClient() {
   const { value, setter } = ClientCustomHook();
@@ -76,15 +80,11 @@ export default function AppClient() {
         alert('Please enter an endpoint URL.');
         return;
       }
-
       setIsLoading(true);
       setErrorAxios(null);
       setErrorRequest(false);
-
       let parsedBody = null;
       const config = { headers: {} };
-
-      // Prepare headers for all request types
       if (cabeceras) {
         config.headers = prepareHeaders(cabeceras);
       }
@@ -97,21 +97,8 @@ export default function AppClient() {
               config.headers['Content-Type'] = 'application/json'; // Explicitly set content type for JSON
             }
           } else if (contentType === 'form') {
-            // For form data, `axios` automatically sets 'Content-Type': 'multipart/form-data'
-            // when a FormData object is passed.
             const formData = new FormData();
-            // Assuming bodyJson for form might be a string like 'key=value&key2=value2'
-            // You'll need to parse this string into FormData if that's the expected format.
-            // For now, let's assume bodyJson is already structured for FormData or it's handled upstream.
-            // Example:
-            // if (bodyJson) {
-            //   bodyJson.split('&').forEach(pair => {
-            //     const [key, value] = pair.split('=');
-            //     formData.append(decodeURIComponent(key), decodeURIComponent(value));
-            //   });
-            // }
             parsedBody = formData;
-            // config.headers['Content-Type'] will be set by Axios for FormData
           } else if (contentType === 'xml') {
             parsedBody = bodyJson;
             config.headers['Content-Type'] = 'application/xml';
@@ -180,7 +167,15 @@ export default function AppClient() {
     [setShowMethods],
   );
 
-  // Memoized placeholder for code editor
+
+  const onLoadRequest = (req: RequestItem) => {
+    
+    setBodyJson(req.body)
+    setContentType(req.contentType)
+    setEndpointUrl(req.url)
+  }
+
+
   const formatBodyPlaceholder = useMemo(() => {
     switch (contentType) {
       case 'json':
@@ -200,7 +195,7 @@ export default function AppClient() {
 
   return (
     <motion.div
-      className="min-h-screen flex bg-zinc-950 text-white"
+      className="min-h-screen flex text-white"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
     >
@@ -228,6 +223,7 @@ export default function AppClient() {
       </div>
 
       <SavedRequestsSidebar
+        onLoadRequest={onLoadRequest}
         currentUrl={endpointUrl}
         currentBody={bodyJson}
         currentHeaders={cabeceras}
@@ -242,10 +238,9 @@ export default function AppClient() {
               <button
                 type="button"
                 onClick={handleClickShowMethod}
-                className={`btn-blak py-2 px-4 rounded-md font-semibold text-lg ${selectedMethod === 'GET' ? 'bg-green-800 text-green-300' : selectedMethod === 'POST' ? 'bg-blue-800 text-blue-300' : selectedMethod === 'PUT' ? 'bg-yellow-800 text-yellow-300' : selectedMethod === 'PATCH' ? 'bg-orange-800 text-orange-300' : selectedMethod === 'DELETE' ? 'bg-red-800 text-red-300' : 'bg-gray-700'}`} // Dynamic button color based on method
+                className={`py-1 px-4 rounded-md font-semibold text-lg ${selectedMethod === 'GET' ? 'bg-green-800 text-green-300' : selectedMethod === 'POST' ? 'bg-blue-800 text-blue-300' : selectedMethod === 'PUT' ? 'bg-yellow-800 text-yellow-300' : selectedMethod === 'PATCH' ? 'bg-orange-800 text-orange-300' : selectedMethod === 'DELETE' ? 'bg-red-800 text-red-300' : 'bg-gray-700'}`} // Dynamic button color based on method
               >
-                {selectedMethod}{' '}
-                <Icon icon="lucide:chevron-down" className="inline ml-1" />
+                {selectedMethod}
               </button>
               <AnimatePresence>
                 {showMethods && (
@@ -253,12 +248,12 @@ export default function AppClient() {
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="absolute top-full left-0 w-32 bg-zinc-800 z-50 rounded-b-md shadow-lg overflow-hidden"
+                    className="absolute top-full left-0 w-32   bg-zinc-900 z-50 rounded-b-md shadow-xl overflow-hidden"
                   >
                     {Methodos.map((metodo) => (
                       <button
                         type="button"
-                        key={metodo.name}
+                        key={crypto.randomUUID()}
                         onClick={() => {
                           setSelectedMethod(metodo.name.toUpperCase());
                           setShowMethods(false);
@@ -298,10 +293,10 @@ export default function AppClient() {
               )}
             </button>
           </div>
-          <div className="flex gap-2 bg-zinc-900  pt-2 rounded-t-lg border-b border-zinc-800">
+          <div className="flex gap-2 bg-zinc-900  rounded-t-lg border-b border-zinc-800">
             {Opciones.map((opcion, index) => (
               <button
-                key={index}
+                key={crypto.randomUUID()}
                 type="button"
                 className={`btn btn-sm text-sm py-2 px-4 rounded-t-lg transition-colors duration-200
                   ${index === mimeSelected ? 'border-b-2 border-sky-500 text-sky-500 font-semibold bg-zinc-800' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}
@@ -317,7 +312,7 @@ export default function AppClient() {
             <AnimatePresence mode="wait">
               {mimeSelected === 0 && ( // Body
                 <motion.div
-                  key="body-section"
+                  key="body-section-body"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
@@ -325,12 +320,13 @@ export default function AppClient() {
                   className="flex flex-col flex-1"
                 >
                   <div className="flex gap-4 mb-3">
-                    {['json', 'form', 'xml'].map((type) => (
+                    {['json', 'form', 'xml'].map((type, idx) => (
                       <label
-                        key={type}
+                      key={idx}
                         className="text-sm text-gray-300 flex items-center gap-2 cursor-pointer"
                       >
                         <input
+                          
                           type="radio"
                           name="contentType"
                           checked={contentType === type}
@@ -432,9 +428,11 @@ export default function AppClient() {
                   className="text-zinc-700 mb-4 animate-bounce-slow" // Added a subtle animation
                 />
                 <p className="text-lg font-medium text-zinc-300">
-                  Listo para tu primera peticion
+                  ¡Todo listo para que hagas tu primera solicitud!
                 </p>
-                <p className="text-md text-zinc-400">cohe</p>
+                <p className="text-md text-zinc-400">
+                  Puedes comenzar con tu primera solicitud.
+                </p>
               </div>
             )}
           </div>

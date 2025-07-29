@@ -60,7 +60,7 @@ export function HeadersAddRequest() {
   };
 
   return (
-    <div className="relative   overflow-y-auto max-h-[700px]">
+    <div className="relative overflow-y-auto max-h-full">
       <button
         type="button"
         className="btn-black sticky   my-2 left-0 shadow-2xl"
@@ -69,6 +69,12 @@ export function HeadersAddRequest() {
         <Icon icon="tabler:plus" width="24" height="24" />
         Añadir nueva cabecera
       </button>
+
+      {headers.length === 0 && (
+        <div className="h-full flex justify-center-safe items-center bg-amber-300 w-full">
+          <span>No existen parametros cargados.</span>
+        </div>
+      )}
 
       <div className="flex flex-col gap-y-4 mt-4">
         {headers.map((header) => (
@@ -83,7 +89,7 @@ export function HeadersAddRequest() {
               />
               <AnimatePresence mode="wait">
                 <motion.select
-                  className="absolute overflow-hidden rounded bg-black/60 inset-0 opacity-0 w-full h-full cursor-pointer"
+                  className="absolute overflow-hidden rounded  inset-0 opacity-0 w-full h-full cursor-pointer"
                   value={header.key}
                   onChange={(e) => handleKeySelect(header.id, e.target.value)}
                   whileHover={{ opacity: 1 }}

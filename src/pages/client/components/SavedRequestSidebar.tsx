@@ -125,7 +125,7 @@ export function SavedRequestsSidebar({
           <div className="flex justify-start items-center my-8">
             <Icon icon="game-icons:thorny-vine" width="60" height="60" />
           </div>
-          <div className="flex flex-row gap-x-2.5 ">
+          <div className="flex flex-row gap-x-2.5 h-12 ">
             <button
               onClick={handleSaveRequest}
               className="gray-btn w-full mb-4 flex truncate items-center justify-center gap-2 "
@@ -152,7 +152,10 @@ export function SavedRequestsSidebar({
                 >
                   <div
                     className="flex-1 cursor-pointer truncate"
-                    onClick={() => onLoadRequest(req)}
+                    onClick={() => {
+                      toast.success('Cargando peticion');
+                      onLoadRequest(req);
+                    }}
                   >
                     <p className="font-semibold text-white truncate">
                       {req.name}

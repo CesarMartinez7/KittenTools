@@ -160,7 +160,7 @@ const CodeEditor = ({
   };
 
   return (
-    <main className="border rounded-xl overflow-hidden border-zinc-800">
+    <main className="border rounded-xl overflow-hidden border-zinc-800 relative ">
       <AnimatePresence mode="wait">
         {isOpenBar && (
           <motion.div
@@ -184,7 +184,8 @@ const CodeEditor = ({
               transition: { duration: 0.2 },
             }}
             layout
-            className="backdrop-blur-3xl bg-zinc-900/35 border border-zinc-900 p-3 flex flex-col w-52 shadow-xl shadow-zinc-800 gap-1 rounded  right-4 top-5 absolute z-[778]"
+            className="backdrop-blur-3xl bg-zinc-900/35 border border-zinc-900 p-3 flex flex-col w-52 shadow-xl shadow-zinc-800 rounded right-4 top-5 absolute z-[778] gap-3
+            "
           >
             <input
               ref={inputRefTextOld}

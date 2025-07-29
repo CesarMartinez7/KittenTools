@@ -31,3 +31,16 @@ ReactMatter está construido con React, y su nombre lo dice todo: combina la pot
 
 <p style="text-align:center;">Desarrollado con ♥ Por @Cesar Martinez</p>
 <p style="text-align:center;">2025</p>
+
+
+
+Funcionaidades a Añadir
+
+
+AñadirLectura de params en una url
+Mejorar la interfaz de cliente
+Arreglar modal y logica de eliminacion
+Mejorar textos para ser mas claro -- PEDIR AYUDA A CHATGPT
+Arreglar el bug de los params cuando se elimina no se actualiza si no que se elimina
+Añadir History de peticiones,
+Añadir errors y types of response en resspuesta cliente

@@ -297,17 +297,6 @@ const JsonViewer: React.FC<{
       className={`flex flex-col backdrop-blur-2xl text-zinc-400 border border-zinc-800  shadow-xl rounded-xl bg-zinc-900 `}
       style={{ width: width, height: height, maxHeight: maxHeight }}
     >
-      <AnimatePresence mode="wait">
-        {openModalDownload && (
-          <div className="absolute inset-0 bg-zinc-900 z-50 flex justify-center items-center">
-            <div className="flex-col flex">
-              <input type="text" className="input-gray " />
-              <button>Enviar</button>
-            </div>
-          </div>
-        )}
-      </AnimatePresence>
-
       <div className="flex gap-2 py-2 px-4 items-center justify-between border-b border-zinc-800 rounded-t-xl ">
         {/* Botones Opciones */}
 

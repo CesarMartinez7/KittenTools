@@ -2,6 +2,7 @@ import { Icon } from '@iconify/react/dist/iconify.js';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
+import ContainerTextArea from './components/CONTAINER-EDITOR';
 import ContainerDescripcion from './components/DESCRIPCION';
 import {
   BaseModalLazy,
@@ -9,7 +10,6 @@ import {
   JsonDiffLazy,
   JsonViewerLazy,
 } from './components/LAZY_COMPONENT';
-import ContainerTextArea from './components/TEXTAREA-EDITOR';
 import ToolBar from './components/TOOLBAR';
 import AuroraStore from './ui/aurora/aurora';
 import Console from './ui/Console';
