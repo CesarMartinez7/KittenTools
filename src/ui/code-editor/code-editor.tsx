@@ -6,23 +6,31 @@ import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import LazyListItem from '../LazyListPerform';
 import highlightCode from './higlight-code';
+import { useTextReplace } from './methods-global-editor/useTextReplace';
+import { useJsonHook } from './methods-json/method';
 import type { CodeEditorProps } from './types';
 
 const CodeEditor = ({
-  value = 'dsfdsf',
-  language = 'javascript',
+  value = '',
+  language = 'json',
   onChange,
   height = '200px',
   minHeight = '68vh',
-  placeholder = '// Escribe tu código aquí...',
-  classNameContainer = '100%',
+  placeholder = '// Escribe tu código aqui...',
+  classNameContainer = '',
 }: CodeEditorProps) => {
   const inputRefTextOld = useRef<HTMLInputElement>(null);
   const inputRefTextNew = useRef<HTMLInputElement>(null);
   const refSection = useRef<HTMLDivElement>(null);
   const [isOpenBar, setIsOpenBar] = useState<boolean>(false);
-
   const [code, setCode] = useState(value);
+
+  // --------------------------------------- Custom Hooks -------------------------------------
+  const { JsonSchema, minifyJson } = useJsonHook({
+    code: code,
+    setCode: setCode,
+  });
+
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const highlightRef = useRef<HTMLDivElement>(null);
   const lineNumbersRef = useRef<HTMLDivElement>(null);
@@ -32,8 +40,7 @@ const CodeEditor = ({
   }, [code]);
 
   useEffect(() => {
-    refSection.current?.focus();
-
+    textareaRef.current?.focus();
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
       // No importa si esta en minuscuela la b o en mayuscula siempre se abrira
       if ((e.ctrlKey && e.key === 'b') || (e.ctrlKey && e.key === 'B')) {
@@ -49,23 +56,33 @@ const CodeEditor = ({
     };
   }, []); // Effect
 
-  // hacer una funcion o metodo para que se encargue de las cosas que se pueden hacer dependiendo del languaje
-
-  const ValidateFunciones = (language: string, funcion: Function) => {
-    console.log(language);
-    console.log(funcion);
-  };
-
-  const handleClickminifyJson = () => {
-    try {
-      const parseado = JSON.parse(value);
-      setCode(JSON.stringify(parseado));
-
-      toast.success('JSON minificado');
-    } catch {
-      toast.error('JSON inválido para minificar');
+  
+  const HandlersMinifyBody = () => {
+    if (language === 'json') {
+      return minifyJson();
     }
+
+    if (language === 'xml') {
+      return toast.error('Aun no hay funcion para minificar XML AUN');
+    }
+
+    return toast.error(
+      'Es diferente a json por lo ucal no se se puede minifycar',
+    );
   };
+
+  const HandlersIdentarBody = () => {
+    if(language === "json")
+      return JsonSchema()
+
+    if(language === "xml") {
+      return toast.error("No hay herramienta para Identar Xml aun")
+    }
+
+  }
+
+
+  
 
   useEffect(() => {
     setCode(value);
@@ -81,17 +98,14 @@ const CodeEditor = ({
     if (textareaRef.current && lineNumbersRef.current && highlightRef.current) {
       const scrollTop = textareaRef.current.scrollTop;
       const scrollLeft = textareaRef.current.scrollLeft;
-  
+
+
       lineNumbersRef.current.scrollTop = scrollTop;
-      textareaRef.current.scrollTop = scrollTop;
-      highlightRef.current.scrollTop = scrollTop;
-  
-      // Left scroll
-      highlightRef.current.scrollLeft = scrollLeft;
+highlightRef.current.scrollTop = scrollTop;
+highlightRef.current.scrollLeft = scrollLeft;
+
     }
   };
-  
-  
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Tab') {
@@ -109,10 +123,6 @@ const CodeEditor = ({
     }
   };
 
-  const handleJsonSchema = () => {
-    setCode(JSON.stringify(JSON.parse(code), null, 4));
-  };
-
   const handleCLickReplaceTextFirst = () => {
     const from = inputRefTextOld.current?.value || '';
     const to = inputRefTextNew.current?.value || '';
@@ -127,6 +137,16 @@ const CodeEditor = ({
     setCode(result);
     toast.success('Reemplazo realizado');
   };
+
+
+  const lineNumberElements = useMemo(() => (
+    Array.from({ length: lineCount }, (_, i) => (
+      <div key={i} className="leading-6 text-right min-w-[2rem] font-mono">
+        {i + 1}
+      </div>
+    ))
+  ), [lineCount]);
+  
 
   const handleCLickReplaceText = () => {
     const from = inputRefTextOld.current?.value || '';
@@ -147,7 +167,7 @@ const CodeEditor = ({
       <AnimatePresence mode="wait">
         {isOpenBar && (
           <motion.div
-            initial={{ opacity: 0, y: -10, scale: 0.95, filter: 'blur(4px)' }}
+            initial={{ opacity: 0, y: -10, scale: 0.95 }}
             animate={{
               opacity: 1,
               y: 0,
@@ -213,14 +233,8 @@ const CodeEditor = ({
           className="px-3 py-2 text-sm overflow-hidden bg-zinc-950/20 border- rounded-tl-xl border-zinc-800 backdrop-blur-3xl text-zinc-400 "
           style={{ height, minHeight }}
         >
-          {Array.from({ length: lineCount }, (_, i) => (
-            <div
-              key={i + 1}
-              className="leading-6 text-right min-w-[2rem] font-mono"
-            >
-              {i + 1}
-            </div>
-          ))}
+          
+          {lineNumberElements}
         </div>
 
         {/* Editor Container */}
@@ -240,6 +254,7 @@ const CodeEditor = ({
 
           <LazyListItem>
             <textarea
+              autoFocus
               ref={textareaRef}
               value={code}
               onChange={handleChange}
@@ -264,7 +279,7 @@ const CodeEditor = ({
         <div className="flex items-center gap-1">
           <button
             className="bg-zinc-900 hover:bg-zinc-700 px-2.5 py-1 rounded flex items-center gap-1 transition"
-            onClick={handleJsonSchema}
+            onClick={HandlersIdentarBody}
           >
             <Icon icon="tabler:braces" width={14} />
             <span className="hidden sm:inline">Identar</span>
@@ -272,7 +287,7 @@ const CodeEditor = ({
 
           <button
             className="bg-zinc-900 hover:bg-zinc-700 px-2.5 py-1 rounded flex items-center gap-1 transition"
-            onClick={handleClickminifyJson}
+            onClick={HandlersMinifyBody}
           >
             <Icon icon={bolt} width={14} />
             <span className="hidden sm:inline">Minify</span>

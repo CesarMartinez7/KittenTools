@@ -1,7 +1,7 @@
 // LazyListItem.tsx
-import { useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 
-export default function LazyListItem({
+ function LazyListItem({
   children,
 }: {
   children: React.ReactNode;
@@ -35,3 +35,6 @@ export default function LazyListItem({
     </div>
   );
 }
+
+
+export default memo(LazyListItem)

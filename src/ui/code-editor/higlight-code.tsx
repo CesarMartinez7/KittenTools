@@ -1,18 +1,18 @@
-import colors from "./colors";
-import keywords from "./keyword";
+import colors from './colors';
+import keywords from './keyword';
 
 const highlightCode = (code: string, language: string) => {
   let highlightedCode = code;
 
   const escapeHTML = (str: string) =>
     str
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
 
-  if (language === "json") {
+  if (language === 'json') {
     // JSON highlighting
     highlightedCode = code
       .replace(/"([^"\\]|\\.)*"/g, (match) => {
@@ -29,7 +29,7 @@ const highlightCode = (code: string, language: string) => {
         /\b(-?\d+\.?\d*)\b/g,
         `<span style="color: ${colors.number}">$1</span>`,
       );
-  } else if (language === "xml") {
+  } else if (language === 'xml') {
     highlightedCode = escapeHTML(code)
       .replace(
         /<!--[\s\S]*?-->/g,
@@ -72,7 +72,7 @@ const highlightCode = (code: string, language: string) => {
 
     // Keywords
     langKeywords.forEach((keyword) => {
-      const regex = new RegExp(`\\b(${keyword})\\b`, "g");
+      const regex = new RegExp(`\\b(${keyword})\\b`, 'g');
       highlightedCode = highlightedCode.replace(
         regex,
         `<span style="color: ${colors.keyword}; font-weight: bold">$1</span>`,

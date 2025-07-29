@@ -78,7 +78,10 @@ export function HeadersAddRequest() {
         )}
         <div className="flex flex-col gap-y-4 mt-4">
           {headers.map((header) => (
-            <div key={header.id + Math.random()} className="flex gap-4 items-center">
+            <div
+              key={header.id + Math.random()}
+              className="flex gap-4 items-center"
+            >
               <div className="relative flex-1">
                 <input
                   type="text"

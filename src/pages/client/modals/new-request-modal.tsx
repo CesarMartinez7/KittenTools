@@ -20,7 +20,11 @@ export default function AddNewRequestModal({
   } = useForm();
 
   return (
-    <BaseModal onClose={handleToogleModal} isOpen={openModalNewRequest} key={"ujum1"}>
+    <BaseModal
+      onClose={handleToogleModal}
+      isOpen={openModalNewRequest}
+      key={'ujum1'}
+    >
       <div className="bg-zinc-900 w-full max-w-lg rounded-xl p-6 text-zinc-100 shadow-lg">
         <h2 className="text-xl font-semibold  w-lg text-center my-6">
           Crear Nueva Peticion

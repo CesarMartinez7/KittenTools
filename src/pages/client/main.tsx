@@ -45,7 +45,7 @@ export default function AppClient() {
   } = setter;
 
   // State for code (HTTP status) and selected MIME type for request body options
-  const [statusCode,setStatusCode] = useState<boolean>(); // Renamed 'code' to 'statusCode' for clarity
+  const [statusCode, setStatusCode] = useState<boolean>(); // Renamed 'code' to 'statusCode' for clarity
   const [mimeSelected, setMimeSelected] = useState(
     Number(sessionStorage.getItem('mimeSelected')) || 0,
   );
@@ -304,7 +304,7 @@ export default function AppClient() {
         </form>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 flex-1">
           <div className="bg-zinc-900 p-6 rounded-xl border border-zinc-800 flex flex-col shadow-lg">
-            <AnimatePresence mode="wait" key={"uja"}>
+            <AnimatePresence mode="wait" key={'uja'}>
               {mimeSelected === 0 && ( // Body
                 <motion.div
                   key="body-section-body"
@@ -335,6 +335,7 @@ export default function AppClient() {
                   </div>
                   <div className="flex-1 min-h-0">
                     <CodeEditorLazy
+                      height=''
                       language={contentType}
                       value={bodyJson}
                       onChange={setBodyJson}

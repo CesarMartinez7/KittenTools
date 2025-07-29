@@ -5,7 +5,7 @@ export default function ModalCurrentSavePeticion({
   isOpen,
 }: BaseModalProps) {
   return (
-    <BaseModalLazy key={"ujjm2"} onClose={onClose} isOpen={isOpen}>
+    <BaseModalLazy key={'ujjm2'} onClose={onClose} isOpen={isOpen}>
       <div className="bg-zinc-900 p-4 rounded-xl flex flex-col gap-y-4">
         <span className="text-center font-black text-lg text-balance">
           Nombre para la petición guardada

@@ -15,10 +15,10 @@ export default function ModalDeleteRequest({
   name,
 }: ModalDeleteProps) {
   return (
-    <BaseModalLazy key={"ijum44"} onClose={onClose} isOpen={isOpen}>
+    <BaseModalLazy key={'ijum44'} onClose={onClose} isOpen={isOpen}>
       <div className="bg-zinc-900 p-6 rounded-2xl text-zinc-100 shadow-lg max-w-sm w-full">
         <h2 className="text-xl font-semibold mb-4 text-center">
-          ¿Eliminar petición? 
+          ¿Eliminar petición?
         </h2>
         <p className="text-sm text-zinc-400 mb-6 text-center">
           Esta acción no se puede deshacer. ¿Estás seguro de que quieres

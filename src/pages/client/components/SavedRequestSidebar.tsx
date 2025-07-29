@@ -1,21 +1,21 @@
-import { Icon } from "@iconify/react";
-import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import ModalDeleteRequest from "../modals/delete-request-modal";
-import AddNewRequestModal from "../modals/new-request-modal";
-import type { RequestItem, SavedRequestsSidebarProps } from "../types/types";
-import ModalCurrentSavePeticion from "../modals/save-request-modal";
+import { Icon } from '@iconify/react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
+import ModalDeleteRequest from '../modals/delete-request-modal';
+import AddNewRequestModal from '../modals/new-request-modal';
+import ModalCurrentSavePeticion from '../modals/save-request-modal';
+import type { RequestItem, SavedRequestsSidebarProps } from '../types/types';
 
 export function SavedRequestsSidebar({
   isOpen,
   onLoadRequest,
-  currentUrl = "",
-  currentMethod = "GET",
-  currentBody = "",
+  currentUrl = '',
+  currentMethod = 'GET',
+  currentBody = '',
   currentHeaders = [],
   currentQueryParams = [],
-  currentContentType = "json",
+  currentContentType = 'json',
 }: SavedRequestsSidebarProps) {
   // const {
   //   register,
@@ -34,10 +34,10 @@ export function SavedRequestsSidebar({
   // Guardador de request sea cargada o no
   const [savedRequests, setSavedRequests] = useState<RequestItem[]>(() => {
     try {
-      const storedRequests = localStorage.getItem("savedRequests");
+      const storedRequests = localStorage.getItem('savedRequests');
       return storedRequests ? JSON.parse(storedRequests) : [];
     } catch (error) {
-      console.error("Error al cargar las peticiones del localStorage:", error);
+      console.error('Error al cargar las peticiones del localStorage:', error);
       return [];
     }
   });
@@ -52,35 +52,35 @@ export function SavedRequestsSidebar({
         name: data.name,
         url: data.url,
         method: data.method,
-        body: "",
-        headers: "",
-        queryParams: "",
-        contentType: "json",
+        body: '',
+        headers: '',
+        queryParams: '',
+        contentType: 'json',
       };
 
       setSavedRequests((prev) => [...prev, newRequest]);
       handleToogleModal();
-      toast.success("Peticion generada con exito");
+      toast.success('Peticion generada con exito');
     } catch (e) {
-      toast.error("Ocurrio un error al guardar");
+      toast.error('Ocurrio un error al guardar');
       handleToogleModal();
     }
   };
 
   useEffect(() => {
     try {
-      localStorage.setItem("savedRequests", JSON.stringify(savedRequests));
+      localStorage.setItem('savedRequests', JSON.stringify(savedRequests));
     } catch (error) {
-      console.error("Error al guardar las peticiones en localStorage:", error);
-      toast.error("No se pudieron guardar las peticiones.");
+      console.error('Error al guardar las peticiones en localStorage:', error);
+      toast.error('No se pudieron guardar las peticiones.');
     }
   }, [savedRequests]);
 
   // Guardar pero peticion actual o current
   const handleSaveRequest = () => {
-    const requestName = prompt("Nombre para la petición guardada:");
+    const requestName = prompt('Nombre para la petición guardada:');
     if (!requestName) {
-      toast.error("Nombre de petición inválido.");
+      toast.error('Nombre de petición inválido.');
       return;
     }
 
@@ -96,7 +96,7 @@ export function SavedRequestsSidebar({
     };
 
     setSavedRequests((prev) => [...prev, newRequest]);
-    toast.success("Petición guardada con éxito.");
+    toast.success('Petición guardada con éxito.');
   };
 
   const handleDeleteRequest = (id: string) => {
@@ -111,8 +111,8 @@ export function SavedRequestsSidebar({
   const handleToogleSaveRequest = () =>
     setIsOpenModalSaveRequest((prev) => !prev);
 
-  const [currentId, setCurrentId] = useState<string>("");
-  const [currentName, setCurrentName] = useState<string>("");
+  const [currentId, setCurrentId] = useState<string>('');
+  const [currentName, setCurrentName] = useState<string>('');
 
   const handleClickDeleteAndUpdatePeticion = (req: any) => {
     setCurrentName(req.name);
@@ -121,8 +121,7 @@ export function SavedRequestsSidebar({
   };
 
   return (
-    <AnimatePresence key={"gokuuu"}>
-
+    <AnimatePresence key={'gokuuu'}>
       <AddNewRequestModal
         handleToogleModal={handleToogleModal}
         openModalNewRequest={openModalNewRequest}
@@ -175,7 +174,7 @@ export function SavedRequestsSidebar({
                   <div
                     className="flex-1 cursor-pointer truncate"
                     onClick={() => {
-                      toast.success("Cargando peticion");
+                      toast.success('Cargando peticion');
                       onLoadRequest(req);
                     }}
                   >
@@ -183,8 +182,8 @@ export function SavedRequestsSidebar({
                       {req.name}
                     </p>
                     <p className="text-xs text-zinc-400 truncate">
-                      {" "}
-                      <span className="text-green-500">{req.method}</span>{" "}
+                      {' '}
+                      <span className="text-green-500">{req.method}</span>{' '}
                       {req.url}
                     </p>
                   </div>
