@@ -1,6 +1,6 @@
 import { lazy } from 'react';
 
-export const BaseModalLazy = lazy(() => import('../ui/BaseModal'));
+export const BaseModalLazy = lazy(() => import('../ui/base-modal/BaseModal'));
 export const GridLayoutLazy = lazy(() => import('../layouts/GridLayout'));
 export const AppHomeLazy = lazy(() => import('../App'));
 export const JsonDiffLazy = lazy(() => import('../ui/DiffJson'));

@@ -295,7 +295,7 @@ export default function AppClient() {
                   Enviando...
                 </span>
               ) : (
-                'ENVIADO'
+                'Enviar'
               )}
             </button>
           </div>

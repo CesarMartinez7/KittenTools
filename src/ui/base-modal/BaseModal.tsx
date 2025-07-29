@@ -1,11 +1,6 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { AnimatePresence, motion } from 'framer-motion';
-
-interface BaseModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  children: React.ReactNode;
-}
+import type BaseModalProps from './types';
 
 const BaseModal = ({ isOpen, onClose, children }: BaseModalProps) => {
   const modalVariants = {
