@@ -55,3 +55,4 @@ Añadir claridad en texto con ayuda de
 Uso de autenticacion con prioridad en Headers
 Store maximize Code web principal
 Mejorar responsivo en modales
+Añadir Barra de busqueda

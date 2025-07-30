@@ -1,6 +1,5 @@
 import './App.css';
 import { Icon } from '@iconify/react';
-import axios from 'axios';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { CodeEditorLazy } from '../../components/LAZY_COMPONENT';
@@ -9,12 +8,14 @@ import AddQueryParam from './components/addQueryParams';
 import { HeadersAddRequest } from './components/Headers';
 import { SavedRequestsSidebar } from './components/SavedRequestSidebar';
 import ClientCustomHook from './hooks/client-hook';
+import RequestHook from './hooks/request.client';
 import { Methodos, Opciones } from './mapper-ops';
 import type { RequestItem } from './types/types';
 
 export default function AppClient() {
   const { value, setter } = ClientCustomHook();
 
+  // Custom Hook VALUES
   const {
     isOpenSiderBar,
     selectedMethod,
@@ -28,11 +29,15 @@ export default function AppClient() {
     endpointUrl,
     isLoading,
     contentType,
+    statusCode,
+    timeResponse,
     refForm,
   } = value;
 
+  // Custom Hook Setters
   const {
     setBodyJson,
+    setStatusCode,
     setContentType,
     setIsLoading,
     setEndpointUrl,
@@ -41,11 +46,26 @@ export default function AppClient() {
     setErrorAxios,
     setErrorRequest,
     setSelectedMethod,
+    setTimeResponse,
     setResponseSelected,
   } = setter;
 
-  // State for code (HTTP status) and selected MIME type for request body options
-  const [statusCode, setStatusCode] = useState<boolean>(); // Renamed 'code' to 'statusCode' for clarity
+  const { handleRequest } = RequestHook({
+    selectedMethod,
+    timeResponse,
+    params,
+    cabeceras,
+    bodyJson,
+    endpointUrl,
+    contentType,
+    setIsLoading,
+    setErrorAxios,
+    setErrorRequest,
+    setResponseSelected,
+    setTimeResponse,
+    setStatusCode,
+  });
+
   const [mimeSelected, setMimeSelected] = useState(
     Number(sessionStorage.getItem('mimeSelected')) || 0,
   );
@@ -54,110 +74,6 @@ export default function AppClient() {
   // const saveToLocalStorage = useCallback((name, value) => {
   //   localStorage.setItem(name, value);
   // }, []);
-
-  const prepareHeaders = useCallback((headers) => {
-    try {
-      const parsedHeaders = JSON.parse(headers);
-      return parsedHeaders.reduce((acc, header) => {
-        if (header.key.trim() && header.value.trim()) {
-          acc[header.key] = header.value;
-        }
-        return acc;
-      }, {});
-    } catch (e) {
-      console.error('Error parsing headers:', e);
-      return {};
-    }
-  }, []);
-
-  const handleRequest = useCallback(
-    async (e) => {
-      e.preventDefault();
-      if (!endpointUrl) {
-        alert('Please enter an endpoint URL.');
-        return;
-      }
-      setIsLoading(true);
-      setErrorAxios(null);
-      setErrorRequest(false);
-      let parsedBody = null;
-      const config = { headers: {} };
-      if (cabeceras) {
-        config.headers = prepareHeaders(cabeceras);
-      }
-
-      if (['POST', 'PUT', 'PATCH'].includes(selectedMethod)) {
-        try {
-          if (contentType === 'json') {
-            if (bodyJson) {
-              parsedBody = JSON.parse(bodyJson);
-              config.headers['Content-Type'] = 'application/json'; // Explicitly set content type for JSON
-            }
-          } else if (contentType === 'form') {
-            const formData = new FormData();
-            parsedBody = formData;
-          } else if (contentType === 'xml') {
-            parsedBody = bodyJson;
-            config.headers['Content-Type'] = 'application/xml';
-          }
-        } catch (e) {
-          alert('Error parsing request body. Please check your input.');
-          setErrorAxios(e.message);
-          setIsLoading(false);
-          return;
-        }
-      }
-
-      const finalUrl = `${endpointUrl}${params}`;
-
-      try {
-        let response;
-        switch (selectedMethod) {
-          case 'POST':
-            response = await axios.post(finalUrl, parsedBody, config);
-            break;
-          case 'PUT':
-            response = await axios.put(finalUrl, parsedBody, config);
-            break;
-          case 'PATCH':
-            response = await axios.patch(finalUrl, parsedBody, config);
-            break;
-          case 'DELETE':
-            response = await axios.delete(finalUrl, config);
-            break;
-          default: // GET
-            response = await axios.get(finalUrl, config);
-            break;
-        }
-
-        setResponseSelected(response.data);
-        setStatusCode(response.status);
-      } catch (error) {
-        setErrorRequest(true);
-        setStatusCode(error.response?.status || 'N/A');
-        setResponseSelected(
-          JSON.stringify(error.response?.data || { message: error.message }),
-        );
-        setErrorAxios(JSON.stringify(error.toJSON())); // More detailed error info from Axios
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [
-      endpointUrl,
-      params,
-      selectedMethod,
-      contentType,
-      bodyJson,
-      cabeceras,
-      prepareHeaders,
-      setIsLoading,
-      setErrorAxios,
-      setErrorRequest,
-      setResponseSelected,
-      setStatusCode,
-    ],
-  );
 
   const handleClickShowMethod = useCallback(
     () => setShowMethods((prev) => !prev),
@@ -302,7 +218,7 @@ export default function AppClient() {
             ))}
           </div>
         </form>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 flex-1">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 flex-1 overflow-y-auW">
           <div className="bg-zinc-900 p-6 rounded-xl border border-zinc-800 flex flex-col shadow-lg">
             <AnimatePresence mode="wait" key={'uja'}>
               {mimeSelected === 0 && ( // Body
@@ -383,14 +299,12 @@ export default function AppClient() {
             </AnimatePresence>
           </div>
           <div className="bg-zinc-900 p-4 rounded-xl border border-zinc-800 flex flex-col overflow-hidden shadow-lg">
-            <h3 className="text-lg font-semibold mb-3 text-zinc-200">
-              Respuesta
-            </h3>
             {responseSelected || isLoading ? (
               <>
                 <div className="flex-1 overflow-auto  rounded-md">
                   {isLoading ? (
                     <div className="flex justify-center items-center h-full">
+                      <span>{timeResponse}</span>
                       <Icon
                         icon="eos-icons:loading"
                         width={50}

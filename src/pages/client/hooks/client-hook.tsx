@@ -5,7 +5,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import toast from 'react-hot-toast';
+import toast, { useToaster } from 'react-hot-toast';
 import { useStoreHeaders } from '../stores/headers-store';
 import { useParamsStore } from '../stores/queryparams-store';
 
@@ -23,6 +23,8 @@ interface ValuesRetornoClient {
   isLoading: boolean;
   contentType: string;
   refForm: React.RefObject<HTMLFormElement | null>;
+  timeResponse: number;
+  statusCode: number | null | undefined;
 }
 
 interface SetterRetornoClient {
@@ -36,6 +38,8 @@ interface SetterRetornoClient {
   setEndpointUrl: Dispatch<SetStateAction<string>>;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
   setContentType: Dispatch<SetStateAction<string>>;
+  setTimeResponse: Dispatch<SetStateAction<number>>;
+  setStatusCode: Dispatch<React.SetStateAction<number | null | undefined>>;
 }
 
 export interface RetornoClient {
@@ -50,14 +54,18 @@ const useClientStore = (): RetornoClient => {
   const [isOpenSiderBar, setIsOpenSiderbar] = useState(true);
   const [selectedMethod, setSelectedMethod] = useState('GET');
   const [responseSelected, setResponseSelected] = useState('');
-  const [errorAxios, setErrorAxios] = useState('');
+  const [errorAxios, setErrorAxios] = useState<string>('');
   const [errorRequest, setErrorRequest] = useState(false);
+
+  const [timeResponse, setTimeResponse] = useState<number>(10);
 
   const [bodyJson, setBodyJson] = useState('');
   const [showMethods, setShowMethods] = useState(false);
   const [endpointUrl, setEndpointUrl] = useState('https://httpbin.org/get');
   const [isLoading, setIsLoading] = useState(false);
   const [contentType, setContentType] = useState('json');
+
+  const [statusCode, setStatusCode] = useState<number | null>();
 
   const refForm = useRef<HTMLFormElement | null>(null);
 
@@ -82,6 +90,7 @@ const useClientStore = (): RetornoClient => {
 
   return {
     value: {
+      timeResponse,
       params,
       cabeceras,
       isOpenSiderBar,
@@ -95,11 +104,14 @@ const useClientStore = (): RetornoClient => {
       isLoading,
       contentType,
       refForm,
+      statusCode,
     },
     setter: {
+      setTimeResponse,
       setIsOpenSiderbar,
       setSelectedMethod,
       setResponseSelected,
+      setStatusCode,
       setErrorAxios,
       setErrorRequest,
       setBodyJson,

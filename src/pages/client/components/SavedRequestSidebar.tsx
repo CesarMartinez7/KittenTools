@@ -122,18 +122,22 @@ export function SavedRequestsSidebar({
 
   return (
     <AnimatePresence key={'gokuuu'}>
+
       <AddNewRequestModal
+      key={"sdfsdf"}
         handleToogleModal={handleToogleModal}
         openModalNewRequest={openModalNewRequest}
         onSubmit={onSubmit}
       />
 
       <ModalCurrentSavePeticion
+        key={"ljdsflksdf"}
         isOpen={isOpenModalSaveRequest}
         onClose={handleSaveRequest}
       />
 
       <ModalDeleteRequest
+        key={"sdlkfkdslflkjds"}
         name={currentName}
         id={currentId}
         handleDeleteRequest={handleDeleteRequest}

@@ -8,6 +8,7 @@ import LazyListItem from '../LazyListPerform';
 import highlightCode from './higlight-code';
 import { useTextReplace } from './methods-global-editor/useTextReplace';
 import { useJsonHook } from './methods-json/method';
+import { useXmlHook } from './methos-xml/method.xml';
 import type { CodeEditorProps } from './types';
 
 const CodeEditor = ({
@@ -32,6 +33,11 @@ const CodeEditor = ({
 
   // --------------------------------------- Custom Hooks -------------------------------------
   const { JsonSchema, minifyJson } = useJsonHook({
+    code: code,
+    setCode: setCode,
+  });
+
+  const { XmlScheme, minifyXml } = useXmlHook({
     code: code,
     setCode: setCode,
   });
@@ -68,7 +74,7 @@ const CodeEditor = ({
     }
 
     if (language === 'xml') {
-      return toast.error('Aun no hay funcion para minificar XML AUN');
+      return minifyXml();
     }
 
     return toast.error(
@@ -80,7 +86,7 @@ const CodeEditor = ({
     if (language === 'json') return JsonSchema();
 
     if (language === 'xml') {
-      return toast.error('No hay herramienta para Identar Xml aun');
+      return XmlScheme();
     }
   };
 
@@ -246,7 +252,7 @@ const CodeEditor = ({
           <LazyListItem>
             <div
               ref={highlightRef}
-              className="absolute bg-black inset-0 p-2 text-sm font-mono leading-6 pointer-events-none overflow-hidden whitespace-pre-wrap break-words  text-[#d4d4d4]"
+              className="absolute  inset-0 p-2 text-sm font-mono leading-6 pointer-events-none overflow-hidden whitespace-pre-wrap break-words  text-[#d4d4d4]"
               dangerouslySetInnerHTML={{
                 __html: highlightCode(code, language),
               }}
@@ -258,6 +264,7 @@ const CodeEditor = ({
               autoFocus
               ref={textareaRef}
               value={code}
+              aria-placeholder={placeholder}
               onChange={handleChange}
               onScroll={handleScroll}
               onKeyDown={handleKeyDown}
