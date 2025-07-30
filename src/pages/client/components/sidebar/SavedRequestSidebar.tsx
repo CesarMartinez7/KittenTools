@@ -2,11 +2,12 @@ import { Icon } from '@iconify/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import ModalDeleteRequest from '../modals/delete-request-modal';
-import AddNewRequestModal from '../modals/new-request-modal';
-import ModalCurrentSavePeticion from '../modals/save-request-modal';
-import type { RequestItem, SavedRequestsSidebarProps } from '../types/types';
+import ModalDeleteRequest from '../../modals/delete-request-modal';
+import AddNewRequestModal from '../../modals/new-request-modal';
+import ModalCurrentSavePeticion from '../../modals/save-request-modal';
+import type { RequestItem, SavedRequestsSidebarProps } from '../../types/types';
 import { useAsyncError } from 'react-router';
+import MethodFormater from './ui/method-formatter';
 
 export function SavedRequestsSidebar({
   isOpen,
@@ -32,18 +33,19 @@ export function SavedRequestsSidebar({
   const [isOpenModalSaveRequest, setIsOpenModalSaveRequest] =
     useState<boolean>(false);
 
-
-    // Modal Delete
+  // Modal Delete
   const [currentId, setCurrentId] = useState<string>('');
   const [currentName, setCurrentName] = useState<string>('');
   const [currentIdx, setCurrentIdx] = useState<number>(() => {
-    try{
-      return localStorage.getItem("currentidx")  ? localStorage.getItem("currentidx") : 0
-    }catch{
-      toast.error("Error al cargar rq current IDX")
-      return 0
+    try {
+      return localStorage.getItem('currentidx')
+        ? localStorage.getItem('currentidx')
+        : 0;
+    } catch {
+      toast.error('Error al cargar rq current IDX');
+      return 0;
     }
-  })
+  });
 
   // Guardador de request sea cargada o no
   const [savedRequests, setSavedRequests] = useState<RequestItem[]>(() => {
@@ -51,7 +53,7 @@ export function SavedRequestsSidebar({
       const storedRequests = localStorage.getItem('savedRequests');
       return storedRequests ? JSON.parse(storedRequests) : [];
     } catch (error) {
-      toast.error("Error al cargar las peticiones del localStorage");
+      toast.error('Error al cargar las peticiones del localStorage');
       return [];
     }
   });
@@ -82,7 +84,7 @@ export function SavedRequestsSidebar({
   useEffect(() => {
     try {
       localStorage.setItem('savedRequests', JSON.stringify(savedRequests));
-      localStorage.setItem("currentidx", "0" );
+      localStorage.setItem('currentidx', '0');
     } catch (error) {
       console.error('Error al guardar las peticiones en localStorage:', error);
       toast.error('No se pudieron guardar las peticiones.');
@@ -91,7 +93,6 @@ export function SavedRequestsSidebar({
 
   // Guardar pero peticion actual o current
   const saveCurrentRequest = (requestName: string) => {
-    
     if (!requestName) {
       toast.error('Nombre de petición inválido.');
       return;
@@ -110,7 +111,7 @@ export function SavedRequestsSidebar({
 
     setSavedRequests((prev) => [...prev, newRequest]);
     toast.success('Petición guardada con éxito.');
-    handleToogleSaveRequestCurrent()
+    handleToogleSaveRequestCurrent();
   };
 
   const handleDeleteRequest = (id: string) => {
@@ -125,8 +126,6 @@ export function SavedRequestsSidebar({
   const handleToogleSaveRequestCurrent = () =>
     setIsOpenModalSaveRequest((prev) => !prev);
 
-  
-
   const handleClickDeleteAndUpdatePeticion = (req: any) => {
     setCurrentName(req.name);
     setCurrentId(req.id);
@@ -135,23 +134,22 @@ export function SavedRequestsSidebar({
 
   return (
     <AnimatePresence key={'gokuuu'}>
-
       <AddNewRequestModal
-        key={"sdfsdf"}
+        key={'sdfsdf'}
         handleToogleModal={handleToogleModal}
         openModalNewRequest={openModalNewRequest}
         onSubmit={onSubmit}
       />
 
       <ModalCurrentSavePeticion
-        key={"ljdsflksdf"}
+        key={'ljdsflksdf'}
         handleSavePeticion={saveCurrentRequest}
         isOpen={isOpenModalSaveRequest}
         onClose={handleToogleSaveRequestCurrent}
       />
 
       <ModalDeleteRequest
-        key={"sdlkfkdslflkjds"}
+        key={'sdlkfkdslflkjds'}
         name={currentName}
         id={currentId}
         handleDeleteRequest={handleDeleteRequest}
@@ -187,13 +185,12 @@ export function SavedRequestsSidebar({
               savedRequests.map((req, idx) => (
                 <div
                   key={idx}
-                  className={` p-3 rounded-md border border-zinc-800 shadow-xl flex justify-between items-center group hover:bg-zinc-700 transition-colors  ${currentIdx === idx  ? "bg-zinc-900"  : "bg-zinc-800/60"  }  `}
+                  className={` p-3 rounded-md border border-zinc-800 shadow-xl flex justify-between items-center group hover:bg-zinc-700 transition-colors  ${currentIdx === idx ? 'bg-zinc-900' : 'bg-zinc-800/60'}  `}
                 >
-                  
                   <div
                     className="flex-1 cursor-pointer truncate"
                     onClick={() => {
-                      localStorage.setItem("currentidx", String(idx))
+                      localStorage.setItem('currentidx', String(idx));
                       toast.success('Cargando peticion');
                       onLoadRequest(req);
                     }}
@@ -201,9 +198,10 @@ export function SavedRequestsSidebar({
                     <p className="font-semibold text-white truncate">
                       {req.name}
                     </p>
-                    <p className="text-xs text-zinc-400 truncate">
+
+                    <p className="text-xs text-zinc-400 truncate space-x-2.5">
                       {' '}
-                      <span className="text-green-500">{req.method}</span>{' '}
+                      <MethodFormater nameMethod={req.method.toUpperCase()} />
                       {req.url}
                     </p>
                   </div>

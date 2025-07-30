@@ -2,19 +2,16 @@ import { BaseModalLazy } from '../../../components/LAZY_COMPONENT';
 import type BaseModalProps from '../../../ui/base-modal/types';
 import { useState } from 'react';
 
-
 interface ModalCurrentSaveRequest extends BaseModalProps {
-  handleSavePeticion: (requestName: string) => void
+  handleSavePeticion: (requestName: string) => void;
 }
-
 
 export default function ModalCurrentSavePeticion({
   onClose,
   isOpen,
   handleSavePeticion,
 }: ModalCurrentSaveRequest) {
-
-  const [name, setName] = useState<string>("")
+  const [name, setName] = useState<string>('');
 
   return (
     <BaseModalLazy key={'ujjm2'} onClose={onClose} isOpen={isOpen}>
@@ -23,9 +20,21 @@ export default function ModalCurrentSavePeticion({
           Nombre para la petición guardada
         </span>
         <label htmlFor="name-peticion">
-          <input type="text" required className="input-gray w-full" onChange={(e) => setName(e.target.value) } />
+          <input
+            type="text"
+            required
+            className="input-gray w-full"
+            onChange={(e) => setName(e.target.value)}
+          />
         </label>
-        <button className="base-modal-btn bg-kanagawa-green " onClick={() => {handleSavePeticion(name)} } >Guardar</button>
+        <button
+          className="base-modal-btn bg-kanagawa-green "
+          onClick={() => {
+            handleSavePeticion(name);
+          }}
+        >
+          Guardar
+        </button>
       </div>
     </BaseModalLazy>
   );

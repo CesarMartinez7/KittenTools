@@ -15,8 +15,8 @@ import AuroraStore from './ui/aurora/aurora';
 import Console from './ui/Console';
 import JWTDecode from './ui/DecodeJWT';
 import { ModalViewer } from './ui/Difftext';
-import JsonViewer from './ui/formatter-JSON/Formatter';
 import { JsonViewerStore } from './ui/formatter-JSON/stores/jsonviewer';
+import useIndexedDb from './hooks/useIndexedDb';
 
 const App = () => {
   const [value, setValue] = useState<string | null | undefined>(
@@ -29,6 +29,9 @@ const App = () => {
   const [isOpenDiffText, setIsOpenDiffText] = useState<boolean>(false);
   const [isDecode, setIsDecode] = useState<boolean>(false);
   const [showGrid, setShowGrid] = useState(false);
+
+
+  const useDb = useIndexedDb({name: "goku", data: { name: "vegeta"}})
 
   // Download Stores JSONvIEWER
   const openModalDownload = JsonViewerStore(
@@ -326,6 +329,7 @@ const App = () => {
 
         <BaseModalLazy isOpen={openViewerJsonFull} onClose={handleCloseAll}>
           <JsonViewerLazy
+            language='json'
             maxHeight="90vh"
             width="90vw"
             height="90vh"

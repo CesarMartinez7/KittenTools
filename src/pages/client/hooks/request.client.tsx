@@ -7,8 +7,7 @@ import toast from 'react-hot-toast';
 
 interface ReturnHookRequest {
   handleRequest: (e: any) => Promise<void>;
- 
- 
+
   prepareHeaders: (headers: any) => void;
 }
 interface RequestHookProps {
@@ -42,8 +41,6 @@ export default function RequestHook({
   setTimeResponse,
   timeResponse,
 }: RequestHookProps): ReturnHookRequest {
-  
-
   const prepareHeaders = useCallback((headers: any) => {
     try {
       const parsedHeaders = JSON.parse(headers);
@@ -59,23 +56,17 @@ export default function RequestHook({
     }
   }, []);
 
-
-  
-    
   // ... tu request con axios
 
-
   useEffect(() => {
-    toast.success(String(timeResponse))
-}, [timeResponse])
-
-
+    toast.success(String(timeResponse));
+  }, [timeResponse]);
 
   const handleRequest = useCallback(
     async (e) => {
       e.preventDefault();
       if (!endpointUrl) {
-        alert('Please enter an endpoint URL.');
+        toast.error('Por favor pase un enpoint');
         return;
       }
       setIsLoading(true);
@@ -109,8 +100,6 @@ export default function RequestHook({
       }
 
       const finalUrl = `${endpointUrl}${params}`;
-
-      
 
       try {
         let response;
@@ -148,9 +137,6 @@ export default function RequestHook({
         setIsLoading(false);
       }
     },
-
-
-    
 
     [
       endpointUrl,

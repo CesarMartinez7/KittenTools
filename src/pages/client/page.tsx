@@ -2,18 +2,19 @@ import './App.css';
 import { Icon } from '@iconify/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useMemo, useRef, useState } from 'react';
-import { CodeEditorLazy, JsonViewerLazy } from '../../components/LAZY_COMPONENT';
+import {
+  CodeEditorLazy,
+  JsonViewerLazy,
+} from '../../components/LAZY_COMPONENT';
 import AddQueryParam from './components/addQueryParams';
 import { HeadersAddRequest } from './components/Headers';
-import { SavedRequestsSidebar } from './components/SavedRequestSidebar';
+import { SavedRequestsSidebar } from './components/sidebar/SavedRequestSidebar';
 import ClientCustomHook from './hooks/client-hook';
 import RequestHook from './hooks/request.client';
-import { Methodos, Opciones } from './mapper-ops';
+import { Methodos, Opciones, TypesResponse, VariantsAnimation } from './mapper-ops';
 import type { RequestItem } from './types/types';
 
-
 export default function AppClient() {
-
   const { value, setter } = ClientCustomHook();
 
   // Custom Hook VALUES
@@ -31,7 +32,7 @@ export default function AppClient() {
     isLoading,
     contentType,
     statusCode,
-    
+
     refForm,
   } = value;
 
@@ -47,7 +48,7 @@ export default function AppClient() {
     setErrorAxios,
     setErrorRequest,
     setSelectedMethod,
-    
+
     setResponseSelected,
   } = setter;
 
@@ -73,8 +74,6 @@ export default function AppClient() {
     Number(sessionStorage.getItem('mimeSelected')) || 0,
   );
 
-  
-  
   const saveToLocalStorage = useCallback((name, value) => {
     localStorage.setItem(name, value);
   }, []);
@@ -114,34 +113,13 @@ export default function AppClient() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
     >
-      <div
-        ref={containerRef}
-        onMouseDown={() => {
-          if (containerRef.current) {
-            if (containerRef.current?.style.height !== '200px') {
-              containerRef.current.style.height = '200px';
-              return;
-            }
-            containerRef.current.style.height = '21px';
-          }
-        }}
-        className="fixed bottom-0 bg-zinc-950 transition-all border-t border-t-zinc-800 w-full z-[99] "
-      >
-        <Icon icon="tabler:brand-tabler" width="20" height="20" />
-
-        <div className="overflow-y-scroll">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
-          Exercitationem maiores ex necessitatibus architecto, dolore nobis
-          incidunt fuga. Recusandae repellendus vero autem repudiandae laborum,
-          dolorem, maiores deleniti voluptatibus sequi aliquam tenetur.
-        </div>
-      </div>
-
+    
       <SavedRequestsSidebar
         onLoadRequest={onLoadRequest}
         currentUrl={endpointUrl}
         currentBody={bodyJson}
         currentHeaders={cabeceras}
+        currentContentType={contentType}
         currentMethod={selectedMethod}
         isOpen={isOpenSiderBar}
         onClose={() => setIsOpenSiderbar(false)}
@@ -228,10 +206,7 @@ export default function AppClient() {
               {mimeSelected === 0 && ( // Body
                 <motion.div
                   key="body-section-body"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.2 }}
+                  variants={VariantsAnimation}
                   className="flex flex-col flex-1"
                 >
                   <div className="flex gap-4 mb-3">
@@ -255,7 +230,7 @@ export default function AppClient() {
                   </div>
                   <div className="flex-1 min-h-0">
                     <CodeEditorLazy
-                      height='70vh'
+                      height="70vh"
                       language={contentType}
                       value={bodyJson}
                       onChange={setBodyJson}
@@ -267,10 +242,7 @@ export default function AppClient() {
               {mimeSelected === 1 && (
                 <motion.div
                   key="query-params-section"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.2 }}
+                  variants={VariantsAnimation}
                   className="flex-1"
                 >
                   <AddQueryParam />
@@ -291,10 +263,7 @@ export default function AppClient() {
               {mimeSelected === 3 && (
                 <motion.div
                   key="auth-section"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.2 }}
+                  variants={VariantsAnimation}
                   className="flex-1 flex items-center justify-center text-zinc-500"
                 >
                   <p className="text-lg">Proximamente</p>
@@ -303,27 +272,28 @@ export default function AppClient() {
             </AnimatePresence>
           </div>
           <div className="bg-zinc-900 p-4 rounded-xl border border-zinc-800 flex flex-col overflow-hidden shadow-lg">
+            <select name="" id="" className='bg-black text-white input-gray'>
+            {TypesResponse.map((e) => (
+              <option>
+                {e.name}
+              </option>
+            ) )}
+
+            </select>
             {responseSelected || isLoading ? (
               <>
-              
                 <div className="flex-1 overflow-auto  rounded-md">
-
-                  <div className='w-full flex justify-between px-3'>
-                      <div>
-                        {statusCode}
-                      </div>
-                      <div>
-                        {timeResponse}
-                      </div>
+                  <div className="w-full flex justify-between px-3">
+                    <div>{statusCode}</div>
+                    <div>{timeResponse}</div>
                   </div>
 
                   {isLoading ? (
                     <div className="flex justify-center items-center flex-col h-full">
                       <span className="svg-spinners--90-ring-with-bg block"></span>
-                      <span className='block'>{timeResponse}</span>
+                      <span className="block">{timeResponse}</span>
                     </div>
                   ) : (
-                    
                     <JsonViewerLazy
                       data={
                         errorRequest

@@ -5,7 +5,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import toast, { useToaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { useStoreHeaders } from '../stores/headers-store';
 import { useParamsStore } from '../stores/queryparams-store';
 
@@ -21,7 +21,7 @@ interface ValuesRetornoClient {
   showMethods: boolean;
   endpointUrl: string;
   isLoading: boolean;
-  contentType: string;
+  contentType: 'javascript' | 'typescript' | 'json' | 'xml' | 'form';
   refForm: React.RefObject<HTMLFormElement | null>;
   timeResponse: number;
   statusCode: number | null | undefined;
@@ -62,15 +62,11 @@ const useClientStore = (): RetornoClient => {
   const [timeResponse, setTimeResponse] = useState<number>(0);
 
 
-  useEffect(() => {
-    setTimeResponse((prev) => prev + 100)
-  }, [])
-
   const [bodyJson, setBodyJson] = useState('');
   const [showMethods, setShowMethods] = useState(false);
   const [endpointUrl, setEndpointUrl] = useState('https://httpbin.org/get');
   const [isLoading, setIsLoading] = useState(false);
-  const [contentType, setContentType] = useState('json');
+  const [contentType, setContentType] = useState<"json" | "html" | "typescript" | "html">();
 
   const [statusCode, setStatusCode] = useState<number | null>();
 

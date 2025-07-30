@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useStoreHeaders } from '../stores/headers-store';
-import plus from "@iconify-icons/tabler/plus"
+import plus from '@iconify-icons/tabler/plus';
 
 interface HeaderItem {
   id: string;
@@ -12,8 +12,6 @@ interface HeaderItem {
 }
 
 export function HeadersAddRequest() {
-
-  
   const seaterHeaders = useStoreHeaders((state) => state.setValor);
   const [headersDeactivate, setHeadersDeactivate] = useState<HeaderItem[]>([]);
   const [headers, setHeaders] = useState<HeaderItem[]>([]);
@@ -115,12 +113,9 @@ export function HeadersAddRequest() {
                 type="text"
                 className="input-gray flex-1"
                 placeholder="Valor"
-                
                 onChange={(e) => {
-
-                  updateHeader(header.id, 'value', e.target.value)
-                }
-                }
+                  updateHeader(header.id, 'value', e.target.value);
+                }}
               />
 
               <div className="flex gap-2">

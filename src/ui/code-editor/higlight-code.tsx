@@ -11,7 +11,6 @@ const highlightCode = (code: string, language: string) => {
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#039;');
-      
 
   if (language === 'json') {
     // JSON highlighting

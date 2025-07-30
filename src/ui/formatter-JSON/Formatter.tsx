@@ -41,7 +41,6 @@ export const JsonNode: React.FC<JsonNodeProps> = ({
   __Changed = null,
   depth = 0,
 }) => {
-
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const isObject = typeof data === 'object' && data !== null;
   const isArray = Array.isArray(data);
@@ -76,7 +75,7 @@ export const JsonNode: React.FC<JsonNodeProps> = ({
             <div className="mt-1 space-y-1">
               {isArray
                 ? (data as JsonArray).map((item, i) => (
-                    <LazyListItem key={i} skeleton={<SkeletonJsonKey/>}>
+                    <LazyListItem key={i} skeleton={<SkeletonJsonKey />}>
                       <span key={i}>
                         <div className="flex relative">
                           <JsonNode
