@@ -30,7 +30,7 @@ export default function AppClient() {
     isLoading,
     contentType,
     statusCode,
-    timeResponse,
+    
     refForm,
   } = value;
 
@@ -46,9 +46,11 @@ export default function AppClient() {
     setErrorAxios,
     setErrorRequest,
     setSelectedMethod,
-    setTimeResponse,
+    
     setResponseSelected,
   } = setter;
+
+  const [timeResponse, setTimeResponse] = useState<number>(0);
 
   const { handleRequest } = RequestHook({
     selectedMethod,
@@ -70,10 +72,11 @@ export default function AppClient() {
     Number(sessionStorage.getItem('mimeSelected')) || 0,
   );
 
-  // Memoized function to save to localStorage
-  // const saveToLocalStorage = useCallback((name, value) => {
-  //   localStorage.setItem(name, value);
-  // }, []);
+  
+  
+  const saveToLocalStorage = useCallback((name, value) => {
+    localStorage.setItem(name, value);
+  }, []);
 
   const handleClickShowMethod = useCallback(
     () => setShowMethods((prev) => !prev),
@@ -251,7 +254,7 @@ export default function AppClient() {
                   </div>
                   <div className="flex-1 min-h-0">
                     <CodeEditorLazy
-                      height=""
+                      height='70vh'
                       language={contentType}
                       value={bodyJson}
                       onChange={setBodyJson}
@@ -301,18 +304,25 @@ export default function AppClient() {
           <div className="bg-zinc-900 p-4 rounded-xl border border-zinc-800 flex flex-col overflow-hidden shadow-lg">
             {responseSelected || isLoading ? (
               <>
+              
                 <div className="flex-1 overflow-auto  rounded-md">
+
+                  <div className='w-full flex justify-between px-3'>
+                      <div>
+                        {statusCode}
+                      </div>
+                      <div>
+                        {timeResponse}
+                      </div>
+                  </div>
+
                   {isLoading ? (
-                    <div className="flex justify-center items-center h-full">
-                      <span>{timeResponse}</span>
-                      <Icon
-                        icon="eos-icons:loading"
-                        width={50}
-                        height={50}
-                        className="animate-spin"
-                      />
+                    <div className="flex justify-center items-center flex-col h-full">
+                      <span className="svg-spinners--90-ring-with-bg block"></span>
+                      <span className='block'>{timeResponse}</span>
                     </div>
                   ) : (
+                    
                     <JsonViewer
                       data={
                         errorRequest
@@ -323,7 +333,7 @@ export default function AppClient() {
                       }
                       width="100%"
                       height="100%"
-                      maxHeight="72vh"
+                      maxHeight="76vh"
                     />
                   )}
                 </div>

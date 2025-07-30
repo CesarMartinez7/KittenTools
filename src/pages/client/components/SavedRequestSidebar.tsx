@@ -31,6 +31,11 @@ export function SavedRequestsSidebar({
   const [isOpenModalSaveRequest, setIsOpenModalSaveRequest] =
     useState<boolean>(false);
 
+
+    // Modal Delete
+  const [currentId, setCurrentId] = useState<string>('');
+  const [currentName, setCurrentName] = useState<string>('');
+
   // Guardador de request sea cargada o no
   const [savedRequests, setSavedRequests] = useState<RequestItem[]>(() => {
     try {
@@ -44,8 +49,6 @@ export function SavedRequestsSidebar({
 
   // Me ejecuto si soy valido solamente COOL XHR
   const onSubmit = (data: any) => {
-    // Body para guardar una nueva peticion
-
     try {
       const newRequest: RequestItem = {
         id: `${Date.now()}-${Math.random()}`,
@@ -77,8 +80,8 @@ export function SavedRequestsSidebar({
   }, [savedRequests]);
 
   // Guardar pero peticion actual o current
-  const handleSaveRequest = () => {
-    const requestName = prompt('Nombre para la petición guardada:');
+  const saveCurrentRequest = (requestName: string) => {
+    
     if (!requestName) {
       toast.error('Nombre de petición inválido.');
       return;
@@ -97,6 +100,7 @@ export function SavedRequestsSidebar({
 
     setSavedRequests((prev) => [...prev, newRequest]);
     toast.success('Petición guardada con éxito.');
+    handleToogleSaveRequestCurrent()
   };
 
   const handleDeleteRequest = (id: string) => {
@@ -108,11 +112,10 @@ export function SavedRequestsSidebar({
   const handleToogleDeleteModal = () => {
     setOpenModalDeleteRequest((prev) => !prev);
   };
-  const handleToogleSaveRequest = () =>
+  const handleToogleSaveRequestCurrent = () =>
     setIsOpenModalSaveRequest((prev) => !prev);
 
-  const [currentId, setCurrentId] = useState<string>('');
-  const [currentName, setCurrentName] = useState<string>('');
+  
 
   const handleClickDeleteAndUpdatePeticion = (req: any) => {
     setCurrentName(req.name);
@@ -132,8 +135,9 @@ export function SavedRequestsSidebar({
 
       <ModalCurrentSavePeticion
         key={"ljdsflksdf"}
+        handleSavePeticion={saveCurrentRequest}
         isOpen={isOpenModalSaveRequest}
-        onClose={handleSaveRequest}
+        onClose={handleToogleSaveRequestCurrent}
       />
 
       <ModalDeleteRequest
@@ -152,7 +156,7 @@ export function SavedRequestsSidebar({
           </div>
           <div className="flex flex-row gap-x-2.5 h-12 ">
             <button
-              onClick={handleSaveRequest}
+              onClick={handleToogleSaveRequestCurrent}
               className="gray-btn w-full mb-4 flex truncate items-center justify-center gap-2 "
             >
               <Icon icon="material-symbols:save-outline" /> Guardar Peticion

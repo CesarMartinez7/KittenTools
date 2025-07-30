@@ -8,6 +8,7 @@ import LazyListItem from '../LazyListPerform';
 import TableData from '../Table';
 import FormatDataTypeLabel from './components/formatlabel.tsx';
 import { JsonViewerStore } from './stores/jsonviewer.ts';
+import SkeletonJsonKey from './skeleton/skeleton.formatter.tsx';
 
 const csvConfig = mkConfig({ useKeysAsHeaders: true });
 
@@ -40,12 +41,12 @@ export const JsonNode: React.FC<JsonNodeProps> = ({
   __Changed = null,
   depth = 0,
 }) => {
-  const [collapsed, setCollapsed] = useState<boolean>(false);
 
+  const [collapsed, setCollapsed] = useState<boolean>(false);
   const isObject = typeof data === 'object' && data !== null;
   const isArray = Array.isArray(data);
 
-  const toggle = () => setCollapsed(!collapsed);
+  const toggle = () => setCollapsed((prev) => !prev);
 
   return (
     <div
@@ -75,7 +76,7 @@ export const JsonNode: React.FC<JsonNodeProps> = ({
             <div className="mt-1 space-y-1">
               {isArray
                 ? (data as JsonArray).map((item, i) => (
-                    <LazyListItem key={i}>
+                    <LazyListItem key={i} skeleton={<SkeletonJsonKey/>}>
                       <span key={i}>
                         <div className="flex relative">
                           <JsonNode

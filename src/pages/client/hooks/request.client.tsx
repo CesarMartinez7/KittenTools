@@ -7,6 +7,8 @@ import toast from 'react-hot-toast';
 
 interface ReturnHookRequest {
   handleRequest: (e: any) => Promise<void>;
+ 
+ 
   prepareHeaders: (headers: any) => void;
 }
 interface RequestHookProps {
@@ -40,11 +42,7 @@ export default function RequestHook({
   setTimeResponse,
   timeResponse,
 }: RequestHookProps): ReturnHookRequest {
-  useEffect(() => {
-    console.log(timeResponse);
-    setTimeResponse((prev) => prev + 1000);
-    console.warn(timeResponse);
-  }, []);
+  
 
   const prepareHeaders = useCallback((headers: any) => {
     try {
@@ -60,6 +58,18 @@ export default function RequestHook({
       return {};
     }
   }, []);
+
+
+  
+    
+  // ... tu request con axios
+
+
+  useEffect(() => {
+    toast.success(String(timeResponse))
+}, [timeResponse])
+
+
 
   const handleRequest = useCallback(
     async (e) => {
@@ -100,13 +110,11 @@ export default function RequestHook({
 
       const finalUrl = `${endpointUrl}${params}`;
 
-      const startFuncionTime = setInterval(() => {
-        setTimeResponse((prev) => prev++);
-        toast.error('Mandando peticon');
-        console.log('SUMA CONATADOR AQUI');
-      }, 1000);
+      
+
       try {
         let response;
+        const start = Date.now();
         switch (selectedMethod) {
           case 'POST':
             response = await axios.post(finalUrl, parsedBody, config);
@@ -127,6 +135,8 @@ export default function RequestHook({
 
         setResponseSelected(response.data);
         setStatusCode(response.status);
+        const end = Date.now();
+        setTimeResponse(Math.floor((end - start) / 1000));
       } catch (error) {
         setErrorRequest(true);
         setStatusCode(error.response?.status || 'N/A');
@@ -135,10 +145,13 @@ export default function RequestHook({
         );
         setErrorAxios(JSON.stringify(error.toJSON())); // More detailed error info from Axios
       } finally {
-        clearInterval(startFuncionTime);
         setIsLoading(false);
       }
     },
+
+
+    
+
     [
       endpointUrl,
       params,

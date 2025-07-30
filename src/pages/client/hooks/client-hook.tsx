@@ -48,6 +48,8 @@ export interface RetornoClient {
 }
 
 const useClientStore = (): RetornoClient => {
+
+
   const params = useParamsStore((state) => state.valor);
   const cabeceras = useStoreHeaders((state) => state.valor);
 
@@ -57,7 +59,12 @@ const useClientStore = (): RetornoClient => {
   const [errorAxios, setErrorAxios] = useState<string>('');
   const [errorRequest, setErrorRequest] = useState(false);
 
-  const [timeResponse, setTimeResponse] = useState<number>(10);
+  const [timeResponse, setTimeResponse] = useState<number>(0);
+
+
+  useEffect(() => {
+    setTimeResponse((prev) => prev + 100)
+  }, [])
 
   const [bodyJson, setBodyJson] = useState('');
   const [showMethods, setShowMethods] = useState(false);

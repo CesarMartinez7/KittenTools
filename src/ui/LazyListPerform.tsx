@@ -1,7 +1,7 @@
 // LazyListItem.tsx
 import { memo, useEffect, useRef, useState } from 'react';
 
-function LazyListItem({ children }: { children: React.ReactNode }) {
+function LazyListItem({ children, skeleton }: { children: React.ReactNode, skeleton?: React.ReactNode }) {
   const ref = useRef<HTMLDivElement | null>(null);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -10,7 +10,7 @@ function LazyListItem({ children }: { children: React.ReactNode }) {
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsVisible(true);
-          observer.disconnect(); // solo una vez
+          observer.disconnect(); 
         }
       },
       { threshold: 0.1 }, // 10% visible
@@ -26,8 +26,8 @@ function LazyListItem({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <div ref={ref} className="">
-      {isVisible ? children : 'Cargando...'}
+    <div ref={ref}>
+      {isVisible ? children : skeleton ? skeleton : "Cargando"}
     </div>
   );
 }

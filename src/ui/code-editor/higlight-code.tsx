@@ -11,15 +11,16 @@ const highlightCode = (code: string, language: string) => {
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#039;');
+      
 
   if (language === 'json') {
     // JSON highlighting
     highlightedCode = code
       .replace(/"([^"\\]|\\.)*"/g, (match) => {
         if (match.endsWith('":') || match.endsWith('": ')) {
-          return `<span style="color: ${colors.attribute}">${match}</span>`;
+          return `<span style="color: ${colors.comment}">${match}</span>`;
         }
-        return `<span style="color: ${colors.string}">${match}</span>`;
+        return `<span style="color: ${colors.tag}">${match}</span>`;
       })
       .replace(
         /\b(true|false|null)\b/g,

@@ -16,7 +16,6 @@ export function useJsonHook({ setCode, code }: JsonHookProps): ReturnJsonHook {
     try {
       const parseado = JSON.parse(code);
       setCode(JSON.stringify(parseado));
-
       toast.success('JSON minificado');
     } catch {
       toast.error('JSON inválido para minificar');
