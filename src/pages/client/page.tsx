@@ -2,8 +2,7 @@ import './App.css';
 import { Icon } from '@iconify/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useMemo, useRef, useState } from 'react';
-import { CodeEditorLazy } from '../../components/LAZY_COMPONENT';
-import JsonViewer from '../../ui/formatter-JSON/Formatter';
+import { CodeEditorLazy, JsonViewerLazy } from '../../components/LAZY_COMPONENT';
 import AddQueryParam from './components/addQueryParams';
 import { HeadersAddRequest } from './components/Headers';
 import { SavedRequestsSidebar } from './components/SavedRequestSidebar';
@@ -12,7 +11,9 @@ import RequestHook from './hooks/request.client';
 import { Methodos, Opciones } from './mapper-ops';
 import type { RequestItem } from './types/types';
 
+
 export default function AppClient() {
+
   const { value, setter } = ClientCustomHook();
 
   // Custom Hook VALUES
@@ -323,7 +324,7 @@ export default function AppClient() {
                     </div>
                   ) : (
                     
-                    <JsonViewer
+                    <JsonViewerLazy
                       data={
                         errorRequest
                           ? errorAxios

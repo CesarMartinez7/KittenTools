@@ -6,6 +6,7 @@ import ModalDeleteRequest from '../modals/delete-request-modal';
 import AddNewRequestModal from '../modals/new-request-modal';
 import ModalCurrentSavePeticion from '../modals/save-request-modal';
 import type { RequestItem, SavedRequestsSidebarProps } from '../types/types';
+import { useAsyncError } from 'react-router';
 
 export function SavedRequestsSidebar({
   isOpen,
@@ -35,6 +36,14 @@ export function SavedRequestsSidebar({
     // Modal Delete
   const [currentId, setCurrentId] = useState<string>('');
   const [currentName, setCurrentName] = useState<string>('');
+  const [currentIdx, setCurrentIdx] = useState<number>(() => {
+    try{
+      return localStorage.getItem("currentidx")  ? localStorage.getItem("currentidx") : 0
+    }catch{
+      toast.error("Error al cargar rq current IDX")
+      return 0
+    }
+  })
 
   // Guardador de request sea cargada o no
   const [savedRequests, setSavedRequests] = useState<RequestItem[]>(() => {
@@ -42,7 +51,7 @@ export function SavedRequestsSidebar({
       const storedRequests = localStorage.getItem('savedRequests');
       return storedRequests ? JSON.parse(storedRequests) : [];
     } catch (error) {
-      console.error('Error al cargar las peticiones del localStorage:', error);
+      toast.error("Error al cargar las peticiones del localStorage");
       return [];
     }
   });
@@ -73,6 +82,7 @@ export function SavedRequestsSidebar({
   useEffect(() => {
     try {
       localStorage.setItem('savedRequests', JSON.stringify(savedRequests));
+      localStorage.setItem("currentidx", "0" );
     } catch (error) {
       console.error('Error al guardar las peticiones en localStorage:', error);
       toast.error('No se pudieron guardar las peticiones.');
@@ -127,7 +137,7 @@ export function SavedRequestsSidebar({
     <AnimatePresence key={'gokuuu'}>
 
       <AddNewRequestModal
-      key={"sdfsdf"}
+        key={"sdfsdf"}
         handleToogleModal={handleToogleModal}
         openModalNewRequest={openModalNewRequest}
         onSubmit={onSubmit}
@@ -177,11 +187,13 @@ export function SavedRequestsSidebar({
               savedRequests.map((req, idx) => (
                 <div
                   key={idx}
-                  className="bg-zinc-800/60 p-3 rounded-md flex justify-between items-center group hover:bg-zinc-700 transition-colors"
+                  className={` p-3 rounded-md border border-zinc-800 shadow-xl flex justify-between items-center group hover:bg-zinc-700 transition-colors  ${currentIdx === idx  ? "bg-zinc-900"  : "bg-zinc-800/60"  }  `}
                 >
+                  
                   <div
                     className="flex-1 cursor-pointer truncate"
                     onClick={() => {
+                      localStorage.setItem("currentidx", String(idx))
                       toast.success('Cargando peticion');
                       onLoadRequest(req);
                     }}

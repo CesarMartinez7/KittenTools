@@ -27,7 +27,8 @@ function LazyListItem({ children, skeleton }: { children: React.ReactNode, skele
 
   return (
     <div ref={ref}>
-      {isVisible ? children : skeleton ? skeleton : "Cargando"}
+      {/* {isVisible ? children : skeleton ? skeleton : "Cargando"} */}
+      {isVisible ? children : "Cargando"}
     </div>
   );
 }

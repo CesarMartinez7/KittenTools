@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useStoreHeaders } from '../stores/headers-store';
+import plus from "@iconify-icons/tabler/plus"
 
 interface HeaderItem {
   id: string;
@@ -11,9 +12,10 @@ interface HeaderItem {
 }
 
 export function HeadersAddRequest() {
+
+  
   const seaterHeaders = useStoreHeaders((state) => state.setValor);
   const [headersDeactivate, setHeadersDeactivate] = useState<HeaderItem[]>([]);
-
   const [headers, setHeaders] = useState<HeaderItem[]>([]);
 
   useEffect(() => {
@@ -63,10 +65,10 @@ export function HeadersAddRequest() {
     <div className="relative overflow-y-auto max-h-full">
       <button
         type="button"
-        className="btn-black sticky   my-2 left-0 shadow-2xl"
+        className="btn-black sticky my-2 left-0 shadow-2xl gap-2"
         onClick={addNewHeader}
       >
-        <Icon icon="tabler:plus" width="24" height="24" />
+        <Icon icon={plus} width="24" height="24" />
         Añadir nueva cabecera
       </button>
 
@@ -113,9 +115,11 @@ export function HeadersAddRequest() {
                 type="text"
                 className="input-gray flex-1"
                 placeholder="Valor"
-                value={header.value}
-                onChange={(e) =>
+                
+                onChange={(e) => {
+
                   updateHeader(header.id, 'value', e.target.value)
+                }
                 }
               />
 
