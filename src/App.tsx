@@ -14,7 +14,7 @@ import ToolBar from './components/TOOLBAR';
 import AuroraStore from './ui/aurora/aurora';
 import Console from './ui/Console';
 import JWTDecode from './ui/DecodeJWT';
-import { ModalViewer } from './ui/Difftext';
+import { ModalViewer } from './ui/Difftext';  
 import { JsonViewerStore } from './ui/formatter-JSON/stores/jsonviewer';
 import useIndexedDb from './hooks/useIndexedDb';
 
@@ -31,7 +31,8 @@ const App = () => {
   const [showGrid, setShowGrid] = useState(false);
 
 
-  const useDb = useIndexedDb({name: "goku", data: { name: "vegeta"}})
+ 
+
 
   // Download Stores JSONvIEWER
   const openModalDownload = JsonViewerStore(

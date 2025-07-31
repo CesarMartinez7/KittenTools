@@ -1,97 +1,96 @@
-import { use, useEffect } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { useState } from "react";
 
 interface PropsIndexedDb {
-  name: string;
-  data: any;
+  nameDB: string;
+  versionCurrent: number;
+  objectStoreName: string;
+  keyData: string;
 }
 
-export default function useIndexedDb({ name, data }: PropsIndexedDb) {
+export default function useIndexedDb({
+  nameDB,
+  versionCurrent,
+  objectStoreName,
+  keyData,
+}: PropsIndexedDb) {
   const [dbInstance, setDbInstance] = useState<IDBDatabase | null>(null);
 
-  let book = {
-    price: 10,
-    created: new Date(),
+  useEffect(() => {
+    const openDb = indexedDB.open(nameDB, versionCurrent);
+
+    openDb.onupgradeneeded = () => {
+      const db = openDb.result;
+
+      if (!db.objectStoreNames.contains(objectStoreName)) {
+        db.createObjectStore(objectStoreName, { keyPath: keyData });
+        console.log(`Storee "${objectStoreName}" creado`);
+      }
+    };
+
+    openDb.onsuccess = () => {
+      const db = openDb.result;
+      setDbInstance(db);
+      console.log("Base de datos abierta con exito");
+    };
+
+    openDb.onerror = () => {
+      console.error("Error al abrir la base de datos");
+      toast.error("Error al abrir la base de datos");
+    };
+  }, [nameDB, versionCurrent, objectStoreName, keyData]);
+
+  const addAllRegister = (data: any) => {
+    if (!dbInstance) {
+      toast.error("DB no esta lista aun");
+      return;
+    }
+
+    const tx = dbInstance.transaction(objectStoreName, "readwrite");
+    const store = tx.objectStore(objectStoreName);
+
+    const request = store.add(data);
+
+    request.onsuccess = () => {
+      console.log("Dato insertado con exito");
+      toast.success("Dato insertado");
+    };
+
+    request.onerror = () => {
+      console.error("Error al guardar el dato", request.error);
+      toast.error("No se pudo guardar el dato");
+    };
   };
 
 
-  useEffect(() => {
-    const openRequest = indexedDB.open("MyBaseDeDatos", 1);
-  
-    openRequest.onupgradeneeded = () => {
-      const db = openRequest.result;
-  
-      if (!db.objectStoreNames.contains("desarrollo")) {
-        db.createObjectStore("desarrollo", { keyPath: "id", autoIncrement: true });
-      }
-  
-      console.log("Object store creado o actualizado");
-    };
-  
-    openRequest.onsuccess = (event) => {
-      const db = event.target.result as IDBDatabase;
-      console.warn("DB abierta");
-  
-      const transaction = db.transaction("desarrollo", 'readwrite');
-      const objectStore = transaction.objectStore("desarrollo");
-  
-      const request = objectStore.add(book); // Usa put() si es mejor para tu caso
-  
-      request.onsuccess = () => {
-        console.log("DATO AGREGADO");
-      };
-  
-      request.onerror = (e) => {
-        console.error("Error al guardar datos", request.error);
-      };
-    };
-  
-    openRequest.onerror = () => {
-      console.log("Error al abrir la base de datos");
-    };
-  }, []);
-  
+  const getAllRegistrer = () => {
+    return new Promise((resolve, reject) => { // Return a Promise
+        if (!dbInstance) {
+            toast.error("No existe la instancia del objectStorename");
+            reject(new Error("No existe la instancia del objectStorename")); // Reject the Promise
+            return;
+        }
 
-//   useEffect(() => {
-//     const openRequest = indexedDB.open("MyBaseDeDatos", 1);
+        const tx = dbInstance.transaction(objectStoreName, "readonly"); // Use "readonly" for getAll
+        const store = tx.objectStore(objectStoreName);
+        const requestAll = store.getAll();
 
-//     openRequest.onsuccess = (event) => {
-      
+        requestAll.onsuccess = (event) => {
+            resolve(event.target.result); // Resolve the Promise with the data
+        };
 
-//       const db = event.target.result as IDBDatabase;
+        requestAll.onerror = () => {
+            console.error("Ocurrio un error al traer los datos"); // Use console.error for errors
+            reject(new Error("Ocurrio un error al traer los datos")); // Reject the Promise on error
+        };
+    });
+};
 
-//       console.warn(db);
+ 
 
-//       const transaction = db.transaction("desarrollo", 'readwrite')
-//       const objectStore = transaction.objectStore("desarrollo")
-
-//       const request = objectStore.add(book)
-      
-
-//       request.onsuccess = () => {
-//         console.log("DATO AGREGADO")
-//       }
-
-//       request.onerror = () => {
-//         console.error("Error al guardad datos")
-//       }
-      
-//     };
-
-//     openRequest.onupgradeneeded = () => {
-//       const db = openRequest.result;
-//       console.info(db);
-
-//       if (!db.objectStoreNames.contains("desarrollo")) {
-//         db.createObjectStore("desarrollo", { keyPath: "id", autoIncrement: true });
-//       }
-
-//       console.log("Necesita acutalizar");
-//     };
-
-//     openRequest.onerror = () => {
-//       console.log("Ocurrio un error al crear la db");
-//     };
-//   }, []);
+  return {
+    addAllRegister, // Registro de todo
+    dbInstance, // Instacia de la db
+    getAllRegistrer
+  };
 }

@@ -13,6 +13,7 @@ import ClientCustomHook from './hooks/client-hook';
 import RequestHook from './hooks/request.client';
 import { Methodos, Opciones, TypesResponse, VariantsAnimation } from './mapper-ops';
 import type { RequestItem } from './types/types';
+import ResponsesTypesComponent from './components/responses/response.';
 
 export default function AppClient() {
   const { value, setter } = ClientCustomHook();
@@ -272,58 +273,58 @@ export default function AppClient() {
             </AnimatePresence>
           </div>
           <div className="bg-zinc-900 p-4 rounded-xl border border-zinc-800 flex flex-col overflow-hidden shadow-lg">
-            <select name="" id="" className='bg-black text-white input-gray'>
-            {TypesResponse.map((e) => (
-              <option>
-                {e.name}
-              </option>
-            ) )}
-
-            </select>
             {responseSelected || isLoading ? (
               <>
-                <div className="flex-1 overflow-auto  rounded-md">
-                  <div className="w-full flex justify-between px-3">
-                    <div>{statusCode}</div>
-                    <div>{timeResponse}</div>
-                  </div>
-
                   {isLoading ? (
                     <div className="flex justify-center items-center flex-col h-full">
                       <span className="svg-spinners--90-ring-with-bg block"></span>
                       <span className="block">{timeResponse}</span>
                     </div>
                   ) : (
-                    <JsonViewerLazy
-                      data={
-                        errorRequest
-                          ? errorAxios
-                            ? JSON.parse(errorAxios)
-                            : 'Unknown Error'
-                          : responseSelected
-                      }
-                      width="100%"
-                      height="100%"
-                      maxHeight="76vh"
-                    />
+                    <ResponsesTypesComponent timeResponse={timeResponse} statusCode={statusCode}  contentTypeData='json' data={
+                      errorRequest
+                        ? errorAxios
+                          ? JSON.parse(errorAxios)
+                          : 'Unknown Error'
+                        : responseSelected
+                    } />
+                    // <JsonViewerLazy
+                    //   data={
+                    //     errorRequest
+                    //       ? errorAxios
+                    //         ? JSON.parse(errorAxios)
+                    //         : 'Unknown Error'
+                    //       : responseSelected
+                    //   }
+                    //   width="100%"
+                    //   height="100%"
+                    //   maxHeight="76vh"
+                    // />
                   )}
-                </div>
               </>
             ) : (
-              <div className="flex flex-col items-center justify-center h-full text-zinc-500 text-center">
-                <Icon
-                  icon="tabler:send"
-                  width="100"
-                  height="100"
-                  className="text-zinc-700 mb-4 animate-bounce-slow" // Added a subtle animation
-                />
-                <p className="text-lg font-medium text-zinc-300">
-                  ¡Todo listo para que hagas tu primera solicitud!
-                </p>
-                <p className="text-md text-zinc-400">
-                  Puedes comenzar con tu primera solicitud.
-                </p>
-              </div>
+
+              <ResponsesTypesComponent contentTypeData='json' data={
+                errorRequest
+                  ? errorAxios
+                    ? JSON.parse(errorAxios)
+                    : 'Unknown Error'
+                  : responseSelected
+              } />
+              // <div className="flex flex-col items-center justify-center h-full text-zinc-500 text-center">
+              //   <Icon
+              //     icon="tabler:send"
+              //     width="100"
+              //     height="100"
+              //     className="text-zinc-700 mb-4 animate-bounce-slow" // Added a subtle animation
+              //   />
+              //   <p className="text-lg font-medium text-zinc-300">
+              //     ¡Todo listo para que hagas tu primera solicitud!
+              //   </p>
+              //   <p className="text-md text-zinc-400">
+              //     Puedes comenzar con tu primera solicitud.
+              //   </p>
+              // </div>
             )}
           </div>
         </div>

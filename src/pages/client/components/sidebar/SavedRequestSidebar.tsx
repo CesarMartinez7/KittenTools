@@ -8,6 +8,7 @@ import ModalCurrentSavePeticion from '../../modals/save-request-modal';
 import type { RequestItem, SavedRequestsSidebarProps } from '../../types/types';
 import { useAsyncError } from 'react-router';
 import MethodFormater from './ui/method-formatter';
+import useIndexedDb from '../../../../hooks/useIndexedDb';
 
 export function SavedRequestsSidebar({
   isOpen,
@@ -81,13 +82,30 @@ export function SavedRequestsSidebar({
     }
   };
 
-  useEffect(() => {
-    try {
-      localStorage.setItem('savedRequests', JSON.stringify(savedRequests));
+
+  // const { addAllRegister, getAllRegistrer } = useIndexedDb({
+  //     nameDB: "peticiones_guardadas",
+  //     versionCurrent: 1,
+  //     objectStoreName: "peticiones",
+  //     keyData: "id",
+  //   });
+  
+        
+    
+  //   getAllRegistrer()
+    
+  //   addAllRegister(savedRequests);
+    
+    useEffect(() => {
+      try {
+      localStorage.setItem('savedRequests', JSON.stringify(savedRequests));      
+      
+      
       localStorage.setItem('currentidx', '0');
     } catch (error) {
       console.error('Error al guardar las peticiones en localStorage:', error);
       toast.error('No se pudieron guardar las peticiones.');
+      toast.error(JSON.stringify(error))
     }
   }, [savedRequests]);
 
