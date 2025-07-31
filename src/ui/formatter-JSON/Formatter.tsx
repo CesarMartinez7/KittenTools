@@ -7,8 +7,8 @@ import toast from 'react-hot-toast';
 import LazyListItem from '../LazyListPerform';
 import TableData from '../Table';
 import FormatDataTypeLabel from './components/formatlabel.tsx';
-import { JsonViewerStore } from './stores/jsonviewer.ts';
 import SkeletonJsonKey from './skeleton/skeleton.formatter.tsx';
+import { JsonViewerStore } from './stores/jsonviewer.ts';
 
 const csvConfig = mkConfig({ useKeysAsHeaders: true });
 

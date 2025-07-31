@@ -1,5 +1,5 @@
 export default function MethodFormater({ nameMethod }: { nameMethod: string }) {
-  if (nameMethod === "GET") {
+  if (nameMethod === 'GET') {
     return (
       <span aria-label="method" className="text-green-500 bg-r">
         {nameMethod}
@@ -7,14 +7,14 @@ export default function MethodFormater({ nameMethod }: { nameMethod: string }) {
     );
   }
 
-  if (nameMethod === "POST")
+  if (nameMethod === 'POST')
     return <span className="text-blue-500">{nameMethod}</span>;
 
-  if (nameMethod === "DELETE") {
+  if (nameMethod === 'DELETE') {
     return <span className="text-red-500">{nameMethod}</span>;
   }
 
-  if (nameMethod === "PUT") {
+  if (nameMethod === 'PUT') {
     return <span className="text-yellow-500">{nameMethod}</span>;
   }
 

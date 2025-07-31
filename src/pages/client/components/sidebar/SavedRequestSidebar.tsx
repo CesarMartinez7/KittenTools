@@ -1,24 +1,26 @@
-import { Icon } from '@iconify/react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
-import toast from 'react-hot-toast';
-import ModalDeleteRequest from '../../modals/delete-request-modal';
-import AddNewRequestModal from '../../modals/new-request-modal';
-import ModalCurrentSavePeticion from '../../modals/save-request-modal';
-import type { RequestItem, SavedRequestsSidebarProps } from '../../types/types';
-import { useAsyncError } from 'react-router';
-import MethodFormater from '../method-formatter';
-import useIndexedDb from '../../../../hooks/useIndexedDb';
+import { Icon } from "@iconify/react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { useAsyncError } from "react-router";
+import useIndexedDb from "../../../../hooks/useIndexedDb";
+import ModalDeleteRequest from "../../modals/delete-request-modal";
+import AddNewRequestModal from "../../modals/new-request-modal";
+import ModalCurrentSavePeticion from "../../modals/save-request-modal";
+import type { ApiRequestItem, Item, RequestItem, SavedRequestsSidebarProps } from "../../types/types";
+import MethodFormater from "../method-formatter";
+import type { RootBody } from "../../types/types";
+import { JsonNode } from "../../../../ui/formatter-JSON/Formatter";
 
 export function SavedRequestsSidebar({
   isOpen,
   onLoadRequest,
-  currentUrl = '',
-  currentMethod = 'GET',
-  currentBody = '',
+  currentUrl = "",
+  currentMethod = "GET",
+  currentBody = "",
   currentHeaders = [],
   currentQueryParams = [],
-  currentContentType = 'json',
+  currentContentType = "json",
 }: SavedRequestsSidebarProps) {
   // const {
   //   register,
@@ -34,16 +36,19 @@ export function SavedRequestsSidebar({
   const [isOpenModalSaveRequest, setIsOpenModalSaveRequest] =
     useState<boolean>(false);
 
+  const [coleccion, setColeccion] = useState<ArrayBuffer | string | File>();
+  const [parsed, setParsed] = useState<RootBody>()
+
   // Modal Delete
-  const [currentId, setCurrentId] = useState<string>('');
-  const [currentName, setCurrentName] = useState<string>('');
+  const [currentId, setCurrentId] = useState<string>("");
+  const [currentName, setCurrentName] = useState<string>("");
   const [currentIdx, setCurrentIdx] = useState<number>(() => {
     try {
-      return localStorage.getItem('currentidx')
-        ? localStorage.getItem('currentidx')
+      return localStorage.getItem("currentidx")
+        ? localStorage.getItem("currentidx")
         : 0;
     } catch {
-      toast.error('Error al cargar rq current IDX');
+      toast.error("Error al cargar rq current IDX");
       return 0;
     }
   });
@@ -51,13 +56,49 @@ export function SavedRequestsSidebar({
   // Guardador de request sea cargada o no
   const [savedRequests, setSavedRequests] = useState<RequestItem[]>(() => {
     try {
-      const storedRequests = localStorage.getItem('savedRequests');
+      const storedRequests = localStorage.getItem("savedRequests");
       return storedRequests ? JSON.parse(storedRequests) : [];
     } catch (error) {
-      toast.error('Error al cargar las peticiones del localStorage');
+      toast.error("Error al cargar las peticiones del localStorage");
       return [];
     }
   });
+
+  useEffect(() => {
+
+    toast.success("Parseando")
+    
+    
+    
+
+    console.warn(coleccion);
+  }, [coleccion]);
+
+  const handleClickCargueCollecion = () => {
+    const input = document.createElement("input") as HTMLInputElement;
+    input.type = "file";
+
+    input.onchange = () => {
+      if (input.files && input.files.length > 0) {
+        toast.success("Archivo cargado exitosamente");
+
+        const reader = new FileReader();
+
+        reader.onload = () => {
+          setColeccion(reader.result as string);
+          setParsed(JSON.parse(reader.result))
+          console.error(reader.result);
+        };
+
+        reader.readAsText(input.files[0]);
+
+      } else {
+        toast.error("No se seleccionó ningún archivo");
+      }
+    };
+
+    input.click();
+  };
 
   // Me ejecuto si soy valido solamente COOL XHR
   const onSubmit = (data: any) => {
@@ -67,52 +108,37 @@ export function SavedRequestsSidebar({
         name: data.name,
         url: data.url,
         method: data.method,
-        body: '',
-        headers: '',
-        queryParams: '',
-        contentType: 'json',
+        body: "",
+        headers: "",
+        queryParams: "",
+        contentType: "json",
       };
 
       setSavedRequests((prev) => [...prev, newRequest]);
       handleToogleModal();
-      toast.success('Peticion generada con exito');
+      toast.success("Peticion generada con exito");
     } catch (e) {
-      toast.error('Ocurrio un error al guardar');
+      toast.error("Ocurrio un error al guardar");
       handleToogleModal();
     }
   };
-
-
-  // const { addAllRegister, getAllRegistrer } = useIndexedDb({
-  //     nameDB: "peticiones_guardadas",
-  //     versionCurrent: 1,
-  //     objectStoreName: "peticiones",
-  //     keyData: "id",
-  //   });
   
-        
-    
-  //   getAllRegistrer()
-    
-  //   addAllRegister(savedRequests);
-    
-    useEffect(() => {
-      try {
-      localStorage.setItem('savedRequests', JSON.stringify(savedRequests));      
-      
-      
-      localStorage.setItem('currentidx', '0');
+  useEffect(() => {
+    try {
+      localStorage.setItem("savedRequests", JSON.stringify(savedRequests));
+
+      localStorage.setItem("currentidx", "0");
     } catch (error) {
-      console.error('Error al guardar las peticiones en localStorage:', error);
-      toast.error('No se pudieron guardar las peticiones.');
-      toast.error(JSON.stringify(error))
+      console.error("Error al guardar las peticiones en localStorage:", error);
+      toast.error("No se pudieron guardar las peticiones.");
+      toast.error(JSON.stringify(error));
     }
   }, [savedRequests]);
 
   // Guardar pero peticion actual o current
   const saveCurrentRequest = (requestName: string) => {
     if (!requestName) {
-      toast.error('Nombre de petición inválido.');
+      toast.error("Nombre de petición inválido.");
       return;
     }
 
@@ -128,7 +154,7 @@ export function SavedRequestsSidebar({
     };
 
     setSavedRequests((prev) => [...prev, newRequest]);
-    toast.success('Petición guardada con éxito.');
+    toast.success("Petición guardada con éxito.");
     handleToogleSaveRequestCurrent();
   };
 
@@ -151,23 +177,23 @@ export function SavedRequestsSidebar({
   };
 
   return (
-    <AnimatePresence key={'gokuuu'}>
+    <AnimatePresence key={"gokuuu"}>
       <AddNewRequestModal
-        key={'sdfsdf'}
+        key={"sdfsdf"}
         handleToogleModal={handleToogleModal}
         openModalNewRequest={openModalNewRequest}
         onSubmit={onSubmit}
       />
 
       <ModalCurrentSavePeticion
-        key={'ljdsflksdf'}
+        key={"ljdsflksdf"}
         handleSavePeticion={saveCurrentRequest}
         isOpen={isOpenModalSaveRequest}
         onClose={handleToogleSaveRequestCurrent}
       />
 
       <ModalDeleteRequest
-        key={'sdlkfkdslflkjds'}
+        key={"sdlkfkdslflkjds"}
         name={currentName}
         id={currentId}
         handleDeleteRequest={handleDeleteRequest}
@@ -203,13 +229,13 @@ export function SavedRequestsSidebar({
               savedRequests.map((req, idx) => (
                 <div
                   key={idx}
-                  className={` p-3 rounded-md border border-zinc-800 shadow-xl flex justify-between items-center group hover:bg-zinc-700 transition-colors  ${currentIdx === idx ? 'bg-zinc-900' : 'bg-zinc-800/60'}  `}
+                  className={` p-3 rounded-md border border-zinc-800 shadow-xl flex justify-between items-center group hover:bg-zinc-700 transition-colors  ${currentIdx === idx ? "bg-zinc-900" : "bg-zinc-800/60"}  `}
                 >
                   <div
                     className="flex-1 cursor-pointer truncate"
                     onClick={() => {
-                      localStorage.setItem('currentidx', String(idx));
-                      toast.success('Cargando peticion');
+                      localStorage.setItem("currentidx", String(idx));
+                      toast.success("Cargando peticion");
                       onLoadRequest(req);
                     }}
                   >
@@ -218,7 +244,7 @@ export function SavedRequestsSidebar({
                     </p>
 
                     <p className="text-xs text-zinc-400 truncate space-x-2.5">
-                      {' '}
+                      {" "}
                       <MethodFormater nameMethod={req.method.toUpperCase()} />
                       {req.url}
                     </p>
@@ -234,11 +260,92 @@ export function SavedRequestsSidebar({
               ))
             )}
           </div>
-          <div className='flex gap-2'>
-            <button className='btn-small text-ellipsis'>Importar coleccion</button><button className='btn-small text-ellipsis'>Exportar coleccion</button>
+          <div className="flex gap-2">
+            <button
+              className="btn-small text-ellipsis"
+              onClick={handleClickCargueCollecion}
+            >
+              Importar coleccion
+            </button>
+            <button className="btn-small text-ellipsis">
+              Exportar coleccion
+            </button>
           </div>
+
+
+
+            {parsed && (
+              <>
+              {parsed.item.map((e) => (
+                <div className="">
+                  <span className="p-3 rounded-md border border-zinc-800 shadow-xl flex gap-3 hover:bg-zinc-700 transition-colors">
+                    {/* Nombre de el folder */}
+
+                    <Icon icon="tabler:folder" width="15px" height="15px" />
+                  {e.name}
+                  </span>
+                  {/* Nombre de las api y enpoint */}
+                  <div className=" gap-2 flex flex-col" >
+                  <ItemNode  data={e} /> 
+                  </div>
+                </div>
+              ))}
+
+              <div className="overflow-scroll text-xs h-[150px]">
+                <pre>
+                  
+                </pre>
+              </div>
+              </>
+            )}
+
         </motion.div>
+
       )}
     </AnimatePresence>
   );
 }
+
+
+
+export const ItemNode = ({data}: {data: Item} ) => {
+
+  const ident = 10
+
+  return(
+    <div className="flex flex-col gap-4 ">
+
+    {data.item && data.request && data.response && data.name ? (
+      <div style={{marginLeft:`${ident * 1}`}}>
+        {data.item.map((e) => (
+          <div className="bg-red-200">{
+
+            <>
+            <p>{e.name}</p>
+             <ItemNode data={e}  />
+            </>
+          }
+          </div>
+        ))}
+      </div>
+    ) : (
+      <div className=" p-2">
+        
+          {data.name}
+          {data.item?.map((eee) => (
+          <>
+          <div className="bg-zinc-900 p-2 flex border border-zinc-800 flex-col gap-4">
+          <ItemNode data={eee} />
+          
+          </div>
+          </>
+        ))}
+        
+      </div>
+    )}
+    </div>
+  )
+
+}
+
+

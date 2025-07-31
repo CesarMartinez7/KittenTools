@@ -1,9 +1,9 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
+import plus from '@iconify-icons/tabler/plus';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useStoreHeaders } from '../stores/headers-store';
-import plus from '@iconify-icons/tabler/plus';
 
 interface HeaderItem {
   id: string;

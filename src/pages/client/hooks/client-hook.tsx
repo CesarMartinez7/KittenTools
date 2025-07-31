@@ -48,8 +48,6 @@ export interface RetornoClient {
 }
 
 const useClientStore = (): RetornoClient => {
-
-
   const params = useParamsStore((state) => state.valor);
   const cabeceras = useStoreHeaders((state) => state.valor);
 
@@ -61,12 +59,13 @@ const useClientStore = (): RetornoClient => {
 
   const [timeResponse, setTimeResponse] = useState<number>(0);
 
-
   const [bodyJson, setBodyJson] = useState('');
   const [showMethods, setShowMethods] = useState(false);
   const [endpointUrl, setEndpointUrl] = useState('https://httpbin.org/get');
   const [isLoading, setIsLoading] = useState(false);
-  const [contentType, setContentType] = useState<"json" | "html" | "typescript" | "html">();
+  const [contentType, setContentType] = useState<
+    'json' | 'html' | 'typescript' | 'html'
+  >();
 
   const [statusCode, setStatusCode] = useState<number | null>();
 

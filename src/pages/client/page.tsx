@@ -8,12 +8,17 @@ import {
 } from '../../components/LAZY_COMPONENT';
 import AddQueryParam from './components/addQueryParams';
 import { HeadersAddRequest } from './components/Headers';
+import ResponsesTypesComponent from './components/responses/response.';
 import { SavedRequestsSidebar } from './components/sidebar/SavedRequestSidebar';
 import ClientCustomHook from './hooks/client-hook';
 import RequestHook from './hooks/request.client';
-import { Methodos, Opciones, TypesResponse, VariantsAnimation } from './mapper-ops';
+import {
+  Methodos,
+  Opciones,
+  TypesResponse,
+  VariantsAnimation,
+} from './mapper-ops';
 import type { RequestItem } from './types/types';
-import ResponsesTypesComponent from './components/responses/response.';
 
 export default function AppClient() {
   const { value, setter } = ClientCustomHook();
@@ -114,7 +119,6 @@ export default function AppClient() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
     >
-    
       <SavedRequestsSidebar
         onLoadRequest={onLoadRequest}
         currentUrl={endpointUrl}
@@ -275,42 +279,49 @@ export default function AppClient() {
           <div className="bg-zinc-900 p-4 rounded-xl border border-zinc-800 flex flex-col overflow-hidden shadow-lg">
             {responseSelected || isLoading ? (
               <>
-                  {isLoading ? (
-                    <div className="flex justify-center items-center flex-col h-full">
-                      <span className="svg-spinners--90-ring-with-bg block"></span>
-                      <span className="block">{timeResponse}</span>
-                    </div>
-                  ) : (
-                    <ResponsesTypesComponent timeResponse={timeResponse} statusCode={statusCode}  contentTypeData='JSON' data={
+                {isLoading ? (
+                  <div className="flex justify-center items-center flex-col h-full">
+                    <span className="svg-spinners--90-ring-with-bg block"></span>
+                    <span className="block">{timeResponse}</span>
+                  </div>
+                ) : (
+                  <ResponsesTypesComponent
+                    timeResponse={timeResponse}
+                    statusCode={statusCode}
+                    contentTypeData="JSON"
+                    data={
                       errorRequest
                         ? errorAxios
                           ? JSON.parse(errorAxios)
                           : 'Unknown Error'
                         : responseSelected
-                    } />
-                    // <JsonViewerLazy
-                    //   data={
-                    //     errorRequest
-                    //       ? errorAxios
-                    //         ? JSON.parse(errorAxios)
-                    //         : 'Unknown Error'
-                    //       : responseSelected
-                    //   }
-                    //   width="100%"
-                    //   height="100%"
-                    //   maxHeight="76vh"
-                    // />
-                  )}
+                    }
+                  />
+                  // <JsonViewerLazy
+                  //   data={
+                  //     errorRequest
+                  //       ? errorAxios
+                  //         ? JSON.parse(errorAxios)
+                  //         : 'Unknown Error'
+                  //       : responseSelected
+                  //   }
+                  //   width="100%"
+                  //   height="100%"
+                  //   maxHeight="76vh"
+                  // />
+                )}
               </>
             ) : (
-
-              <ResponsesTypesComponent contentTypeData='json' data={
-                errorRequest
-                  ? errorAxios
-                    ? JSON.parse(errorAxios)
-                    : 'Unknown Error'
-                  : responseSelected
-              } />
+              <ResponsesTypesComponent
+                contentTypeData="json"
+                data={
+                  errorRequest
+                    ? errorAxios
+                      ? JSON.parse(errorAxios)
+                      : 'Unknown Error'
+                    : responseSelected
+                }
+              />
               // <div className="flex flex-col items-center justify-center h-full text-zinc-500 text-center">
               //   <Icon
               //     icon="tabler:send"
