@@ -7,7 +7,7 @@ import AddNewRequestModal from '../../modals/new-request-modal';
 import ModalCurrentSavePeticion from '../../modals/save-request-modal';
 import type { RequestItem, SavedRequestsSidebarProps } from '../../types/types';
 import { useAsyncError } from 'react-router';
-import MethodFormater from './ui/method-formatter';
+import MethodFormater from '../method-formatter';
 import useIndexedDb from '../../../../hooks/useIndexedDb';
 
 export function SavedRequestsSidebar({
@@ -233,6 +233,9 @@ export function SavedRequestsSidebar({
                 </div>
               ))
             )}
+          </div>
+          <div className='flex gap-2'>
+            <button className='btn-small text-ellipsis'>Importar coleccion</button><button className='btn-small text-ellipsis'>Exportar coleccion</button>
           </div>
         </motion.div>
       )}

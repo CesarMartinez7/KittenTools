@@ -110,7 +110,7 @@ export default function AppClient() {
 
   return (
     <motion.div
-      className="min-h-screen  flex text-white"
+      className="min-h-screen  flex text-white overflow-hidden"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
     >
@@ -201,7 +201,7 @@ export default function AppClient() {
             ))}
           </div>
         </form>
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 flex-1 overflow-y-auW">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 flex-1  md:overflow-hidden overflow-y-scroll ">
           <div className="bg-zinc-900 p-6 rounded-xl border border-zinc-800 flex flex-col shadow-lg">
             <AnimatePresence mode="wait" key={'uja'}>
               {mimeSelected === 0 && ( // Body
@@ -281,7 +281,7 @@ export default function AppClient() {
                       <span className="block">{timeResponse}</span>
                     </div>
                   ) : (
-                    <ResponsesTypesComponent timeResponse={timeResponse} statusCode={statusCode}  contentTypeData='json' data={
+                    <ResponsesTypesComponent timeResponse={timeResponse} statusCode={statusCode}  contentTypeData='JSON' data={
                       errorRequest
                         ? errorAxios
                           ? JSON.parse(errorAxios)

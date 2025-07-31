@@ -1,4 +1,4 @@
-import type { VariantLabels } from "motion-dom";
+
 
 export const Methodos = [
   { name: "GET", className: "btn btn-primary" },
@@ -24,12 +24,11 @@ export const Opciones = [
 ];
 
 export const TypesResponse = [
-  { name: "JSON", contentType: "" },
-  { name: "XML", contentType: "" },
-  { name: "raw", contentType: "html" },
-  { name: "HTML", contentType: "" },
-  { name: "RAW", contentType: "" },
-  { name: "BASE64", contentType: "" },
+  { name: "JSON", contentType: "", icon:"json" },
+  { name: "XML", contentType: "", icon: "file-type-xml" },
+  { name: "HTML", contentType: "" , icon: "brand-html5"},
+  { name: "RAW", contentType: "", icon: "file-shredder" },
+  { name: "BASE64", contentType: "", icon : "file-analytics" },
 ];
 
 
