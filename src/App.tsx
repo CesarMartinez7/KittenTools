@@ -30,6 +30,9 @@ const App = () => {
   const [isDecode, setIsDecode] = useState<boolean>(false);
   const [showGrid, setShowGrid] = useState(false);
 
+
+  const showFullScreen = JsonViewerStore((state) => state.fullScreenModal)
+
   // Download Stores JSONvIEWER
   const openModalDownload = JsonViewerStore(
     (state) => state.isOpenModalDownload,
@@ -296,7 +299,7 @@ const App = () => {
                           Datos Procesados
                         </label>
                         <div className="flex justify-center items-center gap-2">
-                          <button
+                          {/* <button
                             className="text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-400 px-1 py-1 rounded-md transition"
                             onClick={handleClickOpenModal}
                           >
@@ -305,7 +308,7 @@ const App = () => {
                               width="15"
                               height="15"
                             />
-                          </button>
+                          </button> */}
                         </div>
                       </div>
                       <div className="text-sm whitespace-pre-wrap break-words break-all  h-fit">
@@ -324,7 +327,7 @@ const App = () => {
           </AnimatePresence>
         </div>
 
-        <BaseModalLazy isOpen={openViewerJsonFull} onClose={handleCloseAll}>
+        <BaseModalLazy isOpen={showFullScreen} onClose={handleCloseAll}>
           <JsonViewerLazy
             language="json"
             maxHeight="90vh"

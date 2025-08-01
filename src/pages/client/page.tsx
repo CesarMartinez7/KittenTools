@@ -216,7 +216,7 @@ export default function AppClient() {
             ))}
           </div>
         </form>
-        <div className='grid  md:grid-cols-2  gap-4 h-full ' aria-label='grid' >
+        <div className='grid md:grid-cols-1 lg:grid-cols-2  gap-4 h-full ' aria-label='grid' >
           <div className="bg-neutral-900 p-6 rounded-xl border border-zinc-800 flex flex-col shadow-lg">
             <AnimatePresence mode="wait" key={'uja'}>
               {mimeSelected === 0 && ( // Body
@@ -247,7 +247,7 @@ export default function AppClient() {
                   <div className="flex-1 min-h-0  ">
                     <CodeEditorLazy
                       height="100%"
-                      maxHeight='70vh'
+                      maxHeight='60vh'
                       language={contentType}
                       value={bodyJson}
                       onChange={setBodyJson}
@@ -284,6 +284,17 @@ export default function AppClient() {
                   className="flex-1 flex items-center justify-center text-zinc-500"
                 >
                   <p className="text-lg">Proximamente</p>
+                </motion.div>
+              )}
+
+
+              {mimeSelected === 4 && (
+                <motion.div
+                  key="auth-section"
+                  variants={VariantsAnimation}
+                  className=" text-zinc-500"
+                >
+                  <CodeEditorLazy language='javascript' />
                 </motion.div>
               )}
             </AnimatePresence>

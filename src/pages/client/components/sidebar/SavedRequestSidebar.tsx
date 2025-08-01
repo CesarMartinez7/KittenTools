@@ -195,7 +195,7 @@ export function SavedRequestsSidebar({
       />
 
       {isOpen && (
-        <motion.div className="top-0 left-0 h-screen w-64 bg-zinc-900/50 backdrop-blur-3xl border-r border-zinc-800 p-6 z-50 md:flex flex-col shadow-lg hidden ">
+        <motion.div className="top-0 left-0 h-svh max-h-svh w-64 bg-zinc-900/50 backdrop-blur-3xl border-r border-zinc-800 p-6 z-50 md:flex flex-col shadow-lg hidden ">
           <div className="flex justify-start items-center my-8 space-x-3">
           <span className="game-icons--thorny-vine"></span>
             
@@ -270,11 +270,11 @@ export function SavedRequestsSidebar({
               Exportar coleccion
             </button>
           </div>
-            <div className="overflow-scroll h-78 truncate">
               {parsed && (
+            <div className="overflow-y-scroll h-78 ">
                 <ItemNode level={0} data={parsed}/>         
-              )}
             </div>
+              )}
         </motion.div>
 
       )}
@@ -296,7 +296,7 @@ export const ItemNode: React.FC<{
 
   return (
     <div className="flex flex-col gap-4" style={{ marginLeft: `${indent}px` }}>
-      <div className=" p-2.5 rounded-md border border-zinc-800 shadow-xl flex justify-between items-center group hover:bg-zinc-700 transition-colors  bg-zinc-800/60  ">
+      <div className=" p-1.5 text-ellipsis rounded-md border border-zinc-800 shadow-xl flex justify-between items-center group hover:bg-zinc-700 transition-colors  bg-zinc-800/60 truncate  ">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-2">
             <Icon
@@ -305,7 +305,7 @@ export const ItemNode: React.FC<{
               height="25"
               className={isFolder ? "text-yellow-400" : "text-blue-400"}
             />
-            <p className="font-semibold text-sm text-zinc-100">{data.name}</p>
+            <p className="font-semibold text-sm text-zinc-100 text-ellipsis relative ">{data.name}</p>
           </div>
 
           {data.request?.method && (

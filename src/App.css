@@ -36,7 +36,7 @@ kbd {
 
 
 .shiny-text {
-  color: #fbfbfbbc; /* Adjust this color to change intensity/style */
+  color: #fbfbfbbc; 
   background: linear-gradient(
     120deg,
     rgba(255, 255, 255, 0.331) 40%,

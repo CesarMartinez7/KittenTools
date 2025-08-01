@@ -10,6 +10,12 @@ import FormatDataTypeLabel from './components/formatlabel.tsx';
 import SkeletonJsonKey from './skeleton/skeleton.formatter.tsx';
 import { JsonViewerStore } from './stores/jsonviewer.ts';
 
+
+
+
+
+
+
 const csvConfig = mkConfig({ useKeysAsHeaders: true });
 
 type JsonValue =
@@ -148,9 +154,16 @@ const JsonViewer: React.FC<{
   const [showTable, setShowTable] = useState<boolean>(false);
   const [showInterface, setShowInterface] = useState<boolean>(false);
 
+
+  const fullScreenModal = JsonViewerStore((state)  => state.fullScreenModal )
+  const setFullScreenModal = JsonViewerStore((state)  => state.setFullModalScreen )
+
+
+  // Open ModaDownload
   const openModalDownload = JsonViewerStore(
     (state) => state.isOpenModalDownload,
   );
+  // SetOpenModalDownload
   const setOpenModalDownload = JsonViewerStore(
     (state) => state.toogleOpenModalDownload,
   );
@@ -344,7 +357,7 @@ const JsonViewer: React.FC<{
           <button
             className="btn-small"
             title="Maximizar JsonEditor"
-            onClick={handleClickRest}
+            onClick={() => setFullScreenModal(!fullScreenModal)}
           >
             <Icon icon={'tabler:maximize'} width={'10'} height={'10'} />
           </button>

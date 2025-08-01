@@ -19,6 +19,9 @@ export const Opciones = [
   {
     name: 'Autenticacion',
   },
+  {
+    name: 'Scripts',
+  }
 ];
 
 export const TypesResponse = [
