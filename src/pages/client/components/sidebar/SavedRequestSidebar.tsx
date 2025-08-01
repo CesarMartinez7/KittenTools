@@ -308,44 +308,29 @@ export function SavedRequestsSidebar({
 
 
 
-export const ItemNode = ({data}: {data: Item} ) => {
 
-  const ident = 10
+export const ItemNode: React.FC = ({ data, level = 0 }) => {
+  const indent = 10 * level;
+  const isFullData = data.item && data.request && data.response && data.name;
 
-  return(
-    <div className="flex flex-col gap-4 ">
-
-    {data.item && data.request && data.response && data.name ? (
-      <div style={{marginLeft:`${ident * 1}`}}>
-        {data.item.map((e) => (
-          <div className="bg-red-200">{
-
-            <>
-            <p>{e.name}</p>
-             <ItemNode data={e}  />
-            </>
-          }
-          </div>
-        ))}
-      </div>
-    ) : (
-      <div className=" p-2">
-        
-          {data.name}
-          {data.item?.map((eee) => (
-          <>
-          <div className="bg-zinc-900 p-2 flex border border-zinc-800 flex-col gap-4">
-          <ItemNode data={eee} />
-          
-          </div>
-          </>
-        ))}
-        
-      </div>
-    )}
+  return (
+    <div className="flex flex-col gap-4" style={{ marginLeft: `${indent}px` }}>
+      {isFullData ? (
+        <div className="bg-red-200 p-2 rounded">
+          <p className="font-bold">{data.name}</p>
+          {data.item.map((child, index) => (
+            <ItemNode key={index} data={child} level={level + 1} />
+          ))}
+        </div>
+      ) : (
+        <div className="bg-zinc-900 p-2 rounded border border-zinc-800 text-white">
+          <p className="text-sm">{data.name ?? "Sin nombre"}</p>
+          {data.item?.map((child, index) => (
+            <ItemNode key={index} data={child} level={level + 1} />
+          ))}
+        </div>
+      )}
     </div>
-  )
-
-}
-
+  );
+};
 
