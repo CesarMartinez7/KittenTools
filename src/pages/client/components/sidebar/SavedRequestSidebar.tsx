@@ -270,16 +270,11 @@ export function SavedRequestsSidebar({
               Exportar coleccion
             </button>
           </div>
-
-
-            {parsed ? (
-              <>
-                {parsed.item.map((e, idx) => {
-                  <ItemNode setCurrentBody={null} level={0} data={e} key={idx} /> 
-                })}
-              </>
-            ) : null}           
-
+            <div className="overflow-scroll h-78 truncate">
+              {parsed && (
+                <ItemNode level={0} data={parsed}/>         
+              )}
+            </div>
         </motion.div>
 
       )}
@@ -290,51 +285,55 @@ export function SavedRequestsSidebar({
 
 
 
-  export const ItemNode: React.FC<{
-    data: Item;
-    level: number;
-    setCurrentBody: React.Dispatch<React.SetStateAction<string>>;
-  }> = ({ data, level = 0, setCurrentBody }) => {
-    const indent = 10 * level;
-    const isFolder = !!data.item;
+export const ItemNode: React.FC<{
+  data: Item;
+  level: number;
+}> = ({ data, level = 0 }) => {
+  const indent = 12 * level;
+  const isFolder = !!data.item;
+  const hasBody = !!data.request?.body?.raw;
+  const isRequest = !!data.request;
 
-    return (
-      <div className="flex flex-col gap-2" style={{ marginLeft: `${indent}px` }}>
-        <div className="p-2 rounded border border-zinc-700 bg-zinc-900 text-white">
-          <div className="flex justify-between items-center">
-            <p className="font-bold">{data.name}</p>
-            {data.request?.method && (
-              <span className="text-xs px-2 py-1 rounded bg-zinc-800 text-green-400">
-                {data.request.method}
-              </span>
-            )}
+  return (
+    <div className="flex flex-col gap-4" style={{ marginLeft: `${indent}px` }}>
+      <div className=" p-2.5 rounded-md border border-zinc-800 shadow-xl flex justify-between items-center group hover:bg-zinc-700 transition-colors  bg-zinc-800/60  ">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <Icon
+              icon={isFolder ? "tabler:folder" : "tabler:file-code"}
+              width="25"
+              height="25"
+              className={isFolder ? "text-yellow-400" : "text-blue-400"}
+            />
+            <p className="font-semibold text-sm text-zinc-100">{data.name}</p>
           </div>
 
-          {/* Mostrar body al hacer clic si es un request */}
-          {data.request?.body?.raw && (
-            <button
-              onClick={() => {
-                setCurrentBody(data.request!.body!.raw);
-              }}
-              className="mt-2 text-xs text-blue-400 hover:underline"
+          {data.request?.method && (
+            <span
+              className={`text-xs font-mono px-2 py-1 rounded-md bg-zinc-800
+              ${
+                data.request.method === "GET"
+                  ? "text-green-400"
+                  : data.request.method === "POST"
+                  ? "text-blue-400"
+                  : "text-orange-400"
+              }`}
             >
-              Ver Body
-            </button>
+              {data.request.method}
+            </span>
           )}
         </div>
 
-        {/* Recursividad para hijos si es carpeta */}
-        {isFolder &&
-          data.item!.map((child, index) => (
-            <ItemNode
-              key={index}
-              data={child}
-              level={level + 1}
-              setCurrentBody={setCurrentBody}
-            />
-          ))}
       </div>
-    );
-  };
 
-
+      {isFolder &&
+        data.item!.map((child, index) => (
+          <ItemNode
+            key={index}
+            data={child}
+            level={level + 1}
+          />
+        ))}
+    </div>
+  );
+};
