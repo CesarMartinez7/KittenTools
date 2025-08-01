@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { time } from 'motion/react';
 import type React from 'react';
 import type { Dispatch, SetStateAction } from 'react';
 import { useCallback, useEffect } from 'react';
@@ -6,7 +7,6 @@ import toast from 'react-hot-toast';
 
 interface ReturnHookRequest {
   handleRequest: (e: any) => Promise<void>;
-
   prepareHeaders: (headers: any) => void;
 }
 interface RequestHookProps {
@@ -57,9 +57,10 @@ export default function RequestHook({
 
   // ... tu request con axios
 
-  useEffect(() => {
-    toast.success(String(timeResponse));
-  }, [timeResponse]);
+  // useEffect(() => {
+  //   alert(String(timeResponse))
+  //   toast.success(String(timeResponse));
+  // }, [timeResponse]);
 
   const handleRequest = useCallback(
     async (e) => {
@@ -124,6 +125,7 @@ export default function RequestHook({
         setResponseSelected(response.data);
         setStatusCode(response.status);
         const end = Date.now();
+
         setTimeResponse(Math.floor((end - start) / 1000));
       } catch (error) {
         setErrorRequest(true);

@@ -1,6 +1,6 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { AnimatePresence, motion } from 'motion/react';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { CodeEditorLazy } from '../../../../components/LAZY_COMPONENT';
 import { JsonNode } from '../../../../ui/formatter-JSON/Formatter';
 import { TypesResponse } from '../../mapper-ops';
@@ -20,6 +20,16 @@ export default function ResponsesTypesComponent({
   data,
   contentTypeData,
 }: ResponseTypes) {
+
+
+  const Size = useMemo(() => {
+    const size = new TextEncoder().encode(data).length / 1024
+    return size.toFixed(2) + "KB"
+  }, [data])
+
+
+
+
   const [showsContentTypes, setShowsContentTypes] = useState<boolean>(false);
   const [contentType, setContentType] = useState<string>(
     contentTypeData || 'JSON',
@@ -27,7 +37,7 @@ export default function ResponsesTypesComponent({
 
   return (
     <div
-      className="border p-4 bg-black/30 border-zinc-800 h-full rounded-xl space-y-4 grid grid-rows-[60px_auto_40px]"
+      className="border p-4 border-zinc-800 h-full rounded-xl space-y-4 grid grid-rows-[60px_auto_40px]"
       style={{ height }}
     >
       <div className="w-full bg-neutral-900  p-2 rounded-xl border-zinc-800 border flex justify-between">
@@ -93,7 +103,7 @@ export default function ResponsesTypesComponent({
       </div>
 
       {/* ----------------------------------------------------------- Principio del contenido por tipos ---------------------- */}
-      <div className="bg-neutral-950  w-full p-6 max-h-[65vh] rounded-2xl  h-auto overflow-y-scroll">
+      <div className="bg-zinc-900  w-full p-6 max-h-[65vh] rounded-2xl  h-auto overflow-y-scroll">
         {contentType === 'JSON' && (
           <JsonNode
             open={true}
@@ -120,7 +130,7 @@ export default function ResponsesTypesComponent({
       {/* ------------------------------------------------------- Barra de ABAJO ----------------------------------------------- */}
 
       <div className="w-full bg-neutral-900  p-2 rounded-xl border-zinc-800 border flex justify-between">
-        <div>100kb</div>
+        <div>{Size}</div>
         <div className="flex gap-x-2.5">
           <button className="btn-small">
             <Icon icon="tabler:search" width="15px" height="15px" />

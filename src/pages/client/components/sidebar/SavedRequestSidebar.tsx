@@ -1,5 +1,5 @@
 import { Icon } from "@iconify/react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, circIn, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useAsyncError } from "react-router";
@@ -8,9 +8,9 @@ import ModalDeleteRequest from "../../modals/delete-request-modal";
 import AddNewRequestModal from "../../modals/new-request-modal";
 import ModalCurrentSavePeticion from "../../modals/save-request-modal";
 import type { ApiRequestItem, Item, RequestItem, SavedRequestsSidebarProps } from "../../types/types";
-import MethodFormater from "../method-formatter";
+import MethodFormater, { MethodFormaterButton } from "../method-formatter";
 import type { RootBody } from "../../types/types";
-import { JsonNode } from "../../../../ui/formatter-JSON/Formatter";
+import plusIcon from "@iconify-icons/tabler/plus"
 
 export function SavedRequestsSidebar({
   isOpen,
@@ -65,13 +65,7 @@ export function SavedRequestsSidebar({
   });
 
   useEffect(() => {
-
-    toast.success("Parseando")
     
-    
-    
-
-    console.warn(coleccion);
   }, [coleccion]);
 
   const handleClickCargueCollecion = () => {
@@ -203,24 +197,30 @@ export function SavedRequestsSidebar({
 
       {isOpen && (
         <motion.div className="top-0 left-0 h-screen w-64 bg-zinc-900/50 backdrop-blur-3xl border-r border-zinc-800 p-6 z-50 md:flex flex-col shadow-lg hidden ">
-          <div className="flex justify-start items-center my-8">
-            <Icon icon="game-icons:thorny-vine" width="60" height="60" />
+          <div className="flex justify-start items-center my-8 space-x-3">
+          <span className="game-icons--thorny-vine"></span>
+            
+          <h3 className="text-3xl font-bold bg-gradient-to-bl from-white to-zinc-400 bg-clip-text text-transparent flex"> Kitten Axios</h3>
+
+            
+
+          
           </div>
           <div className="flex flex-row gap-x-2.5 h-12 ">
             <button
               onClick={handleToogleSaveRequestCurrent}
-              className="gray-btn w-full mb-4 flex truncate items-center justify-center gap-2 "
+              className="btn-black w-full mb-4 flex truncate items-center justify-center gap-2  "
             >
-              <Icon icon="material-symbols:save-outline" /> Guardar Peticion
+              <span class="tabler--clipboard-smile"></span> Guardar Peticion
             </button>
             <button
               onClick={handleToogleModal}
-              className="gray-btn  mb-4 flex truncate items-center justify-center gap-2  "
+              className="btn-black  mb-4 flex truncate items-center justify-center gap-2  "
             >
-              <Icon icon="tabler:plus" width="24" height="24" />
+              <Icon icon={plusIcon} width="24" height="24" />
             </button>
           </div>
-          <div className="flex-1 overflow-y-auto space-y-2">
+          <div className="flex-1 overflow-y-auto space-y-2 justify-center items-center">
             {savedRequests.length === 0 ? (
               <p className="text-zinc-500 text-sm text-center py-4">
                 No hay peticiones guardadas todavia.
@@ -229,7 +229,7 @@ export function SavedRequestsSidebar({
               savedRequests.map((req, idx) => (
                 <div
                   key={idx}
-                  className={` p-3 rounded-md border border-zinc-800 shadow-xl flex justify-between items-center group hover:bg-zinc-700 transition-colors  ${currentIdx === idx ? "bg-zinc-900" : "bg-zinc-800/60"}  `}
+                  className={` p-2.5 rounded-md border border-zinc-800 shadow-xl flex justify-between items-center group hover:bg-zinc-700 transition-colors  ${currentIdx === idx ? "bg-zinc-900" : "bg-zinc-800/60"}  `}
                 >
                   <div
                     className="flex-1 cursor-pointer truncate"
@@ -239,13 +239,13 @@ export function SavedRequestsSidebar({
                       onLoadRequest(req);
                     }}
                   >
-                    <p className="font-semibold text-white truncate">
+                    <p className="font-semibold text-white shiny-text truncate">
                       {req.name}
                     </p>
 
-                    <p className="text-xs text-zinc-400 truncate space-x-2.5">
+                    <p className="text-xs text-zinc-400 truncate space-x-2.5 ">
                       {" "}
-                      <MethodFormater nameMethod={req.method.toUpperCase()} />
+                      <MethodFormaterButton nameMethod={req.method.toUpperCase()} />
                       {req.url}
                     </p>
                   </div>
@@ -274,30 +274,17 @@ export function SavedRequestsSidebar({
 
 
 
+            <div className=" max-h-screen overflow-auto">
             {parsed && (
-              <>
-              {parsed.item.map((e) => (
-                <div className="">
-                  <span className="p-3 rounded-md border border-zinc-800 shadow-xl flex gap-3 hover:bg-zinc-700 transition-colors">
-                    {/* Nombre de el folder */}
-
-                    <Icon icon="tabler:folder" width="15px" height="15px" />
-                  {e.name}
-                  </span>
-                  {/* Nombre de las api y enpoint */}
-                  <div className=" gap-2 flex flex-col" >
-                  <ItemNode  data={e} /> 
-                  </div>
-                </div>
-              ))}
-
-              <div className="overflow-scroll text-xs h-[150px]">
-                <pre>
-                  
-                </pre>
-              </div>
-              </>
+              <ItemNode level={0} data={parsed} /> 
             )}
+
+            </div>
+
+
+
+
+           
 
         </motion.div>
 
@@ -309,24 +296,36 @@ export function SavedRequestsSidebar({
 
 
 
-export const ItemNode: React.FC = ({ data, level = 0 }) => {
+export const ItemNode: React.FC<{data: Item, level: number, setCurrentBody: React.Dispatch<React.SetStateAction<string>>}> = ({ data, level = 0 }) => {
   const indent = 10 * level;
+  // Cuando es es rquest tiene estos parametros o esto
   const isFullData = data.item && data.request && data.response && data.name;
+  
 
   return (
-    <div className="flex flex-col gap-4" style={{ marginLeft: `${indent}px` }}>
+    <div className="flex gap-4" style={{ marginLeft: `${indent}px` }}>
       {isFullData ? (
-        <div className="bg-red-200 p-2 rounded">
+        <div className="p-2 rounded">
           <p className="font-bold">{data.name}</p>
-          {data.item.map((child, index) => (
+          {data?.item?.map((child, index) => (
             <ItemNode key={index} data={child} level={level + 1} />
           ))}
         </div>
       ) : (
-        <div className="bg-zinc-900 p-2 rounded border border-zinc-800 text-white">
-          <p className="text-sm">{data.name ?? "Sin nombre"}</p>
+        <div className="bg p-2 decoration-2 flex flex-col roundedborder-zinc-800  gap-3 text-white"> 
+          {data.request?.method && (
+            <p>{data.request?.method}</p>
+          )}
+          
+          <p className="text-sm">{data.name}</p>
           {data.item?.map((child, index) => (
+            <div className="border border-zinc-800 rounded flex b" onClick={() => {
+              console.log(child.name)
+              console.log(child.request.body)
+            }}>
+            <p className="text-sm">{data.request?.method}</p>
             <ItemNode key={index} data={child} level={level + 1} />
+            </div>
           ))}
         </div>
       )}

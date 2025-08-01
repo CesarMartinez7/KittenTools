@@ -60,7 +60,7 @@ export function HeadersAddRequest() {
   };
 
   return (
-    <div className="relative overflow-y-auto max-h-full">
+    <div className="relative  max-h-full h-full">
       <button
         type="button"
         className="btn-black sticky my-2 left-0 shadow-2xl gap-2"
@@ -72,8 +72,9 @@ export function HeadersAddRequest() {
 
       <div className="h-full">
         {headers.length === 0 && (
-          <div className="h-full flex justify-center-safe items-center  w-full">
-            <span>No existen Cabeceras cargadas.</span>
+          <div className="h-full flex justify-center-safe items-center w-full flex-col ">
+            <span className="tabler--mood-empty block "></span>
+            <span className='block text-lg text-zinc-400'>No existen Cabeceras cargadas.</span>
           </div>
         )}
         <div className="flex flex-col gap-y-4 mt-4">

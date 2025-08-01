@@ -11,6 +11,7 @@ import { HeadersAddRequest } from './components/Headers';
 import ResponsesTypesComponent from './components/responses/response.';
 import { SavedRequestsSidebar } from './components/sidebar/SavedRequestSidebar';
 import ClientCustomHook from './hooks/client-hook';
+import sendIcon from "@iconify-icons/tabler/send"
 import RequestHook from './hooks/request.client';
 import {
   Methodos,
@@ -38,7 +39,6 @@ export default function AppClient() {
     isLoading,
     contentType,
     statusCode,
-
     refForm,
   } = value;
 
@@ -54,7 +54,6 @@ export default function AppClient() {
     setErrorAxios,
     setErrorRequest,
     setSelectedMethod,
-
     setResponseSelected,
   } = setter;
 
@@ -111,7 +110,6 @@ export default function AppClient() {
     }
   }, [contentType]);
 
-  const containerRef = useRef<HTMLDivElement>(null);
 
   return (
     <motion.div
@@ -129,24 +127,37 @@ export default function AppClient() {
         isOpen={isOpenSiderBar}
         onClose={() => setIsOpenSiderbar(false)}
       />
-      <div className="w-full flex flex-col px-4 md:px-8 py-4">
+      <div className="w-full flex flex-col px-4 md:px-8 py-4 gap-2 bg-zinc-900/50 ">
+        <div className=' flex-row justify-between items-center flex gap-2 text-white bg-zinc-900/60 py-1 px-5 rounded-xl'>
+          <div className='flex gap-2 '>
+            <button className='btn-black'>
+            <span class="tabler--arrow-left"></span>
+              </button>
+              <button className='btn-black'>
+              <span class="tabler--arrow-narrow-right"></span>
+              </button>
+          </div>
+          <div>
+            <button className='btn-black'>Aurora</button>
+          </div>
+        </div>
         <form ref={refForm} onSubmit={handleRequest} className="space-y-4 mb-4">
           <div className="flex flex-col md:flex-row gap-3 md:items-center">
             <div className="relative">
               <button
                 type="button"
                 onClick={handleClickShowMethod}
-                className={`py-1 px-4 rounded-md font-semibold text-lg ${selectedMethod === 'GET' ? 'bg-green-800 text-green-300' : selectedMethod === 'POST' ? 'bg-blue-800 text-blue-300' : selectedMethod === 'PUT' ? 'bg-yellow-800 text-yellow-300' : selectedMethod === 'PATCH' ? 'bg-orange-800 text-orange-300' : selectedMethod === 'DELETE' ? 'bg-red-800 text-red-300' : 'bg-gray-700'}`} // Dynamic button color based on method
+                className={`py-1 px-4 rounded-md font-semibold text-lg ${selectedMethod === 'GET' ? 'bg-green-800 text-green-300' : selectedMethod === 'POST' ? 'bg-blue-500 text-blue-300' : selectedMethod === 'PUT' ? 'bg-yellow-800 text-yellow-300' : selectedMethod === 'PATCH' ? 'bg-orange-800 text-orange-300' : selectedMethod === 'DELETE' ? 'bg-red-800 text-red-300' : 'bg-gray-700'}`} // Dynamic button color based on method
               >
                 {selectedMethod}
               </button>
               <AnimatePresence>
                 {showMethods && (
                   <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="absolute top-full left-0 w-32   bg-zinc-900 z-50 rounded-b-md shadow-xl overflow-hidden"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0, }}
+                    className="absolute top-full left-0 w-32 bg-neutral-900 z-50 rounded shadow-2xl overflow-hidden"
                   >
                     {Methodos.map((metodo) => (
                       <button
@@ -157,7 +168,7 @@ export default function AppClient() {
                           setShowMethods(false);
                         }}
                         className={`w-full text-left px-4 py-2 hover:bg-zinc-700 transition-colors duration-200
-                          ${metodo.name.toUpperCase() === selectedMethod ? 'bg-sky-700 text-white' : ''}`}
+                          ${metodo.name.toUpperCase() === selectedMethod ? 'bg-sky-500 text-white' : ''}`}
                       >
                         {metodo.name}
                       </button>
@@ -174,11 +185,11 @@ export default function AppClient() {
                 setEndpointUrl(e.target.value);
                 saveToLocalStorage('request_url', e.target.value);
               }}
-              className="flex-1 input-gray bg-zinc-800 border border-zinc-700 rounded-md py-2 px-4 focus:ring-2 focus:ring-sky-500 focus:border-transparent outline-none transition-all duration-200"
+              className="flex-1 bg-zinc-900 border border-zinc-800 rounded-md py-2 px-4 focus:ring-2 focus:ring-sky-500 focus:border-transparent outline-none transition-all duration-200"
             />
             <button
               type="submit"
-              className="btn-black px-6 py-2 rounded-md font-semibold bg-sky-600 hover:bg-sky-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className=" px-6 py-2 rounded-md  bg-gradient-to-br from-green-500 to-green-700 hover:bg-green-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isLoading}
             >
               {isLoading ? (
@@ -197,7 +208,7 @@ export default function AppClient() {
                 key={crypto.randomUUID()}
                 type="button"
                 className={`btn btn-sm text-sm py-2 px-4 rounded-t-lg transition-colors duration-200
-                  ${index === mimeSelected ? 'border-b-2 border-sky-500 text-sky-500 font-semibold bg-zinc-900' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}
+                  ${index === mimeSelected ? 'border-b-2 border-sky-500 text-sky-500 font-semibold bg-zinc-950' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}
                 onClick={() => setMimeSelected(index)}
               >
                 {opcion.name}
@@ -205,8 +216,8 @@ export default function AppClient() {
             ))}
           </div>
         </form>
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 flex-1  md:overflow-hidden overflow-y-scroll ">
-          <div className="bg-zinc-900 p-6 rounded-xl border border-zinc-800 flex flex-col shadow-lg">
+        <div className='grid  md:grid-cols-2  gap-4 h-full ' aria-label='grid' >
+          <div className="bg-neutral-900 p-6 rounded-xl border border-zinc-800 flex flex-col shadow-lg">
             <AnimatePresence mode="wait" key={'uja'}>
               {mimeSelected === 0 && ( // Body
                 <motion.div
@@ -233,9 +244,10 @@ export default function AppClient() {
                       </label>
                     ))}
                   </div>
-                  <div className="flex-1 min-h-0">
+                  <div className="flex-1 min-h-0  ">
                     <CodeEditorLazy
-                      height="70vh"
+                      height="100%"
+                      maxHeight='70vh'
                       language={contentType}
                       value={bodyJson}
                       onChange={setBodyJson}
@@ -276,7 +288,7 @@ export default function AppClient() {
               )}
             </AnimatePresence>
           </div>
-          <div className="bg-zinc-900 p-4 rounded-xl border border-zinc-800 flex flex-col overflow-hidden shadow-lg">
+          <div className="bg-neutral-900 p-6 rounded-xl border border-zinc-800 flex flex-col overflow-hidden shadow-lg">
             {responseSelected || isLoading ? (
               <>
                 {isLoading ? (
@@ -312,30 +324,21 @@ export default function AppClient() {
                 )}
               </>
             ) : (
-              <ResponsesTypesComponent
-                contentTypeData="json"
-                data={
-                  errorRequest
-                    ? errorAxios
-                      ? JSON.parse(errorAxios)
-                      : 'Unknown Error'
-                    : responseSelected
-                }
-              />
-              // <div className="flex flex-col items-center justify-center h-full text-zinc-500 text-center">
-              //   <Icon
-              //     icon="tabler:send"
-              //     width="100"
-              //     height="100"
-              //     className="text-zinc-700 mb-4 animate-bounce-slow" // Added a subtle animation
-              //   />
-              //   <p className="text-lg font-medium text-zinc-300">
-              //     ¡Todo listo para que hagas tu primera solicitud!
-              //   </p>
-              //   <p className="text-md text-zinc-400">
-              //     Puedes comenzar con tu primera solicitud.
-              //   </p>
-              // </div>
+
+              <div className="flex flex-col items-center justify-center h-full text-zinc-500 text-center">
+                <Icon
+                  icon={sendIcon}
+                  width="100"
+                  height="100"
+                  className="text-zinc-700 mb-4 animate-bounce-slow" // Added a subtle animation
+                />
+                <p className="text-lg font-medium text-zinc-300">
+                  ¡Todo listo para que hagas tu primera solicitud!
+                </p>
+                <p className="text-md text-zinc-400">
+                  Puedes comenzar con tu primera solicitud.
+                </p>
+              </div>
             )}
           </div>
         </div>

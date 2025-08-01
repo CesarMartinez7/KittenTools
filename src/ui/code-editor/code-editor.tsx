@@ -6,7 +6,7 @@ import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import LazyListItem from '../LazyListPerform';
 import highlightCode from './higlight-code';
-import { useTextReplace } from './methods-global-editor/useTextReplace';
+
 import { useJsonHook } from './methods-json/method';
 import { useXmlHook } from './methos-xml/method.xml';
 import type { CodeEditorProps } from './types';
@@ -15,6 +15,7 @@ const CodeEditor = ({
   value = '',
   language = 'json',
   onChange,
+  maxHeight = "100%",
   height = '200px',
   minHeight = '68vh',
   placeholder = '// Escribe tu código aqui...',
@@ -25,8 +26,7 @@ const CodeEditor = ({
   const inputRefTextNew = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const highlightRef = useRef<HTMLDivElement>(null);
-  const lineNumbersRef = useRef<HTMLDivElement>(null);
-  const refSection = useRef<HTMLDivElement>(null);
+  const lineNumbersRef = useRef<HTMLDivElement>(null);  
 
   const [isOpenBar, setIsOpenBar] = useState<boolean>(false);
   const [code, setCode] = useState(value);
@@ -55,6 +55,15 @@ const CodeEditor = ({
         e.preventDefault();
         setIsOpenBar((prev) => !prev);
       }
+
+      if((e.ctrlKey && e.key === "s")){
+        e.preventDefault()
+        HandlersIdentarBody()
+        alert("guardar y minificar")
+
+      }
+
+
     };
 
     window.addEventListener('keydown', handleGlobalKeyDown);
@@ -242,7 +251,7 @@ const CodeEditor = ({
         <div
           ref={lineNumbersRef}
           className="px-3 py-2 text-sm overflow-hidden bg-zinc-950/20 border- rounded-tl-xl border-zinc-800 backdrop-blur-3xl text-zinc-400 "
-          style={{ height, minHeight }}
+          style={{ height, minHeight, maxHeight }}
         >
           {lineNumberElements}
         </div>

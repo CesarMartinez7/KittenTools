@@ -25,7 +25,7 @@ const FormatDataTypeLabel = ({ data }: { data: JsonValue }) => {
     isLink?: boolean;
     href?: string;
   }) => {
-    const base = `${color} transition-colors duration-300 hover:opacity-80`;
+    const base = `${color} transition-colors duration-300 `;
 
     if (isLink && href) {
       return (

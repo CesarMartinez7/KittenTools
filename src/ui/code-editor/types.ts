@@ -6,4 +6,5 @@ export interface CodeEditorProps {
   height?: string;
   placeholder?: string;
   classNameContainer?: string;
+  maxHeight: string
 }
