@@ -62,7 +62,7 @@ export default function ToolbarButtons({
         to={'/client'}
       >
         <Icon icon={gitpullrequest} width="20" height="20" />
-        Online Request
+        Kitten Axios
       </Link>
 
       {/* <Link

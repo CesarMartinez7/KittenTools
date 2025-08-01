@@ -6,9 +6,9 @@ import {
   CodeEditorLazy,
   JsonViewerLazy,
 } from '../../components/LAZY_COMPONENT';
-import AddQueryParam from './components/addQueryParams';
-import { HeadersAddRequest } from './components/Headers';
-import ResponsesTypesComponent from './components/responses/response.';
+import AddQueryParam from './components/addqueryparams/addQueryParams';
+import { HeadersAddRequest } from './components/headers/Headers';
+import ResponsesTypesComponent from './components/responses-core/response.';
 import { SavedRequestsSidebar } from './components/sidebar/SavedRequestSidebar';
 import ClientCustomHook from './hooks/client-hook';
 import sendIcon from "@iconify-icons/tabler/send"

@@ -245,12 +245,12 @@ const CodeEditor = ({
       </AnimatePresence>
 
       <div
-        className={`relative flex  text-xs overflow-hidden bg-zinc-900/60 ring-none backdrop-blur-3xl ${classNameContainer} `}
+        className={`relative flex  text-xs overflow-hidden bg-zinc-900/80 ring-none backdrop-blur-3xl ${classNameContainer} `}
       >
         {/* Line Numbers */}
         <div
           ref={lineNumbersRef}
-          className="px-3 py-2 text-sm overflow-hidden bg-zinc-950/20 border- rounded-tl-xl border-zinc-800 backdrop-blur-3xl text-zinc-400 "
+          className="px-3 py-2 text-sm overflow-hidden bg-zinc-950/20 border- rounded-tl-xl border-zinc-800 backdrop-blur-3xl text-[#00d1b2]"
           style={{ height, minHeight, maxHeight }}
         >
           {lineNumberElements}
@@ -277,7 +277,7 @@ const CodeEditor = ({
               onChange={handleChange}
               onScroll={handleScroll}
               onKeyDown={handleKeyDown}
-              className="absolute inset-0 p-2 ring-none ring-0 focus:ring-none text-sm font-mono leading-6 resize-none outline-none bg-r whitespace-pre-wrap break-words"
+              className="absolute inset-0  transition-colors p-2 ring-none ring-0 focus:ring-none text-sm font-mono leading-6 resize-none outline-none bg-r whitespace-pre-wrap break-words"
               style={{
                 height,
                 color: 'transparent',

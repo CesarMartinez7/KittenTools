@@ -1,14 +1,13 @@
 import { Icon } from "@iconify/react";
-import { AnimatePresence, circIn, motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { useAsyncError } from "react-router";
 import useIndexedDb from "../../../../hooks/useIndexedDb";
 import ModalDeleteRequest from "../../modals/delete-request-modal";
 import AddNewRequestModal from "../../modals/new-request-modal";
 import ModalCurrentSavePeticion from "../../modals/save-request-modal";
-import type { ApiRequestItem, Item, RequestItem, SavedRequestsSidebarProps } from "../../types/types";
-import MethodFormater, { MethodFormaterButton } from "../method-formatter";
+import type {  Item, RequestItem, SavedRequestsSidebarProps } from "../../types/types";
+import  { MethodFormaterButton } from "../method-formatter/method-formatter";
 import type { RootBody } from "../../types/types";
 import plusIcon from "@iconify-icons/tabler/plus"
 
@@ -273,18 +272,13 @@ export function SavedRequestsSidebar({
           </div>
 
 
-
-            <div className=" max-h-screen overflow-auto">
-            {parsed && (
-              <ItemNode level={0} data={parsed} /> 
-            )}
-
-            </div>
-
-
-
-
-           
+            {parsed ? (
+              <>
+                {parsed.item.map((e, idx) => {
+                  <ItemNode setCurrentBody={null} level={0} data={e} key={idx} /> 
+                })}
+              </>
+            ) : null}           
 
         </motion.div>
 
@@ -296,40 +290,51 @@ export function SavedRequestsSidebar({
 
 
 
-export const ItemNode: React.FC<{data: Item, level: number, setCurrentBody: React.Dispatch<React.SetStateAction<string>>}> = ({ data, level = 0 }) => {
-  const indent = 10 * level;
-  // Cuando es es rquest tiene estos parametros o esto
-  const isFullData = data.item && data.request && data.response && data.name;
-  
+  export const ItemNode: React.FC<{
+    data: Item;
+    level: number;
+    setCurrentBody: React.Dispatch<React.SetStateAction<string>>;
+  }> = ({ data, level = 0, setCurrentBody }) => {
+    const indent = 10 * level;
+    const isFolder = !!data.item;
 
-  return (
-    <div className="flex gap-4" style={{ marginLeft: `${indent}px` }}>
-      {isFullData ? (
-        <div className="p-2 rounded">
-          <p className="font-bold">{data.name}</p>
-          {data?.item?.map((child, index) => (
-            <ItemNode key={index} data={child} level={level + 1} />
-          ))}
-        </div>
-      ) : (
-        <div className="bg p-2 decoration-2 flex flex-col roundedborder-zinc-800  gap-3 text-white"> 
-          {data.request?.method && (
-            <p>{data.request?.method}</p>
+    return (
+      <div className="flex flex-col gap-2" style={{ marginLeft: `${indent}px` }}>
+        <div className="p-2 rounded border border-zinc-700 bg-zinc-900 text-white">
+          <div className="flex justify-between items-center">
+            <p className="font-bold">{data.name}</p>
+            {data.request?.method && (
+              <span className="text-xs px-2 py-1 rounded bg-zinc-800 text-green-400">
+                {data.request.method}
+              </span>
+            )}
+          </div>
+
+          {/* Mostrar body al hacer clic si es un request */}
+          {data.request?.body?.raw && (
+            <button
+              onClick={() => {
+                setCurrentBody(data.request!.body!.raw);
+              }}
+              className="mt-2 text-xs text-blue-400 hover:underline"
+            >
+              Ver Body
+            </button>
           )}
-          
-          <p className="text-sm">{data.name}</p>
-          {data.item?.map((child, index) => (
-            <div className="border border-zinc-800 rounded flex b" onClick={() => {
-              console.log(child.name)
-              console.log(child.request.body)
-            }}>
-            <p className="text-sm">{data.request?.method}</p>
-            <ItemNode key={index} data={child} level={level + 1} />
-            </div>
-          ))}
         </div>
-      )}
-    </div>
-  );
-};
+
+        {/* Recursividad para hijos si es carpeta */}
+        {isFolder &&
+          data.item!.map((child, index) => (
+            <ItemNode
+              key={index}
+              data={child}
+              level={level + 1}
+              setCurrentBody={setCurrentBody}
+            />
+          ))}
+      </div>
+    );
+  };
+
 

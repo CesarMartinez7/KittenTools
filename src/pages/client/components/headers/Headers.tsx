@@ -3,7 +3,7 @@ import plus from '@iconify-icons/tabler/plus';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import { useStoreHeaders } from '../stores/headers-store';
+import { useStoreHeaders } from '../../stores/headers-store';
 
 interface HeaderItem {
   id: string;

@@ -123,7 +123,7 @@ export const ModalViewer = () => {
   }, []);
 
   return (
-    <main className="text-white p-6 flex flex-col gap-8 items-center justify-center bg-zinc-900/90 shadow-xl rounded-2xl">
+    <main className="text-white p-6 flex flex-col gap-8 items-center justify-center bg-zinc-900/80 shadow-xl rounded-2xl">
       <div className="flex flex-col items-center gap-4 w-full">
         <h3 className="text-zinc-200 text-center text-lg gradient-text  font-bold">
           Comparador de Texto 🚀

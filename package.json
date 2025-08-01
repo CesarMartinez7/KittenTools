@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "rsbuild build",
+    "elect": "electron main.js",
     "check": "biome check --write",
     "dev": "rsbuild dev  ",
     "format": "biome format --write",
@@ -45,6 +46,8 @@
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "auto-changelog": "^2.5.0",
+    "electron": "^37.2.5",
+    "electron-builder": "^26.0.12",
     "eslint": "^9.29.0",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
