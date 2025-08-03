@@ -3,7 +3,6 @@ import { BrowserRouter, Route, Routes } from 'react-router';
 import { AppHomeLazy } from './components/LAZY_COMPONENT.tsx';
 import './App.css';
 import { Toaster } from 'react-hot-toast';
-import PostmanLectorCollepcion from './pages/client/components/sidebar/hooks/useLectorCollecion.tsx';
 import { AppClientRouteLazy } from './pages/lazy.tsx';
 import Aurora from './ui/aurora/Aurora.tsx';
 
@@ -30,7 +29,7 @@ ReactDOM.createRoot(root)!.render(
       <BrowserRouter>
         <Routes>
           <Route index path="/" element={<AppHomeLazy />} />
-          <Route index path="/post" element={<PostmanLectorCollepcion />} />
+
           <Route path="/client" element={<AppClientRouteLazy />} />
           <Route
             path="*"

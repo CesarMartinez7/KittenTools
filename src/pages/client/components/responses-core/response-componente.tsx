@@ -4,6 +4,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { CodeEditorLazy } from '../../../../components/LAZY_COMPONENT';
 import { JsonNode } from '../../../../ui/formatter-JSON/Formatter';
 import { TypesResponse } from '../../mapper-ops';
+import plusIcon from "@iconify-icons/tabler/plus"
+import searchIcon from "@iconify-icons/tabler/search"
 
 interface ResponseTypes {
   height: string;
@@ -133,13 +135,13 @@ export default function ResponsesTypesComponent({
         <div>{Size}</div>
         <div className="flex gap-x-2.5">
           <button className="btn-small">
-            <Icon icon="tabler:search" width="15px" height="15px" />
+            <Icon icon={searchIcon} width="15px" height="15px" />
           </button>
           <button className="btn-small">
-            <Icon icon="tabler:copy" width="15px" height="15px" />
+            <Icon icon={copyIcon} width="15px" height="15px" />
           </button>
           <button className="btn-small">
-            <Icon icon="tabler:clear-all" width="15px" height="15px" />
+            <Icon icon={plusIcon} width="15px" height="15px" />
           </button>
         </div>
       </div>

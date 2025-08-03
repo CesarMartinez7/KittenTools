@@ -81,7 +81,7 @@ export default function ToolbarButtons({
         Cargar JSON
       </button>
 
-      <button
+      {/* <button
         title="Compa"
         className="w-full flex  items-center justify-center gap-2 bg-rose-400 bg-gradient-to-t from-emerald-600 to-emerald-700 text-white h-[40px] font-bold px-3 py-2 text-sm rounded-lg transition"
         onClick={() => {
@@ -90,7 +90,7 @@ export default function ToolbarButtons({
       >
         <Icon icon={terminal} width="20" height="20" />
         CURL WEB
-      </button>
+      </button> */}
 
       <button
         title="Compa"

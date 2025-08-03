@@ -100,7 +100,7 @@ const FormatDataTypeLabel = ({ data }: { data: JsonValue }) => {
   if (typeof data === 'string' && collapsedLabel) {
     return (
       <Text
-        color="text-green-400"
+        color="text-[#3bdbbc]"
         title="Haz clic para expandir"
         onClick={() => setCollapsedLabel(false)}
       >

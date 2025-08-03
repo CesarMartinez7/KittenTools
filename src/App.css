@@ -252,7 +252,7 @@ body {
 }
 
 .gradient-text {
-  @apply bg-gradient-to-bl from-white to-zinc-600 bg-clip-text text-transparent;
+  @apply bg-gradient-to-bl from-white to-zinc-600 bg-clip-text text-transparent bg-black;
 }
 
 ::selection {

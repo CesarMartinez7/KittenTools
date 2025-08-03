@@ -9,11 +9,9 @@ import TableData from '../Table';
 import FormatDataTypeLabel from './components/formatlabel.tsx';
 import SkeletonJsonKey from './skeleton/skeleton.formatter.tsx';
 import { JsonViewerStore } from './stores/jsonviewer.ts';
-
-
-
-
-
+import downloadIcon from '@iconify-icons/tabler/download';
+import csvIcon from '@iconify-icons/tabler/csv';
+import copyIcon from '@iconify-icons/tabler/copy';
 
 
 const csvConfig = mkConfig({ useKeysAsHeaders: true });
@@ -55,18 +53,18 @@ export const JsonNode: React.FC<JsonNodeProps> = ({
 
   return (
     <div
-      className="text-sm break-words whitespace-pre-wrap  px-3  "
+      className="text-sm break-words whitespace-pre-wrap border-zinc-800 px-2 border-l "
       style={{ marginLeft: depth * INDENT }}
     >
       {name !== undefined && (
-        <strong className="text-purple-400 mr-1 hover:bg-zinc-800 rounded-2xl ">
+        <strong className="text-purple-400 mr-3 rounded-2xl ">
           &quot;{name}&quot;:
         </strong>
       )}
       {isObject ? (
         <>
           <span
-            className="text-zinc-300 cursor-pointer select-none hover:text-zinc-300 transition-colors duration-500"
+            className="text-zinc-400 cursor-pointer select-none hover:text-zinc-300 transition-colors duration-500"
             onClick={toggle}
           >
             {isArray
@@ -83,7 +81,7 @@ export const JsonNode: React.FC<JsonNodeProps> = ({
                 ? (data as JsonArray).map((item, i) => (
                     <LazyListItem key={i} skeleton={<SkeletonJsonKey />}>
                       <span key={i}>
-                        <div className="flex relative">
+                        <div className="flex relative ">
                           <JsonNode
                             __Changed={__Changed}
                             INDENT={INDENT}
@@ -361,10 +359,10 @@ const JsonViewer: React.FC<{
           >
             <Icon icon={'tabler:maximize'} width={'10'} height={'10'} />
           </button>
-          <button className="btn-small" onClick={handleClickSummary}>
-            <Icon icon={'tabler:plus'} width={'10'} height={'10'} />
+          <button title='Full screen' aria-label='poner full ' className="btn-small" onClick={handleClickSummary}>
+            <Icon icon={'tabler:plus'} aria-label='Aumentar identando' width={'10'} height={'10'} />
           </button>
-          <button className="btn-small" onClick={handleClickRest}>
+          <button aria-label='Disminuir indentando' className="btn-small" onClick={handleClickRest}>
             <Icon icon={'tabler:minus'} width={'10'} height={'10'} />
           </button>
         </div>
@@ -479,7 +477,7 @@ const JsonViewer: React.FC<{
             className="btn-icon p-1.5 text-xs bg-zinc-800 rounded-lg "
             onClick={handleDownloadJson}
           >
-            <Icon icon={'tabler:download'} width={13} height={13} />
+            <Icon icon={downloadIcon} width={13} height={13} />
           </button>
 
           <button
@@ -487,14 +485,14 @@ const JsonViewer: React.FC<{
             className="btn-icon p-1.5 text-xs bg-zinc-800 rounded-lg "
             onClick={handleCopy}
           >
-            <Icon icon={'tabler:copy'} width={13} height={13} />
+            <Icon icon={copyIcon} width={13} height={13} />
           </button>
           <button
             title="Generar CSV"
             className="btn-icon  p-1 text-xs bg-zinc-800 rounded-lg "
             onClick={handleClickGenerateCSV}
           >
-            <Icon icon="tabler:csv" width="15" height="15" />
+            <Icon icon={csvIcon} width="15" height="15" />
           </button>
         </div>
       </div>

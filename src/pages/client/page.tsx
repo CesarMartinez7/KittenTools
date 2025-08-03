@@ -8,7 +8,7 @@ import {
 } from '../../components/LAZY_COMPONENT';
 import AddQueryParam from './components/addqueryparams/addQueryParams';
 import { HeadersAddRequest } from './components/headers/Headers';
-import ResponsesTypesComponent from './components/responses-core/response.';
+import ResponsesTypesComponent from './components/responses-core/response-componente';
 import { SavedRequestsSidebar } from './components/sidebar/SavedRequestSidebar';
 import ClientCustomHook from './hooks/client-hook';
 import sendIcon from "@iconify-icons/tabler/send"
@@ -129,19 +129,6 @@ export default function AppClient() {
         onClose={() => setIsOpenSiderbar(false)}
       />
       <div className="w-full flex flex-col px-4 md:px-8 py-4 gap-2 bg-zinc-900/50 ">
-        <div className=' flex-row justify-between items-center flex gap-2 text-white bg-zinc-900/60 py-1 px-5 rounded-xl'>
-          <div className='flex gap-2 '>
-            <button title='izquierda' type='button' className='btn-black'>
-            <span className="tabler--arrow-left"></span>
-              </button>
-              <button className='btn-black'>
-              <span className="tabler--arrow-narrow-right"></span>
-              </button>
-          </div>
-          <div>
-            <button className='btn-black'>Aurora</button>
-          </div>
-        </div>
         <form ref={refForm} onSubmit={handleRequest} className="space-y-4 mb-4">
           <div className="flex flex-col md:flex-row gap-3 md:items-center">
             <div className="relative">
@@ -315,18 +302,7 @@ export default function AppClient() {
                         : responseSelected
                     }
                   />
-                  // <JsonViewerLazy
-                  //   data={
-                  //     errorRequest
-                  //       ? errorAxios
-                  //         ? JSON.parse(errorAxios)
-                  //         : 'Unknown Error'
-                  //       : responseSelected
-                  //   }
-                  //   width="100%"
-                  //   height="100%"
-                  //   maxHeight="76vh"
-                  // />
+               
                 )}
               </>
             ) : (

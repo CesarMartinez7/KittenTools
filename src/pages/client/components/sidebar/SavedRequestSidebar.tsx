@@ -6,10 +6,16 @@ import useIndexedDb from "../../../../hooks/useIndexedDb";
 import ModalDeleteRequest from "../../modals/delete-request-modal";
 import AddNewRequestModal from "../../modals/new-request-modal";
 import ModalCurrentSavePeticion from "../../modals/save-request-modal";
-import type {  Item, RequestItem, SavedRequestsSidebarProps } from "../../types/types";
-import  { MethodFormaterButton } from "../method-formatter/method-formatter";
+import type {
+  Item,
+  RequestItem,
+  SavedRequestsSidebarProps,
+} from "../../types/types";
+import { MethodFormaterButton } from "../method-formatter/method-formatter";
 import type { RootBody } from "../../types/types";
-import plusIcon from "@iconify-icons/tabler/plus"
+import plusIcon from "@iconify-icons/tabler/plus";
+import ItemNode from "../item-node";
+
 
 export function SavedRequestsSidebar({
   isOpen,
@@ -21,7 +27,6 @@ export function SavedRequestsSidebar({
   currentQueryParams = [],
   currentContentType = "json",
 }: SavedRequestsSidebarProps) {
-  
   // Manejar si el formulario se ve o no en la modal
   const [openModalNewRequest, setOpenModalNewRequest] =
     useState<boolean>(false);
@@ -31,7 +36,8 @@ export function SavedRequestsSidebar({
     useState<boolean>(false);
 
   const [coleccion, setColeccion] = useState<ArrayBuffer | string | File>();
-  const [parsed, setParsed] = useState<RootBody>()
+  // Data parseada para manipular aqui
+  const [parsed, setParsed] = useState<RootBody>();
 
   // Modal Delete
   const [currentId, setCurrentId] = useState<string>("");
@@ -58,9 +64,14 @@ export function SavedRequestsSidebar({
     }
   });
 
+
+
+
+
   const handleClickCargueCollecion = () => {
     const input = document.createElement("input") as HTMLInputElement;
     input.type = "file";
+    input.accept = ".json, .txt";
 
     input.onchange = () => {
       if (input.files && input.files.length > 0) {
@@ -69,19 +80,25 @@ export function SavedRequestsSidebar({
         const reader = new FileReader();
 
         reader.onload = () => {
-          setColeccion(reader.result as string);
-          setParsed(JSON.parse(reader.result))
-          console.error(reader.result);
+          try {
+            setColeccion(reader.result as string);
+            setParsed(JSON.parse(reader.result));
+
+            localStorage.setItem("savedRequests2", JSON.stringify(reader.result as string));
+
+          } catch (error) {
+            toast.error("Ocurrio un eror al procesar o parsear el archivo");
+            console.error("Error al procesar el archivo:", error);
+          }
         };
-
         reader.readAsText(input.files[0]);
-
       } else {
-        toast.error("No se seleccionó ningún archivo");
+        toast.error("No se selecciono ningún archivo");
       }
     };
 
     input.click();
+    input.remove();
   };
 
   // Me ejecuto si soy valido solamente COOL XHR
@@ -106,7 +123,7 @@ export function SavedRequestsSidebar({
       handleToogleModal();
     }
   };
-  
+
   useEffect(() => {
     try {
       localStorage.setItem("savedRequests", JSON.stringify(savedRequests));
@@ -160,14 +177,16 @@ export function SavedRequestsSidebar({
     handleToogleDeleteModal();
   };
 
-
-  const parsedLoadRequest = (reqBody: string, reqContentType: string, reqUrl: string, reqMethod: string) => {
-    // Implement your parsing logic here
-
-    alert("Cargando request desde ItemNode");
-    toast.success("Pasado por load request");
-
-    onLoadRequest(reqBody, reqContentType, reqUrl, reqMethod);
+  const parsedLoadRequest = (
+    reqBody: string,
+    reqContentType: string,
+    reqUrl: string,
+    reqMethod: string,
+    reqHeaders: Record<string, string>,
+    reqParams: Record<string, string>,
+  ) => {
+    // Implemntacon de la logica de carga de request
+    onLoadRequest(reqBody, reqContentType, reqUrl, reqMethod, reqHeaders, reqParams);
   };
 
   return (
@@ -198,11 +217,24 @@ export function SavedRequestsSidebar({
       {isOpen && (
         <motion.div className="top-0 left-0 h-svh max-h-svh w-64 bg-zinc-900/50 backdrop-blur-3xl border-r border-zinc-800 p-6 z-50 md:flex flex-col shadow-lg hidden ">
           <div className="flex justify-start items-center my-8 space-x-3">
-          <span className="game-icons--thorny-vine"></span>
-            
-          <h3 className="text-3xl font-bold bg-gradient-to-bl from-white to-zinc-400 bg-clip-text text-transparent flex"> Kitten Axios</h3>
-          
+            <span className="game-icons--thorny-vine"></span>
+
+            <h3 className="text-3xl font-bold bg-gradient-to-bl from-white to-zinc-400 bg-clip-text text-transparent flex">
+              {" "}
+              Kitten Axios
+            </h3>
           </div>
+
+          <div className="flex flex-row text-xs gap-2 mb-4">
+            <button
+              className="gradient-text "
+              onClick={handleClickCargueCollecion}
+            >
+              Importar coleccion
+            </button>
+            <button className="gradient-text">Exportar coleccion</button>
+          </div>
+
           <div className="flex flex-row gap-x-2.5 h-12 ">
             <button
               onClick={handleToogleSaveRequestCurrent}
@@ -219,8 +251,13 @@ export function SavedRequestsSidebar({
               <Icon icon={plusIcon} width="24" height="24" />
             </button>
           </div>
+
+          {/* ------------------------------------ Aqui va la lista de peticiones guardadas ------------------------------------ Ahora migrandose a la esctrtura de postman compatible en vez las misma creada por mi */}
+
+          {/* Lo que esta comentado aqui es una lista de peticiones guardadas, que se pueden cargar y eliminar en la version de antes */}
+
           <div className="flex-1 overflow-y-auto space-y-2 justify-center items-center">
-            {savedRequests.length === 0 ? (
+            {/* {savedRequests.length === 0 ? (
               <p className="text-zinc-500 text-sm text-center py-4">
                 No hay peticiones guardadas todavia.
               </p>
@@ -257,97 +294,33 @@ export function SavedRequestsSidebar({
                   </button>
                 </div>
               ))
+            )} */}
+
+            {parsed && (
+              <div className="overflow-y-scroll h-78">
+                <ItemNode
+                  level={0}
+                  data={parsed}
+                  setData={setParsed}
+                  loadRequest={parsedLoadRequest}
+                />
+              </div>
             )}
           </div>
-          <div className="flex gap-2">
-            <button
-              className="btn-small text-ellipsis"
-              onClick={handleClickCargueCollecion}
-            >
-              Importar coleccion
-            </button>
-            <button className="btn-small text-ellipsis">
-              Exportar coleccion
-            </button>
-          </div>
-              {parsed && (
+          
+          {/* {parsed && (
             <div className="overflow-y-scroll h-78">
-                <ItemNode level={0} data={parsed} setData={setParsed}  loadRequest={parsedLoadRequest} />         
+              <ItemNode
+                level={0}
+                data={parsed}
+                setData={setParsed}
+                loadRequest={parsedLoadRequest}
+              />
             </div>
-              )}
+          )} */}
         </motion.div>
-
       )}
     </AnimatePresence>
   );
 }
 
-
-
-
-export const ItemNode: React.FC<{
-  data: Item;
-  level: number;
-  loadRequest?: (reqBody: string, reqContentType: string, reqUrl: string, reqMethod: string) => void;
-}> = ({ data, level = 0, loadRequest }) => {
-
-
-  const indent = 12 * level;
-  const isFolder = !!data.item;
-  const hasBody = !!data.request?.body?.raw;
-  const isRequest = !!data.request;
-
-  return (
-    <div className="flex flex-col gap-4 " >
-      <div className=" p-1.5 text-ellipsis rounded-md border border-zinc-800 shadow-xl flex justify-between items-center group hover:bg-zinc-700 transition-colors  bg-zinc-800/60 truncate text-[8px ] ">
-        <div className="flex justify-between items-center text-xs" onClick={() => {
-
-          if (isFolder) {
-            toast.error("No se puede cargar una carpeta");
-            return;
-          }
-
-          loadRequest && loadRequest(data.request?.body?.raw || "", "json", data.request?.url.raw || "", data.request?.method || "GET");
-          console.log("Cargando request:", data.request);
-
-        }}>
-          <div className="flex items-center gap-2">
-            <Icon
-              icon={isFolder ? "tabler:folder" : "tabler:file"}
-              width="25"
-              height="25"
-              className={isFolder ? "text-yellow-400" : "text-blue-400"}
-            />
-            <p className="font-semibold text-sm text-zinc-100 text-ellipsis relative ">{data.name}</p>
-          </div>
-
-          {data.request?.method && (
-            <span
-              className={`text-xs font-mono px-2 py-1 rounded-md bg-zinc-800
-              ${
-                data.request.method === "GET"
-                  ? "text-green-400"
-                  : data.request.method === "POST"
-                  ? "text-blue-400"
-                  : "text-orange-400"
-              }`}
-            >
-              {data.request.method}
-            </span>
-          )}
-        </div>
-
-      </div>
-
-      {isFolder &&
-        data.item!.map((child, index) => (
-          <ItemNode
-            key={index}
-            data={child}
-            level={level + 1}
-            loadRequest={loadRequest}
-          />
-        ))}
-    </div>
-  );
-};
