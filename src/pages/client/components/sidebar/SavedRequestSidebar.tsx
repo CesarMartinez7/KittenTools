@@ -21,12 +21,7 @@ export function SavedRequestsSidebar({
   currentQueryParams = [],
   currentContentType = "json",
 }: SavedRequestsSidebarProps) {
-  // const {
-  //   register,
-  //   handleSubmit,
-  //   formState: { errors },
-  // } = useForm();
-
+  
   // Manejar si el formulario se ve o no en la modal
   const [openModalNewRequest, setOpenModalNewRequest] =
     useState<boolean>(false);
@@ -62,10 +57,6 @@ export function SavedRequestsSidebar({
       return [];
     }
   });
-
-  useEffect(() => {
-    
-  }, [coleccion]);
 
   const handleClickCargueCollecion = () => {
     const input = document.createElement("input") as HTMLInputElement;
@@ -169,6 +160,16 @@ export function SavedRequestsSidebar({
     handleToogleDeleteModal();
   };
 
+
+  const parsedLoadRequest = (reqBody: string, reqContentType: string, reqUrl: string, reqMethod: string) => {
+    // Implement your parsing logic here
+
+    alert("Cargando request desde ItemNode");
+    toast.success("Pasado por load request");
+
+    onLoadRequest(reqBody, reqContentType, reqUrl, reqMethod);
+  };
+
   return (
     <AnimatePresence key={"gokuuu"}>
       <AddNewRequestModal
@@ -200,9 +201,6 @@ export function SavedRequestsSidebar({
           <span className="game-icons--thorny-vine"></span>
             
           <h3 className="text-3xl font-bold bg-gradient-to-bl from-white to-zinc-400 bg-clip-text text-transparent flex"> Kitten Axios</h3>
-
-            
-
           
           </div>
           <div className="flex flex-row gap-x-2.5 h-12 ">
@@ -210,9 +208,11 @@ export function SavedRequestsSidebar({
               onClick={handleToogleSaveRequestCurrent}
               className="btn-black w-full mb-4 flex truncate items-center justify-center gap-2  "
             >
-              <span class="tabler--clipboard-smile"></span> Guardar Peticion
+              <span className="tabler--clipboard-smile"></span> Guardar Peticion
             </button>
             <button
+              title="Nueva Petición"
+              type="button"
               onClick={handleToogleModal}
               className="btn-black  mb-4 flex truncate items-center justify-center gap-2  "
             >
@@ -235,7 +235,7 @@ export function SavedRequestsSidebar({
                     onClick={() => {
                       localStorage.setItem("currentidx", String(idx));
                       toast.success("Cargando peticion");
-                      onLoadRequest(req);
+                      onLoadRequest(req.body, req.contentType, req.url, req.method);
                     }}
                   >
                     <p className="font-semibold text-white shiny-text truncate">
@@ -271,8 +271,8 @@ export function SavedRequestsSidebar({
             </button>
           </div>
               {parsed && (
-            <div className="overflow-y-scroll h-78 ">
-                <ItemNode level={0} data={parsed}/>         
+            <div className="overflow-y-scroll h-78">
+                <ItemNode level={0} data={parsed} setData={setParsed}  loadRequest={parsedLoadRequest} />         
             </div>
               )}
         </motion.div>
@@ -288,16 +288,29 @@ export function SavedRequestsSidebar({
 export const ItemNode: React.FC<{
   data: Item;
   level: number;
-}> = ({ data, level = 0 }) => {
+  loadRequest?: (reqBody: string, reqContentType: string, reqUrl: string, reqMethod: string) => void;
+}> = ({ data, level = 0, loadRequest }) => {
+
+
   const indent = 12 * level;
   const isFolder = !!data.item;
   const hasBody = !!data.request?.body?.raw;
   const isRequest = !!data.request;
 
   return (
-    <div className="flex flex-col gap-4" style={{ marginLeft: `${indent}px` }}>
-      <div className=" p-1.5 text-ellipsis rounded-md border border-zinc-800 shadow-xl flex justify-between items-center group hover:bg-zinc-700 transition-colors  bg-zinc-800/60 truncate  ">
-        <div className="flex justify-between items-center">
+    <div className="flex flex-col gap-4 " >
+      <div className=" p-1.5 text-ellipsis rounded-md border border-zinc-800 shadow-xl flex justify-between items-center group hover:bg-zinc-700 transition-colors  bg-zinc-800/60 truncate text-[8px ] ">
+        <div className="flex justify-between items-center text-xs" onClick={() => {
+
+          if (isFolder) {
+            toast.error("No se puede cargar una carpeta");
+            return;
+          }
+
+          loadRequest && loadRequest(data.request?.body?.raw || "", "json", data.request?.raw || "", data.request?.method || "GET");
+          console.log("Cargando request:", data.request);
+
+        }}>
           <div className="flex items-center gap-2">
             <Icon
               icon={isFolder ? "tabler:folder" : "tabler:file-code"}
@@ -332,6 +345,7 @@ export const ItemNode: React.FC<{
             key={index}
             data={child}
             level={level + 1}
+            loadRequest={loadRequest}
           />
         ))}
     </div>

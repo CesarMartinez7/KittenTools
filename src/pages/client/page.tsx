@@ -20,6 +20,7 @@ import {
   VariantsAnimation,
 } from './mapper-ops';
 import type { RequestItem } from './types/types';
+import ScriptComponent from './components/scripts/script-component';
 
 export default function AppClient() {
   const { value, setter } = ClientCustomHook();
@@ -88,11 +89,11 @@ export default function AppClient() {
     [setShowMethods],
   );
 
-  const onLoadRequest = (req: RequestItem) => {
-    setBodyJson(req.body);
-    setContentType(req.contentType);
-    setEndpointUrl(req.url);
-    setSelectedMethod(req.method);
+  const onLoadRequest = (reqBody : string, reqContentType: string, reqUrl : string, reqMethod : string) => {
+    setBodyJson(reqBody);
+    setContentType(reqContentType);
+    setEndpointUrl(reqUrl);
+    setSelectedMethod(reqMethod);
   };
 
   const formatBodyPlaceholder = useMemo(() => {
@@ -289,13 +290,7 @@ export default function AppClient() {
 
 
               {mimeSelected === 4 && (
-                <motion.div
-                  key="auth-section"
-                  variants={VariantsAnimation}
-                  className=" text-zinc-500"
-                >
-                  <CodeEditorLazy language='javascript' />
-                </motion.div>
+                <ScriptComponent/>
               )}
             </AnimatePresence>
           </div>
