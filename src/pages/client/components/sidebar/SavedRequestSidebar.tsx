@@ -16,7 +16,6 @@ import type { RootBody } from "../../types/types";
 import plusIcon from "@iconify-icons/tabler/plus";
 import ItemNode from "../item-node";
 
-
 export function SavedRequestsSidebar({
   isOpen,
   onLoadRequest,
@@ -64,10 +63,6 @@ export function SavedRequestsSidebar({
     }
   });
 
-
-
-
-
   const handleClickCargueCollecion = () => {
     const input = document.createElement("input") as HTMLInputElement;
     input.type = "file";
@@ -84,8 +79,10 @@ export function SavedRequestsSidebar({
             setColeccion(reader.result as string);
             setParsed(JSON.parse(reader.result));
 
-            localStorage.setItem("savedRequests2", JSON.stringify(reader.result as string));
-
+            localStorage.setItem(
+              "savedRequests2",
+              JSON.stringify(reader.result as string),
+            );
           } catch (error) {
             toast.error("Ocurrio un eror al procesar o parsear el archivo");
             console.error("Error al procesar el archivo:", error);
@@ -186,7 +183,14 @@ export function SavedRequestsSidebar({
     reqParams: Record<string, string>,
   ) => {
     // Implemntacon de la logica de carga de request
-    onLoadRequest(reqBody, reqContentType, reqUrl, reqMethod, reqHeaders, reqParams);
+    onLoadRequest(
+      reqBody,
+      reqContentType,
+      reqUrl,
+      reqMethod,
+      reqHeaders,
+      reqParams,
+    );
   };
 
   return (
@@ -297,9 +301,9 @@ export function SavedRequestsSidebar({
             )} */}
 
             {parsed && (
-              <div className="overflow-y-scroll h-78">
+              <div className="overflow-y-scroll h-[70vh]">
                 <ItemNode
-                  level={0}
+                  level={1}
                   data={parsed}
                   setData={setParsed}
                   loadRequest={parsedLoadRequest}
@@ -307,7 +311,11 @@ export function SavedRequestsSidebar({
               </div>
             )}
           </div>
-          
+
+          <pre className="text-xs bg-zinc-800">
+            {JSON.stringify(parsed, null, 2)}
+          </pre>
+
           {/* {parsed && (
             <div className="overflow-y-scroll h-78">
               <ItemNode
@@ -323,4 +331,3 @@ export function SavedRequestsSidebar({
     </AnimatePresence>
   );
 }
-
