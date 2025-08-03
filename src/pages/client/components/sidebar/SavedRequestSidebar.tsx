@@ -307,7 +307,7 @@ export const ItemNode: React.FC<{
             return;
           }
 
-          loadRequest && loadRequest(data.request?.body?.raw || "", "json", data.request?.raw || "", data.request?.method || "GET");
+          loadRequest && loadRequest(data.request?.body?.raw || "", "json", data.request?.url.raw || "", data.request?.method || "GET");
           console.log("Cargando request:", data.request);
 
         }}>

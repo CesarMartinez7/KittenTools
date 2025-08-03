@@ -131,11 +131,11 @@ export default function AppClient() {
       <div className="w-full flex flex-col px-4 md:px-8 py-4 gap-2 bg-zinc-900/50 ">
         <div className=' flex-row justify-between items-center flex gap-2 text-white bg-zinc-900/60 py-1 px-5 rounded-xl'>
           <div className='flex gap-2 '>
-            <button className='btn-black'>
-            <span class="tabler--arrow-left"></span>
+            <button title='izquierda' type='button' className='btn-black'>
+            <span className="tabler--arrow-left"></span>
               </button>
               <button className='btn-black'>
-              <span class="tabler--arrow-narrow-right"></span>
+              <span className="tabler--arrow-narrow-right"></span>
               </button>
           </div>
           <div>
