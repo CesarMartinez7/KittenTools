@@ -313,7 +313,7 @@ export const ItemNode: React.FC<{
         }}>
           <div className="flex items-center gap-2">
             <Icon
-              icon={isFolder ? "tabler:folder" : "tabler:file-code"}
+              icon={isFolder ? "tabler:folder" : "tabler:file"}
               width="25"
               height="25"
               className={isFolder ? "text-yellow-400" : "text-blue-400"}
