@@ -26,7 +26,14 @@ export interface RequestItem {
 export interface SavedRequestsSidebarProps {
   isOpen: boolean;
   onClose: () => void;
-  onLoadRequest: (reqBody : string, reqContentType : string, reqUrl : string, reqMethod : string, reqHeaders: Record<string, string>, reqParams: Record<string, string>) => void;
+  onLoadRequest: (
+    reqBody: string,
+    reqContentType: string,
+    reqUrl: string,
+    reqMethod: string,
+    reqHeaders: Record<string, string>,
+    reqParams: Record<string, string>,
+  ) => void;
   currentUrl?: string;
   currentMethod?: string;
   currentBody?: string;
@@ -74,7 +81,7 @@ export interface Script {
   packages: Packages;
 }
 
-export interface Packages {}
+export type Packages = {};
 
 export interface Request {
   auth?: Auth;

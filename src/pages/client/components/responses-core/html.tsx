@@ -1,7 +1,3 @@
-export default function ResponseHtml (){
-    return(
-        <div>
-            
-        </div>
-    )
+export default function ResponseHtml() {
+  return <div></div>;
 }

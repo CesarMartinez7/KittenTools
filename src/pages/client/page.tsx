@@ -1,26 +1,26 @@
-import "./App.css";
-import { Icon } from "@iconify/react";
-import { AnimatePresence, motion } from "framer-motion";
-import { useCallback, useMemo, useRef, useState } from "react";
+import './App.css';
+import { Icon } from '@iconify/react';
+import sendIcon from '@iconify-icons/tabler/send';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import {
   CodeEditorLazy,
   JsonViewerLazy,
-} from "../../components/LAZY_COMPONENT";
-import AddQueryParam from "./components/addqueryparams/addQueryParams";
-import { HeadersAddRequest } from "./components/headers/Headers";
-import ResponsesTypesComponent from "./components/responses-core/response-componente";
-import { SavedRequestsSidebar } from "./components/sidebar/SavedRequestSidebar";
-import ClientCustomHook from "./hooks/client-hook";
-import sendIcon from "@iconify-icons/tabler/send";
-import RequestHook from "./hooks/request.client";
+} from '../../components/LAZY_COMPONENT';
+import AddQueryParam from './components/addqueryparams/addQueryParams';
+import { HeadersAddRequest } from './components/headers/Headers';
+import ResponsesTypesComponent from './components/responses-core/response-componente';
+import ScriptComponent from './components/scripts/script-component';
+import { SavedRequestsSidebar } from './components/sidebar/SavedRequestSidebar';
+import ClientCustomHook from './hooks/client-hook';
+import RequestHook from './hooks/request.client';
 import {
   Methodos,
   Opciones,
   TypesResponse,
   VariantsAnimation,
-} from "./mapper-ops";
-import type { RequestItem } from "./types/types";
-import ScriptComponent from "./components/scripts/script-component";
+} from './mapper-ops';
+import type { RequestItem } from './types/types';
 
 export default function AppClient() {
   const { value, setter } = ClientCustomHook();
@@ -77,7 +77,7 @@ export default function AppClient() {
   });
 
   const [mimeSelected, setMimeSelected] = useState(
-    Number(sessionStorage.getItem("mimeSelected")) || 0,
+    Number(sessionStorage.getItem('mimeSelected')) || 0,
   );
 
   const saveToLocalStorage = useCallback((name, value) => {
@@ -103,16 +103,16 @@ export default function AppClient() {
 
   const formatBodyPlaceholder = useMemo(() => {
     switch (contentType) {
-      case "json":
+      case 'json':
         return `{
   "key": "value"
 }`;
-      case "form":
-        return "key=value&anotherKey=anotherValue";
-      case "xml":
-        return "<root>\n  <element>value</element>\n</root>";
+      case 'form':
+        return 'key=value&anotherKey=anotherValue';
+      case 'xml':
+        return '<root>\n  <element>value</element>\n</root>';
       default:
-        return "Enter request body here...";
+        return 'Enter request body here...';
     }
   }, [contentType]);
 
@@ -139,7 +139,7 @@ export default function AppClient() {
               <button
                 type="button"
                 onClick={handleClickShowMethod}
-                className={`py-1 px-4 rounded-md font-semibold text-lg ${selectedMethod === "GET" ? "bg-green-800 text-green-300" : selectedMethod === "POST" ? "bg-blue-500 text-blue-200" : selectedMethod === "PUT" ? "bg-yellow-800 text-yellow-300" : selectedMethod === "PATCH" ? "bg-orange-800 text-orange-300" : selectedMethod === "DELETE" ? "bg-red-800 text-red-300" : "bg-gray-700"}`} // Dynamic button color based on method
+                className={`py-1 px-4 rounded-md font-semibold text-lg ${selectedMethod === 'GET' ? 'bg-green-800 text-green-300' : selectedMethod === 'POST' ? 'bg-blue-500 text-blue-200' : selectedMethod === 'PUT' ? 'bg-yellow-800 text-yellow-300' : selectedMethod === 'PATCH' ? 'bg-orange-800 text-orange-300' : selectedMethod === 'DELETE' ? 'bg-red-800 text-red-300' : 'bg-gray-700'}`} // Dynamic button color based on method
               >
                 {selectedMethod}
               </button>
@@ -160,7 +160,7 @@ export default function AppClient() {
                           setShowMethods(false);
                         }}
                         className={`w-full text-left px-4 py-2 hover:bg-zinc-700 transition-colors duration-200
-                          ${metodo.name.toUpperCase() === selectedMethod ? "bg-sky-500 text-white" : ""}`}
+                          ${metodo.name.toUpperCase() === selectedMethod ? 'bg-sky-500 text-white' : ''}`}
                       >
                         {metodo.name}
                       </button>
@@ -175,7 +175,7 @@ export default function AppClient() {
               value={endpointUrl}
               onChange={(e) => {
                 setEndpointUrl(e.target.value);
-                saveToLocalStorage("request_url", e.target.value);
+                saveToLocalStorage('request_url', e.target.value);
               }}
               className="flex-1 bg-zinc-900 border border-zinc-800 rounded-md py-2 px-4 focus:ring-2 focus:ring-sky-500 focus:border-transparent outline-none transition-all duration-200"
             />
@@ -190,7 +190,7 @@ export default function AppClient() {
                   Enviando...
                 </span>
               ) : (
-                "Enviar"
+                'Enviar'
               )}
             </button>
           </div>
@@ -200,7 +200,7 @@ export default function AppClient() {
                 key={crypto.randomUUID()}
                 type="button"
                 className={`btn btn-sm text-sm py-2 px-4 rounded-t-lg transition-colors duration-200
-                  ${index === mimeSelected ? "border-b-2 border-sky-500 text-sky-500 font-semibold bg-zinc-950" : "text-zinc-400 hover:text-white hover:bg-zinc-800"}`}
+                  ${index === mimeSelected ? 'border-b-2 border-sky-500 text-sky-500 font-semibold bg-zinc-950' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}
                 onClick={() => setMimeSelected(index)}
               >
                 {opcion.name}
@@ -213,7 +213,7 @@ export default function AppClient() {
           aria-label="grid"
         >
           <div className="bg-neutral-900 p-6 rounded-xl border border-zinc-800 flex flex-col shadow-lg">
-            <AnimatePresence mode="wait" key={"uja"}>
+            <AnimatePresence mode="wait" key={'uja'}>
               {mimeSelected === 0 && ( // Body
                 <motion.div
                   key="body-section-body"
@@ -221,7 +221,7 @@ export default function AppClient() {
                   className="flex flex-col flex-1"
                 >
                   <div className="flex gap-4 mb-3">
-                    {["json", "form", "xml"].map((type, idx) => (
+                    {['json', 'form', 'xml'].map((type, idx) => (
                       <label
                         key={idx}
                         className="text-sm text-gray-300 flex items-center gap-2 cursor-pointer"
@@ -302,7 +302,7 @@ export default function AppClient() {
                       errorRequest
                         ? errorAxios
                           ? JSON.parse(errorAxios)
-                          : "Unknown Error"
+                          : 'Unknown Error'
                         : responseSelected
                     }
                   />

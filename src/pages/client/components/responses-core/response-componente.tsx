@@ -1,12 +1,12 @@
-import { Icon } from "@iconify/react/dist/iconify.js";
-import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useMemo, useState } from "react";
-import { CodeEditorLazy } from "../../../../components/LAZY_COMPONENT";
-import { JsonNode } from "../../../../ui/formatter-JSON/Formatter";
-import { TypesResponse } from "../../mapper-ops";
-import plusIcon from "@iconify-icons/tabler/plus";
-import searchIcon from "@iconify-icons/tabler/search";
-import copyIcon from "@iconify-icons/tabler/copy";
+import { Icon } from '@iconify/react/dist/iconify.js';
+import copyIcon from '@iconify-icons/tabler/copy';
+import plusIcon from '@iconify-icons/tabler/plus';
+import searchIcon from '@iconify-icons/tabler/search';
+import { AnimatePresence, motion } from 'motion/react';
+import { useEffect, useMemo, useState } from 'react';
+import { CodeEditorLazy } from '../../../../components/LAZY_COMPONENT';
+import { JsonNode } from '../../../../ui/formatter-JSON/Formatter';
+import { TypesResponse } from '../../mapper-ops';
 
 interface ResponseTypes {
   height: string;
@@ -25,12 +25,12 @@ export default function ResponsesTypesComponent({
 }: ResponseTypes) {
   const Size = useMemo(() => {
     const size = new TextEncoder().encode(data).length / 1024;
-    return size.toFixed(2) + "KB";
+    return size.toFixed(2) + 'KB';
   }, [data]);
 
   const [showsContentTypes, setShowsContentTypes] = useState<boolean>(false);
   const [contentType, setContentType] = useState<string>(
-    contentTypeData || "JSON",
+    contentTypeData || 'JSON',
   );
 
   return (
@@ -102,7 +102,7 @@ export default function ResponsesTypesComponent({
 
       {/* ----------------------------------------------------------- Principio del contenido por tipos ---------------------- */}
       <div className="bg-zinc-900  w-full p-6 max-h-[65vh] rounded-2xl  h-auto overflow-y-scroll">
-        {contentType === "JSON" && (
+        {contentType === 'JSON' && (
           <JsonNode
             open={true}
             isChange={false}
@@ -112,11 +112,11 @@ export default function ResponsesTypesComponent({
           />
         )}
 
-        {contentType === "XML" && (
+        {contentType === 'XML' && (
           <CodeEditorLazy language="xml" value={data} />
         )}
 
-        {contentType === "BASE64" && (
+        {contentType === 'BASE64' && (
           <div className="break-words  text-green-400 p-2 rounded  overflow-auto">
             {btoa(JSON.stringify(data))}
           </div>

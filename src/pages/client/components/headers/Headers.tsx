@@ -74,7 +74,9 @@ export function HeadersAddRequest() {
         {headers.length === 0 && (
           <div className="h-full flex justify-center-safe items-center w-full flex-col ">
             <span className="tabler--mood-empty block "></span>
-            <span className='block text-lg text-zinc-400'>No existen Cabeceras cargadas.</span>
+            <span className="block text-lg text-zinc-400">
+              No existen Cabeceras cargadas.
+            </span>
           </div>
         )}
         <div className="flex flex-col gap-y-4 mt-4">

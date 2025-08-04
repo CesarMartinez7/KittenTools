@@ -11,10 +11,8 @@ function createWindow() {
   const win = new BrowserWindow({
     width: 1000,
     height: 800,
-    webPreferences: {
-    }
+    webPreferences: {},
   });
-
 
   win.loadURL('http://localhost:3000');
 }

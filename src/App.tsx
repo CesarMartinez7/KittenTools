@@ -30,8 +30,7 @@ const App = () => {
   const [isDecode, setIsDecode] = useState<boolean>(false);
   const [showGrid, setShowGrid] = useState(false);
 
-
-  const showFullScreen = JsonViewerStore((state) => state.fullScreenModal)
+  const showFullScreen = JsonViewerStore((state) => state.fullScreenModal);
 
   // Download Stores JSONvIEWER
   const openModalDownload = JsonViewerStore(

@@ -15,7 +15,7 @@ const CodeEditor = ({
   value = '',
   language = 'json',
   onChange,
-  maxHeight = "100%",
+  maxHeight = '100%',
   height = '200px',
   minHeight = '68vh',
   placeholder = '// Escribe tu código aqui...',
@@ -26,7 +26,7 @@ const CodeEditor = ({
   const inputRefTextNew = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const highlightRef = useRef<HTMLDivElement>(null);
-  const lineNumbersRef = useRef<HTMLDivElement>(null);  
+  const lineNumbersRef = useRef<HTMLDivElement>(null);
 
   const [isOpenBar, setIsOpenBar] = useState<boolean>(false);
   const [code, setCode] = useState(value);
@@ -56,14 +56,11 @@ const CodeEditor = ({
         setIsOpenBar((prev) => !prev);
       }
 
-      if((e.ctrlKey && e.key === "s")){
-        e.preventDefault()
-        HandlersIdentarBody()
-        alert("guardar y minificar")
-
+      if (e.ctrlKey && e.key === 's') {
+        e.preventDefault();
+        HandlersIdentarBody();
+        alert('guardar y minificar');
       }
-
-
     };
 
     window.addEventListener('keydown', handleGlobalKeyDown);

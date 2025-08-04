@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import type { Item } from "../types/types";
-import toast, { ToastBar } from "react-hot-toast";
-import { Icon } from "@iconify/react/dist/iconify.js";
+import { Icon } from '@iconify/react/dist/iconify.js';
+import type React from 'react';
+import { useState } from 'react';
+import toast, { ToastBar } from 'react-hot-toast';
+import type { Item } from '../types/types';
 
 interface ItemNodeProps {
   data: Item;
@@ -57,14 +58,14 @@ const ItemNode: React.FC<ItemNodeProps> = ({
     } else {
       loadRequest &&
         loadRequest(
-          data.request?.body?.raw || "",
-          "json",
-          data.request?.url.raw || "",
-          data.request?.method || "GET",
+          data.request?.body?.raw || '',
+          'json',
+          data.request?.url.raw || '',
+          data.request?.method || 'GET',
           data.request?.header,
-          "idk",
+          'idk',
         );
-      console.log("Cargando request:", data.request);
+      console.log('Cargando request:', data.request);
     }
   };
 
@@ -85,14 +86,9 @@ const ItemNode: React.FC<ItemNodeProps> = ({
           e.preventDefault();
           e.stopPropagation();
 
-          if (e.button === 0) {
-            toast.success("El botón izquierdo fue tocado");
-            return;
-          }
-
           if (e.button === 1) {
             e.preventDefault();
-            toast.error("El botón del medio fue tocado, no se implementa");
+            toast.error('El botón del medio fue tocado, no se implementa');
             return;
           }
         }}
@@ -114,11 +110,11 @@ const ItemNode: React.FC<ItemNodeProps> = ({
             <span
               className={`text-xs font-mono px-1 py-1 rounded-md 
                 ${
-                  data.request.method === "GET"
-                    ? "text-green-400"
-                    : data.request.method === "POST"
-                      ? "text-blue-400"
-                      : "text-orange-400"
+                  data.request.method === 'GET'
+                    ? 'text-green-400'
+                    : data.request.method === 'POST'
+                      ? 'text-blue-400'
+                      : 'text-orange-400'
                 }`}
             >
               {data.request.method}
@@ -136,14 +132,14 @@ const ItemNode: React.FC<ItemNodeProps> = ({
         <div
           className="absolute bg-zinc-900 text-white rounded-md shadow-lg z-50 p-2 w-40"
           style={{
-            top: "100%",
+            top: '100%',
             left: 0,
           }}
         >
           <ul className="text-sm space-y-1">
             <li
               onClick={() => {
-                const nuevo = prompt("Nuevo nombre:", data.name);
+                const nuevo = prompt('Nuevo nombre:', data.name);
                 if (nuevo && nuevo.trim()) {
                   actualizarNombre(data.name, nuevo.trim());
                 }
@@ -153,7 +149,7 @@ const ItemNode: React.FC<ItemNodeProps> = ({
               <Icon icon="tabler:pencil" width="20" height="20" /> Renombrar
             </li>
             <li
-              onClick={() => handleOptionClick("Duplicar")}
+              onClick={() => handleOptionClick('Duplicar')}
               className="hover:bg-zinc-700 px-2 py-1 rounded cursor-pointer items-center justify-center flex gap-2"
             >
               <span>
@@ -162,7 +158,7 @@ const ItemNode: React.FC<ItemNodeProps> = ({
               <span>Duplicar</span>
             </li>
             <li
-              onClick={() => handleOptionClick("Eliminar")}
+              onClick={() => handleOptionClick('Eliminar')}
               className="hover:bg-red-700 px-2 py-1 rounded cursor-pointer items-center justify-center flex gap-2"
             >
               <span>

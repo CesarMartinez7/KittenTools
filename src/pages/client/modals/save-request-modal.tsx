@@ -1,7 +1,7 @@
+import { Icon } from '@iconify/react';
 import { useState } from 'react';
 import { BaseModalLazy } from '../../../components/LAZY_COMPONENT';
 import type BaseModalProps from '../../../ui/base-modal/types';
-import { Icon } from '@iconify/react';
 
 interface ModalCurrentSaveRequest extends BaseModalProps {
   handleSavePeticion: (requestName: string) => void;

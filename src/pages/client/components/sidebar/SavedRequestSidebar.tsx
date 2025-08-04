@@ -1,19 +1,19 @@
 import { Icon } from "@iconify/react";
+import plusIcon from "@iconify-icons/tabler/plus";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import useIndexedDb from "../../../../hooks/useIndexedDb";
 import ModalDeleteRequest from "../../modals/delete-request-modal";
 import AddNewRequestModal from "../../modals/new-request-modal";
 import ModalCurrentSavePeticion from "../../modals/save-request-modal";
+import SidebarHook from "./hooks/sacedrequestsidebar.hook";
+
 import type {
   Item,
   RequestItem,
+  RootBody,
   SavedRequestsSidebarProps,
 } from "../../types/types";
-import { MethodFormaterButton } from "../method-formatter/method-formatter";
-import type { RootBody } from "../../types/types";
-import plusIcon from "@iconify-icons/tabler/plus";
 import ItemNode from "../item-node";
 
 export function SavedRequestsSidebar({
@@ -26,95 +26,49 @@ export function SavedRequestsSidebar({
   currentQueryParams = [],
   currentContentType = "json",
 }: SavedRequestsSidebarProps) {
-  // Manejar si el formulario se ve o no en la modal
-  const [openModalNewRequest, setOpenModalNewRequest] =
-    useState<boolean>(false);
-  const [openModalDeleteRequest, setOpenModalDeleteRequest] =
-    useState<boolean>(false);
-  const [isOpenModalSaveRequest, setIsOpenModalSaveRequest] =
-    useState<boolean>(false);
-
-  const [coleccion, setColeccion] = useState<ArrayBuffer | string | File>();
-  // Data parseada para manipular aqui
-  const [parsed, setParsed] = useState<RootBody>();
+  const {
+    coleccion,
+    parsed,
+    setColeccion,
+    handleClickCargueCollecion,
+    setParsed,
+    openModalDeleteRequest,
+    setOpenModalDeleteRequest,
+    openModalNewRequest,
+    setIsOpenModalSaveRequest,
+    isOpenModalSaveRequest,
+  } = SidebarHook();
 
   // Modal Delete
+  // Guardador de request sea cargada o no
+
   const [currentId, setCurrentId] = useState<string>("");
   const [currentName, setCurrentName] = useState<string>("");
-  const [currentIdx, setCurrentIdx] = useState<number>(() => {
-    try {
-      return localStorage.getItem("currentidx")
-        ? localStorage.getItem("currentidx")
-        : 0;
-    } catch {
-      toast.error("Error al cargar rq current IDX");
-      return 0;
-    }
-  });
-
-  // Guardador de request sea cargada o no
-  const [savedRequests, setSavedRequests] = useState<RequestItem[]>(() => {
-    try {
-      const storedRequests = localStorage.getItem("savedRequests");
-      return storedRequests ? JSON.parse(storedRequests) : [];
-    } catch (error) {
-      toast.error("Error al cargar las peticiones del localStorage");
-      return [];
-    }
-  });
 
   const handleExportarCollecion = () => {
-    const json = JSON.stringify(coleccion, null, 2); // Bonito y legible
-    const blob = new Blob([json], { type: "application/json" });
+    const blob = new Blob([coleccion as string], { type: "application/jsons" });
 
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
 
     a.href = url;
-    a.download = "coleccion.json"; // nombre del archivo
-    a.style.display = "none"; // opcional
+    a.download = "coleccion.json";
+    a.style.display = "none";
     document.body.appendChild(a);
     a.click();
 
-    // Limpieza
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
 
-  const handleClickCargueCollecion = () => {
-    const input = document.createElement("input") as HTMLInputElement;
-    input.type = "file";
-    input.accept = ".json, .txt";
+  useEffect(() => {
+    const requestLocalStorage = localStorage.getItem("savedRequests2");
 
-    input.onchange = () => {
-      if (input.files && input.files.length > 0) {
-        toast.success("Archivo cargado exitosamente");
-
-        const reader = new FileReader();
-
-        reader.onload = () => {
-          try {
-            setColeccion(reader.result as string);
-            setParsed(JSON.parse(reader.result));
-
-            localStorage.setItem(
-              "savedRequests2",
-              JSON.stringify(reader.result as string),
-            );
-          } catch (error) {
-            toast.error("Ocurrio un eror al procesar o parsear el archivo");
-            console.error("Error al procesar el archivo:", error);
-          }
-        };
-        reader.readAsText(input.files[0]);
-      } else {
-        toast.error("No se selecciono ningún archivo");
-      }
-    };
-
-    input.click();
-    input.remove();
-  };
+    if (requestLocalStorage) {
+      setParsed(JSON.parse(requestLocalStorage));
+      return;
+    }
+  }, []);
 
   // Me ejecuto si soy valido solamente COOL XHR
   const onSubmit = (data: any) => {
@@ -138,18 +92,6 @@ export function SavedRequestsSidebar({
       handleToogleModal();
     }
   };
-
-  useEffect(() => {
-    try {
-      localStorage.setItem("savedRequests", JSON.stringify(savedRequests));
-
-      localStorage.setItem("currentidx", "0");
-    } catch (error) {
-      console.error("Error al guardar las peticiones en localStorage:", error);
-      toast.error("No se pudieron guardar las peticiones.");
-      toast.error(JSON.stringify(error));
-    }
-  }, [savedRequests]);
 
   // Guardar pero peticion actual o current
   const saveCurrentRequest = (requestName: string) => {
@@ -260,21 +202,21 @@ export function SavedRequestsSidebar({
   return (
     <AnimatePresence key={"gokuuu"}>
       <AddNewRequestModal
-        key={"sdfsdf"}
+        key={"new-request-modal"}
         handleToogleModal={handleToogleModal}
         openModalNewRequest={openModalNewRequest}
         onSubmit={onSubmit}
       />
 
       <ModalCurrentSavePeticion
-        key={"ljdsflksdf"}
+        key={"save-request-modal"}
         handleSavePeticion={saveCurrentRequest}
         isOpen={isOpenModalSaveRequest}
         onClose={handleToogleSaveRequestCurrent}
       />
 
       <ModalDeleteRequest
-        key={"sdlkfkdslflkjds"}
+        key={"delete-request-modal"}
         name={currentName}
         id={currentId}
         handleDeleteRequest={handleDeleteRequest}
@@ -327,7 +269,6 @@ export function SavedRequestsSidebar({
           <div className="flex-1 overflow-y-auto space-y-2 justify-center items-center">
             {parsed && (
               <div className="overflow-y-scroll h-[70vh]">
-                <p>{parsed.info.name}</p>
                 <ItemNode
                   actualizarNombre={handleActualizarNombre}
                   level={1}

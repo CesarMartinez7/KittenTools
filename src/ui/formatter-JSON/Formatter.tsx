@@ -1,4 +1,7 @@
 import { Icon } from '@iconify/react';
+import copyIcon from '@iconify-icons/tabler/copy';
+import csvIcon from '@iconify-icons/tabler/csv';
+import downloadIcon from '@iconify-icons/tabler/download';
 import { download, generateCsv, mkConfig } from 'export-to-csv';
 import { AnimatePresence, motion } from 'motion/react';
 import type React from 'react';
@@ -9,10 +12,6 @@ import TableData from '../Table';
 import FormatDataTypeLabel from './components/formatlabel.tsx';
 import SkeletonJsonKey from './skeleton/skeleton.formatter.tsx';
 import { JsonViewerStore } from './stores/jsonviewer.ts';
-import downloadIcon from '@iconify-icons/tabler/download';
-import csvIcon from '@iconify-icons/tabler/csv';
-import copyIcon from '@iconify-icons/tabler/copy';
-
 
 const csvConfig = mkConfig({ useKeysAsHeaders: true });
 
@@ -152,10 +151,10 @@ const JsonViewer: React.FC<{
   const [showTable, setShowTable] = useState<boolean>(false);
   const [showInterface, setShowInterface] = useState<boolean>(false);
 
-
-  const fullScreenModal = JsonViewerStore((state)  => state.fullScreenModal )
-  const setFullScreenModal = JsonViewerStore((state)  => state.setFullModalScreen )
-
+  const fullScreenModal = JsonViewerStore((state) => state.fullScreenModal);
+  const setFullScreenModal = JsonViewerStore(
+    (state) => state.setFullModalScreen,
+  );
 
   // Open ModaDownload
   const openModalDownload = JsonViewerStore(
@@ -359,10 +358,24 @@ const JsonViewer: React.FC<{
           >
             <Icon icon={'tabler:maximize'} width={'10'} height={'10'} />
           </button>
-          <button title='Full screen' aria-label='poner full ' className="btn-small" onClick={handleClickSummary}>
-            <Icon icon={'tabler:plus'} aria-label='Aumentar identando' width={'10'} height={'10'} />
+          <button
+            title="Full screen"
+            aria-label="poner full "
+            className="btn-small"
+            onClick={handleClickSummary}
+          >
+            <Icon
+              icon={'tabler:plus'}
+              aria-label="Aumentar identando"
+              width={'10'}
+              height={'10'}
+            />
           </button>
-          <button aria-label='Disminuir indentando' className="btn-small" onClick={handleClickRest}>
+          <button
+            aria-label="Disminuir indentando"
+            className="btn-small"
+            onClick={handleClickRest}
+          >
             <Icon icon={'tabler:minus'} width={'10'} height={'10'} />
           </button>
         </div>
