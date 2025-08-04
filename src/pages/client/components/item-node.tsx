@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import type { Item } from "../types/types";
-import toast from "react-hot-toast";
+import toast, { ToastBar } from "react-hot-toast";
+import { Icon } from "@iconify/react/dist/iconify.js";
 
-const ItemNode: React.FC<{
+interface ItemNodeProps {
   data: Item;
   level: number;
+  setCurrentName: string;
+  actualizarNombre: (items: Item[], oldName: string, newName: string) => void;
   loadRequest?: (
     reqBody: string,
     reqContentType: string,
@@ -13,12 +16,42 @@ const ItemNode: React.FC<{
     reqHeaders: Record<string, string>,
     reqParams: Record<string, string>,
   ) => void;
-}> = ({ data, level = 0, loadRequest }) => {
-  const [collapsed, setCollapsed] = useState(true); // Nuevo estado de colapso
+}
+
+const ItemNode: React.FC<ItemNodeProps> = ({
+  data,
+  level = 0,
+  loadRequest,
+  actualizarNombre,
+}) => {
+  const [collapsed, setCollapsed] = useState(true);
   const indent = 2 * level;
   const isFolder = !!data.item && data.item.length > 0;
 
+  const [showBar, setShowBar] = useState(false);
+  const [contextPos, setContextPos] = useState<{ x: number; y: number } | null>(
+    null,
+  );
+
+  const changeName = (name: string, currentName: string) => {
+    currentName = name;
+  };
+
+  const handleClickContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setContextPos({ x: e.pageX, y: e.pageY });
+
+    if (showBar) {
+      setShowBar(false);
+      return;
+    }
+    setShowBar(true);
+  };
+
   const handleClick = () => {
+    setShowBar(false);
+
     if (isFolder) {
       setCollapsed(!collapsed);
     } else {
@@ -35,21 +68,31 @@ const ItemNode: React.FC<{
     }
   };
 
+  const handleOptionClick = (action: string) => {
+    toast(`Acción: ${action} sobre "${data.name}"`);
+    setShowBar(false);
+  };
+
   return (
-    <div className="flex flex-col gap-4" style={{ marginLeft: `${indent}px` }}>
+    <div
+      className="flex flex-col gap-4 relative"
+      onContextMenu={handleClickContextMenu}
+      onClick={() => setShowBar(false)} // Ocultar menú si se hace clic afuera
+      style={{ marginLeft: `${indent}px` }}
+    >
       <div
         onMouseDown={(e) => {
           e.preventDefault();
           e.stopPropagation();
 
           if (e.button === 0) {
-            toast.success("El boton izquierdo fue tocado");
+            toast.success("El botón izquierdo fue tocado");
             return;
           }
 
           if (e.button === 1) {
             e.preventDefault();
-            toast.error("El boton del medio fue tocado, no se implementa");
+            toast.error("El botón del medio fue tocado, no se implementa");
             return;
           }
         }}
@@ -59,7 +102,11 @@ const ItemNode: React.FC<{
         <div className="flex items-center gap-2 text-xs cursor-pointer">
           {isFolder && (
             <span className="text-zinc-400 w-4 inline-block text-center">
-              {collapsed ? "▶" : "▼"}
+              {collapsed ? (
+                <Icon icon="tabler:folder" width="15" height="15" />
+              ) : (
+                <Icon icon="tabler:folder-open" width="15" height="15" />
+              )}
             </span>
           )}
 
@@ -84,10 +131,54 @@ const ItemNode: React.FC<{
         </div>
       </div>
 
+      {/* Menú contextual personalizado */}
+      {showBar && (
+        <div
+          className="absolute bg-zinc-900 text-white rounded-md shadow-lg z-50 p-2 w-40"
+          style={{
+            top: "100%",
+            left: 0,
+          }}
+        >
+          <ul className="text-sm space-y-1">
+            <li
+              onClick={() => {
+                const nuevo = prompt("Nuevo nombre:", data.name);
+                if (nuevo && nuevo.trim()) {
+                  actualizarNombre(data.name, nuevo.trim());
+                }
+              }}
+              className="hover:bg-zinc-700 px-2 py-1 rounded cursor-pointer items-center justify-center flex gap-2"
+            >
+              <Icon icon="tabler:pencil" width="20" height="20" /> Renombrar
+            </li>
+            <li
+              onClick={() => handleOptionClick("Duplicar")}
+              className="hover:bg-zinc-700 px-2 py-1 rounded cursor-pointer items-center justify-center flex gap-2"
+            >
+              <span>
+                <Icon icon="tabler:file-3d" width="20" height="20" />
+              </span>
+              <span>Duplicar</span>
+            </li>
+            <li
+              onClick={() => handleOptionClick("Eliminar")}
+              className="hover:bg-red-700 px-2 py-1 rounded cursor-pointer items-center justify-center flex gap-2"
+            >
+              <span>
+                <Icon icon="tabler:trash" width="24" height="24" />
+              </span>
+              <span>Eliminar</span>
+            </li>
+          </ul>
+        </div>
+      )}
+
       {!collapsed && isFolder && (
         <div className="ml-2 flex flex-col gap-3">
           {data.item!.map((child, index) => (
             <ItemNode
+              actualizarNombre={actualizarNombre}
               key={index}
               data={child}
               level={level + 1}

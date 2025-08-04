@@ -63,6 +63,24 @@ export function SavedRequestsSidebar({
     }
   });
 
+  const handleExportarCollecion = () => {
+    const json = JSON.stringify(coleccion, null, 2); // Bonito y legible
+    const blob = new Blob([json], { type: "application/json" });
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+
+    a.href = url;
+    a.download = "coleccion.json"; // nombre del archivo
+    a.style.display = "none"; // opcional
+    document.body.appendChild(a);
+    a.click();
+
+    // Limpieza
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   const handleClickCargueCollecion = () => {
     const input = document.createElement("input") as HTMLInputElement;
     input.type = "file";
@@ -174,6 +192,52 @@ export function SavedRequestsSidebar({
     handleToogleDeleteModal();
   };
 
+  const actualizarNombre = (oldName: string, newName: string) => {
+    const nuevaColeccion = parsed.map((item) => {
+      if (item.name === oldName) {
+        return { ...item, name: newName };
+      }
+      return item;
+    });
+    setColeccion(nuevaColeccion); // Actualizamos el estado
+  };
+
+  function actualizarNombreEnItems(
+    items: Item[],
+    oldName: string,
+    newName: string,
+  ): Item[] {
+    return items.map((item) => {
+      // Si el nombre coincide, se actualiza
+      if (item.name === oldName) {
+        return { ...item, name: newName };
+      }
+
+      // Si tiene hijos, aplicar recursividad
+      if (item.item) {
+        return {
+          ...item,
+          item: actualizarNombreEnItems(item.item, oldName, newName),
+        };
+      }
+
+      return item;
+    });
+  }
+
+  const handleActualizarNombre = (oldName: string, newName: string) => {
+    if (!parsed) return;
+
+    const updatedItems = actualizarNombreEnItems(parsed.item, oldName, newName);
+
+    const nuevaParsed = {
+      ...parsed,
+      item: updatedItems,
+    };
+
+    setParsed(nuevaParsed);
+  };
+
   const parsedLoadRequest = (
     reqBody: string,
     reqContentType: string,
@@ -236,7 +300,9 @@ export function SavedRequestsSidebar({
             >
               Importar coleccion
             </button>
-            <button className="gradient-text">Exportar coleccion</button>
+            <button className="gradient-text" onClick={handleExportarCollecion}>
+              Exportar coleccion
+            </button>
           </div>
 
           <div className="flex flex-row gap-x-2.5 h-12 ">
@@ -258,51 +324,12 @@ export function SavedRequestsSidebar({
 
           {/* ------------------------------------ Aqui va la lista de peticiones guardadas ------------------------------------ Ahora migrandose a la esctrtura de postman compatible en vez las misma creada por mi */}
 
-          {/* Lo que esta comentado aqui es una lista de peticiones guardadas, que se pueden cargar y eliminar en la version de antes */}
-
           <div className="flex-1 overflow-y-auto space-y-2 justify-center items-center">
-            {/* {savedRequests.length === 0 ? (
-              <p className="text-zinc-500 text-sm text-center py-4">
-                No hay peticiones guardadas todavia.
-              </p>
-            ) : (
-              savedRequests.map((req, idx) => (
-                <div
-                  key={idx}
-                  className={` p-2.5 rounded-md border border-zinc-800 shadow-xl flex justify-between items-center group hover:bg-zinc-700 transition-colors  ${currentIdx === idx ? "bg-zinc-900" : "bg-zinc-800/60"}  `}
-                >
-                  <div
-                    className="flex-1 cursor-pointer truncate"
-                    onClick={() => {
-                      localStorage.setItem("currentidx", String(idx));
-                      toast.success("Cargando peticion");
-                      onLoadRequest(req.body, req.contentType, req.url, req.method);
-                    }}
-                  >
-                    <p className="font-semibold text-white shiny-text truncate">
-                      {req.name}
-                    </p>
-
-                    <p className="text-xs text-zinc-400 truncate space-x-2.5 ">
-                      {" "}
-                      <MethodFormaterButton nameMethod={req.method.toUpperCase()} />
-                      {req.url}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => handleClickDeleteAndUpdatePeticion(req)}
-                    className="text-red-500 hover:text-red-400 ml-2 opacity-0 group-hover:opacity-100 transition-opacity"
-                    title="Eliminar petición"
-                  >
-                    <Icon icon="tabler:trash" width="24" height="24" />
-                  </button>
-                </div>
-              ))
-            )} */}
-
             {parsed && (
               <div className="overflow-y-scroll h-[70vh]">
+                <p>{parsed.info.name}</p>
                 <ItemNode
+                  actualizarNombre={handleActualizarNombre}
                   level={1}
                   data={parsed}
                   setData={setParsed}
@@ -311,17 +338,6 @@ export function SavedRequestsSidebar({
               </div>
             )}
           </div>
-
-          {/* {parsed && (
-            <div className="overflow-y-scroll h-78">
-              <ItemNode
-                level={0}
-                data={parsed}
-                setData={setParsed}
-                loadRequest={parsedLoadRequest}
-              />
-            </div>
-          )} */}
         </motion.div>
       )}
     </AnimatePresence>
