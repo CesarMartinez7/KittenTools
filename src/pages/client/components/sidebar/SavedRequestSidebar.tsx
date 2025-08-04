@@ -312,10 +312,6 @@ export function SavedRequestsSidebar({
             )}
           </div>
 
-          <pre className="text-xs bg-zinc-800">
-            {JSON.stringify(parsed, null, 2)}
-          </pre>
-
           {/* {parsed && (
             <div className="overflow-y-scroll h-78">
               <ItemNode
