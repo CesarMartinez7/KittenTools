@@ -1,30 +1,29 @@
-import { Icon } from "@iconify/react";
-import plusIcon from "@iconify-icons/tabler/plus";
-import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import ModalDeleteRequest from "../../modals/delete-request-modal";
-import AddNewRequestModal from "../../modals/new-request-modal";
-import ModalCurrentSavePeticion from "../../modals/save-request-modal";
-import SidebarHook from "./hooks/sacedrequestsidebar.hook";
-
+import { Icon } from '@iconify/react';
+import plusIcon from '@iconify-icons/tabler/plus';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
+import ModalDeleteRequest from '../../modals/delete-request-modal';
+import AddNewRequestModal from '../../modals/new-request-modal';
+import ModalCurrentSavePeticion from '../../modals/save-request-modal';
 import type {
   Item,
   RequestItem,
   RootBody,
   SavedRequestsSidebarProps,
-} from "../../types/types";
-import ItemNode from "../item-node";
+} from '../../types/types';
+import ItemNode from '../item-node';
+import SidebarHook from './hooks/sacedrequestsidebar.hook';
 
 export function SavedRequestsSidebar({
   isOpen,
   onLoadRequest,
-  currentUrl = "",
-  currentMethod = "GET",
-  currentBody = "",
+  currentUrl = '',
+  currentMethod = 'GET',
+  currentBody = '',
   currentHeaders = [],
   currentQueryParams = [],
-  currentContentType = "json",
+  currentContentType = 'json',
 }: SavedRequestsSidebarProps) {
   const {
     coleccion,
@@ -42,18 +41,18 @@ export function SavedRequestsSidebar({
   // Modal Delete
   // Guardador de request sea cargada o no
 
-  const [currentId, setCurrentId] = useState<string>("");
-  const [currentName, setCurrentName] = useState<string>("");
+  const [currentId, setCurrentId] = useState<string>('');
+  const [currentName, setCurrentName] = useState<string>('');
 
   const handleExportarCollecion = () => {
-    const blob = new Blob([coleccion as string], { type: "application/jsons" });
+    const blob = new Blob([coleccion as string], { type: 'application/jsons' });
 
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
+    const a = document.createElement('a');
 
     a.href = url;
-    a.download = "coleccion.json";
-    a.style.display = "none";
+    a.download = 'coleccion.json';
+    a.style.display = 'none';
     document.body.appendChild(a);
     a.click();
 
@@ -62,7 +61,7 @@ export function SavedRequestsSidebar({
   };
 
   useEffect(() => {
-    const requestLocalStorage = localStorage.getItem("savedRequests2");
+    const requestLocalStorage = localStorage.getItem('savedRequests2');
 
     if (requestLocalStorage) {
       setParsed(JSON.parse(requestLocalStorage));
@@ -78,17 +77,17 @@ export function SavedRequestsSidebar({
         name: data.name,
         url: data.url,
         method: data.method,
-        body: "",
-        headers: "",
-        queryParams: "",
-        contentType: "json",
+        body: '',
+        headers: '',
+        queryParams: '',
+        contentType: 'json',
       };
 
       setSavedRequests((prev) => [...prev, newRequest]);
       handleToogleModal();
-      toast.success("Peticion generada con exito");
+      toast.success('Peticion generada con exito');
     } catch (e) {
-      toast.error("Ocurrio un error al guardar");
+      toast.error('Ocurrio un error al guardar');
       handleToogleModal();
     }
   };
@@ -96,7 +95,7 @@ export function SavedRequestsSidebar({
   // Guardar pero peticion actual o current
   const saveCurrentRequest = (requestName: string) => {
     if (!requestName) {
-      toast.error("Nombre de petición inválido.");
+      toast.error('Nombre de petición inválido.');
       return;
     }
 
@@ -112,7 +111,7 @@ export function SavedRequestsSidebar({
     };
 
     setSavedRequests((prev) => [...prev, newRequest]);
-    toast.success("Petición guardada con éxito.");
+    toast.success('Petición guardada con éxito.');
     handleToogleSaveRequestCurrent();
   };
 
@@ -200,23 +199,23 @@ export function SavedRequestsSidebar({
   };
 
   return (
-    <AnimatePresence key={"gokuuu"}>
+    <AnimatePresence key={'gokuuu'}>
       <AddNewRequestModal
-        key={"new-request-modal"}
+        key={'new-request-modal'}
         handleToogleModal={handleToogleModal}
         openModalNewRequest={openModalNewRequest}
         onSubmit={onSubmit}
       />
 
       <ModalCurrentSavePeticion
-        key={"save-request-modal"}
+        key={'save-request-modal'}
         handleSavePeticion={saveCurrentRequest}
         isOpen={isOpenModalSaveRequest}
         onClose={handleToogleSaveRequestCurrent}
       />
 
       <ModalDeleteRequest
-        key={"delete-request-modal"}
+        key={'delete-request-modal'}
         name={currentName}
         id={currentId}
         handleDeleteRequest={handleDeleteRequest}
@@ -230,7 +229,7 @@ export function SavedRequestsSidebar({
             <span className="game-icons--thorny-vine"></span>
 
             <h3 className="text-3xl font-bold bg-gradient-to-bl from-white to-zinc-400 bg-clip-text text-transparent flex">
-              {" "}
+              {' '}
               Kitten Axios
             </h3>
           </div>
