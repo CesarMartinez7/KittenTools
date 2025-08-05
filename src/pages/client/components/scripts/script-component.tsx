@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import type React from 'react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CodeEditorLazy } from '../../../../components/LAZY_COMPONENT';
 import { VariantsAnimation } from '../../mapper-ops';
 import type { EventRequest } from '../../types/types';
@@ -9,7 +9,6 @@ import type { EventRequest } from '../../types/types';
 interface ScriptComponentProps {
   value: EventRequest[], setValue: React.Dispatch<React.SetStateAction<EventRequest>>
 }
-
 
 
 const ScriptComponent: React.FC<ScriptComponentProps> = ({value, setValue}) => {

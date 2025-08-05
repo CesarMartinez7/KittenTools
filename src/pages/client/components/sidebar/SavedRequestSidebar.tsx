@@ -202,12 +202,6 @@ export function SavedRequestsSidebar({
   ) => {
     // Implemntacon de la logica de carga de request
 
-
-
-    toast.success("Desde parsed load request")
-    console.log(reqEvent)
-
-
     const requestScriptEvents = reqEvent ? reqEvent : null
 
 
@@ -248,7 +242,7 @@ export function SavedRequestsSidebar({
       />
 
       {isOpen && (
-        <motion.div className="top-0 left-0 h-svh max-h-svh w-64 bg-zinc-900/50 backdrop-blur-3xl  p-6 z-50 md:flex flex-col shadow-lg hidden ">
+        <motion.div className="top-0 left-0 h-svh max-h-svh w-64 bg-black backdrop-blur-3xl  p-6 z-50 md:flex flex-col shadow-lg hidden ">
           <div className="flex justify-start items-center my-8 space-x-3">
             <span className="game-icons--thorny-vine"></span>
 
@@ -260,24 +254,33 @@ export function SavedRequestsSidebar({
 
           <div className="flex flex-row text-xs gap-2 mb-4">
             <button
-              className="gradient-text  "
+              aria-label='Exportar coleccion'
+              title='Importar coleccion'
+              className="btn-black"
               onClick={handleClickCargueCollecion}
             >
-              Importar coleccion
+              <span className="tabler--file-upload"></span>
             </button>
-            <button className="gradient-text" onClick={handleExportarCollecion}>
-              Exportar coleccion
+            <button  className='btn-black' title='Exportar collecion' aria-label='exportar colecion'  onClick={handleExportarCollecion}>
+            <span className="tabler--file-export"></span>
             </button>
+
+            <button className='btn-black' aria-label='Importar Collecion' title='Importar Entorno'>
+            <span className="tabler--file-settings"></span>
+            </button>
+
           </div>
 
           <div className="flex flex-row gap-x-2.5 h-12 ">
             <button
               onClick={handleToogleSaveRequestCurrent}
+              disabled
               className="btn-black w-full mb-4 flex truncate items-center justify-center gap-2  "
             >
               <span className="tabler--clipboard-smile"></span> Guardar Peticion
             </button>
             <button
+              disabled
               title="Nueva Petición"
               type="button"
               onClick={handleToogleModal}

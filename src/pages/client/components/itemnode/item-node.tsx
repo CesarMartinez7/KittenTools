@@ -42,15 +42,17 @@ const ItemNode: React.FC<ItemNodeProps> = ({
       loadRequest &&
         loadRequest(
           data.request?.body?.raw || '', // Request Body
-          'json', // Content De la Request
+          data.request.body.options.raw.language, // Content Body de la request
           data.request?.url.raw || '', // Url o enpoint
           data.request?.method || 'GET', // Metodo
           data.request?.header  ,
           "idk",
           data.event
         );
-      console.log('Cargando request:', data.request?.header);
-      console.log(data.event)
+
+      console.log(data)
+      
+    
     }
   };
 

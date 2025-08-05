@@ -3,10 +3,10 @@ import copyIcon from '@iconify-icons/tabler/copy';
 import plusIcon from '@iconify-icons/tabler/plus';
 import searchIcon from '@iconify-icons/tabler/search';
 import { AnimatePresence, motion } from 'motion/react';
-import { useEffect, useMemo, useState } from 'react';
-import { CodeEditorLazy } from '../../../../components/LAZY_COMPONENT';
+import { useMemo, useState } from 'react';
 import { JsonNode } from '../../../../ui/formatter-JSON/Formatter';
 import { TypesResponse } from '../../mapper-ops';
+import { CodeEditorLazy } from '../../../../components/LAZY_COMPONENT';
 
 interface ResponseTypes {
   height: string;
@@ -35,7 +35,7 @@ export default function ResponsesTypesComponent({
 
   return (
     <div
-      className="border p-4 border-zinc-800 h-full rounded-xl space-y-4 grid grid-rows-[60px_auto_40px]"
+      className="h-full rounded-xl space-y-4 grid grid-rows-[60px_auto_40px]"
       style={{ height }}
     >
       <div className="w-full bg-neutral-900  p-2 rounded-xl border-zinc-800 border flex justify-between">
@@ -101,8 +101,9 @@ export default function ResponsesTypesComponent({
       </div>
 
       {/* ----------------------------------------------------------- Principio del contenido por tipos ---------------------- */}
-      <div className="bg-zinc-900  w-full p-6 max-h-[65vh] rounded-2xl  h-auto overflow-y-scroll">
+      <div className="w-full  max-h-[65vh] rounded-2xl  overflow-y-scroll">
         {contentType === 'JSON' && (
+          <>
           <JsonNode
             open={true}
             isChange={false}
@@ -110,10 +111,14 @@ export default function ResponsesTypesComponent({
             INDENT={1}
             data={data}
           />
+
+          <CodeEditorLazy language="json" value={data} />
+
+          </>
         )}
 
         {contentType === 'XML' && (
-          <CodeEditorLazy language="xml" value={data} />
+          <CodeEditorLazy language="xml" value={data} isEditable={false} />
         )}
 
         {contentType === 'BASE64' && (

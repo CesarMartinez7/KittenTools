@@ -19,10 +19,10 @@ import type { EventRequest } from './types/types';
 import {
   Methodos,
   Opciones,
-  TypesResponse,
   VariantsAnimation,
 } from './mapper-ops';
-import type { RequestItem } from './types/types';
+import BaseModal from '../../ui/base-modal/BaseModal';
+
 
 export default function AppClient() {
   const { value, setter } = ClientCustomHook();
@@ -84,6 +84,8 @@ export default function AppClient() {
     Number(sessionStorage.getItem('mimeSelected')) || 0,
   );
 
+  const [openInfoCollecion, setOpenInfoCollecion] = useState<boolean>(true)
+
   const saveToLocalStorage = useCallback((name, value) => {
     localStorage.setItem(name, value);
   }, []);
@@ -129,8 +131,8 @@ export default function AppClient() {
   return (
     <motion.div
       className="min-h-screen  flex text-white overflow-hidden"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
+      initial={{ x: 1000 }}
+      animate={{ x: 0 }}
     >
       <SavedRequestsSidebar
         onLoadRequest={onLoadRequest}
@@ -142,6 +144,10 @@ export default function AppClient() {
         isOpen={isOpenSiderBar}
         onClose={() => setIsOpenSiderbar(false)}
       />
+
+
+      
+
       <div className="w-full flex flex-col px-4 md:px-8 py-4 gap-2 bg-zinc-900/50 ">
         <form ref={refForm} onSubmit={handleRequest} className="space-y-4 mb-4">
           <div className="flex flex-col md:flex-row gap-3 md:items-center">
@@ -187,11 +193,11 @@ export default function AppClient() {
                 setEndpointUrl(e.target.value);
                 saveToLocalStorage('request_url', e.target.value);
               }}
-              className="flex-1 bg-zinc-900 border border-zinc-800 rounded-md py-2 px-4 focus:ring-2 focus:ring-sky-500 focus:border-transparent outline-none transition-all duration-200"
+              className="flex-1 bg-black border border-zinc-800 rounded-md py-2 px-4 focus:ring-2 focus:ring-sky-500 focus:border-transparent outline-none transition-all duration-200"
             />
             <button
               type="submit"
-              className=" px-6 py-2 rounded-md  bg-gradient-to-br from-green-500 to-green-700 hover:bg-green-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className=" px-6 py-2 rounded-md  bg-gradient-to-br from-green-800 to-green-900 hover:bg-green-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isLoading}
             >
               {isLoading ? (
@@ -204,7 +210,7 @@ export default function AppClient() {
               )}
             </button>
           </div>
-          <div className="flex gap-2 text-white bg-zinc-900/90 rounded-t-lg border-b border-zinc-800 truncate">
+          <div className="flex gap-2 text-white  rounded-t-lg border-b border-zinc-800 truncate bg-black">
             {Opciones.map((opcion, index) => (
               <button
                 key={crypto.randomUUID()}
@@ -219,10 +225,22 @@ export default function AppClient() {
           </div>
         </form>
         <div
-          className="grid md:grid-cols-1 lg:grid-cols-2  gap-4 h-full "
+          className="grid relative md:grid-cols-1 lg:grid-cols-2  gap-4 h-full"
           aria-label="grid"
-        >
-          <div className="bg-neutral-900 p-6 rounded-xl border border-zinc-800 flex flex-col shadow-lg">
+        >   
+
+          {openInfoCollecion && (
+            <>
+            <div className='absolute inset-0 mask-b-from-20% mask-b-to-140% overflow-hidden rounded-2xl z-50 bg-black p-12'>
+            <button className='btn-black absolute right-3 rounded-2xl! p-4!' onClick={() => setOpenInfoCollecion((prev) => !prev)} >x</button>
+            <h4 className='text-4xl'>Seguro APIS</h4>
+            <p className='my-4 max-w-4xl'>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Voluptate voluptates et optio nobis hic adipisci distinctio doloremque tempore praesentium voluptatibus natus fugit delectus eos consectetur architecto, ipsam ipsa possimus. Voluptatum, ullam dolor, doloribus nulla minima laborum magni eaque soluta nemo numquam omnis? Quasi nobis illum dicta provident nihil quod placeat hic nostrum, eos quisquam assumenda molestiae ratione alias porro sequi non error, natus numquam asperiores labore similique cum. Laudantium, rerum?</p>
+        </div>
+        </>
+          )}
+
+          
+          <div className="bg-black p-6 rounded-xl border border-zinc-800 flex flex-col shadow-lg">
             <AnimatePresence mode="wait" key={'uja'}>
               {mimeSelected === 0 && ( // Body
                 <motion.div
@@ -231,7 +249,7 @@ export default function AppClient() {
                   className="flex flex-col flex-1"
                 >
                   <div className="flex gap-4 mb-3">
-                    {['json', 'form', 'xml'].map((type, idx) => (
+                    {['json', 'form', 'xml', "none"].map((type, idx) => (
                       <label
                         key={idx}
                         className="text-sm text-gray-300 flex items-center gap-2 cursor-pointer"
@@ -295,7 +313,7 @@ export default function AppClient() {
               {mimeSelected === 4 && <ScriptComponent value={scriptsValues} setValue={setScriptsValues} />}
             </AnimatePresence>
           </div>
-          <div className="bg-neutral-900 p-6 rounded-xl border border-zinc-800 flex flex-col overflow-hidden shadow-lg">
+          <div className="bg-black p-6 rounded-xl border border-zinc-800 flex flex-col overflow-hidden shadow-lg">
             {responseSelected || isLoading ? (
               <>
                 {isLoading ? (
