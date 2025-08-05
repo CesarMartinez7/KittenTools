@@ -61,7 +61,6 @@ export function SavedRequestsSidebar({
 
   useEffect(() => {
     const requestLocalStorage = localStorage.getItem('savedRequests2');
-
     if (requestLocalStorage) {
       setParsed(JSON.parse(requestLocalStorage));
       return;
@@ -92,27 +91,7 @@ export function SavedRequestsSidebar({
   };
 
   // Guardar pero peticion actual o current
-  const saveCurrentRequest = (requestName: string) => {
-    if (!requestName) {
-      toast.error('Nombre de petición inválido.');
-      return;
-    }
-
-    const newRequest: RequestItem = {
-      id: `${Date.now()}-${Math.random()}`,
-      name: requestName,
-      url: currentUrl,
-      method: currentMethod,
-      body: currentBody,
-      headers: currentHeaders,
-      queryParams: currentQueryParams,
-      contentType: currentContentType,
-    };
-
-    setSavedRequests((prev) => [...prev, newRequest]);
-    toast.success('Petición guardada con éxito.');
-    handleToogleSaveRequestCurrent();
-  };
+ 
 
   const handleDeleteRequest = (id: string) => {
     handleToogleDeleteModal();
@@ -185,9 +164,7 @@ export function SavedRequestsSidebar({
   // Metodo de Collecion Actualizar NOMBRE CARPETA O REQUEST
   const handleActualizarNombre = (oldName: string, newName: string) => {
     if (!parsed) return;
-
     const updatedItems = actualizarNombreEnItems(parsed.item, oldName, newName);
-
     const nuevaParsed = {
       ...parsed,
       item: updatedItems,
@@ -203,17 +180,12 @@ export function SavedRequestsSidebar({
     if (!parsed) return;
   
     const updatedItems = eliminarItemPorNombre(parsed.item, name);
-
-
-  
     const nuevoParsed = {
       ...parsed,
       item: updatedItems, // Reemplazar la lista de items
     };
   
-
     console.log(nuevoParsed)
-    
     setParsed(nuevoParsed); // Guardar en el estado
   };
   
@@ -255,7 +227,7 @@ export function SavedRequestsSidebar({
 
       <ModalCurrentSavePeticion
         key={'save-request-modal'}
-        handleSavePeticion={saveCurrentRequest}
+        handleSavePeticion={() => console.log("aqui va el save peticion")}
         isOpen={isOpenModalSaveRequest}
         onClose={handleToogleSaveRequestCurrent}
       />

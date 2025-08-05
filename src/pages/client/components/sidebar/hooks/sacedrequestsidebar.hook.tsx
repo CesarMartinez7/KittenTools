@@ -42,7 +42,7 @@ export default function SidebarHook() {
     };
 
     input.click();
-    document.body.removeChild(input);
+    input.remove();
   };
 
   const handleExportarCollecion = () => {

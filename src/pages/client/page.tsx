@@ -7,10 +7,8 @@ import {
   CodeEditorLazy,
   JsonViewerLazy,
 } from '../../components/LAZY_COMPONENT';
-import BaseModal from '../../ui/base-modal/BaseModal';
 import AddQueryParam from './components/addqueryparams/addQueryParams';
 import { HeadersAddRequest } from './components/headers/Headers';
-import ResponsesTypesComponent from './components/responses-core/response-componente';
 import ScriptComponent from './components/scripts/script-component';
 import { SavedRequestsSidebar } from './components/sidebar/SavedRequestSidebar';
 import ClientCustomHook from './hooks/client-hook';
@@ -19,6 +17,7 @@ import axiosInstance from './hooks/axiosinstance';
 
 import { Methodos, Opciones, VariantsAnimation } from './mapper-ops';
 import type { EventRequest } from './types/types';
+import EnviromentComponent from './components/enviroment/enviroment.component';
 
 export default function AppClient() {
   const { value, setter } = ClientCustomHook();
@@ -76,8 +75,8 @@ export default function AppClient() {
     setStatusCode,
   });
 
-  const [mimeSelected, setMimeSelected] = useState(
-    Number(sessionStorage.getItem('mimeSelected')) || 0,
+  const [selectedIdx, setMimeSelected] = useState(
+    Number(sessionStorage.getItem('selectedIdx')) || 0,
   );
 
   const [openInfoCollecion, setOpenInfoCollecion] = useState<boolean>(true);
@@ -208,7 +207,7 @@ export default function AppClient() {
                 key={crypto.randomUUID()}
                 type="button"
                 className={`btn btn-sm text-sm py-2 px-4 rounded-t-lg transition-colors duration-200
-                  ${index === mimeSelected ? 'border-b-2 border-sky-500 text-sky-500 font-semibold bg-zinc-950' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}
+                  ${index === selectedIdx ? 'border-b-2 border-sky-500 text-sky-500 font-semibold bg-zinc-950' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}
                 onClick={() => setMimeSelected(index)}
               >
                 {opcion.name}
@@ -245,9 +244,9 @@ export default function AppClient() {
             </>
           )} */}
 
-          <div className="bg-black p-6 rounded-xl border border-zinc-800 flex flex-col shadow-lg">
+          <div className="bg-black p-6 rounded-xl border relative border-zinc-800 flex flex-col shadow-lg">
             <AnimatePresence mode="wait" key={'uja'}>
-              {mimeSelected === 0 && ( // Body
+              {selectedIdx === 0 && ( // Body
                 <motion.div
                   key="body-section-body"
                   variants={VariantsAnimation}
@@ -284,7 +283,7 @@ export default function AppClient() {
                   </div>
                 </motion.div>
               )}
-              {mimeSelected === 1 && (
+              {selectedIdx === 1 && (
                 <motion.div
                   key="query-params-section"
                   variants={VariantsAnimation}
@@ -293,7 +292,7 @@ export default function AppClient() {
                   <AddQueryParam />
                 </motion.div>
               )}
-              {mimeSelected === 2 && (
+              {selectedIdx === 2 && (
                 <motion.div
                   key="headers-section"
                   initial={{ opacity: 0, y: 10 }}
@@ -305,7 +304,7 @@ export default function AppClient() {
                   <HeadersAddRequest />
                 </motion.div>
               )}
-              {mimeSelected === 3 && (
+              {selectedIdx === 3 && (
                 <motion.div
                   key="auth-section"
                   variants={VariantsAnimation}
@@ -315,12 +314,23 @@ export default function AppClient() {
                 </motion.div>
               )}
 
-              {mimeSelected === 4 && (
+              {selectedIdx === 4 && (
                 <ScriptComponent
                   value={scriptsValues}
                   setValue={setScriptsValues}
                 />
               )}
+
+
+              {selectedIdx === 5 && (
+                <>
+                <EnviromentComponent/>
+                </>
+              )}
+
+
+
+
             </AnimatePresence>
           </div>
           <div className="bg-black p-6 rounded-xl border border-zinc-800 flex flex-col overflow-hidden shadow-lg">
