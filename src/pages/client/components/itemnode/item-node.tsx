@@ -78,8 +78,10 @@ const ItemNode: React.FC<ItemNodeProps> = ({
   }
 
   const handleClickDelete = () => {
-    toast.success(data.name)
-    eliminar(data.name)
+
+    let nameToDelete = data.name
+    toast.success(nameToDelete)
+    eliminar(nameToDelete)
   }
 
 

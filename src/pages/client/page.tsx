@@ -15,6 +15,7 @@ import ScriptComponent from './components/scripts/script-component';
 import { SavedRequestsSidebar } from './components/sidebar/SavedRequestSidebar';
 import ClientCustomHook from './hooks/client-hook';
 import RequestHook from './hooks/request.client';
+import axiosInstance from './hooks/axiosinstance';
 
 import { Methodos, Opciones, VariantsAnimation } from './mapper-ops';
 import type { EventRequest } from './types/types';
@@ -219,7 +220,7 @@ export default function AppClient() {
           className="grid relative md:grid-cols-1 lg:grid-cols-2  gap-4 h-full"
           aria-label="grid"
         >
-          {openInfoCollecion && (
+          {/* {openInfoCollecion && (
             <>
               <div className="absolute inset-0 mask-b-from-20% mask-b-to-140% overflow-hidden rounded-2xl z-50 bg-black p-12">
                 <button
@@ -242,7 +243,7 @@ export default function AppClient() {
                 </p>
               </div>
             </>
-          )}
+          )} */}
 
           <div className="bg-black p-6 rounded-xl border border-zinc-800 flex flex-col shadow-lg">
             <AnimatePresence mode="wait" key={'uja'}>

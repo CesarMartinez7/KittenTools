@@ -2,6 +2,8 @@ import axios from 'axios';
 import { useCallback } from 'react';
 import toast from 'react-hot-toast';
 import type { RequestHookProps } from './types';
+import { mockEnv } from './mock';
+import axiosInstance from './axiosinstance';
 
 interface ReturnHookRequest {
   handleRequest: (e: any) => Promise<void>;
@@ -40,7 +42,52 @@ export default function RequestHook({
 
 
 
-  const handleRequest = useCallback(
+  const handleRequest = useCallback(async (e) => {
+    e.preventDefault();
+  
+    if (!mockEnv.baseUrl) {
+      toast.error('No se encontró el endpoint');
+      return;
+    }
+  
+    setIsLoading(true);
+    setErrorAxios(null);
+    setErrorRequest(false);
+  
+    try {
+      const response = await axiosInstance({
+        method: selectedMethod,
+        url: `?${mockEnv.params}`, // params simulando Postman
+        data: bodyJson,
+        contentType
+      });
+  
+      setResponse(response.data);
+      setStatusCode(response.status);
+      setTimeResponse(response.timeResponse);
+  
+    } catch (error) {
+      setErrorRequest(true);
+      setStatusCode(error.status || 'N/A');
+      setResponse(JSON.stringify(error.data));
+      setErrorAxios(JSON.stringify(error.raw));
+      setTimeResponse(error.timeResponse);
+    } finally {
+      setIsLoading(false);
+    }
+  
+  }, [
+    selectedMethod,
+    contentType,
+    bodyJson,
+    setIsLoading,
+    setErrorAxios,
+    setErrorRequest,
+    setResponse,
+    setStatusCode
+  ]);
+
+  const handleRequestOld = useCallback(
     async (e) => {
       e.preventDefault();
       if (!endpointUrl) {

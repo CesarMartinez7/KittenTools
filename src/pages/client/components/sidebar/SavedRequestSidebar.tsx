@@ -205,13 +205,15 @@ export function SavedRequestsSidebar({
     const updatedItems = eliminarItemPorNombre(parsed.item, name);
 
 
-    console.log(updatedItems)
   
     const nuevoParsed = {
       ...parsed,
       item: updatedItems, // Reemplazar la lista de items
     };
   
+
+    console.log(nuevoParsed)
+    
     setParsed(nuevoParsed); // Guardar en el estado
   };
   
@@ -282,30 +284,30 @@ export function SavedRequestsSidebar({
             <button
               aria-label="Exportar coleccion"
               title="Importar coleccion"
-              className="group btn-black hover:w-2xl trasition-[height]  transition-transform ellipsis text-ellipsis"
+              className=" btn-black transition-transform ellipsis text-ellipsis"
               onClick={handleClickCargueCollecion}
             >
               
               <span className="tabler--file-upload"></span>
-              <span className='group-hover:flex hidden'>Cargar Coleccion</span>
+              <span className=''>Cargar Coleccion</span>
             </button>
             <button
-              className="btn-black group ellipsis text-ellipsis"
+              className="btn-black  ellipsis text-ellipsis"
               title="Exportar collecion"
               aria-label="exportar colecion"
               onClick={handleExportarCollecion}
             >
               <span className="tabler--file-export"></span>
-              <span className='group-hover:flex hidden ellipsis text-ellipsis'>Exportar Coleccion</span>
+              <span className=''>Exportar Coleccion</span>
             </button>
 
             <button
-              className="btn-black group"
+              className="btn-black "
               aria-label="Importar Collecion"
               title="Importar Entorno"
             >
               <span className="tabler--file-settings"></span>
-              <span className='group-hover:flex hidden'>Cargar Entorno</span>
+              <span className=''>Cargar Entorno</span>
             </button>
           </div>
 
