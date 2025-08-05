@@ -10,7 +10,6 @@ import type {
   EventRequest,
   Item,
   RequestItem,
-  RootBody,
   SavedRequestsSidebarProps,
 } from '../../types/types';
 import ItemNode from '../itemnode/item-node';
@@ -27,7 +26,6 @@ export function SavedRequestsSidebar({
   currentContentType = 'json',
 }: SavedRequestsSidebarProps) {
   const {
-    coleccion,
     parsed,
     setColeccion,
     handleClickCargueCollecion,
@@ -39,8 +37,6 @@ export function SavedRequestsSidebar({
     isOpenModalSaveRequest,
   } = SidebarHook();
 
-  // Modal Delete
-  // Guardador de request sea cargada o no
 
   const [currentId, setCurrentId] = useState<string>('');
   const [currentName, setCurrentName] = useState<string>('');
@@ -169,6 +165,23 @@ export function SavedRequestsSidebar({
     });
   }
 
+
+  function eliminarItemPorNombre(items: Item[], nameToDelete: string): Item[] {
+    return items
+      .filter((item) => item.name !== nameToDelete) // Filtrar el que quieres borrar
+      .map((item) => {
+        // Si tiene hijos, aplicar recursividad
+        if (item.item) {
+          return {
+            ...item,
+            item: eliminarItemPorNombre(item.item, nameToDelete),
+          };
+        }
+        return item;
+      });
+  }
+  
+
   // Metodo de Collecion Actualizar NOMBRE CARPETA O REQUEST
   const handleActualizarNombre = (oldName: string, newName: string) => {
     if (!parsed) return;
@@ -185,8 +198,24 @@ export function SavedRequestsSidebar({
 
   // Metodo de Crear nueva request o carpeta
 
-  const handleClickCreateNewRequest = () => {};
 
+  const handleClickEliminar = (name: string) => {
+    if (!parsed) return;
+  
+    const updatedItems = eliminarItemPorNombre(parsed.item, name);
+
+
+    console.log(updatedItems)
+  
+    const nuevoParsed = {
+      ...parsed,
+      item: updatedItems, // Reemplazar la lista de items
+    };
+  
+    setParsed(nuevoParsed); // Guardar en el estado
+  };
+  
+  
   // Cargue y cambio de la request al la interfaz
 
   const parsedLoadRequest = (
@@ -239,7 +268,7 @@ export function SavedRequestsSidebar({
       />
 
       {isOpen && (
-        <motion.div className="top-0 left-0 h-svh max-h-svh w-64 bg-black backdrop-blur-3xl  p-6 z-50 md:flex flex-col shadow-lg hidden ">
+        <motion.div className="top-0 left-0 h-svh max-h-svh w-lg bg-black backdrop-blur-3xl p-6 z-50 md:flex flex-col shadow-lg hidden ">
           <div className="flex justify-start items-center my-8 space-x-3">
             <span className="game-icons--thorny-vine"></span>
 
@@ -301,10 +330,11 @@ export function SavedRequestsSidebar({
 
           {/* ------------------------------------ Aqui va la lista de peticiones guardadas ------------------------------------ Ahora migrandose a la esctrtura de postman compatible en vez las misma creada por mi */}
 
-          <div className="flex-1 overflow-y-auto space-y-2 justify-center items-center">
+          {/* <div className="flex-1 overflow-y-auto space-y-2 justify-center items-center"> */}
             {parsed && (
               <div className="overflow-y-scroll h-[70vh]">
                 <ItemNode
+                  eliminar={handleClickEliminar}
                   actualizarNombre={handleActualizarNombre}
                   level={0}
                   data={parsed}
@@ -313,7 +343,7 @@ export function SavedRequestsSidebar({
                 />
               </div>
             )}
-          </div>
+          {/* </div> */}
         </motion.div>
       )}
     </AnimatePresence>

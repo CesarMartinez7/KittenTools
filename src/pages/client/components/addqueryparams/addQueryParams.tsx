@@ -1,6 +1,6 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
-import { createContext, useEffect, useState } from 'react';
-import { useParamsStore } from '../../stores/queryparams-store';
+import { useEffect, useState } from 'react';
+import { useParamsStore } from './queryparams-store';
 
 const AddQueryParam = () => {
   // Params construidos
@@ -91,9 +91,8 @@ const AddQueryParam = () => {
 
 
 
-        <pre>{JSON.stringify(params, null, 2)}</pre>
+        <pre className='bg-zinc-900 text-xs'>{JSON.stringify(params, null, 2)}</pre>
         <p>{paramsFinal}</p>
-
         <p>{valor}</p>
 
         {params.map((param, index) => (
@@ -119,9 +118,7 @@ const AddQueryParam = () => {
           </div>
         ))}
 
-        {/* <pre className="bg-zinc-600 p-12 text-xs">
-          {JSON.stringify(params, null, 2)}
-        </pre> */}
+     
       </div>
     </>
   );

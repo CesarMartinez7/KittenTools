@@ -1,29 +1,13 @@
 import axios from 'axios';
-import { time } from 'motion/react';
-import type React from 'react';
-import type { Dispatch, SetStateAction } from 'react';
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import toast from 'react-hot-toast';
+import type { RequestHookProps } from './types';
 
 interface ReturnHookRequest {
   handleRequest: (e: any) => Promise<void>;
   prepareHeaders: (headers: any) => void;
 }
-interface RequestHookProps {
-  selectedMethod: string;
-  params: string;
-  cabeceras: string;
-  bodyJson: string;
-  endpointUrl: string;
-  contentType: string;
-  timeResponse: number;
-  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  setErrorAxios: React.Dispatch<React.SetStateAction<string>>;
-  setErrorRequest: React.Dispatch<React.SetStateAction<boolean>>;
-  setResponseSelected: Dispatch<SetStateAction<string>>;
-  setTimeResponse: Dispatch<SetStateAction<number>>;
-  setStatusCode: Dispatch<React.SetStateAction<number | null | undefined>>;
-}
+
 
 export default function RequestHook({
   selectedMethod,
@@ -35,10 +19,9 @@ export default function RequestHook({
   setIsLoading,
   setErrorAxios,
   setErrorRequest,
-  setResponseSelected,
+  setResponse,
   setStatusCode,
   setTimeResponse,
-  timeResponse,
 }: RequestHookProps): ReturnHookRequest {
   const prepareHeaders = useCallback((headers: any) => {
     try {
@@ -55,12 +38,7 @@ export default function RequestHook({
     }
   }, []);
 
-  // ... tu request con axios
 
-  // useEffect(() => {
-  //   alert(String(timeResponse))
-  //   toast.success(String(timeResponse));
-  // }, [timeResponse]);
 
   const handleRequest = useCallback(
     async (e) => {
@@ -93,6 +71,7 @@ export default function RequestHook({
             config.headers['Content-Type'] = 'application/xml';
           }
         } catch (e) {
+          alert(e.message)
           setErrorAxios(e.message);
           setIsLoading(false);
           return;
@@ -122,7 +101,7 @@ export default function RequestHook({
             break;
         }
 
-        setResponseSelected(response.data);
+        setResponse(response.data);
         setStatusCode(response.status);
         const end = Date.now();
 
@@ -130,7 +109,7 @@ export default function RequestHook({
       } catch (error) {
         setErrorRequest(true);
         setStatusCode(error.response?.status || 'N/A');
-        setResponseSelected(
+        setResponse(
           JSON.stringify(error.response?.data || { message: error.message }),
         );
         setErrorAxios(JSON.stringify(error.toJSON())); // More detailed error info from Axios
@@ -150,7 +129,7 @@ export default function RequestHook({
       setIsLoading,
       setErrorAxios,
       setErrorRequest,
-      setResponseSelected,
+      setResponse,
       setStatusCode,
     ],
   );

@@ -2,9 +2,12 @@ import './App.css';
 import { Icon } from '@iconify/react';
 import sendIcon from '@iconify-icons/tabler/send';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useCallback, useMemo,  useState } from 'react';
-import { CodeEditorLazy,} from '../../components/LAZY_COMPONENT';
-
+import { useCallback, useMemo, useRef, useState } from 'react';
+import {
+  CodeEditorLazy,
+  JsonViewerLazy,
+} from '../../components/LAZY_COMPONENT';
+import BaseModal from '../../ui/base-modal/BaseModal';
 import AddQueryParam from './components/addqueryparams/addQueryParams';
 import { HeadersAddRequest } from './components/headers/Headers';
 import ResponsesTypesComponent from './components/responses-core/response-componente';
@@ -23,7 +26,7 @@ export default function AppClient() {
   const {
     isOpenSiderBar,
     selectedMethod,
-    responseSelected,
+    response,
     params,
     cabeceras,
     errorAxios,
@@ -50,7 +53,7 @@ export default function AppClient() {
     setErrorAxios,
     setErrorRequest,
     setSelectedMethod,
-    setResponseSelected,
+    setResponse,
     setScriptsValues,
   } = setter;
 
@@ -67,7 +70,7 @@ export default function AppClient() {
     setIsLoading,
     setErrorAxios,
     setErrorRequest,
-    setResponseSelected,
+    setResponse,
     setTimeResponse,
     setStatusCode,
   });
@@ -136,7 +139,7 @@ export default function AppClient() {
         onClose={() => setIsOpenSiderbar(false)}
       />
 
-      <div className="w-full flex flex-col px-4 md:px-8 py-4 gap-2 bg-black/70">
+      <div className="w-full flex flex-col px-4 md:px-8 py-4 gap-2 ">
         <form ref={refForm} onSubmit={handleRequest} className="space-y-4 mb-4">
           <div className="flex flex-col md:flex-row gap-3 md:items-center">
             <div className="relative">
@@ -269,14 +272,14 @@ export default function AppClient() {
                     ))}
                   </div>
                   <div className="flex-1 min-h-0  ">
-                    <CodeEditorLazy
+                    {/* <CodeEditorLazy
                       height="100%"
                       maxHeight="60vh"
                       language={contentType}
                       value={bodyJson}
                       onChange={setBodyJson}
                       placeholder={formatBodyPlaceholder}
-                    />
+                    /> */}
                   </div>
                 </motion.div>
               )}
@@ -320,7 +323,7 @@ export default function AppClient() {
             </AnimatePresence>
           </div>
           <div className="bg-black p-6 rounded-xl border border-zinc-800 flex flex-col overflow-hidden shadow-lg">
-            {responseSelected || isLoading ? (
+            {response || isLoading ? (
               <>
                 {isLoading ? (
                   <div className="flex justify-center items-center flex-col h-full">
@@ -328,18 +331,9 @@ export default function AppClient() {
                     <span className="block">{timeResponse}</span>
                   </div>
                 ) : (
-                  <ResponsesTypesComponent
-                    timeResponse={timeResponse}
-                    statusCode={statusCode}
-                    contentTypeData="JSON"
-                    data={
-                      errorRequest
-                        ? errorAxios
-                          ? JSON.parse(errorAxios)
-                          : 'Unknown Error'
-                        : responseSelected
-                    }
-                  />
+                  <p>
+                    {JSON.stringify(response)}
+                  </p>
                 )}
               </>
             ) : (

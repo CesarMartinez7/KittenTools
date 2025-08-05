@@ -8,7 +8,7 @@ export interface ValuesRetornoClient {
   cabeceras: string;
   isOpenSiderBar: boolean;
   selectedMethod: string;
-  responseSelected: string;
+  response: string;
   errorAxios: string;
   errorRequest: boolean;
   bodyJson: string;
@@ -25,7 +25,7 @@ export interface ValuesRetornoClient {
 export interface SetterRetornoClient {
   setIsOpenSiderbar: Dispatch<SetStateAction<boolean>>;
   setSelectedMethod: Dispatch<SetStateAction<string>>;
-  setResponseSelected: Dispatch<SetStateAction<string>>;
+  setResponse: Dispatch<SetStateAction<string>>;
   setErrorAxios: Dispatch<SetStateAction<string>>;
   setErrorRequest: Dispatch<SetStateAction<boolean>>;
   setBodyJson: Dispatch<SetStateAction<string>>;
@@ -41,4 +41,23 @@ export interface SetterRetornoClient {
 export interface RetornoClient {
   value: ValuesRetornoClient;
   setter: SetterRetornoClient;
+}
+
+
+
+
+export interface RequestHookProps {
+  selectedMethod: string;
+  params: string;
+  cabeceras: string;
+  bodyJson: string;
+  endpointUrl: string;
+  contentType: string;
+  timeResponse: number;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setErrorAxios: React.Dispatch<React.SetStateAction<string>>;
+  setErrorRequest: React.Dispatch<React.SetStateAction<boolean>>;
+  setResponse: Dispatch<SetStateAction<string>>;
+  setTimeResponse: Dispatch<SetStateAction<number>>;
+  setStatusCode: Dispatch<React.SetStateAction<number | null | undefined>>;
 }

@@ -9,22 +9,7 @@ import highlightCode from './higlight-code';
 
 import { useJsonHook } from './methods-json/method';
 import { useXmlHook } from './methos-xml/method.xml';
-
-interface CodeEditorProps {
-  value?: string;
-  language?: 'json' | 'xml';
-  onChange?: (value: string) => void;
-  maxHeight?: string;
-  height?: string;
-  minHeight?: string;
-  placeholder?: string;
-  classNameContainer?: string;
-  /**
-   * Prop para controlar si el editor es editable.
-   * @default true
-   */
-  isEditable?: boolean;
-}
+import type { CodeEditorProps } from './types';
 
 const CodeEditor = ({
   value = '',
@@ -35,8 +20,8 @@ const CodeEditor = ({
   minHeight = '68vh',
   placeholder = '// Escribe tu código aqui...',
   classNameContainer = '',
-  isEditable = true,
 }: CodeEditorProps) => {
+  // Referencias al DOOM
   const inputRefTextOld = useRef<HTMLInputElement>(null);
   const inputRefTextNew = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -46,22 +31,32 @@ const CodeEditor = ({
   const [isOpenBar, setIsOpenBar] = useState<boolean>(false);
   const [code, setCode] = useState(value);
 
-  const { JsonSchema, minifyJson } = useJsonHook({ code, setCode });
-  const { XmlScheme, minifyXml } = useXmlHook({ code, setCode });
+  // --------------------------------------- Custom Hooks -------------------------------------
+  const { JsonSchema, minifyJson } = useJsonHook({
+    code: code,
+    setCode: setCode,
+  });
 
-  const lineCount = useMemo(() => code.split('\n').length, [code]);
+  const { XmlScheme, minifyXml } = useXmlHook({
+    code: code,
+    setCode: setCode,
+  });
 
+  const lineCount = useMemo(() => {
+    return code.split('\n').length;
+  }, [code]);
+
+  // Efecttos
   useEffect(() => {
-    if (!isEditable) return;
-
     textareaRef.current?.focus();
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
-      if (e.ctrlKey && e.key.toLowerCase() === 'b') {
+      // No importa si esta en minuscuela la b o en mayuscula siempre se abrira
+      if ((e.ctrlKey && e.key === 'b') || (e.ctrlKey && e.key === 'B')) {
         e.preventDefault();
         setIsOpenBar((prev) => !prev);
       }
 
-      if (e.ctrlKey && e.key.toLowerCase() === 's') {
+      if (e.ctrlKey && e.key === 's') {
         e.preventDefault();
         HandlersIdentarBody();
         alert('guardar y minificar');
@@ -69,22 +64,34 @@ const CodeEditor = ({
     };
 
     window.addEventListener('keydown', handleGlobalKeyDown);
-    return () => window.removeEventListener('keydown', handleGlobalKeyDown);
-  }, [isEditable]);
 
-  useEffect(() => {
-    setCode(value);
-  }, [value]);
+    return () => {
+      window.removeEventListener('keydown', handleGlobalKeyDown);
+    };
+  }, []);
+
+
 
   const HandlersMinifyBody = () => {
-    if (language === 'json') return minifyJson();
-    if (language === 'xml') return minifyXml();
-    return toast.error('Solo se puede minificar JSON o XML');
+    if (language === 'json') {
+      return minifyJson();
+    }
+
+    if (language === 'xml') {
+      return minifyXml();
+    }
+
+    return toast.error(
+      'Es diferente a json por lo ucal no se se puede minifycar',
+    );
   };
 
   const HandlersIdentarBody = () => {
     if (language === 'json') return JsonSchema();
-    if (language === 'xml') return XmlScheme();
+
+    if (language === 'xml') {
+      return XmlScheme();
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -112,7 +119,6 @@ const CodeEditor = ({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (!isEditable) return;
     if (e.key === 'Tab') {
       e.preventDefault();
       const start = e.currentTarget.selectionStart;
@@ -128,33 +134,22 @@ const CodeEditor = ({
     }
   };
 
-  const handleOpenRemplazoBar = () => setIsOpenBar((prev) => !prev);
+  const handleOpenRemplazoBar = () => {
+    setIsOpenBar((prev) => !prev);
+  };
 
   const handleCLickReplaceTextFirst = () => {
     const from = inputRefTextOld.current?.value || '';
     const to = inputRefTextNew.current?.value || '';
 
     if (!from) return toast.error('Ingresa un valor a buscar');
-    if (!code.includes(from))
+
+    if (!value?.includes(from)) {
       return toast.error('El valor a buscar no se encuentra en el texto');
+    }
 
-    const result = code.replace(from, to);
+    const result = value?.replace(from, to);
     setCode(result);
-    onChange?.(result);
-    toast.success('Reemplazo realizado');
-  };
-
-  const handleCLickReplaceText = () => {
-    const from = inputRefTextOld.current?.value || '';
-    const to = inputRefTextNew.current?.value || '';
-
-    if (!from) return toast.error('Ingresa un valor a buscar');
-    if (!code.includes(from))
-      return toast.error('El valor a buscar no se encuentra en el texto');
-
-    const result = code.replaceAll(from, to);
-    setCode(result);
-    onChange?.(result);
     toast.success('Reemplazo realizado');
   };
 
@@ -168,40 +163,74 @@ const CodeEditor = ({
     [lineCount],
   );
 
+  const handleCLickReplaceText = () => {
+    const from = inputRefTextOld.current?.value || '';
+    const to = inputRefTextNew.current?.value || '';
+
+    if (!value?.includes(from)) {
+      return toast.error('El valor a buscar no se encuentra en el texto');
+    }
+
+    if (!from) return toast.error('Ingresa un valor a buscar');
+    const result = value?.replaceAll(from, to);
+    setCode(result);
+    toast.success('Reemplazo realizado');
+  };
+
   return (
     <main className="border rounded-xl overflow-hidden border-zinc-800 relative">
       <AnimatePresence mode="wait">
-        {isOpenBar && isEditable && (
+        {isOpenBar && (
           <motion.div
             initial={{ opacity: 0, y: -10, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
-            exit={{ opacity: 0, y: -10, scale: 0.95, filter: 'blur(4px)' }}
+            animate={{
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              filter: 'blur(0px)',
+              transition: {
+                type: 'spring',
+                stiffness: 200,
+                damping: 20,
+              },
+            }}
+            exit={{
+              opacity: 0,
+              y: -10,
+              scale: 0.95,
+              filter: 'blur(4px)',
+              transition: { duration: 0.2 },
+            }}
             layout
-            className="backdrop-blur-3xl bg-zinc-900/35 border border-zinc-900 p-3 flex flex-col w-52 shadow-xl shadow-zinc-800 gap-1 rounded right-4 top-5 absolute z-[778]"
+            className="backdrop-blur-3xl bg-zinc-900/35 border border-zinc-900 p-3 flex flex-col w-52 shadow-xl shadow-zinc-800 gap-1 rounded  right-4 top-5 absolute z-[778]"
           >
             <input
               ref={inputRefTextOld}
               type="text"
               autoFocus
               className="input-base"
+              tabIndex={0}
+              title="Valor a buscar"
               placeholder="Valor a buscar"
             />
             <input
               ref={inputRefTextNew}
               type="text"
               className="input-base"
-              placeholder="Valor a reemplazar"
+              placeholder="Valor a Remplazar"
             />
-            <div className="flex h-6 gap-2">
+            <div className="flex h-6 gap-2 text-wrap whitespace-normal">
               <button
-                className="bg-gradient-to-r flex-1 from-green-400 to-green-500 p-1 rounded-md text-xs"
+                className="bg-gradient-to-r flex-1 from-green-400 to-green-500 p-1 rounded-md text-xs truncate"
                 onClick={handleCLickReplaceTextFirst}
+                title="Reemplazar solo la primera coincidencia"
               >
                 Reemplazar primero
               </button>
               <button
-                className="bg-gradient-to-r flex-1 from-sky-400 to-sky-900 p-1 rounded-md text-xs"
+                className="bg-gradient-to-r flex-1 from-sky-400 to-sky-900 p-1 rounded-md text-xs truncate"
                 onClick={handleCLickReplaceText}
+                title="Reemplazar todas las coincidencias"
               >
                 Reemplazar todo
               </button>
@@ -211,24 +240,23 @@ const CodeEditor = ({
       </AnimatePresence>
 
       <div
-        className={`relative flex text-xs overflow-hidden bg-zinc-900/80 backdrop-blur-3xl ${classNameContainer}`}
+        className={`relative flex  text-xs overflow-hidden bg-zinc-900/80 ring-none backdrop-blur-3xl ${classNameContainer} `}
       >
         {/* Line Numbers */}
         <div
           ref={lineNumbersRef}
-          className="px-3 py-2 text-sm overflow-hidden bg-zinc-950/20 border-r border-zinc-800 text-[#00a4b9]"
+          className="px-3 py-2 text-sm overflow-hidden bg-zinc-950/20 border- rounded-tl-xl border-zinc-800 backdrop-blur-3xl text-[#00a4b9]"
           style={{ height, minHeight, maxHeight }}
         >
           {lineNumberElements}
         </div>
 
-        {/* Editor */}
-        <div className="flex-1 relative">
+        {/* Editor Container */}
+        <div className="flex-1 relative ">
           <LazyListItem>
             <div
-              style={{ height, minHeight, maxHeight }}
               ref={highlightRef}
-              className="absolute inset-0 p-2 text-sm font-mono leading-6 pointer-events-none whitespace-pre-wrap break-words text-[#d4d4d4]"
+              className="absolute  inset-0 p-2 text-sm font-mono leading-6 pointer-events-none overflow-hidden whitespace-pre-wrap break-words  text-[#d4d4d4]"
               dangerouslySetInnerHTML={{
                 __html: highlightCode(code, language),
               }}
@@ -240,58 +268,58 @@ const CodeEditor = ({
               autoFocus
               ref={textareaRef}
               value={code}
-              placeholder={placeholder}
+              aria-placeholder={placeholder}
               onChange={handleChange}
               onScroll={handleScroll}
               onKeyDown={handleKeyDown}
-              className={`absolute inset-0 p-2 text-sm font-mono leading-6 resize-none outline-none bg-transparent whitespace-pre-wrap break-words ${!isEditable ? 'cursor-not-allowed' : ''}`}
+              className="absolute inset-0  transition-colors p-2 ring-none ring-0 focus:ring-none text-sm font-mono leading-6 resize-none outline-none bg-r whitespace-pre-wrap break-words"
               style={{
                 height,
-                color: isEditable ? 'transparent' : '#d4d4d4',
-                caretColor: isEditable ? '#d4d4d4' : 'transparent',
+                color: 'transparent',
+                caretColor: '#d4d4d4',
               }}
               spellCheck={false}
-              disabled={!isEditable}
+              placeholder={placeholder}
             />
           </LazyListItem>
         </div>
       </div>
 
-      {/* Footer */}
+      {/* Footer toobar abajo */}
       <div className="relative flex justify-between items-center text-[8px] text-zinc-400 bg-zinc-950/70 border-t border-zinc-800 px-2 py-1.5 shadow-sm">
-        {isEditable && (
-          <div className="flex items-center gap-1">
-            <button
-              className="bg-zinc-900 hover:bg-zinc-700 px-2.5 py-1 rounded flex items-center gap-1"
-              onClick={HandlersIdentarBody}
-            >
-              <Icon icon="tabler:braces" width={14} />
-              <span className="hidden sm:inline">Prettify</span>
-            </button>
+        {/* Botones a la izquieaa */}
+        <div className="flex items-center gap-1">
+          <button
+            className="bg-zinc-900 hover:bg-zinc-700 px-2.5 py-1 rounded flex items-center gap-1 transition"
+            onClick={HandlersIdentarBody}
+          >
+            <Icon icon="tabler:braces" width={14} />
+            <span className="hidden sm:inline">Prettify</span>
+          </button>
 
-            <button
-              className="bg-zinc-900 hover:bg-zinc-700 px-2.5 py-1 rounded flex items-center gap-1"
-              onClick={HandlersMinifyBody}
-            >
-              <Icon icon={bolt} width={14} />
-              <span className="hidden sm:inline">Minify</span>
-            </button>
+          <button
+            className="bg-zinc-900 hover:bg-zinc-700 px-2.5 py-1 rounded flex items-center gap-1 transition"
+            onClick={HandlersMinifyBody}
+          >
+            <Icon icon={bolt} width={14} />
+            <span className="hidden sm:inline">Minify</span>
+          </button>
 
-            <button
-              className="bg-zinc-900 hover:bg-zinc-700 px-2.5 py-1 rounded flex items-center gap-1"
-              onClick={handleOpenRemplazoBar}
-            >
-              <Icon icon="tabler:replace" width={14} />
-              <span className="hidden sm:inline">Reemplazar</span>
-            </button>
-          </div>
-        )}
+          <button
+            title="Abrir barra de reemplazo"
+            className="bg-zinc-900 hover:bg-zinc-700 px-2.5 py-1 rounded flex items-center gap-1 transition"
+            onClick={handleOpenRemplazoBar}
+          >
+            <Icon icon="tabler:replace" width={14} />
+            <span className="hidden sm:inline">Reemplazar</span>
+          </button>
+        </div>
 
         <div className="flex items-center gap-2">
           <span className="text-green-400">
             {(() => {
               try {
-                JSON.parse(code);
+                JSON.parse(value);
                 return <Icon icon="tabler:check" width={15} height={15} />;
               } catch {
                 return (

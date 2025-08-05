@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useStoreHeaders } from '../stores/headers-store';
-import { useParamsStore } from '../stores/queryparams-store';
+import { useParamsStore } from '../components/addqueryparams/queryparams-store';
 import type { RetornoClient } from './types';
 
 const useClientStore = (): RetornoClient => {
@@ -15,7 +15,7 @@ const useClientStore = (): RetornoClient => {
 
   const [isOpenSiderBar, setIsOpenSiderbar] = useState(true);
   const [selectedMethod, setSelectedMethod] = useState('GET');
-  const [responseSelected, setResponseSelected] = useState('');
+  const [response, setResponse] = useState('');
 
   const [errorAxios, setErrorAxios] = useState<string>('');
   const [errorRequest, setErrorRequest] = useState(false);
@@ -26,9 +26,7 @@ const useClientStore = (): RetornoClient => {
   const [endpointUrl, setEndpointUrl] = useState('https://httpbin.org/get');
 
   const [isLoading, setIsLoading] = useState(false);
-  const [contentType, setContentType] = useState<
-    'json' | 'html' | 'typescript' | 'html'
-  >();
+  const [contentType, setContentType] = useState< 'json' | 'html' | 'typescript' | 'html'>();
   const [statusCode, setStatusCode] = useState<number | null>();
 
   const refForm = useRef<HTMLFormElement | null>(null);
@@ -54,7 +52,7 @@ const useClientStore = (): RetornoClient => {
       cabeceras,
       isOpenSiderBar,
       selectedMethod,
-      responseSelected,
+      response,
       errorAxios,
       errorRequest,
       bodyJson,
@@ -70,7 +68,7 @@ const useClientStore = (): RetornoClient => {
       setTimeResponse,
       setIsOpenSiderbar,
       setSelectedMethod,
-      setResponseSelected,
+      setResponse,
       setStatusCode,
       setErrorAxios,
       setErrorRequest,

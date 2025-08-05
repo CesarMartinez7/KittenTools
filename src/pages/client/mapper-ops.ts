@@ -22,6 +22,9 @@ export const Opciones = [
   {
     name: 'Scripts',
   },
+  {
+    name: 'Entorno',
+  },
 ];
 
 export const TypesResponse = [

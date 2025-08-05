@@ -2,7 +2,6 @@ import { Icon } from '@iconify/react/dist/iconify.js';
 import type React from 'react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-import { mapperFolder, mapperRequest } from './mappers';
 import type { ItemNodeProps } from './types';
 
 const ItemNode: React.FC<ItemNodeProps> = ({
@@ -10,6 +9,7 @@ const ItemNode: React.FC<ItemNodeProps> = ({
   level = 0,
   loadRequest,
   actualizarNombre,
+  eliminar
 }) => {
   const [collapsed, setCollapsed] = useState(true);
   const indent = 2 * level;
@@ -39,25 +39,75 @@ const ItemNode: React.FC<ItemNodeProps> = ({
     if (isFolder) {
       setCollapsed(!collapsed);
     } else {
-      loadRequest &&
+      const method = data.request?.method?.toUpperCase() || 'GET';
+      const url = data.request?.url?.raw || '';
+      const headers = data.request?.header;
+      const events = data.event;
+
+      let body = '';
+      let language = '';
+
+      if (method !== 'GET' && data.request?.body) {
+        body = data.request.body.raw || '';
+        language = data.request.body.options?.raw?.language || '';
+      }
+
+      if (loadRequest) {
         loadRequest(
-          data.request?.body?.raw || '', // Request Body
-          data.request.body.options.raw.language, // Content Body de la request
-          data.request?.url.raw || '', // Url o enpoint
-          data.request?.method || 'GET', // Metodo
-          data.request?.header,
+          body,
+          language,
+          url,
+          method,
+          headers,
           'idk',
-          data.event,
+          events,
         );
+      }
 
       console.log(data);
     }
   };
 
-  const handleOptionClick = (action: string) => {
-    toast(`Acción: ${action} sobre "${data.name}"`);
-    setShowBar(false);
-  };
+
+
+  const handleChangeName = () => {
+    const nuevo = prompt('Nuevo nombre:', data.name);
+    if (nuevo && nuevo.trim()) {
+      actualizarNombre(data.name, nuevo.trim());
+    }
+  }
+
+  const handleClickDelete = () => {
+    toast.success(data.name)
+    eliminar(data.name)
+  }
+
+
+  const handleClickDuplicar = () => {
+    alert("handle duplicar click")
+
+  }
+
+
+  const mapperFolder = [
+    { name: 'Renombrar', action : handleChangeName },
+    { name: 'Duplicar', action : handleClickDuplicar },
+    { name: 'Eliminar', action : handleClickDelete },
+    { name: 'Nueva peticion' },
+    { name: 'Nueva carpeta' },
+    { name: 'Info' },
+  ];
+
+
+  const mapperRequest = [
+    { name: 'Renombrar', action: handleChangeName },
+    { name: 'Duplicar', action: handleClickDuplicar },
+    { name: 'Eliminar', action: handleClickDelete },
+  ];
+
+
+
+
 
   return (
     <div
@@ -94,12 +144,11 @@ const ItemNode: React.FC<ItemNodeProps> = ({
           {data.request?.method && !isFolder && (
             <span
               className={`text-xs font-mono px-1 py-1 rounded-md 
-                ${
-                  data.request.method === 'GET'
-                    ? 'text-green-400'
-                    : data.request.method === 'POST'
-                      ? 'text-blue-400'
-                      : 'text-orange-400'
+                ${data.request.method === 'GET'
+                  ? 'text-green-400'
+                  : data.request.method === 'POST'
+                    ? 'text-blue-400'
+                    : 'text-orange-400'
                 }`}
             >
               {data.request.method}
@@ -111,6 +160,7 @@ const ItemNode: React.FC<ItemNodeProps> = ({
       </div>
 
       {/* Menú contextual personalizado */}
+
       {showBar && (
         <div
           className="absolute bg-zinc-900 text-white rounded-md shadow-lg z-50 p-2 w-40"
@@ -123,7 +173,7 @@ const ItemNode: React.FC<ItemNodeProps> = ({
             {isFolder && (
               <>
                 {mapperFolder.map((res) => (
-                  <li className="hover:bg-zinc-700 px-2 py-1 rounded cursor-pointer  flex gap-2">
+                  <li className="hover:bg-zinc-700 px-2 py-1 rounded cursor-pointer  flex gap-2" onClick={res.action} >
                     {res.name}
                   </li>
                 ))}
@@ -135,7 +185,7 @@ const ItemNode: React.FC<ItemNodeProps> = ({
             {!isFolder && (
               <>
                 {mapperRequest.map((res) => (
-                  <li className="hover:bg-zinc-700 px-2 py-1 rounded cursor-pointer flex gap-2">
+                  <li className="hover:bg-zinc-700 px-2 py-1 rounded cursor-pointer flex gap-2" onClick={res.action} >
                     {res.name}
                   </li>
                 ))}
@@ -181,6 +231,7 @@ const ItemNode: React.FC<ItemNodeProps> = ({
         <div className="ml-2 flex flex-col gap-3">
           {data.item!.map((child, index) => (
             <ItemNode
+              eliminar={handleClickDelete}
               actualizarNombre={actualizarNombre}
               key={index}
               data={child}
