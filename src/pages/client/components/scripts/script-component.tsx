@@ -1,12 +1,38 @@
 import { motion } from 'framer-motion';
 import type React from 'react';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { CodeEditorLazy } from '../../../../components/LAZY_COMPONENT';
 import { VariantsAnimation } from '../../mapper-ops';
+import type { EventRequest } from '../../types/types';
 
-const ScriptComponent: React.FC = () => {
-  const [value, setValue] = useState<string>('');
+
+interface ScriptComponentProps {
+  value: EventRequest[], setValue: React.Dispatch<React.SetStateAction<EventRequest>>
+}
+
+
+
+const ScriptComponent: React.FC<ScriptComponentProps> = ({value, setValue}) => {
+
   const [result, setResult] = useState<string>('');
+
+  const [script,setScript] = useState<[]>([])
+
+
+  useEffect(() => {
+    if (
+      Array.isArray(value) &&
+      value.length > 0 &&
+      Array.isArray(value[0]?.script?.exec)
+    ) {
+      setScript(value[0].script.exec);
+    } else {
+      setScript([]); // o null, según tu lógica
+    }
+  }, [value]);
+  
+
+
 
   const handleExecuteScript = () => {
     try {
@@ -32,11 +58,12 @@ const ScriptComponent: React.FC = () => {
       variants={VariantsAnimation}
       className="text-zinc-500"
     >
+
       <CodeEditorLazy
         language="javascript"
-        value={value}
+        value={script.join("")}
         onChange={handleChange}
-      />
+      /> 
       <button className="btn-black" onClick={handleExecuteScript}>
         Execute
       </button>

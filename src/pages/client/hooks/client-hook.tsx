@@ -1,73 +1,39 @@
-import {
-  type Dispatch,
-  type SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { useEffect, useRef, useState,} from 'react';
 import toast from 'react-hot-toast';
 import { useStoreHeaders } from '../stores/headers-store';
 import { useParamsStore } from '../stores/queryparams-store';
+import type { RetornoClient } from './types';
 
-interface ValuesRetornoClient {
-  params: string;
-  cabeceras: string;
-  isOpenSiderBar: boolean;
-  selectedMethod: string;
-  responseSelected: string;
-  errorAxios: string;
-  errorRequest: boolean;
-  bodyJson: string;
-  showMethods: boolean;
-  endpointUrl: string;
-  isLoading: boolean;
-  contentType: 'javascript' | 'typescript' | 'json' | 'xml' | 'form';
-  refForm: React.RefObject<HTMLFormElement | null>;
-  timeResponse: number;
-  statusCode: number | null | undefined;
-}
 
-interface SetterRetornoClient {
-  setIsOpenSiderbar: Dispatch<SetStateAction<boolean>>;
-  setSelectedMethod: Dispatch<SetStateAction<string>>;
-  setResponseSelected: Dispatch<SetStateAction<string>>;
-  setErrorAxios: Dispatch<SetStateAction<string>>;
-  setErrorRequest: Dispatch<SetStateAction<boolean>>;
-  setBodyJson: Dispatch<SetStateAction<string>>;
-  setShowMethods: Dispatch<SetStateAction<boolean>>;
-  setEndpointUrl: Dispatch<SetStateAction<string>>;
-  setIsLoading: Dispatch<SetStateAction<boolean>>;
-  setContentType: Dispatch<SetStateAction<string>>;
-  setTimeResponse: Dispatch<SetStateAction<number>>;
-  setStatusCode: Dispatch<React.SetStateAction<number | null | undefined>>;
-}
 
-export interface RetornoClient {
-  value: ValuesRetornoClient;
-  setter: SetterRetornoClient;
-}
 
 const useClientStore = (): RetornoClient => {
+
+  // Stores que falta arreglar para pasar los que vienen la collecion
   const params = useParamsStore((state) => state.valor);
   const cabeceras = useStoreHeaders((state) => state.valor);
+
+  // Estados Globales
+
+  const [scriptsValues, setScriptsValues] = useState<string>("")
 
   const [isOpenSiderBar, setIsOpenSiderbar] = useState(true);
   const [selectedMethod, setSelectedMethod] = useState('GET');
   const [responseSelected, setResponseSelected] = useState('');
+
   const [errorAxios, setErrorAxios] = useState<string>('');
   const [errorRequest, setErrorRequest] = useState(false);
-
   const [timeResponse, setTimeResponse] = useState<number>(0);
 
   const [bodyJson, setBodyJson] = useState('');
   const [showMethods, setShowMethods] = useState(false);
   const [endpointUrl, setEndpointUrl] = useState('https://httpbin.org/get');
-  const [isLoading, setIsLoading] = useState(false);
-  const [contentType, setContentType] = useState<
-    'json' | 'html' | 'typescript' | 'html'
-  >();
 
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [contentType, setContentType] = useState< 'json' | 'html' | 'typescript' | 'html'>();
   const [statusCode, setStatusCode] = useState<number | null>();
+
 
   const refForm = useRef<HTMLFormElement | null>(null);
 
@@ -75,11 +41,7 @@ const useClientStore = (): RetornoClient => {
     setEndpointUrl((prev) => prev + params);
   }, [params]);
 
-  useEffect(() => {
-    const url = localStorage.getItem('request_url');
-    if (url) setEndpointUrl(url);
-  }, []);
-
+  
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'Enter' && e.ctrlKey) {
@@ -107,6 +69,7 @@ const useClientStore = (): RetornoClient => {
       contentType,
       refForm,
       statusCode,
+      scriptsValues
     },
     setter: {
       setTimeResponse,
@@ -121,6 +84,7 @@ const useClientStore = (): RetornoClient => {
       setEndpointUrl,
       setIsLoading,
       setContentType,
+      setScriptsValues
     },
   };
 };

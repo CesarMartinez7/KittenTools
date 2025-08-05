@@ -7,12 +7,13 @@ import ModalDeleteRequest from '../../modals/delete-request-modal';
 import AddNewRequestModal from '../../modals/new-request-modal';
 import ModalCurrentSavePeticion from '../../modals/save-request-modal';
 import type {
+  EventRequest,
   Item,
   RequestItem,
   RootBody,
   SavedRequestsSidebarProps,
 } from '../../types/types';
-import ItemNode from '../item-node';
+import ItemNode from '../itemnode/item-node';
 import SidebarHook from './hooks/sacedrequestsidebar.hook';
 
 export function SavedRequestsSidebar({
@@ -45,7 +46,9 @@ export function SavedRequestsSidebar({
   const [currentName, setCurrentName] = useState<string>('');
 
   const handleExportarCollecion = () => {
-    const blob = new Blob([coleccion as string], { type: 'application/jsons' });
+    const blob = new Blob([JSON.stringify(parsed as string)], {
+      type: 'application/json',
+    });
 
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -166,6 +169,7 @@ export function SavedRequestsSidebar({
     });
   }
 
+  // Metodo de Collecion Actualizar NOMBRE CARPETA O REQUEST
   const handleActualizarNombre = (oldName: string, newName: string) => {
     if (!parsed) return;
 
@@ -179,6 +183,14 @@ export function SavedRequestsSidebar({
     setParsed(nuevaParsed);
   };
 
+  // Metodo de Crear nueva request o carpeta
+
+  const handleClickCreateNewRequest = () => {};
+
+
+
+  // Cargue y cambio de la request al la interfaz 
+
   const parsedLoadRequest = (
     reqBody: string,
     reqContentType: string,
@@ -186,8 +198,19 @@ export function SavedRequestsSidebar({
     reqMethod: string,
     reqHeaders: Record<string, string>,
     reqParams: Record<string, string>,
+    reqEvent: EventRequest
   ) => {
     // Implemntacon de la logica de carga de request
+
+
+
+    toast.success("Desde parsed load request")
+    console.log(reqEvent)
+
+
+    const requestScriptEvents = reqEvent ? reqEvent : null
+
+
     onLoadRequest(
       reqBody,
       reqContentType,
@@ -195,6 +218,7 @@ export function SavedRequestsSidebar({
       reqMethod,
       reqHeaders,
       reqParams,
+      requestScriptEvents
     );
   };
 
@@ -224,7 +248,7 @@ export function SavedRequestsSidebar({
       />
 
       {isOpen && (
-        <motion.div className="top-0 left-0 h-svh max-h-svh w-64 bg-zinc-900/50 backdrop-blur-3xl border-r border-zinc-800 p-6 z-50 md:flex flex-col shadow-lg hidden ">
+        <motion.div className="top-0 left-0 h-svh max-h-svh w-64 bg-zinc-900/50 backdrop-blur-3xl  p-6 z-50 md:flex flex-col shadow-lg hidden ">
           <div className="flex justify-start items-center my-8 space-x-3">
             <span className="game-icons--thorny-vine"></span>
 
@@ -236,7 +260,7 @@ export function SavedRequestsSidebar({
 
           <div className="flex flex-row text-xs gap-2 mb-4">
             <button
-              className="gradient-text "
+              className="gradient-text  "
               onClick={handleClickCargueCollecion}
             >
               Importar coleccion
@@ -270,7 +294,7 @@ export function SavedRequestsSidebar({
               <div className="overflow-y-scroll h-[70vh]">
                 <ItemNode
                   actualizarNombre={handleActualizarNombre}
-                  level={1}
+                  level={0}
                   data={parsed}
                   setData={setParsed}
                   loadRequest={parsedLoadRequest}

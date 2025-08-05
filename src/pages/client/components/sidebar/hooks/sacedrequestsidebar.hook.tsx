@@ -27,12 +27,11 @@ export default function SidebarHook() {
 
         reader.onload = () => {
           try {
-            setColeccion(reader.result as string);
             setParsed(JSON.parse(reader.result));
 
             localStorage.setItem(
-              'savedRequests2',
-              JSON.stringify(reader.result as string),
+              'savedRequests',
+              reader.result as string,
             );
           } catch (error) {
             toast.error('Ocurrio un eror al procesar o parsear el archivo');
@@ -46,7 +45,8 @@ export default function SidebarHook() {
     };
 
     input.click();
-    input.remove();
+    document.body.removeChild(input )
+    
   };
 
   const handleExportarCollecion = () => {

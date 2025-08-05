@@ -33,6 +33,7 @@ export interface SavedRequestsSidebarProps {
     reqMethod: string,
     reqHeaders: Record<string, string>,
     reqParams: Record<string, string>,
+    reqEvent : 
   ) => void;
   currentUrl?: string;
   currentMethod?: string;
@@ -58,8 +59,16 @@ export interface Info {
 export interface Item {
   name: string;
   item?: Item2[];
+  event? : EventRequest
   request?: Request2;
   response?: Response[];
+}
+
+
+
+export interface EventRequest {
+  listen: string,
+  script: {exec: [], type: string, packages: object}
 }
 
 export interface Item2 {

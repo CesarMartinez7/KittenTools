@@ -1,25 +1,26 @@
-import { Icon } from "@iconify/react/dist/iconify.js";
-import bolt from "@iconify-icons/tabler/bolt";
-import { AnimatePresence, motion } from "motion/react";
-import type React from "react";
-import { memo, useEffect, useMemo, useRef, useState } from "react";
-import toast from "react-hot-toast";
-import LazyListItem from "../LazyListPerform";
-import highlightCode from "./higlight-code";
+import { Icon } from '@iconify/react/dist/iconify.js';
+import bolt from '@iconify-icons/tabler/bolt';
+import { AnimatePresence, motion } from 'motion/react';
+import type React from 'react';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
+import toast from 'react-hot-toast';
+import LazyListItem from '../LazyListPerform';
+import highlightCode from './higlight-code';
 
-import { useJsonHook } from "./methods-json/method";
-import { useXmlHook } from "./methos-xml/method.xml";
-import type { CodeEditorProps } from "./types";
+import { useJsonHook } from './methods-json/method';
+import { useXmlHook } from './methos-xml/method.xml';
+import type { CodeEditorProps } from './types';
+import { VariantsAnimation } from '../../pages/client/mapper-ops';
 
 const CodeEditor = ({
-  value = "",
-  language = "json",
+  value = '',
+  language = 'json',
   onChange,
-  maxHeight = "100%",
-  height = "200px",
-  minHeight = "68vh",
-  placeholder = "// Escribe tu código aqui...",
-  classNameContainer = "",
+  maxHeight = '100%',
+  height = '200px',
+  minHeight = '68vh',
+  placeholder = '// Escribe tu código aqui...',
+  classNameContainer = '',
 }: CodeEditorProps) => {
   // Referencias al DOOM
   const inputRefTextOld = useRef<HTMLInputElement>(null);
@@ -43,7 +44,12 @@ const CodeEditor = ({
   });
 
   const lineCount = useMemo(() => {
-    return code.split("\n").length;
+
+    if(code.length > 0){
+      return code.split('\n').length;
+    }
+
+    
   }, [code]);
 
   // Efecttos
@@ -51,22 +57,22 @@ const CodeEditor = ({
     textareaRef.current?.focus();
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
       // No importa si esta en minuscuela la b o en mayuscula siempre se abrira
-      if ((e.ctrlKey && e.key === "b") || (e.ctrlKey && e.key === "B")) {
+      if ((e.ctrlKey && e.key === 'b') || (e.ctrlKey && e.key === 'B')) {
         e.preventDefault();
         setIsOpenBar((prev) => !prev);
       }
 
-      if (e.ctrlKey && e.key === "s") {
+      if (e.ctrlKey && e.key === 's') {
         e.preventDefault();
         HandlersIdentarBody();
-        alert("guardar y minificar");
+        alert('guardar y minificar');
       }
     };
 
-    window.addEventListener("keydown", handleGlobalKeyDown);
+    window.addEventListener('keydown', handleGlobalKeyDown);
 
     return () => {
-      window.removeEventListener("keydown", handleGlobalKeyDown);
+      window.removeEventListener('keydown', handleGlobalKeyDown);
     };
   }, []); // Effect
 
@@ -75,23 +81,23 @@ const CodeEditor = ({
   }, [value]);
 
   const HandlersMinifyBody = () => {
-    if (language === "json") {
+    if (language === 'json') {
       return minifyJson();
     }
 
-    if (language === "xml") {
+    if (language === 'xml') {
       return minifyXml();
     }
 
     return toast.error(
-      "Es diferente a json por lo ucal no se se puede minifycar",
+      'Es diferente a json por lo ucal no se se puede minifycar',
     );
   };
 
   const HandlersIdentarBody = () => {
-    if (language === "json") return JsonSchema();
+    if (language === 'json') return JsonSchema();
 
-    if (language === "xml") {
+    if (language === 'xml') {
       return XmlScheme();
     }
   };
@@ -121,11 +127,11 @@ const CodeEditor = ({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Tab") {
+    if (e.key === 'Tab') {
       e.preventDefault();
       const start = e.currentTarget.selectionStart;
       const end = e.currentTarget.selectionEnd;
-      const newValue = code.substring(0, start) + "  " + code.substring(end);
+      const newValue = code.substring(0, start) + '  ' + code.substring(end);
       setCode(newValue);
       onChange?.(newValue);
 
@@ -141,18 +147,18 @@ const CodeEditor = ({
   };
 
   const handleCLickReplaceTextFirst = () => {
-    const from = inputRefTextOld.current?.value || "";
-    const to = inputRefTextNew.current?.value || "";
+    const from = inputRefTextOld.current?.value || '';
+    const to = inputRefTextNew.current?.value || '';
 
-    if (!from) return toast.error("Ingresa un valor a buscar");
+    if (!from) return toast.error('Ingresa un valor a buscar');
 
     if (!value?.includes(from)) {
-      return toast.error("El valor a buscar no se encuentra en el texto");
+      return toast.error('El valor a buscar no se encuentra en el texto');
     }
 
     const result = value?.replace(from, to);
     setCode(result);
-    toast.success("Reemplazo realizado");
+    toast.success('Reemplazo realizado');
   };
 
   const lineNumberElements = useMemo(
@@ -166,17 +172,17 @@ const CodeEditor = ({
   );
 
   const handleCLickReplaceText = () => {
-    const from = inputRefTextOld.current?.value || "";
-    const to = inputRefTextNew.current?.value || "";
+    const from = inputRefTextOld.current?.value || '';
+    const to = inputRefTextNew.current?.value || '';
 
     if (!value?.includes(from)) {
-      return toast.error("El valor a buscar no se encuentra en el texto");
+      return toast.error('El valor a buscar no se encuentra en el texto');
     }
 
-    if (!from) return toast.error("Ingresa un valor a buscar");
+    if (!from) return toast.error('Ingresa un valor a buscar');
     const result = value?.replaceAll(from, to);
     setCode(result);
-    toast.success("Reemplazo realizado");
+    toast.success('Reemplazo realizado');
   };
 
   return (
@@ -184,25 +190,7 @@ const CodeEditor = ({
       <AnimatePresence mode="wait">
         {isOpenBar && (
           <motion.div
-            initial={{ opacity: 0, y: -10, scale: 0.95 }}
-            animate={{
-              opacity: 1,
-              y: 0,
-              scale: 1,
-              filter: "blur(0px)",
-              transition: {
-                type: "spring",
-                stiffness: 200,
-                damping: 20,
-              },
-            }}
-            exit={{
-              opacity: 0,
-              y: -10,
-              scale: 0.95,
-              filter: "blur(4px)",
-              transition: { duration: 0.2 },
-            }}
+            variants={VariantsAnimation}
             layout
             className="backdrop-blur-3xl bg-zinc-900/35 border border-zinc-900 p-3 flex flex-col w-52 shadow-xl shadow-zinc-800 gap-1 rounded  right-4 top-5 absolute z-[778]"
           >
@@ -277,8 +265,8 @@ const CodeEditor = ({
               className="absolute inset-0  transition-colors p-2 ring-none ring-0 focus:ring-none text-sm font-mono leading-6 resize-none outline-none bg-r whitespace-pre-wrap break-words"
               style={{
                 height,
-                color: "transparent",
-                caretColor: "#d4d4d4",
+                color: 'transparent',
+                caretColor: '#d4d4d4',
               }}
               spellCheck={false}
               placeholder={placeholder}
@@ -296,7 +284,7 @@ const CodeEditor = ({
             onClick={HandlersIdentarBody}
           >
             <Icon icon="tabler:braces" width={14} />
-            <span className="hidden sm:inline">Identar</span>
+            <span className="hidden sm:inline">Prettify</span>
           </button>
 
           <button
@@ -332,7 +320,7 @@ const CodeEditor = ({
           </span>
 
           <span className="hidden sm:inline">
-            {language.toUpperCase()} | {code.length} caracteres | {lineCount}{" "}
+            {language.toUpperCase()} | {code.length} caracteres | {lineCount}{' '}
             líneas
           </span>
         </div>

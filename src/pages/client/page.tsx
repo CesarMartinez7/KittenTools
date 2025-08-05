@@ -14,6 +14,8 @@ import ScriptComponent from './components/scripts/script-component';
 import { SavedRequestsSidebar } from './components/sidebar/SavedRequestSidebar';
 import ClientCustomHook from './hooks/client-hook';
 import RequestHook from './hooks/request.client';
+import type { EventRequest } from './types/types';
+
 import {
   Methodos,
   Opciones,
@@ -41,6 +43,7 @@ export default function AppClient() {
     contentType,
     statusCode,
     refForm,
+    scriptsValues
   } = value;
 
   // Custom Hook Setters
@@ -56,6 +59,7 @@ export default function AppClient() {
     setErrorRequest,
     setSelectedMethod,
     setResponseSelected,
+    setScriptsValues
   } = setter;
 
   const [timeResponse, setTimeResponse] = useState<number>(0);
@@ -89,16 +93,22 @@ export default function AppClient() {
     [setShowMethods],
   );
 
+
+  // Manejador global de todo
   const onLoadRequest = (
     reqBody: string,
     reqContentType: string,
     reqUrl: string,
     reqMethod: string,
+    reqHeaders: Record<string, string>,
+    reqParams: Record<string, string>,
+    reqEvent: EventRequest
   ) => {
     setBodyJson(reqBody);
     setContentType(reqContentType);
     setEndpointUrl(reqUrl);
     setSelectedMethod(reqMethod);
+    setScriptsValues(reqEvent)
   };
 
   const formatBodyPlaceholder = useMemo(() => {
@@ -194,7 +204,7 @@ export default function AppClient() {
               )}
             </button>
           </div>
-          <div className="flex gap-2 text-white bg-zinc-900/90 rounded-t-lg border-b border-zinc-800">
+          <div className="flex gap-2 text-white bg-zinc-900/90 rounded-t-lg border-b border-zinc-800 truncate">
             {Opciones.map((opcion, index) => (
               <button
                 key={crypto.randomUUID()}
@@ -282,7 +292,7 @@ export default function AppClient() {
                 </motion.div>
               )}
 
-              {mimeSelected === 4 && <ScriptComponent />}
+              {mimeSelected === 4 && <ScriptComponent value={scriptsValues} setValue={setScriptsValues} />}
             </AnimatePresence>
           </div>
           <div className="bg-neutral-900 p-6 rounded-xl border border-zinc-800 flex flex-col overflow-hidden shadow-lg">

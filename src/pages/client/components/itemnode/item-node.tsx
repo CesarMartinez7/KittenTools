@@ -1,23 +1,9 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
 import type React from 'react';
 import { useState } from 'react';
-import toast, { ToastBar } from 'react-hot-toast';
-import type { Item } from '../types/types';
-
-interface ItemNodeProps {
-  data: Item;
-  level: number;
-  setCurrentName: string;
-  actualizarNombre: (items: Item[], oldName: string, newName: string) => void;
-  loadRequest?: (
-    reqBody: string,
-    reqContentType: string,
-    reqUrl: string,
-    reqMethod: string,
-    reqHeaders: Record<string, string>,
-    reqParams: Record<string, string>,
-  ) => void;
-}
+import toast from 'react-hot-toast';
+import type { ItemNodeProps } from './types';
+import { mapperFolder, mapperRequest } from './mappers';
 
 const ItemNode: React.FC<ItemNodeProps> = ({
   data,
@@ -30,13 +16,10 @@ const ItemNode: React.FC<ItemNodeProps> = ({
   const isFolder = !!data.item && data.item.length > 0;
 
   const [showBar, setShowBar] = useState(false);
+
   const [contextPos, setContextPos] = useState<{ x: number; y: number } | null>(
     null,
   );
-
-  const changeName = (name: string, currentName: string) => {
-    currentName = name;
-  };
 
   const handleClickContextMenu = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -58,14 +41,16 @@ const ItemNode: React.FC<ItemNodeProps> = ({
     } else {
       loadRequest &&
         loadRequest(
-          data.request?.body?.raw || '',
-          'json',
-          data.request?.url.raw || '',
-          data.request?.method || 'GET',
-          data.request?.header,
-          'idk',
+          data.request?.body?.raw || '', // Request Body
+          'json', // Content De la Request
+          data.request?.url.raw || '', // Url o enpoint
+          data.request?.method || 'GET', // Metodo
+          data.request?.header  ,
+          "idk",
+          data.event
         );
-      console.log('Cargando request:', data.request);
+      console.log('Cargando request:', data.request?.header);
+      console.log(data.event)
     }
   };
 
@@ -121,9 +106,7 @@ const ItemNode: React.FC<ItemNodeProps> = ({
             </span>
           )}
 
-          <p className="text-xs gradient-text text-zinc-100 truncate">
-            {data.name}
-          </p>
+          <p className="text-xs truncate shiny-text">{data.name}</p>
         </div>
       </div>
 
@@ -137,6 +120,30 @@ const ItemNode: React.FC<ItemNodeProps> = ({
           }}
         >
           <ul className="text-sm space-y-1">
+            {isFolder && (
+              <>
+                {mapperFolder.map((res) => (
+                  <li className="hover:bg-zinc-700 px-2 py-1 rounded cursor-pointer  flex gap-2">
+                    {res.name}
+                  </li>
+                ))}
+              </>
+            )}
+          </ul>
+
+          <ul className="text-sm space-y-1">
+            {!isFolder && (
+              <>
+                {mapperRequest.map((res) => (
+                  <li className="hover:bg-zinc-700 px-2 py-1 rounded cursor-pointer flex gap-2">
+                    {res.name}
+                  </li>
+                ))}
+              </>
+            )}
+          </ul>
+
+          {/* <ul className="text-sm space-y-1">
             <li
               onClick={() => {
                 const nuevo = prompt('Nuevo nombre:', data.name);
@@ -166,7 +173,7 @@ const ItemNode: React.FC<ItemNodeProps> = ({
               </span>
               <span>Eliminar</span>
             </li>
-          </ul>
+          </ul> */}
         </div>
       )}
 
