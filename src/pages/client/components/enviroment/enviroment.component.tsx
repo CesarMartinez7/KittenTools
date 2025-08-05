@@ -17,9 +17,7 @@ export interface Value {
 }
 
 export default function EnviromentComponent() {
-  // Lista global de todos los entornos
   const [listEntorno, setListEntorno] = useState<EnviromentLayout[]>([]);
-  // Lista del entorno actual
   const [entornoActual, setEntornoActual] = useState<Value[]>([]);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,12 +27,10 @@ export default function EnviromentComponent() {
     const reader = new FileReader();
     reader.onload = (event) => {
       try {
-        const json: EnviromentLayout = JSON.parse(event.target?.result as string);
-
-        // Guardar en lista global
+        const json: EnviromentLayout = JSON.parse(
+          event.target?.result as string
+        );
         setListEntorno((prev) => [...prev, json]);
-
-        // Si no hay entorno actual, poner este
         if (entornoActual.length === 0) {
           setEntornoActual(json.values);
         }
@@ -43,15 +39,31 @@ export default function EnviromentComponent() {
         alert("El archivo no es un JSON válido de Postman Environment");
       }
     };
-
     reader.readAsText(file);
+  };
+
+  const handleChange = (index: number, field: keyof Value, value: any) => {
+    const updated = [...entornoActual];
+    (updated[index] as any)[field] = value;
+    setEntornoActual(updated);
+  };
+
+  const handleAddVariable = () => {
+    setEntornoActual([
+      ...entornoActual,
+      { key: "", value: "", type: "default", enabled: true },
+    ]);
+  };
+
+  const handleDeleteVariable = (index: number) => {
+    const updated = entornoActual.filter((_, i) => i !== index);
+    setEntornoActual(updated);
   };
 
   return (
     <div className="p-4 space-y-4">
       <h1 className="text-lg font-bold">Cargar entorno Postman</h1>
 
-      {/* Input para cargar JSON */}
       <input
         type="file"
         accept=".json"
@@ -59,7 +71,6 @@ export default function EnviromentComponent() {
         className="block"
       />
 
-      {/* Lista de entornos */}
       {listEntorno.length > 0 && (
         <div>
           <h2 className="font-semibold">Entornos cargados</h2>
@@ -73,30 +84,66 @@ export default function EnviromentComponent() {
         </div>
       )}
 
-      {/* Variables del entorno actual */}
       {entornoActual.length > 0 && (
-        <div className="relative">
-          <h2 className="font-semibol rela">Variables del entorno actual</h2>
-          <table className="border border-zinc-800 w-full text-left relative">
+        <div>
+          <div className="flex justify-between items-center mb-2">
+            <h2 className="font-semibold">Variables del entorno actual</h2>
+            <button
+              onClick={handleAddVariable}
+              className="bg-green-600 text-white px-2 py-1 rounded"
+            >
+              + Añadir Variable
+            </button>
+          </div>
+
+          <table className="border border-zinc-800 w-full text-left">
             <thead>
-              <tr> 
+              <tr>
                 <th className="border border-zinc-700 px-2">Llave</th>
                 <th className="border border-zinc-700 px-2">Valor</th>
                 <th className="border border-zinc-700 px-2">Estado</th>
+                <th className="border border-zinc-700 px-2">Acciones</th>
               </tr>
             </thead>
             <tbody>
               {entornoActual.map((v, i) => (
                 <tr key={i}>
                   <td className="border border-zinc-700 px-2">
-                    <input type="text" value={v.key} />
-                    </td>
-                  <td className="border border-zinc-700 px-2">
-                  <input className="w-full" type="text" value={v.value} />
+                    <input
+                      type="text"
+                      value={v.key}
+                      onChange={(e) =>
+                        handleChange(i, "key", e.target.value)
+                      }
+                      className="w-full"
+                    />
                   </td>
                   <td className="border border-zinc-700 px-2">
-                    <input type="checkbox" name=""   checked={v.enabled}  />
-
+                    <input
+                      type="text"
+                      value={v.value}
+                      onChange={(e) =>
+                        handleChange(i, "value", e.target.value)
+                      }
+                      className="w-full"
+                    />
+                  </td>
+                  <td className="border border-zinc-700 px-2 text-center">
+                    <input
+                      type="checkbox"
+                      checked={v.enabled}
+                      onChange={(e) =>
+                        handleChange(i, "enabled", e.target.checked)
+                      }
+                    />
+                  </td>
+                  <td className="border border-zinc-700 px-2 text-center">
+                    <button
+                      onClick={() => handleDeleteVariable(i)}
+                      className=" text-white px-2 py-1 rounded"
+                    >
+                      🗑️
+                    </button>
                   </td>
                 </tr>
               ))}
