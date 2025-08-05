@@ -1,6 +1,5 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { createContext, useEffect, useState } from 'react';
-import toast from 'react-hot-toast';
 import { useParamsStore } from '../../stores/queryparams-store';
 
 const AddQueryParam = () => {
@@ -9,29 +8,33 @@ const AddQueryParam = () => {
   // Params finales formateados
   const [paramsFinal, setParamsFinal] = useState<string>('');
 
-  const cargarpARAMS =
-    'https://www.example.com/pagina-de-prueba?nombre=Juan&edad=30&ciudad=Barranquilla';
+  // const cargarpARAMS =
+  //   'https://www.example.com/pagina-de-prueba?nombre=Juan&edad=30&ciudad=Barranquilla';
 
-  useEffect(() => {
-    const url = new URL(cargarpARAMS);
+  // useEffect(() => {
+  //   const url = new URL(cargarpARAMS);
+  //   const params = url.searchParams;
 
-    const params = url.searchParams;
+  //   for (const [key, value] of params) {
+  //     console.log(`${key}: ${value}`);
+  //   }
+  // }, []);
 
-    const paramsArray = [];
 
-    for (const [key, value] of params) {
-      console.log(`${key}: ${value}`);
-    }
-  }, []);
+
+
+
 
   // Store params final y setvalor
   const setValor = useParamsStore((e) => e.setValor);
   const valor = useParamsStore((e) => e.valor);
 
   useEffect(() => {
-    setParamsFinal(buildQueryParams());
-    setValor(paramsFinal);
-  }, [valor]);
+  const final = buildQueryParams();
+  setParamsFinal(final);
+  setValor(final);
+}, [params]);
+
 
   const handleAddParam = () => {
     setParams([...params, { key: '', value: '' }]);
@@ -51,6 +54,10 @@ const AddQueryParam = () => {
     const updatedParams = [...params];
     updatedParams.splice(index, 1);
     setParams(updatedParams);
+
+    const final = buildQueryParams()
+    setParamsFinal(final)
+    setValor(final)
   };
 
   const buildQueryParams = () => {
@@ -81,6 +88,13 @@ const AddQueryParam = () => {
             </span>
           </div>
         )}
+
+
+
+        <pre>{JSON.stringify(params, null, 2)}</pre>
+        <p>{paramsFinal}</p>
+
+        <p>{valor}</p>
 
         {params.map((param, index) => (
           <div key={index} className="flex gap-2 justify-between">

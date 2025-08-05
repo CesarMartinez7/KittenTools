@@ -2,8 +2,8 @@ import { Icon } from '@iconify/react/dist/iconify.js';
 import type React from 'react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-import type { ItemNodeProps } from './types';
 import { mapperFolder, mapperRequest } from './mappers';
+import type { ItemNodeProps } from './types';
 
 const ItemNode: React.FC<ItemNodeProps> = ({
   data,
@@ -45,14 +45,12 @@ const ItemNode: React.FC<ItemNodeProps> = ({
           data.request.body.options.raw.language, // Content Body de la request
           data.request?.url.raw || '', // Url o enpoint
           data.request?.method || 'GET', // Metodo
-          data.request?.header  ,
-          "idk",
-          data.event
+          data.request?.header,
+          'idk',
+          data.event,
         );
 
-      console.log(data)
-      
-    
+      console.log(data);
     }
   };
 

@@ -99,7 +99,7 @@ export default function RequestHook({
         }
       }
 
-      const finalUrl = `${endpointUrl}${params}`;
+      const finalUrl = `${endpointUrl}?${params}`;
 
       try {
         let response;

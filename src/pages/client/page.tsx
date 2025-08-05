@@ -2,11 +2,9 @@ import './App.css';
 import { Icon } from '@iconify/react';
 import sendIcon from '@iconify-icons/tabler/send';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useCallback, useMemo, useRef, useState } from 'react';
-import {
-  CodeEditorLazy,
-  JsonViewerLazy,
-} from '../../components/LAZY_COMPONENT';
+import { useCallback, useMemo,  useState } from 'react';
+import { CodeEditorLazy,} from '../../components/LAZY_COMPONENT';
+
 import AddQueryParam from './components/addqueryparams/addQueryParams';
 import { HeadersAddRequest } from './components/headers/Headers';
 import ResponsesTypesComponent from './components/responses-core/response-componente';
@@ -14,15 +12,9 @@ import ScriptComponent from './components/scripts/script-component';
 import { SavedRequestsSidebar } from './components/sidebar/SavedRequestSidebar';
 import ClientCustomHook from './hooks/client-hook';
 import RequestHook from './hooks/request.client';
+
+import { Methodos, Opciones, VariantsAnimation } from './mapper-ops';
 import type { EventRequest } from './types/types';
-
-import {
-  Methodos,
-  Opciones,
-  VariantsAnimation,
-} from './mapper-ops';
-import BaseModal from '../../ui/base-modal/BaseModal';
-
 
 export default function AppClient() {
   const { value, setter } = ClientCustomHook();
@@ -43,7 +35,7 @@ export default function AppClient() {
     contentType,
     statusCode,
     refForm,
-    scriptsValues
+    scriptsValues,
   } = value;
 
   // Custom Hook Setters
@@ -59,7 +51,7 @@ export default function AppClient() {
     setErrorRequest,
     setSelectedMethod,
     setResponseSelected,
-    setScriptsValues
+    setScriptsValues,
   } = setter;
 
   const [timeResponse, setTimeResponse] = useState<number>(0);
@@ -84,7 +76,7 @@ export default function AppClient() {
     Number(sessionStorage.getItem('mimeSelected')) || 0,
   );
 
-  const [openInfoCollecion, setOpenInfoCollecion] = useState<boolean>(true)
+  const [openInfoCollecion, setOpenInfoCollecion] = useState<boolean>(true);
 
   const saveToLocalStorage = useCallback((name, value) => {
     localStorage.setItem(name, value);
@@ -95,7 +87,6 @@ export default function AppClient() {
     [setShowMethods],
   );
 
-
   // Manejador global de todo
   const onLoadRequest = (
     reqBody: string,
@@ -104,13 +95,13 @@ export default function AppClient() {
     reqMethod: string,
     reqHeaders: Record<string, string>,
     reqParams: Record<string, string>,
-    reqEvent: EventRequest
+    reqEvent: EventRequest,
   ) => {
     setBodyJson(reqBody);
     setContentType(reqContentType);
     setEndpointUrl(reqUrl);
     setSelectedMethod(reqMethod);
-    setScriptsValues(reqEvent)
+    setScriptsValues(reqEvent);
   };
 
   const formatBodyPlaceholder = useMemo(() => {
@@ -145,10 +136,7 @@ export default function AppClient() {
         onClose={() => setIsOpenSiderbar(false)}
       />
 
-
-      
-
-      <div className="w-full flex flex-col px-4 md:px-8 py-4 gap-2 bg-zinc-900/50 ">
+      <div className="w-full flex flex-col px-4 md:px-8 py-4 gap-2 bg-black/70">
         <form ref={refForm} onSubmit={handleRequest} className="space-y-4 mb-4">
           <div className="flex flex-col md:flex-row gap-3 md:items-center">
             <div className="relative">
@@ -227,19 +215,32 @@ export default function AppClient() {
         <div
           className="grid relative md:grid-cols-1 lg:grid-cols-2  gap-4 h-full"
           aria-label="grid"
-        >   
-
+        >
           {openInfoCollecion && (
             <>
-            <div className='absolute inset-0 mask-b-from-20% mask-b-to-140% overflow-hidden rounded-2xl z-50 bg-black p-12'>
-            <button className='btn-black absolute right-3 rounded-2xl! p-4!' onClick={() => setOpenInfoCollecion((prev) => !prev)} >x</button>
-            <h4 className='text-4xl'>Seguro APIS</h4>
-            <p className='my-4 max-w-4xl'>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Voluptate voluptates et optio nobis hic adipisci distinctio doloremque tempore praesentium voluptatibus natus fugit delectus eos consectetur architecto, ipsam ipsa possimus. Voluptatum, ullam dolor, doloribus nulla minima laborum magni eaque soluta nemo numquam omnis? Quasi nobis illum dicta provident nihil quod placeat hic nostrum, eos quisquam assumenda molestiae ratione alias porro sequi non error, natus numquam asperiores labore similique cum. Laudantium, rerum?</p>
-        </div>
-        </>
+              <div className="absolute inset-0 mask-b-from-20% mask-b-to-140% overflow-hidden rounded-2xl z-50 bg-black p-12">
+                <button
+                  className="btn-black absolute right-3 rounded-2xl! p-4!"
+                  onClick={() => setOpenInfoCollecion((prev) => !prev)}
+                >
+                  x
+                </button>
+                <h4 className="text-4xl">Seguro APIS</h4>
+                <p className="my-4 max-w-4xl">
+                  Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                  Voluptate voluptates et optio nobis hic adipisci distinctio
+                  doloremque tempore praesentium voluptatibus natus fugit
+                  delectus eos consectetur architecto, ipsam ipsa possimus.
+                  Voluptatum, ullam dolor, doloribus nulla minima laborum magni
+                  eaque soluta nemo numquam omnis? Quasi nobis illum dicta
+                  provident nihil quod placeat hic nostrum, eos quisquam
+                  assumenda molestiae ratione alias porro sequi non error, natus
+                  numquam asperiores labore similique cum. Laudantium, rerum?
+                </p>
+              </div>
+            </>
           )}
 
-          
           <div className="bg-black p-6 rounded-xl border border-zinc-800 flex flex-col shadow-lg">
             <AnimatePresence mode="wait" key={'uja'}>
               {mimeSelected === 0 && ( // Body
@@ -249,7 +250,7 @@ export default function AppClient() {
                   className="flex flex-col flex-1"
                 >
                   <div className="flex gap-4 mb-3">
-                    {['json', 'form', 'xml', "none"].map((type, idx) => (
+                    {['json', 'form', 'xml', 'none'].map((type, idx) => (
                       <label
                         key={idx}
                         className="text-sm text-gray-300 flex items-center gap-2 cursor-pointer"
@@ -310,7 +311,12 @@ export default function AppClient() {
                 </motion.div>
               )}
 
-              {mimeSelected === 4 && <ScriptComponent value={scriptsValues} setValue={setScriptsValues} />}
+              {mimeSelected === 4 && (
+                <ScriptComponent
+                  value={scriptsValues}
+                  setValue={setScriptsValues}
+                />
+              )}
             </AnimatePresence>
           </div>
           <div className="bg-black p-6 rounded-xl border border-zinc-800 flex flex-col overflow-hidden shadow-lg">

@@ -187,9 +187,7 @@ export function SavedRequestsSidebar({
 
   const handleClickCreateNewRequest = () => {};
 
-
-
-  // Cargue y cambio de la request al la interfaz 
+  // Cargue y cambio de la request al la interfaz
 
   const parsedLoadRequest = (
     reqBody: string,
@@ -198,12 +196,11 @@ export function SavedRequestsSidebar({
     reqMethod: string,
     reqHeaders: Record<string, string>,
     reqParams: Record<string, string>,
-    reqEvent: EventRequest
+    reqEvent: EventRequest,
   ) => {
     // Implemntacon de la logica de carga de request
 
-    const requestScriptEvents = reqEvent ? reqEvent : null
-
+    const requestScriptEvents = reqEvent ? reqEvent : null;
 
     onLoadRequest(
       reqBody,
@@ -212,7 +209,7 @@ export function SavedRequestsSidebar({
       reqMethod,
       reqHeaders,
       reqParams,
-      requestScriptEvents
+      requestScriptEvents,
     );
   };
 
@@ -252,23 +249,35 @@ export function SavedRequestsSidebar({
             </h3>
           </div>
 
-          <div className="flex flex-row text-xs gap-2 mb-4">
+          <div className="flex flex-row text-xs gap-2 mb-4 ">
             <button
-              aria-label='Exportar coleccion'
-              title='Importar coleccion'
-              className="btn-black"
+              aria-label="Exportar coleccion"
+              title="Importar coleccion"
+              className="group btn-black hover:w-2xl trasition-[height]  transition-transform ellipsis text-ellipsis"
               onClick={handleClickCargueCollecion}
             >
+              
               <span className="tabler--file-upload"></span>
+              <span className='group-hover:flex hidden'>Cargar Coleccion</span>
             </button>
-            <button  className='btn-black' title='Exportar collecion' aria-label='exportar colecion'  onClick={handleExportarCollecion}>
-            <span className="tabler--file-export"></span>
+            <button
+              className="btn-black group ellipsis text-ellipsis"
+              title="Exportar collecion"
+              aria-label="exportar colecion"
+              onClick={handleExportarCollecion}
+            >
+              <span className="tabler--file-export"></span>
+              <span className='group-hover:flex hidden ellipsis text-ellipsis'>Exportar Coleccion</span>
             </button>
 
-            <button className='btn-black' aria-label='Importar Collecion' title='Importar Entorno'>
-            <span className="tabler--file-settings"></span>
+            <button
+              className="btn-black group"
+              aria-label="Importar Collecion"
+              title="Importar Entorno"
+            >
+              <span className="tabler--file-settings"></span>
+              <span className='group-hover:flex hidden'>Cargar Entorno</span>
             </button>
-
           </div>
 
           <div className="flex flex-row gap-x-2.5 h-12 ">

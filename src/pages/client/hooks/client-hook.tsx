@@ -1,21 +1,17 @@
-import { useEffect, useRef, useState,} from 'react';
+import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useStoreHeaders } from '../stores/headers-store';
 import { useParamsStore } from '../stores/queryparams-store';
 import type { RetornoClient } from './types';
 
-
-
-
 const useClientStore = (): RetornoClient => {
-
   // Stores que falta arreglar para pasar los que vienen la collecion
   const params = useParamsStore((state) => state.valor);
   const cabeceras = useStoreHeaders((state) => state.valor);
 
   // Estados Globales
 
-  const [scriptsValues, setScriptsValues] = useState<string>("")
+  const [scriptsValues, setScriptsValues] = useState<string>('');
 
   const [isOpenSiderBar, setIsOpenSiderbar] = useState(true);
   const [selectedMethod, setSelectedMethod] = useState('GET');
@@ -29,11 +25,11 @@ const useClientStore = (): RetornoClient => {
   const [showMethods, setShowMethods] = useState(false);
   const [endpointUrl, setEndpointUrl] = useState('https://httpbin.org/get');
 
-
   const [isLoading, setIsLoading] = useState(false);
-  const [contentType, setContentType] = useState< 'json' | 'html' | 'typescript' | 'html'>();
+  const [contentType, setContentType] = useState<
+    'json' | 'html' | 'typescript' | 'html'
+  >();
   const [statusCode, setStatusCode] = useState<number | null>();
-
 
   const refForm = useRef<HTMLFormElement | null>(null);
 
@@ -41,7 +37,6 @@ const useClientStore = (): RetornoClient => {
     setEndpointUrl((prev) => prev + params);
   }, [params]);
 
-  
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'Enter' && e.ctrlKey) {
@@ -69,7 +64,7 @@ const useClientStore = (): RetornoClient => {
       contentType,
       refForm,
       statusCode,
-      scriptsValues
+      scriptsValues,
     },
     setter: {
       setTimeResponse,
@@ -84,7 +79,7 @@ const useClientStore = (): RetornoClient => {
       setEndpointUrl,
       setIsLoading,
       setContentType,
-      setScriptsValues
+      setScriptsValues,
     },
   };
 };

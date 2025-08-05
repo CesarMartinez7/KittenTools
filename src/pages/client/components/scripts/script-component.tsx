@@ -5,18 +5,18 @@ import { CodeEditorLazy } from '../../../../components/LAZY_COMPONENT';
 import { VariantsAnimation } from '../../mapper-ops';
 import type { EventRequest } from '../../types/types';
 
-
 interface ScriptComponentProps {
-  value: EventRequest[], setValue: React.Dispatch<React.SetStateAction<EventRequest>>
+  value: EventRequest[];
+  setValue: React.Dispatch<React.SetStateAction<EventRequest>>;
 }
 
-
-const ScriptComponent: React.FC<ScriptComponentProps> = ({value, setValue}) => {
-
+const ScriptComponent: React.FC<ScriptComponentProps> = ({
+  value,
+  setValue,
+}) => {
   const [result, setResult] = useState<string>('');
 
-  const [script,setScript] = useState<[]>([])
-
+  const [script, setScript] = useState<[]>([]);
 
   useEffect(() => {
     if (
@@ -29,9 +29,6 @@ const ScriptComponent: React.FC<ScriptComponentProps> = ({value, setValue}) => {
       setScript([]); // o null, según tu lógica
     }
   }, [value]);
-  
-
-
 
   const handleExecuteScript = () => {
     try {
@@ -57,12 +54,11 @@ const ScriptComponent: React.FC<ScriptComponentProps> = ({value, setValue}) => {
       variants={VariantsAnimation}
       className="text-zinc-500"
     >
-
       <CodeEditorLazy
         language="javascript"
-        value={script.join("")}
+        value={script.join('')}
         onChange={handleChange}
-      /> 
+      />
       <button className="btn-black" onClick={handleExecuteScript}>
         Execute
       </button>

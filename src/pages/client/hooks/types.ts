@@ -1,7 +1,7 @@
 // use client-hook.tsx
 
-import type { Dispatch, SetStateAction } from "react";
-import type { EventRequest } from "../types/types";
+import type { Dispatch, SetStateAction } from 'react';
+import type { EventRequest } from '../types/types';
 
 export interface ValuesRetornoClient {
   params: string;
@@ -19,11 +19,10 @@ export interface ValuesRetornoClient {
   refForm: React.RefObject<HTMLFormElement | null>;
   timeResponse: number;
   statusCode: number | null | undefined;
-  scriptsValues: EventRequest
+  scriptsValues: EventRequest;
 }
 
 export interface SetterRetornoClient {
-  
   setIsOpenSiderbar: Dispatch<SetStateAction<boolean>>;
   setSelectedMethod: Dispatch<SetStateAction<string>>;
   setResponseSelected: Dispatch<SetStateAction<string>>;
@@ -34,13 +33,12 @@ export interface SetterRetornoClient {
   setEndpointUrl: Dispatch<SetStateAction<string>>;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
   setContentType: Dispatch<SetStateAction<string>>;
-  setScriptsValues: Dispatch<SetStateAction<EventRequest>>
+  setScriptsValues: Dispatch<SetStateAction<EventRequest>>;
   setTimeResponse: Dispatch<SetStateAction<number>>;
   setStatusCode: Dispatch<React.SetStateAction<number | null | undefined>>;
 }
 
-
 export interface RetornoClient {
-    value: ValuesRetornoClient;
-    setter: SetterRetornoClient;
-  }
+  value: ValuesRetornoClient;
+  setter: SetterRetornoClient;
+}

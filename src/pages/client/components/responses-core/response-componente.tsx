@@ -4,9 +4,9 @@ import plusIcon from '@iconify-icons/tabler/plus';
 import searchIcon from '@iconify-icons/tabler/search';
 import { AnimatePresence, motion } from 'motion/react';
 import { useMemo, useState } from 'react';
+import { CodeEditorLazy } from '../../../../components/LAZY_COMPONENT';
 import { JsonNode } from '../../../../ui/formatter-JSON/Formatter';
 import { TypesResponse } from '../../mapper-ops';
-import { CodeEditorLazy } from '../../../../components/LAZY_COMPONENT';
 
 interface ResponseTypes {
   height: string;
@@ -104,16 +104,15 @@ export default function ResponsesTypesComponent({
       <div className="w-full  max-h-[65vh] rounded-2xl  overflow-y-scroll">
         {contentType === 'JSON' && (
           <>
-          <JsonNode
-            open={true}
-            isChange={false}
-            isInterface={false}
-            INDENT={1}
-            data={data}
-          />
+            <JsonNode
+              open={true}
+              isChange={false}
+              isInterface={false}
+              INDENT={1}
+              data={data}
+            />
 
-          <CodeEditorLazy language="json" value={data} />
-
+            <CodeEditorLazy language="json" value={data} />
           </>
         )}
 
