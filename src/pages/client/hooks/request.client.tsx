@@ -1,15 +1,13 @@
-import axios from 'axios';
 import { useCallback } from 'react';
 import toast from 'react-hot-toast';
 import type { RequestHookProps } from './types';
-import { mockEnv } from './mock';
 import axiosInstance from './axiosinstance';
+import { useEnviromentStore } from '../components/enviroment/store.enviroment';
 
 interface ReturnHookRequest {
   handleRequest: (e: any) => Promise<void>;
   prepareHeaders: (headers: any) => void;
 }
-
 
 export default function RequestHook({
   selectedMethod,
@@ -25,6 +23,8 @@ export default function RequestHook({
   setStatusCode,
   setTimeResponse,
 }: RequestHookProps): ReturnHookRequest {
+  
+  // Convierte JSON string de headers en objeto
   const prepareHeaders = useCallback((headers: any) => {
     try {
       const parsedHeaders = JSON.parse(headers);
@@ -35,37 +35,47 @@ export default function RequestHook({
         return acc;
       }, {});
     } catch (e) {
-      console.error('eRROR AL PARSEAR HEADERS:', e);
+      console.error('Error al parsear headers:', e);
       return {};
     }
   }, []);
 
 
+  
 
   const handleRequest = useCallback(async (e) => {
     e.preventDefault();
-  
-    if (!mockEnv.baseUrl) {
+
+    // ✅ Obtener entorno y baseUrl del store
+    const { entornoActual, baseUrl } = useEnviromentStore.getState();
+
+    if (!baseUrl && !endpointUrl) {
       toast.error('No se encontró el endpoint');
       return;
     }
-  
+
+    // Evitar ?undefined
+    const finalParams = params ? `?${params}` : "";
+    const finalUrl = endpointUrl || "";
+
     setIsLoading(true);
     setErrorAxios(null);
     setErrorRequest(false);
-  
+
     try {
       const response = await axiosInstance({
         method: selectedMethod,
-        url: `?${mockEnv.params}`, // params simulando Postman
+        baseURL: baseUrl || undefined, // axiosInstance hará el replace {{var}}
+        url: `${finalUrl}${finalParams}`,
         data: bodyJson,
-        contentType
+        contentType,
+        headers: cabeceras ? prepareHeaders(cabeceras) : {}
       });
-  
+
       setResponse(response.data);
       setStatusCode(response.status);
       setTimeResponse(response.timeResponse);
-  
+
     } catch (error) {
       setErrorRequest(true);
       setStatusCode(error.status || 'N/A');
@@ -75,111 +85,20 @@ export default function RequestHook({
     } finally {
       setIsLoading(false);
     }
-  
+
   }, [
     selectedMethod,
     contentType,
     bodyJson,
+    endpointUrl,
+    params,
+    cabeceras,
     setIsLoading,
     setErrorAxios,
     setErrorRequest,
     setResponse,
     setStatusCode
   ]);
-
-  const handleRequestOld = useCallback(
-    async (e) => {
-      e.preventDefault();
-      if (!endpointUrl) {
-        toast.error('Por favor pase un enpoint');
-        return;
-      }
-      setIsLoading(true);
-      setErrorAxios(null);
-      setErrorRequest(false);
-      let parsedBody = null;
-      const config = { headers: {} };
-      if (cabeceras) {
-        config.headers = prepareHeaders(cabeceras);
-      }
-
-      if (['POST', 'PUT', 'PATCH'].includes(selectedMethod)) {
-        try {
-          if (contentType === 'json') {
-            if (bodyJson) {
-              parsedBody = JSON.parse(bodyJson);
-              config.headers['Content-Type'] = 'application/json';
-            }
-          } else if (contentType === 'form') {
-            const formData = new FormData();
-            parsedBody = formData;
-          } else if (contentType === 'xml') {
-            parsedBody = bodyJson;
-            config.headers['Content-Type'] = 'application/xml';
-          }
-        } catch (e) {
-          alert(e.message)
-          setErrorAxios(e.message);
-          setIsLoading(false);
-          return;
-        }
-      }
-
-      const finalUrl = `${endpointUrl}?${params}`;
-
-      try {
-        let response;
-        const start = Date.now();
-        switch (selectedMethod) {
-          case 'POST':
-            response = await axios.post(finalUrl, parsedBody, config);
-            break;
-          case 'PUT':
-            response = await axios.put(finalUrl, parsedBody, config);
-            break;
-          case 'PATCH':
-            response = await axios.patch(finalUrl, parsedBody, config);
-            break;
-          case 'DELETE':
-            response = await axios.delete(finalUrl, config);
-            break;
-          default: // GET
-            response = await axios.get(finalUrl, config);
-            break;
-        }
-
-        setResponse(response.data);
-        setStatusCode(response.status);
-        const end = Date.now();
-
-        setTimeResponse(Math.floor((end - start) / 1000));
-      } catch (error) {
-        setErrorRequest(true);
-        setStatusCode(error.response?.status || 'N/A');
-        setResponse(
-          JSON.stringify(error.response?.data || { message: error.message }),
-        );
-        setErrorAxios(JSON.stringify(error.toJSON())); // More detailed error info from Axios
-      } finally {
-        setIsLoading(false);
-      }
-    },
-
-    [
-      endpointUrl,
-      params,
-      selectedMethod,
-      contentType,
-      bodyJson,
-      cabeceras,
-      prepareHeaders,
-      setIsLoading,
-      setErrorAxios,
-      setErrorRequest,
-      setResponse,
-      setStatusCode,
-    ],
-  );
 
   return { prepareHeaders, handleRequest };
 }

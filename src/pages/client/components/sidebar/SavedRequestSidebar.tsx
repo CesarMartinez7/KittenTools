@@ -13,7 +13,7 @@ import type {
   SavedRequestsSidebarProps,
 } from '../../types/types';
 import ItemNode from '../itemnode/item-node';
-import SidebarHook from './hooks/sacedrequestsidebar.hook';
+import SidebarHook from './hooks/sidebar-hook';
 
 export function SavedRequestsSidebar({
   isOpen,
@@ -35,7 +35,12 @@ export function SavedRequestsSidebar({
     openModalNewRequest,
     setIsOpenModalSaveRequest,
     isOpenModalSaveRequest,
+    listColeccion,
   } = SidebarHook();
+
+
+
+  const [currenIdx, setCurrentIdx ] = useState<number>(1)
 
 
   const [currentId, setCurrentId] = useState<string>('');
@@ -59,39 +64,19 @@ export function SavedRequestsSidebar({
     URL.revokeObjectURL(url);
   };
 
-  useEffect(() => {
-    const requestLocalStorage = localStorage.getItem('savedRequests2');
-    if (requestLocalStorage) {
-      setParsed(JSON.parse(requestLocalStorage));
-      return;
-    }
-  }, []);
+  // useEffect(() => {
+  //   const requestLocalStorage = localStorage.getItem('savedRequests2');
+  //   if (requestLocalStorage) {
+  //     setParsed(JSON.parse(requestLocalStorage));
+  //     return;
+  //   }
+  // }, []);
 
   // Me ejecuto si soy valido solamente COOL XHR
-  const onSubmit = (data: any) => {
-    try {
-      const newRequest: RequestItem = {
-        id: `${Date.now()}-${Math.random()}`,
-        name: data.name,
-        url: data.url,
-        method: data.method,
-        body: '',
-        headers: '',
-        queryParams: '',
-        contentType: 'json',
-      };
 
-      setSavedRequests((prev) => [...prev, newRequest]);
-      handleToogleModal();
-      toast.success('Peticion generada con exito');
-    } catch (e) {
-      toast.error('Ocurrio un error al guardar');
-      handleToogleModal();
-    }
-  };
 
   // Guardar pero peticion actual o current
- 
+
 
   const handleDeleteRequest = (id: string) => {
     handleToogleDeleteModal();
@@ -159,7 +144,7 @@ export function SavedRequestsSidebar({
         return item;
       });
   }
-  
+
 
   // Metodo de Collecion Actualizar NOMBRE CARPETA O REQUEST
   const handleActualizarNombre = (oldName: string, newName: string) => {
@@ -178,18 +163,18 @@ export function SavedRequestsSidebar({
 
   const handleClickEliminar = (name: string) => {
     if (!parsed) return;
-  
+
     const updatedItems = eliminarItemPorNombre(parsed.item, name);
     const nuevoParsed = {
       ...parsed,
       item: updatedItems, // Reemplazar la lista de items
     };
-  
+
     console.log(nuevoParsed)
     setParsed(nuevoParsed); // Guardar en el estado
   };
-  
-  
+
+
   // Cargue y cambio de la request al la interfaz
 
   const parsedLoadRequest = (
@@ -218,19 +203,19 @@ export function SavedRequestsSidebar({
 
   return (
     <AnimatePresence key={'gokuuu'}>
-      <AddNewRequestModal
+      {/* <AddNewRequestModal
         key={'new-request-modal'}
         handleToogleModal={handleToogleModal}
         openModalNewRequest={openModalNewRequest}
         onSubmit={onSubmit}
-      />
+      /> */}
 
-      <ModalCurrentSavePeticion
+      {/* <ModalCurrentSavePeticion
         key={'save-request-modal'}
         handleSavePeticion={() => console.log("aqui va el save peticion")}
         isOpen={isOpenModalSaveRequest}
         onClose={handleToogleSaveRequestCurrent}
-      />
+      /> */}
 
       <ModalDeleteRequest
         key={'delete-request-modal'}
@@ -259,7 +244,7 @@ export function SavedRequestsSidebar({
               className=" btn-black transition-transform ellipsis text-ellipsis"
               onClick={handleClickCargueCollecion}
             >
-              
+
               <span className="tabler--file-upload"></span>
               <span className=''>Cargar Coleccion</span>
             </button>
@@ -273,14 +258,7 @@ export function SavedRequestsSidebar({
               <span className=''>Exportar Coleccion</span>
             </button>
 
-            <button
-              className="btn-black "
-              aria-label="Importar Collecion"
-              title="Importar Entorno"
-            >
-              <span className="tabler--file-settings"></span>
-              <span className=''>Cargar Entorno</span>
-            </button>
+            
           </div>
 
           <div className="flex flex-row gap-x-2.5 h-12 ">
@@ -302,11 +280,52 @@ export function SavedRequestsSidebar({
             </button>
           </div>
 
+
+          <p className='my-3'>
+            Colleciones ({listColeccion?.length})
+          </p>
+
+
+
+          {/* {listColeccion.length > 0 ? listColeccion.map((e, idx) => (
+            <li>
+              {idx + 1} {e.name}
+            </li>
+          )) : <div> No hay logituda para coleccines cargadas</div>} */}
+
+
+
+
+
           {/* ------------------------------------ Aqui va la lista de peticiones guardadas ------------------------------------ Ahora migrandose a la esctrtura de postman compatible en vez las misma creada por mi */}
 
           {/* <div className="flex-1 overflow-y-auto space-y-2 justify-center items-center"> */}
-            {parsed && (
-              <div className="overflow-y-scroll h-[70vh]">
+
+          <div className='flex w-full gap-2'>
+            <div className='bg-zinc-900 p-1 list-disc'>
+              <div className='p-1 hover:bg-zinc-800' onClick={() => setCurrentIdx(1)}>
+                Env
+              </div>
+              <div className='p-1 hover:bg-zinc-800' onClick={() => setCurrentIdx(2)}>
+                Colleciones ({listColeccion.length})
+              </div>
+
+            </div>
+            <div className='flex-1 bg-zinc-900 p-2'>
+            
+
+            {currenIdx === 1 && (
+              <div className='flex flex-col gap-2'>
+                {listColeccion.map((e) => (
+                  <div className='bg-black p-2'>
+                      {e.name}
+                  </div>
+                ))}
+              </div>
+            )}
+            
+            {parsed && currenIdx === 2 && (
+              <div className="overflow-y-scroll h-[70vh] w-full">
                 <ItemNode
                   eliminar={handleClickEliminar}
                   actualizarNombre={handleActualizarNombre}
@@ -317,7 +336,9 @@ export function SavedRequestsSidebar({
                 />
               </div>
             )}
-          {/* </div> */}
+            </div>
+            
+          </div>
         </motion.div>
       )}
     </AnimatePresence>

@@ -91,7 +91,7 @@ export default function EnviromentComponent() {
         type="file"
         accept=".json, .txt"
         onChange={handleFileUpload}
-        className="bg-zinc-900 border-zinc-800 p-2 "
+        className="bg-zinc-900 border-zinc-800 p-2 w-fullw-full"
       />
 
       
@@ -114,17 +114,17 @@ export default function EnviromentComponent() {
 
       {entornoActual.length > 0 && (
         <div>
-          <div className="flex justify-between items-center mb-2">
+          <div className="flex justify-between items-center mb-2 outline-none">
             <h2 className="font-semibold">Variables del entorno actual</h2>
             <button
               onClick={handleAddVariable}
-              className="bg-green-600 text-white px-2 py-1 rounded"
+              className="input-gray"
             >
-              + Añadir Variable
+              Añadir Variable
             </button>
           </div>
 
-          <table className="border border-zinc-800 w-full text-left">
+          <table className="border border-zinc-800 w-full text-left ring-kanagawa-accent border-none">
             <thead>
               <tr>
                 <th className="border border-zinc-700 px-2">Llave</th>
@@ -143,7 +143,7 @@ export default function EnviromentComponent() {
                       onChange={(e) =>
                         handleChange(i, "key", e.target.value)
                       }
-                      className="w-full"
+                      className="w-full border-0  outline-0"
                     />
                   </td>
                   <td className="border border-zinc-700 px-2">

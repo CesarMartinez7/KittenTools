@@ -20,6 +20,7 @@ import type { EventRequest } from './types/types';
 import EnviromentComponent from './components/enviroment/enviroment.component';
 import { useEnviromentStore } from './components/enviroment/store.enviroment';
 import toast from 'react-hot-toast';
+import { JsonNode } from '../../ui/formatter-JSON/Formatter';
 
 export default function AppClient() {
   const { value, setter } = ClientCustomHook();
@@ -139,10 +140,9 @@ export default function AppClient() {
 
 
   return (
-    <motion.div
+    <div
       className="min-h-screen  flex text-white overflow-hidden"
-      initial={{ x: 1000 }}
-      animate={{ x: 0 }}
+      
     >
       <SavedRequestsSidebar
         onLoadRequest={onLoadRequest}
@@ -196,10 +196,7 @@ export default function AppClient() {
 
 
             <div className='bg-black relative flex-1 p-2 rounded border border-zinc-800'>
-              <div  dangerouslySetInnerHTML={{ __html: formatteador(entornoActual, endpointUrl) }}></div>
-
-
-              
+              <div  dangerouslySetInnerHTML={{ __html: formatteador(entornoActual, endpointUrl) }}></div>              
 
               <input
                 type="text"
@@ -209,7 +206,7 @@ export default function AppClient() {
                   setEndpointUrl(e.target.value);
                   saveToLocalStorage('request_url', e.target.value);
                 }}
-                className=" p-2 absolute inset-0  text-transparent transition-colors caret-zinc-400 "
+                className="p-2 absolute inset-0  text-transparent transition-colors caret-zinc-400 "
               />
             </div>
 
@@ -252,30 +249,6 @@ export default function AppClient() {
           className="grid relative md:grid-cols-1 lg:grid-cols-2  gap-4 h-full"
           aria-label="grid"
         >
-          {/* {openInfoCollecion && (
-            <>
-              <div className="absolute inset-0 mask-b-from-20% mask-b-to-140% overflow-hidden rounded-2xl z-50 bg-black p-12">
-                <button
-                  className="btn-black absolute right-3 rounded-2xl! p-4!"
-                  onClick={() => setOpenInfoCollecion((prev) => !prev)}
-                >
-                  x
-                </button>
-                <h4 className="text-4xl">Seguro APIS</h4>
-                <p className="my-4 max-w-4xl">
-                  Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                  Voluptate voluptates et optio nobis hic adipisci distinctio
-                  doloremque tempore praesentium voluptatibus natus fugit
-                  delectus eos consectetur architecto, ipsam ipsa possimus.
-                  Voluptatum, ullam dolor, doloribus nulla minima laborum magni
-                  eaque soluta nemo numquam omnis? Quasi nobis illum dicta
-                  provident nihil quod placeat hic nostrum, eos quisquam
-                  assumenda molestiae ratione alias porro sequi non error, natus
-                  numquam asperiores labore similique cum. Laudantium, rerum?
-                </p>
-              </div>
-            </>
-          )} */}
 
           <div className="bg-black p-6 rounded-xl border relative border-zinc-800 flex flex-col shadow-lg">
             <AnimatePresence mode="wait" key={'uja'}>
@@ -305,14 +278,7 @@ export default function AppClient() {
                     ))}
                   </div>
                   <div className="flex-1 min-h-0  ">
-                    {/* <CodeEditorLazy
-                      height="100%"
-                      maxHeight="60vh"
-                      language={contentType}
-                      value={bodyJson}
-                      onChange={setBodyJson}
-                      placeholder={formatBodyPlaceholder}
-                    /> */}
+  
                   </div>
                 </motion.div>
               )}
@@ -372,12 +338,14 @@ export default function AppClient() {
                 {isLoading ? (
                   <div className="flex justify-center items-center flex-col h-full">
                     <span className="svg-spinners--90-ring-with-bg block"></span>
-                    <span className="block">{timeResponse}</span>
+
+                    {/* // Uso de time de respuesta */}
+                    {/* <span className="block">{timeResponse}</span> */}
                   </div>
                 ) : (
-                  <p>
-                    {JSON.stringify(response)}
-                  </p>
+                  <div className='h-[80vh] overflow-y-scroll text-xs'>
+                  <JsonNode data={response} INDENT={10} />
+                  </div>
                 )}
               </>
             ) : (
@@ -399,6 +367,6 @@ export default function AppClient() {
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

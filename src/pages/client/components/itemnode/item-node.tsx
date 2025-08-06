@@ -125,7 +125,6 @@ const ItemNode: React.FC<ItemNodeProps> = ({
 
           if (e.button === 1) {
             e.preventDefault();
-            toast.error('El botón del medio fue tocado, no se implementa');
             return;
           }
         }}
@@ -194,38 +193,6 @@ const ItemNode: React.FC<ItemNodeProps> = ({
               </>
             )}
           </ul>
-
-          {/* <ul className="text-sm space-y-1">
-            <li
-              onClick={() => {
-                const nuevo = prompt('Nuevo nombre:', data.name);
-                if (nuevo && nuevo.trim()) {
-                  actualizarNombre(data.name, nuevo.trim());
-                }
-              }}
-              className="hover:bg-zinc-700 px-2 py-1 rounded cursor-pointer items-center justify-center flex gap-2"
-            >
-              <Icon icon="tabler:pencil" width="20" height="20" /> Renombrar
-            </li>
-            <li
-              onClick={() => handleOptionClick('Duplicar')}
-              className="hover:bg-zinc-700 px-2 py-1 rounded cursor-pointer items-center justify-center flex gap-2"
-            >
-              <span>
-                <Icon icon="tabler:file-3d" width="20" height="20" />
-              </span>
-              <span>Duplicar</span>
-            </li>
-            <li
-              onClick={() => handleOptionClick('Eliminar')}
-              className="hover:bg-red-700 px-2 py-1 rounded cursor-pointer items-center justify-center flex gap-2"
-            >
-              <span>
-                <Icon icon="tabler:trash" width="24" height="24" />
-              </span>
-              <span>Eliminar</span>
-            </li>
-          </ul> */}
         </div>
       )}
 

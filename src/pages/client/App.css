@@ -5,9 +5,9 @@
 }
 
 .input-gray {
-  @apply bg-zinc-800/80 backdrop-blur-3xl p-2 border-none rounded;
+  @apply bg-zinc-800/80 backdrop-blur-3xl p-2 border-none rounded bg-gradient-to-r from-zinc-900 to-zinc-800 transition-colors;
 }
 
 .btn-black {
-  @apply p-2 rounded-md text-zinc-200 bg-gradient-to-t from-zinc-900 to-zinc-800 flex items-center;
+  @apply p-2 rounded-md text-zinc-200 bg-gradient-to-t  flex items-center hover:bg-gradient-to-r from-zinc-900 to-zinc-800 transition-colors;
 }

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import toast from 'react-hot-toast';
+import type { RootBody } from '../../../types/types';
 
 export default function SidebarHook() {
   const [openModalNewRequest, setOpenModalNewRequest] =
@@ -11,6 +12,8 @@ export default function SidebarHook() {
 
   const [coleccion, setColeccion] = useState<ArrayBuffer | string | File>();
   const [parsed, setParsed] = useState<RootBody>();
+
+  const [listColeccion, setListColeccion] = useState<any[]>([])
 
   /// <---------------------------------------------- Manejadores o Handlders -------------------------------->
 
@@ -28,8 +31,7 @@ export default function SidebarHook() {
         reader.onload = () => {
           try {
             setParsed(JSON.parse(reader.result));
-
-            localStorage.setItem('savedRequests', reader.result as string);
+            setListColeccion([...listColeccion, { id: new Date().getSeconds(), name: parsed?.info.name, item: parsed }])
           } catch (error) {
             toast.error('Ocurrio un eror al procesar o parsear el archivo');
             console.error('Error al procesar el archivo:', error);
@@ -46,13 +48,13 @@ export default function SidebarHook() {
   };
 
   const handleExportarCollecion = () => {
-    const blob = new Blob([coleccion as string], { type: 'application/jsons' });
+    const blob = new Blob([coleccion as string], { type: 'application/json' });
 
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
 
     a.href = url;
-    a.download = 'coleccion.json';
+    a.download = 'palomitas.json';
     a.style.display = 'none';
     document.body.appendChild(a);
     a.click();
@@ -72,6 +74,8 @@ export default function SidebarHook() {
     setOpenModalDeleteRequest,
     openModalDeleteRequest,
     isOpenModalSaveRequest,
+    listColeccion,
+    setListColeccion,
     setIsOpenModalSaveRequest,
   };
 }

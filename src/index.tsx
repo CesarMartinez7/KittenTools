@@ -4,6 +4,16 @@ import './App.css';
 import { Toaster } from 'react-hot-toast';
 import { AppClientRouteLazy, MainPageLazy } from './pages/lazy-pages.tsx';
 import Aurora from './ui/aurora/Aurora.tsx';
+import { Suspense } from 'react';
+
+const LoadingElement = () => {
+  return (
+    <div className='h-screen w-screen flex justify-center items-center bg-black/70'>
+      <span className="meteocons--compass-fill"></span>
+    </div>
+  )
+}
+
 
 const root = document.getElementById('root')!;
 
@@ -25,20 +35,25 @@ ReactDOM.createRoot(root)!.render(
 
     <div className="z-[777] relative">
       <BrowserRouter>
-        <Routes>
-          <Route index path="/" element={<MainPageLazy />} />
+        <Suspense fallback={<LoadingElement />}>
+          <Routes>
+            <Route index path="/" element={<MainPageLazy />} />
 
-          <Route path="/client" element={<AppClientRouteLazy />} />
-          <Route
-            path="*"
-            element={
-              <div className="h-screen w-screen grid place-content-center">
-                No deberias estar aqui{' '}
-              </div>
-            }
-          />
-        </Routes>
+            <Route path="/client" element={<AppClientRouteLazy />} />
+            <Route
+              path="*"
+              element={
+                <div className="h-screen w-screen grid place-content-center">
+                  No deberias estar aqui{' '}
+                </div>
+              }
+            />
+          </Routes>
+        </Suspense>
       </BrowserRouter>
     </div>
   </div>,
 );
+
+
+

@@ -52,7 +52,7 @@ export const JsonNode: React.FC<JsonNodeProps> = ({
 
   return (
     <div
-      className="text-sm break-words whitespace-pre-wrap border-zinc-800 px-2 border-l "
+      className="text-xs break-words whitespace-pre-wrap border-zinc-800 px-2 border-l "
       style={{ marginLeft: depth * INDENT }}
     >
       {name !== undefined && (
