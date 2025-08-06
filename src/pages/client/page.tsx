@@ -18,6 +18,8 @@ import axiosInstance from './hooks/axiosinstance';
 import { Methodos, Opciones, VariantsAnimation } from './mapper-ops';
 import type { EventRequest } from './types/types';
 import EnviromentComponent from './components/enviroment/enviroment.component';
+import { useEnviromentStore } from './components/enviroment/store.enviroment';
+import toast from 'react-hot-toast';
 
 export default function AppClient() {
   const { value, setter } = ClientCustomHook();
@@ -91,23 +93,31 @@ export default function AppClient() {
   );
 
 
+  const entornoActual = useEnviromentStore((state) => state.entornoActual)
 
 
 
-  const formatteador = (list: [], valueSearch: string) => {
-    let higlightText = endpointUrl;
 
+  const formatteador = (listBusqueda: any[], busquedaKey: string) => {
+  let higlightText = busquedaKey; // uso el texto pasado en busquedaKey
 
-    
+  // Expresión regular para buscar patrones de texto dentro de {{}}
+  const regex = /{{(.*?)}}/g;
 
+  return higlightText.replace(regex, (match, grupo) => {
+    const existe = listBusqueda.some((item) => item.key === grupo);
 
-    // Expresión regular para buscar patrones de texto dentro de {{}}
-    const regex = /{{(.*?)}}/g;
-
-    return higlightText.replace(regex, (match, grupo) => {
+    if (existe) {
+      // Existe en la lista → rojo
       return `<span style="color: #7bb4ff;">{{${grupo}}}</span>`;
-    });
-  };
+      
+    } else {
+      // No existe → azul
+      return `<span style="color: red;">{{${grupo}}}</span>`;
+    }
+  });
+};
+
 
   // Manejador global de todo
   const onLoadRequest = (
@@ -186,7 +196,10 @@ export default function AppClient() {
 
 
             <div className='bg-black relative flex-1 p-2 rounded border border-zinc-800'>
-              <div  dangerouslySetInnerHTML={{ __html: formatteador(["cesr", "goku", "vegita"], "goku") }}></div>
+              <div  dangerouslySetInnerHTML={{ __html: formatteador(entornoActual, endpointUrl) }}></div>
+
+
+              
 
               <input
                 type="text"
@@ -196,7 +209,7 @@ export default function AppClient() {
                   setEndpointUrl(e.target.value);
                   saveToLocalStorage('request_url', e.target.value);
                 }}
-                className=" p-2 absolute inset-0  text-transparent transition-colors "
+                className=" p-2 absolute inset-0  text-transparent transition-colors caret-zinc-400 "
               />
             </div>
 
@@ -216,6 +229,11 @@ export default function AppClient() {
               )}
             </button>
           </div>
+
+          
+
+            
+
           <div className="flex gap-2 text-white  rounded-t-lg border-b border-zinc-800 truncate bg-black">
             {Opciones.map((opcion, index) => (
               <button

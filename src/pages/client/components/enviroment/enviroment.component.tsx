@@ -102,7 +102,7 @@ export default function EnviromentComponent() {
           <h2 className="font-semibold">Entornos cargados</h2>
           <ul className=" ml-5 " >
             {listEntorno.map((env, idx) => (
-              <li key={idx} onClick={() => setEntornoActual(env.values)} >
+              <li key={idx} onClick={() => setEntornoActual(env.values)} style={{color: getRandomHexColor()}} >
                   {env.name}
               </li>
             ) )}
