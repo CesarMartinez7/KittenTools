@@ -343,7 +343,7 @@ body {
 }
 
 ::selection {
-  @apply bg-zinc-700 text-zinc-500;
+  @apply bg-zinc-800 text-zinc-200;
 }
 
 button {

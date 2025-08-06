@@ -2,24 +2,19 @@ import './App.css';
 import { Icon } from '@iconify/react';
 import sendIcon from '@iconify-icons/tabler/send';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useCallback, useMemo, useRef, useState } from 'react';
-import toast from 'react-hot-toast';
-import {
-  CodeEditorLazy,
-  JsonViewerLazy,
-} from '../../components/LAZY_COMPONENT';
-import { JsonNode } from '../../ui/formatter-JSON/Formatter';
+import { useCallback, useState } from 'react';
+import { CodeEditorLazy} from '../../components/LAZY_COMPONENT';
 import AddQueryParam from './components/addqueryparams/addQueryParams';
 import EnviromentComponent from './components/enviroment/enviroment.component';
 import { useEnviromentStore } from './components/enviroment/store.enviroment';
 import { HeadersAddRequest } from './components/headers/Headers';
 import ScriptComponent from './components/scripts/script-component';
 import { SavedRequestsSidebar } from './components/sidebar/SavedRequestSidebar';
-import axiosInstance from './hooks/axiosinstance';
 import ClientCustomHook from './hooks/client-hook';
 import RequestHook from './hooks/request.client';
 import { Methodos, Opciones, VariantsAnimation } from './mapper-ops';
 import type { EventRequest } from './types/types';
+import ResponsesTypesComponent from './components/responses-core/response.';
 
 export default function AppClient() {
   const { value, setter } = ClientCustomHook();
@@ -190,7 +185,7 @@ export default function AppClient() {
                 type="text"
                 placeholder="https://api.example.com/endpoint"
                 value={endpointUrl}
-                onChange={(e) => {
+                onChange={(e) => {  
                   setEndpointUrl(e.target.value);
                   saveToLocalStorage('request_url', e.target.value);
                 }}
@@ -325,7 +320,8 @@ export default function AppClient() {
                   </div>
                 ) : (
                   <div className="h-[80vh] overflow-y-scroll text-xs">
-                    <JsonNode data={response} INDENT={10} />
+                    <ResponsesTypesComponent data={response} />
+                    
                   </div>
                 )}
               </>

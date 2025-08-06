@@ -218,7 +218,7 @@ export function SavedRequestsSidebar({
       />
 
       {isOpen && (
-        <motion.div className="top-0 left-0 h-svh max-h-svh w-lg bg-black backdrop-blur-3xl p-6 z-50 md:flex flex-col shadow-lg hidden ">
+        <motion.div className="top-0 left-0 h-svh max-h-svh w-lg bg-black/80 backdrop-blur-3xl p-6 z-50 md:flex flex-col shadow-lg hidden ">
           <div className="flex justify-start items-center my-8 space-x-3">
             <span className="pixelarticons--coffee-alt"></span>
 
