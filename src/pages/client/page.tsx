@@ -104,10 +104,8 @@ export default function AppClient() {
       const existe = listBusqueda.some((item) => item.key === grupo);
 
       if (existe) {
-        // Existe en la lista → rojo
         return `<span style="color: #7bb4ff;">{{${grupo}}}</span>`;
       } else {
-        // No existe → azul
         return `<span style="color: red;">{{${grupo}}}</span>`;
       }
     });

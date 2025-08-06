@@ -120,19 +120,19 @@ export default function EnviromentComponent() {
             </button>
           </div>
 
-          <table className="border border-zinc-800 w-full text-left ring-kanagawa-accent border-none">
+          <table className="border border-zinc-00 w-full text-left ring-kanagawa-accent border-none">
             <thead>
               <tr>
-                <th className="border border-zinc-700 px-2">Llave</th>
-                <th className="border border-zinc-700 px-2">Valor</th>
-                <th className="border border-zinc-700 px-2">Estado</th>
-                <th className="border border-zinc-700 px-2">Acciones</th>
+                <th className="border border-zinc-800 px-2">Llave</th>
+                <th className="border border-zinc-800 px-2">Valor</th>
+                <th className="border border-zinc-800 px-2">Estado</th>
+                <th className="border border-zinc-800 px-2">Acciones</th>
               </tr>
             </thead>
             <tbody>
               {entornoActual.map((v, i) => (
                 <tr key={i}>
-                  <td className="border border-zinc-700 px-2">
+                  <td className="border border-zinc-800 px-2">
                     <input
                       type="text"
                       value={v.key}
@@ -140,7 +140,7 @@ export default function EnviromentComponent() {
                       className="w-full border-0  outline-0"
                     />
                   </td>
-                  <td className="border border-zinc-700 px-2">
+                  <td className="border border-zinc-800 px-2">
                     <input
                       type="text"
                       value={v.value}
@@ -148,7 +148,7 @@ export default function EnviromentComponent() {
                       className="w-full"
                     />
                   </td>
-                  <td className="border border-zinc-700 px-2 text-center">
+                  <td className="border border-zinc-800 px-2 text-center">
                     <input
                       type="checkbox"
                       checked={v.enabled}
@@ -157,7 +157,7 @@ export default function EnviromentComponent() {
                       }
                     />
                   </td>
-                  <td className="border border-zinc-700 px-2 text-center">
+                  <td className="border border-zinc-800 px-2 text-center">
                     <button
                       onClick={() => handleDeleteVariable(i)}
                       className=" text-white px-2 py-1 rounded"
