@@ -1,6 +1,6 @@
 // axiosInstance.js
-import axios from "axios";
-import { useEnviromentStore } from "../components/enviroment/store.enviroment";
+import axios from 'axios';
+import { useEnviromentStore } from '../components/enviroment/store.enviroment';
 
 // Función para reemplazar {{key}} con valores del entorno activo
 const replaceEnvVariables = (text, variables) => {
@@ -34,21 +34,21 @@ axiosInstance.interceptors.request.use(
       for (const header in config.headers) {
         config.headers[header] = replaceEnvVariables(
           config.headers[header],
-          entornoActual
+          entornoActual,
         );
       }
     }
 
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
 axiosInstance.interceptors.response.use(
   (response) => {
     const endTime = Date.now();
     const duration = Math.floor(
-      (endTime - response.config.meta.startTime) / 1000
+      (endTime - response.config.meta.startTime) / 1000,
     );
     response.timeResponse = duration;
     return response;
@@ -57,17 +57,17 @@ axiosInstance.interceptors.response.use(
     const endTime = Date.now();
     if (error.config?.meta?.startTime) {
       error.timeResponse = Math.floor(
-        (endTime - error.config.meta.startTime) / 1000
+        (endTime - error.config.meta.startTime) / 1000,
       );
     }
 
     return Promise.reject({
-      status: error.response?.status || "N/A",
+      status: error.response?.status || 'N/A',
       data: error.response?.data || { message: error.message },
       raw: error.toJSON ? error.toJSON() : error,
-      timeResponse: error.timeResponse || null
+      timeResponse: error.timeResponse || null,
     });
-  }
+  },
 );
 
 export default axiosInstance;

@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
 import toast from 'react-hot-toast';
-import type { RequestHookProps } from './types';
-import axiosInstance from './axiosinstance';
 import { useEnviromentStore } from '../components/enviroment/store.enviroment';
+import axiosInstance from './axiosinstance';
+import type { RequestHookProps } from './types';
 
 interface ReturnHookRequest {
   handleRequest: (e: any) => Promise<void>;
@@ -23,7 +23,6 @@ export default function RequestHook({
   setStatusCode,
   setTimeResponse,
 }: RequestHookProps): ReturnHookRequest {
-  
   // Convierte JSON string de headers en objeto
   const prepareHeaders = useCallback((headers: any) => {
     try {
@@ -40,65 +39,63 @@ export default function RequestHook({
     }
   }, []);
 
+  const handleRequest = useCallback(
+    async (e) => {
+      e.preventDefault();
 
-  
+      // ✅ Obtener entorno y baseUrl del store
+      const { entornoActual, baseUrl } = useEnviromentStore.getState();
 
-  const handleRequest = useCallback(async (e) => {
-    e.preventDefault();
+      if (!baseUrl && !endpointUrl) {
+        toast.error('No se encontró el endpoint');
+        return;
+      }
 
-    // ✅ Obtener entorno y baseUrl del store
-    const { entornoActual, baseUrl } = useEnviromentStore.getState();
+      // Evitar ?undefined
+      const finalParams = params ? `?${params}` : '';
+      const finalUrl = endpointUrl || '';
 
-    if (!baseUrl && !endpointUrl) {
-      toast.error('No se encontró el endpoint');
-      return;
-    }
+      setIsLoading(true);
+      setErrorAxios(null);
+      setErrorRequest(false);
 
-    // Evitar ?undefined
-    const finalParams = params ? `?${params}` : "";
-    const finalUrl = endpointUrl || "";
+      try {
+        const response = await axiosInstance({
+          method: selectedMethod,
+          baseURL: baseUrl || undefined, // axiosInstance hará el replace {{var}}
+          url: `${finalUrl}${finalParams}`,
+          data: bodyJson,
+          contentType,
+          headers: cabeceras ? prepareHeaders(cabeceras) : {},
+        });
 
-    setIsLoading(true);
-    setErrorAxios(null);
-    setErrorRequest(false);
-
-    try {
-      const response = await axiosInstance({
-        method: selectedMethod,
-        baseURL: baseUrl || undefined, // axiosInstance hará el replace {{var}}
-        url: `${finalUrl}${finalParams}`,
-        data: bodyJson,
-        contentType,
-        headers: cabeceras ? prepareHeaders(cabeceras) : {}
-      });
-
-      setResponse(response.data);
-      setStatusCode(response.status);
-      setTimeResponse(response.timeResponse);
-
-    } catch (error) {
-      setErrorRequest(true);
-      setStatusCode(error.status || 'N/A');
-      setResponse(JSON.stringify(error.data));
-      setErrorAxios(JSON.stringify(error.raw));
-      setTimeResponse(error.timeResponse);
-    } finally {
-      setIsLoading(false);
-    }
-
-  }, [
-    selectedMethod,
-    contentType,
-    bodyJson,
-    endpointUrl,
-    params,
-    cabeceras,
-    setIsLoading,
-    setErrorAxios,
-    setErrorRequest,
-    setResponse,
-    setStatusCode
-  ]);
+        setResponse(response.data);
+        setStatusCode(response.status);
+        setTimeResponse(response.timeResponse);
+      } catch (error) {
+        setErrorRequest(true);
+        setStatusCode(error.status || 'N/A');
+        setResponse(JSON.stringify(error.data));
+        setErrorAxios(JSON.stringify(error.raw));
+        setTimeResponse(error.timeResponse);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [
+      selectedMethod,
+      contentType,
+      bodyJson,
+      endpointUrl,
+      params,
+      cabeceras,
+      setIsLoading,
+      setErrorAxios,
+      setErrorRequest,
+      setResponse,
+      setStatusCode,
+    ],
+  );
 
   return { prepareHeaders, handleRequest };
 }

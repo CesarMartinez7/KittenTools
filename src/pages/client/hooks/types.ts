@@ -15,7 +15,7 @@ export interface ValuesRetornoClient {
   showMethods: boolean;
   endpointUrl: string;
   isLoading: boolean;
-  contentType: 'javascript' | 'typescript' | 'json' | 'xml' | 'form';
+  contentType: string;
   refForm: React.RefObject<HTMLFormElement | null>;
   timeResponse: number;
   statusCode: number | null | undefined;
@@ -42,9 +42,6 @@ export interface RetornoClient {
   value: ValuesRetornoClient;
   setter: SetterRetornoClient;
 }
-
-
-
 
 export interface RequestHookProps {
   selectedMethod: string;

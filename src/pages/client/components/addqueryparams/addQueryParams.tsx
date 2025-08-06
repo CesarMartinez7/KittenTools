@@ -20,21 +20,15 @@ const AddQueryParam = () => {
   //   }
   // }, []);
 
-
-
-
-
-
   // Store params final y setvalor
   const setValor = useParamsStore((e) => e.setValor);
   const valor = useParamsStore((e) => e.valor);
 
   useEffect(() => {
-  const final = buildQueryParams();
-  setParamsFinal(final);
-  setValor(final);
-}, [params]);
-
+    const final = buildQueryParams();
+    setParamsFinal(final);
+    setValor(final);
+  }, [params]);
 
   const handleAddParam = () => {
     setParams([...params, { key: '', value: '' }]);
@@ -55,9 +49,9 @@ const AddQueryParam = () => {
     updatedParams.splice(index, 1);
     setParams(updatedParams);
 
-    const final = buildQueryParams()
-    setParamsFinal(final)
-    setValor(final)
+    const final = buildQueryParams();
+    setParamsFinal(final);
+    setValor(final);
   };
 
   const buildQueryParams = () => {
@@ -89,9 +83,9 @@ const AddQueryParam = () => {
           </div>
         )}
 
-
-
-        <pre className='bg-zinc-900 text-xs'>{JSON.stringify(params, null, 2)}</pre>
+        <pre className="bg-zinc-900 text-xs">
+          {JSON.stringify(params, null, 2)}
+        </pre>
         <p>{paramsFinal}</p>
         <p>{valor}</p>
 
@@ -117,8 +111,6 @@ const AddQueryParam = () => {
             </button>
           </div>
         ))}
-
-     
       </div>
     </>
   );

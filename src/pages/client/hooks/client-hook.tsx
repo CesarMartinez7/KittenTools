@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
-import { useStoreHeaders } from '../stores/headers-store';
 import { useParamsStore } from '../components/addqueryparams/queryparams-store';
+import { useStoreHeaders } from '../stores/headers-store';
 import type { RetornoClient } from './types';
 
 const useClientStore = (): RetornoClient => {
@@ -26,7 +26,9 @@ const useClientStore = (): RetornoClient => {
   const [endpointUrl, setEndpointUrl] = useState('https://httpbin.org/get');
 
   const [isLoading, setIsLoading] = useState(false);
-  const [contentType, setContentType] = useState< 'json' | 'html' | 'typescript' | 'html'>();
+  const [contentType, setContentType] = useState<
+    'json' | 'html' | 'typescript' | 'html'
+  >();
   const [statusCode, setStatusCode] = useState<number | null>();
 
   const refForm = useRef<HTMLFormElement | null>(null);

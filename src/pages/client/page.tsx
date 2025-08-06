@@ -3,24 +3,23 @@ import { Icon } from '@iconify/react';
 import sendIcon from '@iconify-icons/tabler/send';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useMemo, useRef, useState } from 'react';
+import toast from 'react-hot-toast';
 import {
   CodeEditorLazy,
   JsonViewerLazy,
 } from '../../components/LAZY_COMPONENT';
+import { JsonNode } from '../../ui/formatter-JSON/Formatter';
 import AddQueryParam from './components/addqueryparams/addQueryParams';
+import EnviromentComponent from './components/enviroment/enviroment.component';
+import { useEnviromentStore } from './components/enviroment/store.enviroment';
 import { HeadersAddRequest } from './components/headers/Headers';
 import ScriptComponent from './components/scripts/script-component';
 import { SavedRequestsSidebar } from './components/sidebar/SavedRequestSidebar';
+import axiosInstance from './hooks/axiosinstance';
 import ClientCustomHook from './hooks/client-hook';
 import RequestHook from './hooks/request.client';
-import axiosInstance from './hooks/axiosinstance';
-
 import { Methodos, Opciones, VariantsAnimation } from './mapper-ops';
 import type { EventRequest } from './types/types';
-import EnviromentComponent from './components/enviroment/enviroment.component';
-import { useEnviromentStore } from './components/enviroment/store.enviroment';
-import toast from 'react-hot-toast';
-import { JsonNode } from '../../ui/formatter-JSON/Formatter';
 
 export default function AppClient() {
   const { value, setter } = ClientCustomHook();
@@ -93,32 +92,26 @@ export default function AppClient() {
     [setShowMethods],
   );
 
-
-  const entornoActual = useEnviromentStore((state) => state.entornoActual)
-
-
-
+  const entornoActual = useEnviromentStore((state) => state.entornoActual);
 
   const formatteador = (listBusqueda: any[], busquedaKey: string) => {
-  let higlightText = busquedaKey; // uso el texto pasado en busquedaKey
+    const higlightText = busquedaKey; // uso el texto pasado en busquedaKey
 
-  // Expresión regular para buscar patrones de texto dentro de {{}}
-  const regex = /{{(.*?)}}/g;
+    // Expresión regular para buscar patrones de texto dentro de {{}}
+    const regex = /{{(.*?)}}/g;
 
-  return higlightText.replace(regex, (match, grupo) => {
-    const existe = listBusqueda.some((item) => item.key === grupo);
+    return higlightText.replace(regex, (match, grupo) => {
+      const existe = listBusqueda.some((item) => item.key === grupo);
 
-    if (existe) {
-      // Existe en la lista → rojo
-      return `<span style="color: #7bb4ff;">{{${grupo}}}</span>`;
-      
-    } else {
-      // No existe → azul
-      return `<span style="color: red;">{{${grupo}}}</span>`;
-    }
-  });
-};
-
+      if (existe) {
+        // Existe en la lista → rojo
+        return `<span style="color: #7bb4ff;">{{${grupo}}}</span>`;
+      } else {
+        // No existe → azul
+        return `<span style="color: red;">{{${grupo}}}</span>`;
+      }
+    });
+  };
 
   // Manejador global de todo
   const onLoadRequest = (
@@ -137,13 +130,8 @@ export default function AppClient() {
     setScriptsValues(reqEvent);
   };
 
-
-
   return (
-    <div
-      className="min-h-screen  flex text-white overflow-hidden"
-      
-    >
+    <div className="min-h-screen  flex text-white overflow-hidden">
       <SavedRequestsSidebar
         onLoadRequest={onLoadRequest}
         currentUrl={endpointUrl}
@@ -193,10 +181,12 @@ export default function AppClient() {
               </AnimatePresence>
             </div>
 
-
-
-            <div className='bg-black relative flex-1 p-2 rounded border border-zinc-800'>
-              <div  dangerouslySetInnerHTML={{ __html: formatteador(entornoActual, endpointUrl) }}></div>              
+            <div className="bg-black relative flex-1 p-2 rounded border border-zinc-800">
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: formatteador(entornoActual, endpointUrl),
+                }}
+              ></div>
 
               <input
                 type="text"
@@ -209,7 +199,6 @@ export default function AppClient() {
                 className="p-2 absolute inset-0  text-transparent transition-colors caret-zinc-400 "
               />
             </div>
-
 
             <button
               type="submit"
@@ -227,10 +216,6 @@ export default function AppClient() {
             </button>
           </div>
 
-          
-
-            
-
           <div className="flex gap-2 text-white  rounded-t-lg border-b border-zinc-800 truncate bg-black">
             {Opciones.map((opcion, index) => (
               <button
@@ -246,10 +231,9 @@ export default function AppClient() {
           </div>
         </form>
         <div
-          className="grid relative md:grid-cols-1 lg:grid-cols-2  gap-4 h-full"
+          className="grid relative md:grid-cols-1 lg:grid-cols-2  gap-4 h-full max-h-[82vh] overflow-y-scroll"
           aria-label="grid"
         >
-
           <div className="bg-black p-6 rounded-xl border relative border-zinc-800 flex flex-col shadow-lg">
             <AnimatePresence mode="wait" key={'uja'}>
               {selectedIdx === 0 && ( // Body
@@ -278,7 +262,11 @@ export default function AppClient() {
                     ))}
                   </div>
                   <div className="flex-1 min-h-0  ">
-                      <CodeEditorLazy value={bodyJson}/>
+                    <CodeEditorLazy
+                      value={bodyJson}
+                      language={contentType}
+                      placeholder="Escribe tu request body justo aqui ..."
+                    />
                   </div>
                 </motion.div>
               )}
@@ -320,16 +308,11 @@ export default function AppClient() {
                 />
               )}
 
-
               {selectedIdx === 5 && (
                 <>
                   <EnviromentComponent />
                 </>
               )}
-
-
-
-
             </AnimatePresence>
           </div>
           <div className="bg-black p-6 rounded-xl border border-zinc-800 flex flex-col overflow-hidden shadow-lg">
@@ -343,8 +326,8 @@ export default function AppClient() {
                     {/* <span className="block">{timeResponse}</span> */}
                   </div>
                 ) : (
-                  <div className='h-[80vh] overflow-y-scroll text-xs'>
-                  <JsonNode data={response} INDENT={10} />
+                  <div className="h-[80vh] overflow-y-scroll text-xs">
+                    <JsonNode data={response} INDENT={10} />
                   </div>
                 )}
               </>

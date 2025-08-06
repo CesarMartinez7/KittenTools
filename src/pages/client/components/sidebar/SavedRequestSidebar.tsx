@@ -38,10 +38,7 @@ export function SavedRequestsSidebar({
     listColeccion,
   } = SidebarHook();
 
-
-
-  const [currenIdx, setCurrentIdx ] = useState<number>(1)
-
+  const [currenIdx, setCurrentIdx] = useState<number>(1);
 
   const [currentId, setCurrentId] = useState<string>('');
   const [currentName, setCurrentName] = useState<string>('');
@@ -74,9 +71,7 @@ export function SavedRequestsSidebar({
 
   // Me ejecuto si soy valido solamente COOL XHR
 
-
   // Guardar pero peticion actual o current
-
 
   const handleDeleteRequest = (id: string) => {
     handleToogleDeleteModal();
@@ -129,7 +124,6 @@ export function SavedRequestsSidebar({
     });
   }
 
-
   function eliminarItemPorNombre(items: Item[], nameToDelete: string): Item[] {
     return items
       .filter((item) => item.name !== nameToDelete) // Filtrar el que quieres borrar
@@ -145,7 +139,6 @@ export function SavedRequestsSidebar({
       });
   }
 
-
   // Metodo de Collecion Actualizar NOMBRE CARPETA O REQUEST
   const handleActualizarNombre = (oldName: string, newName: string) => {
     if (!parsed) return;
@@ -160,7 +153,6 @@ export function SavedRequestsSidebar({
 
   // Metodo de Crear nueva request o carpeta
 
-
   const handleClickEliminar = (name: string) => {
     if (!parsed) return;
 
@@ -170,10 +162,9 @@ export function SavedRequestsSidebar({
       item: updatedItems, // Reemplazar la lista de items
     };
 
-    console.log(nuevoParsed)
+    console.log(nuevoParsed);
     setParsed(nuevoParsed); // Guardar en el estado
   };
-
 
   // Cargue y cambio de la request al la interfaz
 
@@ -229,7 +220,7 @@ export function SavedRequestsSidebar({
       {isOpen && (
         <motion.div className="top-0 left-0 h-svh max-h-svh w-lg bg-black backdrop-blur-3xl p-6 z-50 md:flex flex-col shadow-lg hidden ">
           <div className="flex justify-start items-center my-8 space-x-3">
-            <span className="game-icons--thorny-vine"></span>
+            <span className="pixelarticons--coffee-alt"></span>
 
             <h3 className="text-3xl font-bold bg-gradient-to-bl from-white to-zinc-400 bg-clip-text text-transparent flex">
               {' '}
@@ -244,24 +235,21 @@ export function SavedRequestsSidebar({
               className=" btn-black transition-transform ellipsis text-ellipsis"
               onClick={handleClickCargueCollecion}
             >
-
               <span className="tabler--file-upload"></span>
-              <span className=''>Cargar Coleccion</span>
+              <span className="">Cargar Coleccion</span>
             </button>
             <button
-              className="btn-black  ellipsis text-ellipsis"
+              className="btn-black ellipsis text-ellipsis"
               title="Exportar collecion"
               aria-label="exportar colecion"
               onClick={handleExportarCollecion}
             >
               <span className="tabler--file-export"></span>
-              <span className=''>Exportar Coleccion</span>
+              <span className="">Exportar Coleccion</span>
             </button>
-
-            
           </div>
 
-          <div className="flex flex-row gap-x-2.5 h-12 ">
+          {/* <div className="flex flex-row gap-x-2.5 h-12 ">
             <button
               onClick={handleToogleSaveRequestCurrent}
               disabled
@@ -278,14 +266,7 @@ export function SavedRequestsSidebar({
             >
               <Icon icon={plusIcon} width="24" height="24" />
             </button>
-          </div>
-
-
-          <p className='my-3'>
-            Colleciones ({listColeccion?.length})
-          </p>
-
-
+          </div> */}
 
           {/* {listColeccion.length > 0 ? listColeccion.map((e, idx) => (
             <li>
@@ -293,51 +274,52 @@ export function SavedRequestsSidebar({
             </li>
           )) : <div> No hay logituda para coleccines cargadas</div>} */}
 
-
-
-
-
           {/* ------------------------------------ Aqui va la lista de peticiones guardadas ------------------------------------ Ahora migrandose a la esctrtura de postman compatible en vez las misma creada por mi */}
 
           {/* <div className="flex-1 overflow-y-auto space-y-2 justify-center items-center"> */}
 
-          <div className='flex w-full gap-2'>
-            <div className='bg-zinc-900 p-1 list-disc'>
-              <div className='p-1 hover:bg-zinc-800' onClick={() => setCurrentIdx(1)}>
+          <div className="flex w-full gap-2">
+            <div className="bg-zinc-900 p-1 list-disc">
+              <div
+                className="p-1 hover:bg-zinc-800"
+                onClick={() => setCurrentIdx(1)}
+              >
                 Env
               </div>
-              <div className='p-1 hover:bg-zinc-800' onClick={() => setCurrentIdx(2)}>
+              <div
+                className="p-1 hover:bg-zinc-800"
+                onClick={() => setCurrentIdx(2)}
+              >
                 Colleciones ({listColeccion.length})
               </div>
-
             </div>
-            <div className='flex-1 bg-zinc-900 p-2'>
-            
+            <div className="flex-1 bg-zinc-900 p-2">
+              {currenIdx === 1 && (
+                <div className="flex flex-col gap-2">
+                  {listColeccion.map((e) => (
+                    <div className="bg-black p-2">{e.name}</div>
+                  ))}
+                </div>
+              )}
 
-            {currenIdx === 1 && (
-              <div className='flex flex-col gap-2'>
-                {listColeccion.map((e) => (
-                  <div className='bg-black p-2'>
-                      {e.name}
-                  </div>
-                ))}
-              </div>
-            )}
-            
-            {parsed && currenIdx === 2 && (
-              <div className="overflow-y-scroll h-[70vh] w-full">
-                <ItemNode
-                  eliminar={handleClickEliminar}
-                  actualizarNombre={handleActualizarNombre}
-                  level={0}
-                  data={parsed}
-                  setData={setParsed}
-                  loadRequest={parsedLoadRequest}
-                />
-              </div>
-            )}
+              {parsed && currenIdx === 2 && (
+                <div className="overflow-y-scroll h-[70vh] overflow-x-scroll">
+                  {listColeccion.map((e) => (
+                    <div className=" p-2">
+                      {e.name}{' '}
+                      <ItemNode
+                        eliminar={handleClickEliminar}
+                        actualizarNombre={handleActualizarNombre}
+                        level={0}
+                        data={e.item}
+                        setData={setParsed}
+                        loadRequest={parsedLoadRequest}
+                      />{' '}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
-            
           </div>
         </motion.div>
       )}

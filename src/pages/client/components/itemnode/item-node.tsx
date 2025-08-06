@@ -3,13 +3,14 @@ import type React from 'react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import type { ItemNodeProps } from './types';
+import LazyListPerform from '../../../../ui/LazyListPerform';
 
 const ItemNode: React.FC<ItemNodeProps> = ({
   data,
   level = 0,
   loadRequest,
   actualizarNombre,
-  eliminar
+  eliminar,
 }) => {
   const [collapsed, setCollapsed] = useState(true);
   const indent = 2 * level;
@@ -53,63 +54,44 @@ const ItemNode: React.FC<ItemNodeProps> = ({
       }
 
       if (loadRequest) {
-        loadRequest(
-          body,
-          language,
-          url,
-          method,
-          headers,
-          'idk',
-          events,
-        );
+        loadRequest(body, language, url, method, headers, 'idk', events);
       }
 
       console.log(data);
     }
   };
 
-
-
   const handleChangeName = () => {
     const nuevo = prompt('Nuevo nombre:', data.name);
     if (nuevo && nuevo.trim()) {
       actualizarNombre(data.name, nuevo.trim());
     }
-  }
+  };
 
   const handleClickDelete = () => {
-
-    let nameToDelete = data.name
-    toast.success(nameToDelete)
-    eliminar(nameToDelete)
-  }
-
+    const nameToDelete = data.name;
+    toast.success(nameToDelete);
+    eliminar(nameToDelete);
+  };
 
   const handleClickDuplicar = () => {
-    alert("handle duplicar click")
-
-  }
-
+    alert('handle duplicar click');
+  };
 
   const mapperFolder = [
-    { name: 'Renombrar', action : handleChangeName },
-    { name: 'Duplicar', action : handleClickDuplicar },
-    { name: 'Eliminar', action : handleClickDelete },
+    { name: 'Renombrar', action: handleChangeName },
+    { name: 'Duplicar', action: handleClickDuplicar },
+    { name: 'Eliminar', action: handleClickDelete },
     { name: 'Nueva peticion' },
     { name: 'Nueva carpeta' },
     { name: 'Info' },
   ];
-
 
   const mapperRequest = [
     { name: 'Renombrar', action: handleChangeName },
     { name: 'Duplicar', action: handleClickDuplicar },
     { name: 'Eliminar', action: handleClickDelete },
   ];
-
-
-
-
 
   return (
     <div
@@ -145,11 +127,12 @@ const ItemNode: React.FC<ItemNodeProps> = ({
           {data.request?.method && !isFolder && (
             <span
               className={`text-xs font-mono px-1 py-1 rounded-md 
-                ${data.request.method === 'GET'
-                  ? 'text-green-400'
-                  : data.request.method === 'POST'
-                    ? 'text-blue-400'
-                    : 'text-orange-400'
+                ${
+                  data.request.method === 'GET'
+                    ? 'text-green-400'
+                    : data.request.method === 'POST'
+                      ? 'text-blue-400'
+                      : 'text-orange-400'
                 }`}
             >
               {data.request.method}
@@ -174,7 +157,10 @@ const ItemNode: React.FC<ItemNodeProps> = ({
             {isFolder && (
               <>
                 {mapperFolder.map((res) => (
-                  <li className="hover:bg-zinc-700 px-2 py-1 rounded cursor-pointer  flex gap-2" onClick={res.action} >
+                  <li
+                    className="hover:bg-zinc-700 px-2 py-1 rounded cursor-pointer  flex gap-2"
+                    onClick={res.action}
+                  >
                     {res.name}
                   </li>
                 ))}
@@ -186,7 +172,10 @@ const ItemNode: React.FC<ItemNodeProps> = ({
             {!isFolder && (
               <>
                 {mapperRequest.map((res) => (
-                  <li className="hover:bg-zinc-700 px-2 py-1 rounded cursor-pointer flex gap-2" onClick={res.action} >
+                  <li
+                    className="hover:bg-zinc-700 px-2 py-1 rounded cursor-pointer flex gap-2"
+                    onClick={res.action}
+                  >
                     {res.name}
                   </li>
                 ))}
@@ -199,6 +188,7 @@ const ItemNode: React.FC<ItemNodeProps> = ({
       {!collapsed && isFolder && (
         <div className="ml-2 flex flex-col gap-3">
           {data.item!.map((child, index) => (
+            <LazyListPerform>
             <ItemNode
               eliminar={handleClickDelete}
               actualizarNombre={actualizarNombre}
@@ -207,6 +197,7 @@ const ItemNode: React.FC<ItemNodeProps> = ({
               level={level + 1}
               loadRequest={loadRequest}
             />
+            </LazyListPerform>
           ))}
         </div>
       )}

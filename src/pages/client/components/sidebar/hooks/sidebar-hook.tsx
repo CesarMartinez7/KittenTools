@@ -13,54 +13,121 @@ export default function SidebarHook() {
   const [coleccion, setColeccion] = useState<ArrayBuffer | string | File>();
   const [parsed, setParsed] = useState<RootBody>();
 
-  const [listColeccion, setListColeccion] = useState<any[]>([])
+  const [listColeccion, setListColeccion] = useState<any[]>([]);
 
   /// <---------------------------------------------- Manejadores o Handlders -------------------------------->
 
-  const handleClickCargueCollecion = () => {
-    const input = document.createElement('input') as HTMLInputElement;
-    input.type = 'file';
-    input.accept = '.json, .txt';
+  const handleClickCargueCollecion = async () => {
+    try {
+      // Crear y configurar el input de archivo
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.json, .txt';
+      input.style.display = 'none';
 
-    input.onchange = () => {
-      if (input.files && input.files.length > 0) {
-        toast.success('Archivo cargado exitosamente');
-
-        const reader = new FileReader();
-
-        reader.onload = () => {
-          try {
-            setParsed(JSON.parse(reader.result));
-            setListColeccion([...listColeccion, { id: new Date().getSeconds(), name: parsed?.info.name, item: parsed }])
-          } catch (error) {
-            toast.error('Ocurrio un eror al procesar o parsear el archivo');
-            console.error('Error al procesar el archivo:', error);
-          }
+      // Esperar a que el usuario seleccione un archivo
+      const file = await new Promise<File | null>((resolve) => {
+        input.onchange = () => {
+          resolve(input.files?.[0] || null);
+          document.body.removeChild(input); // Limpieza inmediata
         };
-        reader.readAsText(input.files[0]);
-      } else {
-        toast.error('No se selecciono ningún archivo');
-      }
-    };
+        document.body.appendChild(input); // Necesario para algunos navegadores
+        input.click();
+      });
 
-    input.click();
-    input.remove();
+      if (!file) {
+        toast.error('No se seleccionó ningún archivo');
+        return;
+      }
+
+      // Leer el archivo como texto
+      const fileContent = await file.text();
+
+      // Parsear y validar el JSON
+      let parsedData;
+      try {
+        parsedData = JSON.parse(fileContent);
+      } catch (parseError) {
+        toast.error('El archivo no tiene un formato JSON válido');
+        console.error('Error de parsing:', parseError);
+        return;
+      }
+
+      // Validar estructura básica
+      if (!parsedData?.info?.name) {
+        toast.error(
+          'El archivo no contiene la estructura esperada (falta info.name)',
+        );
+        return;
+      }
+
+      // Crear nuevo ID más robusto
+      const newId = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+
+      // Actualizar estados
+      setParsed(parsedData);
+      setListColeccion((prev) => [
+        ...prev,
+        {
+          id: newId,
+          name: parsedData.info.name,
+          item: parsedData,
+        },
+      ]);
+
+      toast.success(`"${parsedData.info.name}" cargado exitosamente`);
+    } catch (error) {
+      toast.error('Error inesperado al cargar el archivo');
+      console.error('Error general:', error);
+    }
   };
 
   const handleExportarCollecion = () => {
-    const blob = new Blob([coleccion as string], { type: 'application/json' });
+    try {
+      // 1. Validación de datos
+      if (!coleccion) {
+        toast.error('No hay datos para exportar');
+        return;
+      }
 
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+      // 2. Mejor nombre de archivo basado en la colección actual
+      const defaultName = 'coleccion';
+      const fileName = parsed?.info?.name
+        ? `${parsed.info.name.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.json`
+        : `${defaultName}-${new Date().toISOString().slice(0, 10)}.json`;
 
-    a.href = url;
-    a.download = 'palomitas.json';
-    a.style.display = 'none';
-    document.body.appendChild(a);
-    a.click();
+      // 3. Creación del Blob con formato bonito
+      const jsonString =
+        typeof coleccion === 'string'
+          ? coleccion
+          : JSON.stringify(coleccion, null, 2); // 2 espacios de indentación
 
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+      const blob = new Blob([jsonString], {
+        type: 'application/json;charset=utf-8',
+      });
+
+      // 4. Exportación más robusta
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      a.style.position = 'fixed'; // Evita problemas de scroll
+      a.style.left = '-1000px'; // Oculta el elemento
+      document.body.appendChild(a);
+
+      // Dispara el evento click
+      a.click();
+
+      // Limpieza con setTimeout para asegurar la descarga
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        toast.success(`Archivo "${fileName}" descargado`);
+      }, 100);
+    } catch (error) {
+      toast.error('Error al exportar la colección');
+      console.error('Error en handleExportarCollecion:', error);
+    }
   };
 
   return {

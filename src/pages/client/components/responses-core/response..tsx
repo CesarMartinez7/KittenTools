@@ -91,14 +91,11 @@ export default function ResponsesTypesComponent({
             </span>
           )}
 
-
           {timeResponse && (
             <span className="btn-icon" aria-label="statuscode">
               {timeResponse}
             </span>
           )}
-
-          
         </div>
       </div>
 
@@ -124,7 +121,7 @@ export default function ResponsesTypesComponent({
           </div>
         )}
       </div>
-      
+
       {/* ----------------------------------------------- FIN del contenido por tipos ---------------------- */}
 
       <div className="w-full bg-neutral-900  p-2 rounded-xl border-zinc-800 border flex justify-between">

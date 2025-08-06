@@ -42,7 +42,6 @@ export default function ToolBar({
     <div
       className={`p-8 shadow-2xl rounded-2xl backdrop-blur-xl flex flex-col items-center h-full justify-center text-center space-y-4 w-full bg-zinc-900/60 `}
     >
-      
       <span className="pixelarticons--coffee-alt"></span>
       <h1 className="text-3xl font-bold bg-gradient-to-bl from-white to-zinc-400 bg-clip-text text-transparent">
         KittenTools

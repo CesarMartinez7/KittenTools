@@ -1,5 +1,5 @@
 // stores/enviroment-store.ts
-import { create } from "zustand";
+import { create } from 'zustand';
 
 export interface Value {
   key: string;

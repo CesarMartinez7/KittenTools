@@ -1,19 +1,18 @@
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Route, Routes } from 'react-router';
 import './App.css';
+import { Suspense } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { AppClientRouteLazy, MainPageLazy } from './pages/lazy-pages.tsx';
 import Aurora from './ui/aurora/Aurora.tsx';
-import { Suspense } from 'react';
 
 const LoadingElement = () => {
   return (
-    <div className='h-screen w-screen flex justify-center items-center bg-black/70'>
+    <div className="h-screen w-screen flex justify-center items-center bg-black/70">
       <span className="meteocons--compass-fill"></span>
     </div>
-  )
-}
-
+  );
+};
 
 const root = document.getElementById('root')!;
 
@@ -54,6 +53,3 @@ ReactDOM.createRoot(root)!.render(
     </div>
   </div>,
 );
-
-
-
