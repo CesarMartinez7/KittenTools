@@ -90,6 +90,25 @@ export default function AppClient() {
     [setShowMethods],
   );
 
+
+
+
+
+  const formatteador = (list: [], valueSearch: string) => {
+    let higlightText = endpointUrl;
+
+
+    
+
+
+    // Expresión regular para buscar patrones de texto dentro de {{}}
+    const regex = /{{(.*?)}}/g;
+
+    return higlightText.replace(regex, (match, grupo) => {
+      return `<span style="color: #7bb4ff;">{{${grupo}}}</span>`;
+    });
+  };
+
   // Manejador global de todo
   const onLoadRequest = (
     reqBody: string,
@@ -107,20 +126,7 @@ export default function AppClient() {
     setScriptsValues(reqEvent);
   };
 
-  const formatBodyPlaceholder = useMemo(() => {
-    switch (contentType) {
-      case 'json':
-        return `{
-  "key": "value"
-}`;
-      case 'form':
-        return 'key=value&anotherKey=anotherValue';
-      case 'xml':
-        return '<root>\n  <element>value</element>\n</root>';
-      default:
-        return 'Enter request body here...';
-    }
-  }, [contentType]);
+
 
   return (
     <motion.div
@@ -176,16 +182,25 @@ export default function AppClient() {
                 )}
               </AnimatePresence>
             </div>
-            <input
-              type="text"
-              placeholder="https://api.example.com/endpoint"
-              value={endpointUrl}
-              onChange={(e) => {
-                setEndpointUrl(e.target.value);
-                saveToLocalStorage('request_url', e.target.value);
-              }}
-              className="flex-1 bg-black border border-zinc-800 rounded-md py-2 px-4 focus:ring-2 focus:ring-sky-500 focus:border-transparent outline-none transition-all duration-200"
-            />
+
+
+
+            <div className='bg-black relative flex-1 p-2 rounded border border-zinc-800'>
+              <div  dangerouslySetInnerHTML={{ __html: formatteador(["cesr", "goku", "vegita"], "goku") }}></div>
+
+              <input
+                type="text"
+                placeholder="https://api.example.com/endpoint"
+                value={endpointUrl}
+                onChange={(e) => {
+                  setEndpointUrl(e.target.value);
+                  saveToLocalStorage('request_url', e.target.value);
+                }}
+                className=" p-2 absolute inset-0  text-transparent transition-colors "
+              />
+            </div>
+
+
             <button
               type="submit"
               className=" px-6 py-2 rounded-md  bg-gradient-to-br from-green-800 to-green-900 hover:bg-green-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -324,7 +339,7 @@ export default function AppClient() {
 
               {selectedIdx === 5 && (
                 <>
-                <EnviromentComponent/>
+                  <EnviromentComponent />
                 </>
               )}
 

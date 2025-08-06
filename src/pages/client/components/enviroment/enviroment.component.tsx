@@ -1,4 +1,6 @@
+import { Icon } from "@iconify/react/dist/iconify.js";
 import { useState } from "react";
+import { useEnviromentStore } from "./store.enviroment";
 
 export interface EnviromentLayout {
   id: string;
@@ -16,9 +18,18 @@ export interface Value {
   enabled: boolean;
 }
 
+
 export default function EnviromentComponent() {
-  const [listEntorno, setListEntorno] = useState<EnviromentLayout[]>([]);
-  const [entornoActual, setEntornoActual] = useState<Value[]>([]);
+
+
+   const listEntorno = useEnviromentStore((state) => state.listEntorno);
+   const setListEntorno = useEnviromentStore((state) => state.setListEntorno)
+  const entornoActual = useEnviromentStore((state) => state.entornoActual)
+  const setEntornoActual = useEnviromentStore((state) => state.setEntornoActual)
+  const addEntorno = useEnviromentStore((state) => state.addEntorno)
+
+  // const [listEntorno, setListEntorno] = useState<EnviromentLayout[]>([]);
+  // const [entornoActual, setEntornoActual] = useState<Value[]>([]);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -30,7 +41,7 @@ export default function EnviromentComponent() {
         const json: EnviromentLayout = JSON.parse(
           event.target?.result as string
         );
-        setListEntorno((prev) => [...prev, json]);
+        addEntorno(json);
         if (entornoActual.length === 0) {
           setEntornoActual(json.values);
         }
@@ -60,26 +71,43 @@ export default function EnviromentComponent() {
     setEntornoActual(updated);
   };
 
+
+  function getRandomHexColor() {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
+
   return (
     <div className="p-4 space-y-4">
       <h1 className="text-lg font-bold">Cargar entorno Postman</h1>
 
+      
+      
       <input
         type="file"
-        accept=".json"
+        accept=".json, .txt"
         onChange={handleFileUpload}
-        className="block"
+        className="bg-zinc-900 border-zinc-800 p-2 "
       />
 
+      
+
+
       {listEntorno.length > 0 && (
-        <div>
+        <div className="py-4 px-3">
           <h2 className="font-semibold">Entornos cargados</h2>
-          <ul className="list-disc ml-5">
-            {listEntorno.map((env, i) => (
-              <li key={i}>
-                {env.name} ({env.values.length} variables)
+          <ul className=" ml-5 " >
+            {listEntorno.map((env, idx) => (
+              <li key={idx} onClick={() => setEntornoActual(env.values)} >
+                  {env.name}
               </li>
-            ))}
+            ) )}
+
+            
           </ul>
         </div>
       )}
@@ -150,6 +178,11 @@ export default function EnviromentComponent() {
             </tbody>
           </table>
         </div>
+
+      
+
+
+
       )}
     </div>
   );
