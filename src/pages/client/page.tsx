@@ -278,7 +278,7 @@ export default function AppClient() {
                     ))}
                   </div>
                   <div className="flex-1 min-h-0  ">
-  
+                      <CodeEditorLazy value={bodyJson}/>
                   </div>
                 </motion.div>
               )}
