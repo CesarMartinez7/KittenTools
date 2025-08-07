@@ -31,9 +31,9 @@ export interface SavedRequestsSidebarProps {
     reqContentType: string,
     reqUrl: string,
     reqMethod: string,
-    reqHeaders: Record<string, string>,
-    reqParams: Record<string, string>,
-    reqEvent : 
+    reqHeaders: Record<string, string>, // Tipado correcto para params tambien
+    reqParams: string , // Se cambio a simplemente string para el cargue pero en los enviroment por lo general es un array
+    reqEvent : EventRequest
   ) => void;
   currentUrl?: string;
   currentMethod?: string;
@@ -63,7 +63,6 @@ export interface Item {
   request?: Request2;
   response?: Response[];
 }
-
 
 
 export interface EventRequest {

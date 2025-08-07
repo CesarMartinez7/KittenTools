@@ -20,6 +20,7 @@ export interface ValuesRetornoClient {
   timeResponse: number;
   statusCode: number | null | undefined;
   scriptsValues: EventRequest;
+  params2: string
 }
 
 export interface SetterRetornoClient {
@@ -36,6 +37,7 @@ export interface SetterRetornoClient {
   setScriptsValues: Dispatch<SetStateAction<EventRequest>>;
   setTimeResponse: Dispatch<SetStateAction<number>>;
   setStatusCode: Dispatch<React.SetStateAction<number | null | undefined>>;
+  setParams2 : Dispatch<React.SetStateAction<string>>;
 }
 
 export interface RetornoClient {
@@ -57,4 +59,5 @@ export interface RequestHookProps {
   setResponse: Dispatch<SetStateAction<string>>;
   setTimeResponse: Dispatch<SetStateAction<number>>;
   setStatusCode: Dispatch<React.SetStateAction<number | null | undefined>>;
+
 }

@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { diff } from 'jsondiffpatch';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-import { CodeEditorLazy, JsonViewerLazy } from '../components/LAZY_COMPONENT';
+import { CodeEditorLazy, JsonViewerLazy } from '../components/lazy-components';
 
 export default function JsonDiffViewerModal() {
   const [json1, setJson1] = useState('');

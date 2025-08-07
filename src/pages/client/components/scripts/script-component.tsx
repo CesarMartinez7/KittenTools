@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import type React from 'react';
 import { useEffect, useState } from 'react';
-import { CodeEditorLazy } from '../../../../components/LAZY_COMPONENT';
+import { CodeEditorLazy } from '../../../../components/lazy-components';
 import { VariantsAnimation } from '../../mapper-ops';
 import type { EventRequest } from '../../types/types';
 

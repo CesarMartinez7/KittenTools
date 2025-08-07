@@ -1,6 +1,6 @@
 import { Icon } from '@iconify/react';
 import { useState } from 'react';
-import { BaseModalLazy } from '../../../components/LAZY_COMPONENT';
+import { BaseModalLazy } from '../../../components/lazy-components';
 import type BaseModalProps from '../../../ui/base-modal/types';
 
 interface ModalCurrentSaveRequest extends BaseModalProps {

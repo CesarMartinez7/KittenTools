@@ -1,16 +1,9 @@
-import { Icon } from '@iconify/react';
-import plusIcon from '@iconify-icons/tabler/plus';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
-import toast from 'react-hot-toast';
-import ModalDeleteRequest from '../../modals/delete-request-modal';
-import AddNewRequestModal from '../../modals/new-request-modal';
-import ModalCurrentSavePeticion from '../../modals/save-request-modal';
-import type {
-  EventRequest,
-  Item,
-  RequestItem,
-  SavedRequestsSidebarProps,
+import {  useState } from 'react'; 
+import type { 
+    EventRequest, 
+    Item, 
+    SavedRequestsSidebarProps, 
 } from '../../types/types';
 import ItemNode from '../itemnode/item-node';
 import SidebarHook from './hooks/sidebar-hook';
@@ -18,24 +11,14 @@ import SidebarHook from './hooks/sidebar-hook';
 export function SavedRequestsSidebar({
   isOpen,
   onLoadRequest,
-  currentUrl = '',
-  currentMethod = 'GET',
-  currentBody = '',
-  currentHeaders = [],
-  currentQueryParams = [],
-  currentContentType = 'json',
 }: SavedRequestsSidebarProps) {
   const {
     parsed,
     setColeccion,
     handleClickCargueCollecion,
     setParsed,
-    openModalDeleteRequest,
-    setOpenModalDeleteRequest,
-    openModalNewRequest,
-    setIsOpenModalSaveRequest,
-    isOpenModalSaveRequest,
     listColeccion,
+    handleExportarCollecion
   } = SidebarHook();
 
   const [currenIdx, setCurrentIdx] = useState<number>(1);
@@ -43,53 +26,6 @@ export function SavedRequestsSidebar({
   const [currentId, setCurrentId] = useState<string>('');
   const [currentName, setCurrentName] = useState<string>('');
 
-  const handleExportarCollecion = () => {
-    const blob = new Blob([JSON.stringify(parsed as string)], {
-      type: 'application/json',
-    });
-
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-
-    a.href = url;
-    a.download = 'coleccion.json';
-    a.style.display = 'none';
-    document.body.appendChild(a);
-    a.click();
-
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
-
-  // useEffect(() => {
-  //   const requestLocalStorage = localStorage.getItem('savedRequests2');
-  //   if (requestLocalStorage) {
-  //     setParsed(JSON.parse(requestLocalStorage));
-  //     return;
-  //   }
-  // }, []);
-
-  // Me ejecuto si soy valido solamente COOL XHR
-
-  // Guardar pero peticion actual o current
-
-  const handleDeleteRequest = (id: string) => {
-    handleToogleDeleteModal();
-    setSavedRequests((prev) => prev.filter((req) => req.id !== id));
-  };
-
-  const handleToogleModal = () => setOpenModalNewRequest((prev) => !prev);
-  const handleToogleDeleteModal = () => {
-    setOpenModalDeleteRequest((prev) => !prev);
-  };
-  const handleToogleSaveRequestCurrent = () =>
-    setIsOpenModalSaveRequest((prev) => !prev);
-
-  const handleClickDeleteAndUpdatePeticion = (req: any) => {
-    setCurrentName(req.name);
-    setCurrentId(req.id);
-    handleToogleDeleteModal();
-  };
 
   const actualizarNombre = (oldName: string, newName: string) => {
     const nuevaColeccion = parsed.map((item) => {
@@ -152,7 +88,6 @@ export function SavedRequestsSidebar({
   };
 
   // Metodo de Crear nueva request o carpeta
-
   const handleClickEliminar = (name: string) => {
     if (!parsed) return;
 
@@ -177,10 +112,8 @@ export function SavedRequestsSidebar({
     reqParams: Record<string, string>,
     reqEvent: EventRequest,
   ) => {
-    // Implemntacon de la logica de carga de request
 
     const requestScriptEvents = reqEvent ? reqEvent : null;
-
     onLoadRequest(
       reqBody,
       reqContentType,
@@ -194,36 +127,13 @@ export function SavedRequestsSidebar({
 
   return (
     <AnimatePresence key={'gokuuu'}>
-      {/* <AddNewRequestModal
-        key={'new-request-modal'}
-        handleToogleModal={handleToogleModal}
-        openModalNewRequest={openModalNewRequest}
-        onSubmit={onSubmit}
-      /> */}
 
-      {/* <ModalCurrentSavePeticion
-        key={'save-request-modal'}
-        handleSavePeticion={() => console.log("aqui va el save peticion")}
-        isOpen={isOpenModalSaveRequest}
-        onClose={handleToogleSaveRequestCurrent}
-      /> */}
-
-      <ModalDeleteRequest
-        key={'delete-request-modal'}
-        name={currentName}
-        id={currentId}
-        handleDeleteRequest={handleDeleteRequest}
-        isOpen={openModalDeleteRequest}
-        onClose={handleToogleDeleteModal}
-      />
 
       {isOpen && (
         <motion.div className="top-0 left-0 h-svh max-h-svh w-lg bg-black/80 backdrop-blur-3xl p-6 z-50 md:flex flex-col shadow-lg hidden ">
           <div className="flex justify-start items-center my-8 space-x-3">
             <span className="pixelarticons--coffee-alt"></span>
-
             <h3 className="text-3xl font-bold bg-gradient-to-bl from-white to-zinc-400 bg-clip-text text-transparent flex">
-              {' '}
               Kitten Axios
             </h3>
           </div>
@@ -249,34 +159,7 @@ export function SavedRequestsSidebar({
             </button>
           </div>
 
-          {/* <div className="flex flex-row gap-x-2.5 h-12 ">
-            <button
-              onClick={handleToogleSaveRequestCurrent}
-              disabled
-              className="btn-black w-full mb-4 flex truncate items-center justify-center gap-2  "
-            >
-              <span className="tabler--clipboard-smile"></span> Guardar Peticion
-            </button>
-            <button
-              disabled
-              title="Nueva Petición"
-              type="button"
-              onClick={handleToogleModal}
-              className="btn-black  mb-4 flex truncate items-center justify-center gap-2  "
-            >
-              <Icon icon={plusIcon} width="24" height="24" />
-            </button>
-          </div> */}
-
-          {/* {listColeccion.length > 0 ? listColeccion.map((e, idx) => (
-            <li>
-              {idx + 1} {e.name}
-            </li>
-          )) : <div> No hay logituda para coleccines cargadas</div>} */}
-
           {/* ------------------------------------ Aqui va la lista de peticiones guardadas ------------------------------------ Ahora migrandose a la esctrtura de postman compatible en vez las misma creada por mi */}
-
-          {/* <div className="flex-1 overflow-y-auto space-y-2 justify-center items-center"> */}
 
           <div className="flex w-full gap-2">
             <div className="bg-zinc-900 p-1 list-disc">
@@ -306,7 +189,7 @@ export function SavedRequestsSidebar({
                 <div className="overflow-y-scroll h-[70vh] overflow-x-scroll">
                   {listColeccion.map((e) => (
                     <div className=" p-2">
-                      {e.name}{' '}
+                      {e.name}
                       <ItemNode
                         eliminar={handleClickEliminar}
                         actualizarNombre={handleActualizarNombre}
@@ -314,7 +197,7 @@ export function SavedRequestsSidebar({
                         data={e.item}
                         setData={setParsed}
                         loadRequest={parsedLoadRequest}
-                      />{' '}
+                      />
                     </div>
                   ))}
                 </div>

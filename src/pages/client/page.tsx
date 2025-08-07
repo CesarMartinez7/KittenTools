@@ -3,7 +3,7 @@ import { Icon } from '@iconify/react';
 import sendIcon from '@iconify-icons/tabler/send';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useState } from 'react';
-import { CodeEditorLazy} from '../../components/LAZY_COMPONENT';
+import { CodeEditorLazy} from '../../components/lazy-components';
 import AddQueryParam from './components/addqueryparams/addQueryParams';
 import EnviromentComponent from './components/enviroment/enviroment.component';
 import { useEnviromentStore } from './components/enviroment/store.enviroment';
@@ -36,10 +36,12 @@ export default function AppClient() {
     statusCode,
     refForm,
     scriptsValues,
+    params2
   } = value;
 
   // Custom Hook Setters
   const {
+    setParams2,
     setBodyJson,
     setStatusCode,
     setContentType,
@@ -76,11 +78,11 @@ export default function AppClient() {
     Number(sessionStorage.getItem('selectedIdx')) || 0,
   );
 
-  const [openInfoCollecion, setOpenInfoCollecion] = useState<boolean>(true);
+  // const [openInfoCollecion, setOpenInfoCollecion] = useState<boolean>(true);
 
-  const saveToLocalStorage = useCallback((name, value) => {
-    localStorage.setItem(name, value);
-  }, []);
+  // const saveToLocalStorage = useCallback((name, value) => {
+  //   localStorage.setItem(name, value);
+  // }, []);
 
   const handleClickShowMethod = useCallback(
     () => setShowMethods((prev) => !prev),
@@ -89,7 +91,7 @@ export default function AppClient() {
 
   const entornoActual = useEnviromentStore((state) => state.entornoActual);
 
-  const formatteador = (listBusqueda: any[], busquedaKey: string) => {
+  const formatterInputRequest = (listBusqueda: any[], busquedaKey: string) => {
     const higlightText = busquedaKey; // uso el texto pasado en busquedaKey
 
     // Expresión regular para buscar patrones de texto dentro de {{}}
@@ -113,7 +115,7 @@ export default function AppClient() {
     reqUrl: string,
     reqMethod: string,
     reqHeaders: Record<string, string>,
-    reqParams: Record<string, string>,
+    reqParams: string,
     reqEvent: EventRequest,
   ) => {
     setBodyJson(reqBody);
@@ -121,6 +123,7 @@ export default function AppClient() {
     setEndpointUrl(reqUrl);
     setSelectedMethod(reqMethod);
     setScriptsValues(reqEvent);
+    setParams2(reqParams)
   };
 
   return (
@@ -129,8 +132,6 @@ export default function AppClient() {
         onLoadRequest={onLoadRequest}
         currentUrl={endpointUrl}
         currentBody={bodyJson}
-        currentHeaders={cabeceras}
-        currentContentType={contentType}
         currentMethod={selectedMethod}
         isOpen={isOpenSiderBar}
         onClose={() => setIsOpenSiderbar(false)}
@@ -177,7 +178,7 @@ export default function AppClient() {
             <div className="bg-black relative flex-1 p-2 rounded border border-zinc-800">
               <div
                 dangerouslySetInnerHTML={{
-                  __html: formatteador(entornoActual, endpointUrl),
+                  __html: formatterInputRequest(entornoActual, endpointUrl),
                 }}
               ></div>
 
@@ -185,11 +186,10 @@ export default function AppClient() {
                 type="text"
                 placeholder="https://api.example.com/endpoint"
                 value={endpointUrl}
-                onChange={(e) => {  
+                onChange={(e) => { 
                   setEndpointUrl(e.target.value);
-                  saveToLocalStorage('request_url', e.target.value);
                 }}
-                className="p-2 absolute inset-0  text-transparent transition-colors caret-zinc-400 "
+                className="p-2 absolute inset-0 text-transparent transition-colors caret-zinc-400 "
               />
             </div>
 
@@ -269,7 +269,7 @@ export default function AppClient() {
                   variants={VariantsAnimation}
                   className="flex-1"
                 >
-                  <AddQueryParam />
+                  <AddQueryParam currentParams={params2} />
                 </motion.div>
               )}
               {selectedIdx === 2 && (

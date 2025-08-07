@@ -1,8 +1,8 @@
 import { motion } from 'motion/react';
 import type React from 'react';
-import ContainerTextArea from '../components/CONTAINER-EDITOR';
-import ResultadoJsonFormat from '../components/JSONFORMATER';
-import { BaseModalLazy, JsonViewerLazy } from '../components/LAZY_COMPONENT';
+import ContainerTextArea from '../components/container-editor';
+import ResultadoJsonFormat from '../components/jsonformatter';
+import { BaseModalLazy, JsonViewerLazy } from '../components/lazy-components';
 
 export interface GridLayoutProps {
   toolbarProps?: {

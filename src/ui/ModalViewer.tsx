@@ -1,7 +1,7 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useRef } from 'react';
-import { JsonViewerLazy } from '../components/LAZY_COMPONENT';
+import { JsonViewerLazy } from '../components/lazy-components';
 
 interface PropsModalViewer {
   setOpenAll: React.Dispatch<React.SetStateAction<boolean>>;

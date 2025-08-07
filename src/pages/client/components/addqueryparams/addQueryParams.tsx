@@ -1,24 +1,27 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { useEffect, useState } from 'react';
 import { useParamsStore } from './queryparams-store';
+import toast from 'react-hot-toast';
 
-const AddQueryParam = () => {
+
+// Current params son los que deben de venir de la collecion
+const AddQueryParam = ({currentParams} : {currentParams : string}) => {
+
   // Params construidos
+
+
+  console.log(currentParams)
+
+  useEffect(() => {
+    console.log(currentParams)
+    toast.success("Hello world")
+    toast.success(currentParams)
+  }, [])
+
+
   const [params, setParams] = useState<{ key: string; value: string }[]>([]);
   // Params finales formateados
   const [paramsFinal, setParamsFinal] = useState<string>('');
-
-  // const cargarpARAMS =
-  //   'https://www.example.com/pagina-de-prueba?nombre=Juan&edad=30&ciudad=Barranquilla';
-
-  // useEffect(() => {
-  //   const url = new URL(cargarpARAMS);
-  //   const params = url.searchParams;
-
-  //   for (const [key, value] of params) {
-  //     console.log(`${key}: ${value}`);
-  //   }
-  // }, []);
 
   // Store params final y setvalor
   const setValor = useParamsStore((e) => e.setValor);
@@ -89,7 +92,7 @@ const AddQueryParam = () => {
         <p>{paramsFinal}</p>
         <p>{valor}</p>
 
-        {params.map((param, index) => (
+        {params.map(( _, index) => (
           <div key={index} className="flex gap-2 justify-between">
             <input
               type="text"
@@ -104,6 +107,8 @@ const AddQueryParam = () => {
               className="w-2/4 input-gray flex-1"
             />
             <button
+              aria-label='Eliminar'
+              title='Eliminar'
               className="btn-black"
               onClick={() => handleClickDelete(index)}
             >

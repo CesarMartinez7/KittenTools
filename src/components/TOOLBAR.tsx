@@ -1,7 +1,7 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
 import ReactSVG from '../ui/react';
 import TextType from '../ui/TextEncode';
-import ToolbarButtons from './ToolBarButtons';
+import ToolbarButtons from './toolbarbuttons';
 
 interface ToolBarProps {
   classNameContainer?: string;

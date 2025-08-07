@@ -1,0 +1,3 @@
+Aqui Van los component que conforman la UI PRINCIPAL DE JSON FORMATTER,
+
+Si alguna vez Kitten Axios quiere ser independiente seria mucho mas facil porque algunos de los componentes y la mayoria ya esta refactorizado 

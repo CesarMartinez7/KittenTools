@@ -12,14 +12,18 @@ const useClientStore = (): RetornoClient => {
   // Estados Globales
 
   const [scriptsValues, setScriptsValues] = useState<string>('');
+  const [params2, setParams2] = useState<any>("Mis datos de parametros van aqui")
+
 
   const [isOpenSiderBar, setIsOpenSiderbar] = useState(true);
   const [selectedMethod, setSelectedMethod] = useState('GET');
   const [response, setResponse] = useState('');
 
+
   const [errorAxios, setErrorAxios] = useState<string>('');
   const [errorRequest, setErrorRequest] = useState(false);
   const [timeResponse, setTimeResponse] = useState<number>(0);
+
 
   const [bodyJson, setBodyJson] = useState('');
   const [showMethods, setShowMethods] = useState(false);
@@ -62,6 +66,7 @@ const useClientStore = (): RetornoClient => {
       endpointUrl,
       isLoading,
       contentType,
+      params2,
       refForm,
       statusCode,
       scriptsValues,
@@ -78,6 +83,7 @@ const useClientStore = (): RetornoClient => {
       setShowMethods,
       setEndpointUrl,
       setIsLoading,
+      setParams2,
       setContentType,
       setScriptsValues,
     },

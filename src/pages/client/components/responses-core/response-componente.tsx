@@ -4,7 +4,7 @@ import plusIcon from '@iconify-icons/tabler/plus';
 import searchIcon from '@iconify-icons/tabler/search';
 import { AnimatePresence, motion } from 'motion/react';
 import { useMemo, useState } from 'react';
-import { CodeEditorLazy } from '../../../../components/LAZY_COMPONENT';
+import { CodeEditorLazy } from '../../../../components/lazy-components';
 import { JsonNode } from '../../../../ui/formatter-JSON/Formatter';
 import { TypesResponse } from '../../mapper-ops';
 
@@ -82,8 +82,8 @@ export default function ResponsesTypesComponent({
 
           {/* ------------------------------------------------------- Barra de arriba ----------------------------------------------- */}
 
-          <button className="input-gray">
-            <Icon icon="tabler:database" width="15px" height="15px" />
+          <button className="input-gray" aria-label='Generar Database'>
+            <Icon icon={"tabler:database"} width="15px" height="15px" />
           </button>
         </div>
         <div className="space-x-2">
@@ -117,7 +117,7 @@ export default function ResponsesTypesComponent({
         )}
 
         {contentType === 'XML' && (
-          <CodeEditorLazy language="xml" value={data} isEditable={false} />
+          <CodeEditorLazy language="xml" value={data}  />
         )}
 
         {contentType === 'BASE64' && (

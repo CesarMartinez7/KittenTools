@@ -1,7 +1,7 @@
 export interface CodeEditorProps {
   minHeight: string;
   value?: string;
-  language?: 'javascript' | 'typescript' | 'json' | 'xml';
+  language?: string;
   onChange?: (value: string | undefined | null) => void;
   height?: string;
   placeholder?: string;

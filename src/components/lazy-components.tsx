@@ -10,4 +10,4 @@ export const ModalViwerJSONLazy = lazy(() => import('../ui/ModalViewer'));
 export const CodeEditorLazy = lazy(
   () => import('../ui/code-editor/code-editor'),
 );
-export const ContainerTextArea = lazy(() => import('./CONTAINER-EDITOR'));
+export const ContainerTextArea = lazy(() => import('./container-editor'));

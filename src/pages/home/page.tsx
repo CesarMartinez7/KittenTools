@@ -3,17 +3,17 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 
-import ContainerTextArea from '../../components/CONTAINER-EDITOR';
-import ContainerDescripcion from '../../components/DESCRIPCION';
+import ContainerTextArea from '../../components/container-editor';
+import ContainerDescripcion from '../../components/descripcion';
 
 import {
   BaseModalLazy,
   GridLayoutLazy,
   JsonDiffLazy,
   JsonViewerLazy,
-} from '../../components/LAZY_COMPONENT';
+} from '../../components/lazy-components';
 
-import ToolBar from '../../components/TOOLBAR';
+import ToolBar from '../../components/toolbar';
 
 import AuroraStore from '../../ui/aurora/aurora';
 
