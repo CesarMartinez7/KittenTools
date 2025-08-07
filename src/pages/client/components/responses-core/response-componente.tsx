@@ -82,8 +82,8 @@ export default function ResponsesTypesComponent({
 
           {/* ------------------------------------------------------- Barra de arriba ----------------------------------------------- */}
 
-          <button className="input-gray" aria-label='Generar Database'>
-            <Icon icon={"tabler:database"} width="15px" height="15px" />
+          <button className="input-gray" aria-label="Generar Database">
+            <Icon icon={'tabler:database'} width="15px" height="15px" />
           </button>
         </div>
         <div className="space-x-2">
@@ -117,7 +117,7 @@ export default function ResponsesTypesComponent({
         )}
 
         {contentType === 'XML' && (
-          <CodeEditorLazy language="xml" value={data}  />
+          <CodeEditorLazy language="xml" value={data} />
         )}
 
         {contentType === 'BASE64' && (

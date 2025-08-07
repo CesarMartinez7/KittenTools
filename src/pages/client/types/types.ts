@@ -32,8 +32,8 @@ export interface SavedRequestsSidebarProps {
     reqUrl: string,
     reqMethod: string,
     reqHeaders: Record<string, string>, // Tipado correcto para params tambien
-    reqParams: string , // Se cambio a simplemente string para el cargue pero en los enviroment por lo general es un array
-    reqEvent : EventRequest
+    reqParams: string, // Se cambio a simplemente string para el cargue pero en los enviroment por lo general es un array
+    reqEvent: EventRequest,
   ) => void;
   currentUrl?: string;
   currentMethod?: string;
@@ -59,15 +59,14 @@ export interface Info {
 export interface Item {
   name: string;
   item?: Item2[];
-  event? : EventRequest
+  event?: EventRequest;
   request?: Request2;
   response?: Response[];
 }
 
-
 export interface EventRequest {
-  listen: string,
-  script: {exec: [], type: string, packages: object}
+  listen: string;
+  script: { exec: []; type: string; packages: object };
 }
 
 export interface Item2 {

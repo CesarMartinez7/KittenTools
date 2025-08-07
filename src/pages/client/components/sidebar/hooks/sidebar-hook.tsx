@@ -17,13 +17,6 @@ export default function SidebarHook() {
 
   /// <---------------------------------------------- Manejadores o Handlders -------------------------------->
 
-
-
-
-  
-
-
-
   const handleClickCargueCollecion = async () => {
     try {
       // Crear y configurar el input de archivo

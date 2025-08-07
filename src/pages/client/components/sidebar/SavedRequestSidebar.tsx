@@ -1,9 +1,9 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import {  useState } from 'react'; 
-import type { 
-    EventRequest, 
-    Item, 
-    SavedRequestsSidebarProps, 
+import { useState } from 'react';
+import type {
+  EventRequest,
+  Item,
+  SavedRequestsSidebarProps,
 } from '../../types/types';
 import ItemNode from '../itemnode/item-node';
 import SidebarHook from './hooks/sidebar-hook';
@@ -18,14 +18,13 @@ export function SavedRequestsSidebar({
     handleClickCargueCollecion,
     setParsed,
     listColeccion,
-    handleExportarCollecion
+    handleExportarCollecion,
   } = SidebarHook();
 
   const [currenIdx, setCurrentIdx] = useState<number>(1);
 
   const [currentId, setCurrentId] = useState<string>('');
   const [currentName, setCurrentName] = useState<string>('');
-
 
   const actualizarNombre = (oldName: string, newName: string) => {
     const nuevaColeccion = parsed.map((item) => {
@@ -112,7 +111,6 @@ export function SavedRequestsSidebar({
     reqParams: Record<string, string>,
     reqEvent: EventRequest,
   ) => {
-
     const requestScriptEvents = reqEvent ? reqEvent : null;
     onLoadRequest(
       reqBody,
@@ -127,8 +125,6 @@ export function SavedRequestsSidebar({
 
   return (
     <AnimatePresence key={'gokuuu'}>
-
-
       {isOpen && (
         <motion.div className="top-0 left-0 h-svh max-h-svh w-lg bg-black/80 backdrop-blur-3xl p-6 z-50 md:flex flex-col shadow-lg hidden ">
           <div className="flex justify-start items-center my-8 space-x-3">

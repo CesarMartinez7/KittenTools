@@ -3,21 +3,17 @@ import { useEffect, useState } from 'react';
 import { useParamsStore } from './queryparams-store';
 import toast from 'react-hot-toast';
 
-
 // Current params son los que deben de venir de la collecion
-const AddQueryParam = ({currentParams} : {currentParams : string}) => {
-
+const AddQueryParam = ({ currentParams }: { currentParams: string }) => {
   // Params construidos
 
-
-  console.log(currentParams)
+  console.log(currentParams);
 
   useEffect(() => {
-    console.log(currentParams)
-    toast.success("Hello world")
-    toast.success(currentParams)
-  }, [])
-
+    console.log(currentParams);
+    toast.success('Hello world');
+    toast.success(currentParams);
+  }, []);
 
   const [params, setParams] = useState<{ key: string; value: string }[]>([]);
   // Params finales formateados
@@ -92,7 +88,7 @@ const AddQueryParam = ({currentParams} : {currentParams : string}) => {
         <p>{paramsFinal}</p>
         <p>{valor}</p>
 
-        {params.map(( _, index) => (
+        {params.map((_, index) => (
           <div key={index} className="flex gap-2 justify-between">
             <input
               type="text"
@@ -107,8 +103,8 @@ const AddQueryParam = ({currentParams} : {currentParams : string}) => {
               className="w-2/4 input-gray flex-1"
             />
             <button
-              aria-label='Eliminar'
-              title='Eliminar'
+              aria-label="Eliminar"
+              title="Eliminar"
               className="btn-black"
               onClick={() => handleClickDelete(index)}
             >

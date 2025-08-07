@@ -189,14 +189,14 @@ const ItemNode: React.FC<ItemNodeProps> = ({
         <div className="ml-2 flex flex-col gap-3">
           {data.item!.map((child, index) => (
             <LazyListPerform>
-            <ItemNode
-              eliminar={handleClickDelete}
-              actualizarNombre={actualizarNombre}
-              key={index}
-              data={child}
-              level={level + 1}
-              loadRequest={loadRequest}
-            />
+              <ItemNode
+                eliminar={handleClickDelete}
+                actualizarNombre={actualizarNombre}
+                key={index}
+                data={child}
+                level={level + 1}
+                loadRequest={loadRequest}
+              />
             </LazyListPerform>
           ))}
         </div>

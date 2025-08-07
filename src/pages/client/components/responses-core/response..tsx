@@ -21,7 +21,9 @@ export default function ResponsesTypesComponent({
   contentTypeData,
 }: ResponseTypes) {
   const [showsContentTypes, setShowsContentTypes] = useState<boolean>(false);
-  const [contentType, setContentType] = useState<string>(contentTypeData || 'JSON');
+  const [contentType, setContentType] = useState<string>(
+    contentTypeData || 'JSON',
+  );
 
   // Calcular tamaño de la respuesta
   const size = useMemo(() => {
@@ -39,7 +41,7 @@ export default function ResponsesTypesComponent({
   };
 
   return (
-    <div 
+    <div
       className="h-full flex flex-col border border-zinc-900 rounded-lg overflow-hidden"
       style={{ height }}
     >
@@ -56,12 +58,16 @@ export default function ResponsesTypesComponent({
               aria-haspopup="listbox"
             >
               <span className="font-medium">{contentType.toUpperCase()}</span>
-              <Icon 
-                icon={showsContentTypes ? "tabler:chevron-up" : "tabler:chevron-down"} 
-                width="16px" 
+              <Icon
+                icon={
+                  showsContentTypes
+                    ? 'tabler:chevron-up'
+                    : 'tabler:chevron-down'
+                }
+                width="16px"
               />
             </button>
-            
+
             <AnimatePresence>
               {showsContentTypes && (
                 <motion.div
@@ -86,7 +92,7 @@ export default function ResponsesTypesComponent({
                       aria-selected={contentType === type.name}
                     >
                       <Icon icon={`tabler:${type.icon}`} width="18px" />
-                      <span className='shiny-text'>{type.name}</span>
+                      <span className="shiny-text">{type.name}</span>
                     </button>
                   ))}
                 </motion.div>
@@ -104,7 +110,7 @@ export default function ResponsesTypesComponent({
 
         <div className="flex items-center gap-2">
           {statusCode && (
-            <span 
+            <span
               className={`px-2.5 py-1 rounded-md text-sm font-medium ${getStatusCodeStyle(statusCode)}`}
               aria-label={`Status code: ${statusCode}`}
             >
@@ -113,11 +119,13 @@ export default function ResponsesTypesComponent({
           )}
 
           {timeResponse && (
-            <span 
+            <span
               className="px-2.5 py-1 rounded-md text-sm font-medium bg-zinc-800 text-zinc-300"
               aria-label={`Response time: ${timeResponse}ms`}
             >
-              {typeof timeResponse === 'number' ? `${timeResponse}ms` : timeResponse}
+              {typeof timeResponse === 'number'
+                ? `${timeResponse}ms`
+                : timeResponse}
             </span>
           )}
         </div>
@@ -136,9 +144,9 @@ export default function ResponsesTypesComponent({
         )}
 
         {contentType === 'XML' && (
-          <CodeEditorLazy 
-            language="xml" 
-            value={data} 
+          <CodeEditorLazy
+            language="xml"
+            value={data}
             className="rounded-md overflow-hidden"
           />
         )}
@@ -155,23 +163,23 @@ export default function ResponsesTypesComponent({
       {/* Footer */}
       <div className="w-full bg-gradient-to-r from-zinc-900/80 to-zinc-900 p-2 flex justify-between items-center border-t border-zinc-800">
         <span className="text-sm text-zinc-400">{size}</span>
-        
+
         <div className="flex gap-2">
-          <button 
+          <button
             className="p-1.5 rounded-md hover:bg-zinc-800 transition-colors text-zinc-400 hover:text-zinc-200"
             aria-label="Search"
           >
             <Icon icon="tabler:search" width="16px" />
           </button>
-          
-          <button 
+
+          <button
             className="p-1.5 rounded-md hover:bg-zinc-800 transition-colors text-zinc-400 hover:text-zinc-200"
             aria-label="Copy content"
           >
             <Icon icon="tabler:copy" width="16px" />
           </button>
-          
-          <button 
+
+          <button
             className="p-1.5 rounded-md hover:bg-zinc-800 transition-colors text-zinc-400 hover:text-zinc-200"
             aria-label="Clear"
           >
