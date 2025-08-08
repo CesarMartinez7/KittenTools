@@ -3,8 +3,9 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 
-import ContainerTextArea from '../../components/container-editor';
+
 import ContainerDescripcion from '../../components/descripcion';
+import ContainerTextArea from '../../components/container-editor';
 
 import {
   BaseModalLazy,
@@ -14,15 +15,10 @@ import {
 } from '../../components/lazy-components';
 
 import ToolBar from '../../components/toolbar';
-
 import AuroraStore from '../../ui/aurora/aurora';
-
 import Console from '../../ui/Console';
-
 import JWTDecode from '../../ui/DecodeJWT';
-
 import { ModalViewer } from '../../ui/Difftext';
-
 import { JsonViewerStore } from '../../ui/formatter-JSON/stores/jsonviewer';
 
 const App = () => {
