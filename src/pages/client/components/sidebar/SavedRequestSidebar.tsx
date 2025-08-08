@@ -117,8 +117,8 @@ export function SavedRequestsSidebar({
     reqUrl: string,
     reqMethod: string,
     reqHeaders: Record<string, string>,
-    reqParams: Record<string, string>,
-    reqEvent: EventRequest,
+    reqParams: string,
+    reqEvent: EventRequest | null,
   ) => {
     const requestScriptEvents = reqEvent ? reqEvent : null;
     onLoadRequest(

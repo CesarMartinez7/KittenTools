@@ -44,6 +44,9 @@ const ItemNode: React.FC<ItemNodeProps> = ({
       const url = data.request?.url?.raw || '';
       const headers = data.request?.header;
       const events = data.event;
+      const params = data.request.url.query
+
+      alert(JSON.stringify(params))
 
       let body = '';
       let language = '';
@@ -54,7 +57,7 @@ const ItemNode: React.FC<ItemNodeProps> = ({
       }
 
       if (loadRequest) {
-        loadRequest(body, language, url, method, headers, 'idk', events);
+        loadRequest(body, language, url, method, headers, params, events);
       }
 
       console.log(data);
@@ -99,7 +102,10 @@ const ItemNode: React.FC<ItemNodeProps> = ({
       onContextMenu={handleClickContextMenu}
       onClick={() => setShowBar(false)} // Ocultar menú si se hace clic afuera
       style={{ marginLeft: `${indent}px` }}
-    >
+    > 
+
+
+      
       <div
         onMouseDown={(e) => {
           e.preventDefault();

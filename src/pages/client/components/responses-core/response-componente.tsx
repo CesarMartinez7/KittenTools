@@ -109,7 +109,7 @@ export default function ResponsesTypesComponent({
               open={true}
               isChange={false}
               isInterface={false}
-              INDENT={1}
+              INDENT={0}
               data={data}
             />
 

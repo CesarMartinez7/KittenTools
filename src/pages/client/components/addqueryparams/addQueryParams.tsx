@@ -4,7 +4,7 @@ import { useParamsStore } from './queryparams-store';
 import toast from 'react-hot-toast';
 
 // Current params son los que deben de venir de la collecion
-const AddQueryParam = ({ currentParams }: { currentParams: string }) => {
+const AddQueryParam = ({ currentParams }: { currentParams: { key: string, value: string }[] }) => {
   // Params construidos
 
   console.log(currentParams);
@@ -12,7 +12,7 @@ const AddQueryParam = ({ currentParams }: { currentParams: string }) => {
   useEffect(() => {
     console.log(currentParams);
     toast.success('Hello world');
-    toast.success(currentParams);
+
   }, []);
 
   const [params, setParams] = useState<{ key: string; value: string }[]>([]);
@@ -73,22 +73,54 @@ const AddQueryParam = ({ currentParams }: { currentParams: string }) => {
           </button>
         </div>
 
-        {params.length === 0 && (
+
+
+        <table>
+<tbody>
+<tr>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>  
+
+
+<div class="table_component" role="region" tabindex="0"><table><caption>Table 1</caption><thead><tr><th>Header 1</th><th>Header 2</th></tr></thead><tbody><tr><td></td><td></td></tr></tbody></table><div style="margin-top:8px">Made with <a href="https://www.htmltables.io/" target="_blank">HTML Tables</a></div></div>
+
+        {currentParams.length > 0 && (
+          <>
+            {currentParams.map((e, idx) => (
+              <div className='p-1 bg-zinc-900 flex justify-between' key={idx}>
+                <span>
+                {e.key}
+                </span>
+                <span>
+                  {e.value}
+                </span>
+              </div>
+            ))}
+
+          </>
+        )}
+
+
+
+        {/* {currentParams.length === 0 && (
           <div className="h-full flex justify-center-safe items-center flex-col">
             <Icon icon="tabler:bounce-left-filled" width="44" height="44" />
             <span className="text-lg text-zinc-400">
               Todavía no tienes parámetros cargados.
             </span>
           </div>
-        )}
+        )} */}
 
-        <pre className="bg-zinc-900 text-xs">
+        {/* <pre className="bg-zinc-900 text-xs">
           {JSON.stringify(params, null, 2)}
         </pre>
         <p>{paramsFinal}</p>
-        <p>{valor}</p>
+        <p>{valor}</p> */}
 
-        {params.map((_, index) => (
+        {/* {currentParams.map(( i, index) => (
           <div key={index} className="flex gap-2 justify-between">
             <input
               type="text"
@@ -111,7 +143,7 @@ const AddQueryParam = ({ currentParams }: { currentParams: string }) => {
               <Icon icon="tabler:trash" width="15" height="15" />
             </button>
           </div>
-        ))}
+        ))} */}
       </div>
     </>
   );
