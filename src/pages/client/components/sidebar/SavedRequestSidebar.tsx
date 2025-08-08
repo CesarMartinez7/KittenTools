@@ -135,7 +135,7 @@ export function SavedRequestsSidebar({
   return (
     <AnimatePresence key={'gokuuu'}>
       {isOpen && (
-        <motion.div className="top-0 left-0 h-svh max-h-svh w-lg bg-black backdrop-blur-3xl p-6 z-50 md:flex flex-col hidden shadow-xl border-r border-zinc-800">
+        <motion.div className="top-0 left-0 h-svh max-h-svh w-xs lg:w-lg bg-black backdrop-blur-3xl p-6 z-50 md:flex flex-col hidden shadow-xl border-r border-zinc-800">
           {/* Header */}
           <div className="flex justify-start items-center my-6 space-x-3">
             <span className="pixelarticons--coffee-alt text-2xl text-amber-400"></span>

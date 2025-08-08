@@ -11,6 +11,7 @@
     "format": "biome format --write",
     "lint": "eslint .",
     "preview": "rsbuild preview",
+    "dist": "electron-builder",
     "version": "auto-changelog --tag-prefix '' --unreleased --commit-limit false && git add CHANGELOG.md"
   },
   "dependencies": {

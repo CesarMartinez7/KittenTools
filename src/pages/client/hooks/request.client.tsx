@@ -75,8 +75,8 @@ export default function RequestHook({
       } catch (error) {
         setErrorRequest(true);
         setStatusCode(error.status || 'N/A');
-        setResponse(JSON.stringify(error.data));
-        setErrorAxios(JSON.stringify(error.raw));
+        setResponse(error.data);
+        setErrorAxios(error.raw);
         setTimeResponse(error.timeResponse);
       } finally {
         setIsLoading(false);

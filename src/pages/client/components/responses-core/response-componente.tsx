@@ -21,6 +21,7 @@ export default function ResponsesTypesComponent({
   timeResponse,
   height,
   data,
+  
   contentTypeData,
 }: ResponseTypes) {
   const Size = useMemo(() => {

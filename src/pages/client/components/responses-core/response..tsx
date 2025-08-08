@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import { CodeEditorLazy } from '../../../../components/lazy-components';
 import { JsonNode } from '../../../../ui/formatter-JSON/Formatter';
 import { TypesResponse } from '../../mapper-ops';
+import toast from 'react-hot-toast';
 
 interface ResponseTypes {
   height: string;
@@ -39,6 +40,10 @@ export default function ResponsesTypesComponent({
     if (code >= 500) return 'bg-red-900/50 text-red-400';
     return 'bg-gray-900/50 text-gray-400';
   };
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(data).then(() => toast.success("Copiado Con exito")).catch(() => toast.error("Ocurrio un error"))
+  }
 
   return (
     <div
@@ -85,9 +90,8 @@ export default function ResponsesTypesComponent({
                         setContentType(type.name);
                         setShowsContentTypes(false);
                       }}
-                      className={`w-full text-left px-4 py-2 flex items-center gap-3 hover:bg-zinc-700 transition-colors ${
-                        contentType === type.name ? 'bg-zinc-800' : ''
-                      }`}
+                      className={`w-full text-left px-4 py-2 flex items-center gap-3 hover:bg-zinc-700 transition-colors ${contentType === type.name ? 'bg-zinc-800' : ''
+                        }`}
                       role="option"
                       aria-selected={contentType === type.name}
                     >
@@ -105,7 +109,7 @@ export default function ResponsesTypesComponent({
         <div className="flex items-center gap-2">
           {statusCode && (
             <span
-              className={`px-2.5 py-1 rounded-md text-sm font-medium ${getStatusCodeStyle(statusCode)}`}
+              className={`px-1.5 py-0.5 bg-black text-[10px] rounded-md  font-medium ${getStatusCodeStyle(statusCode)}`}
               aria-label={`Status code: ${statusCode}`}
             >
               {statusCode}
@@ -126,7 +130,7 @@ export default function ResponsesTypesComponent({
       </div>
 
       {/* Content area */}
-      <div className="flex-1  overflow-auto p-4">
+      <div className="flex-1 overflow-auto p-4">
         {contentType === 'JSON' && (
           <JsonNode
             open={true}
@@ -141,7 +145,7 @@ export default function ResponsesTypesComponent({
           <CodeEditorLazy
             language="xml"
             value={data}
-            classNameContainer='rounded-md overflow-hidden' 
+            classNameContainer='rounded-md overflow-hidden'
           />
         )}
 
@@ -161,21 +165,22 @@ export default function ResponsesTypesComponent({
         <div className="flex gap-2">
           <button
             className="p-1.5 rounded-md hover:bg-zinc-800 transition-colors text-zinc-400 hover:text-zinc-200"
-            aria-label="Search"
+            aria-label="Buscar"
           >
             <Icon icon="tabler:search" width="16px" />
           </button>
 
           <button
             className="p-1.5 rounded-md hover:bg-zinc-800 transition-colors text-zinc-400 hover:text-zinc-200"
-            aria-label="Copy content"
+            aria-label="Copiar contenido"
+            onClick={handleCopy}
           >
             <Icon icon="tabler:copy" width="16px" />
           </button>
 
           <button
             className="p-1.5 rounded-md hover:bg-zinc-800 transition-colors text-zinc-400 hover:text-zinc-200"
-            aria-label="Clear"
+            aria-label="Limpiar"
           >
             <Icon icon="tabler:clear-all" width="16px" />
           </button>

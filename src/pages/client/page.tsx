@@ -323,7 +323,7 @@ export default function AppClient() {
                   </div>
                 ) : (
                   <div className="h-[80vh] overflow-y-scroll text-xs">
-                    <ResponsesTypesComponent data={response} />
+                    <ResponsesTypesComponent data={response} statusCode={statusCode} />
                   </div>
                 )}
               </>
