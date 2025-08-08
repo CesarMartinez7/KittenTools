@@ -143,7 +143,7 @@ export default function AppClient() {
         onClose={() => setIsOpenSiderbar(false)}
       />
 
-      <div className="w-full flex flex-col px-4 md:px-8 py-4 gap-2 ">
+      <div className="w-full flex flex-col px-4 md:px-8 py-4 gap-2  bg-black/70">
         <form ref={refForm} onSubmit={handleRequest} className="space-y-4 mb-4">
           <div className="flex flex-col md:flex-row gap-3 md:items-center">
             <div className="relative">
@@ -227,7 +227,7 @@ export default function AppClient() {
           </div>
         </form>
         <div
-          className="grid relative md:grid-cols-1 lg:grid-cols-2  gap-4 h-full max-h-[82vh] overflow-y-scroll"
+          className="grid relative md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-2  gap-4 h-full max-h-[82vh] overflow-y-scroll"
           aria-label="grid"
         >
           <div className="bg-black p-6 rounded-xl border relative border-zinc-800 flex flex-col shadow-lg">

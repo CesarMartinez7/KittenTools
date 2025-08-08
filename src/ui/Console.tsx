@@ -108,7 +108,7 @@ export default function Console() {
             </div>
 
             <div className="bg-zinc-900/80 p-4 shadow rounded-lg  ">
-              <JsonNode data={entry.output} INDENT={12} />
+              <JsonNode data={entry.output} INDENT={2} />
             </div>
           </div>
         ))}

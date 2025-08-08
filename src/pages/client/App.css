@@ -11,3 +11,18 @@
 .btn-black {
   @apply p-2 rounded-md text-zinc-200 bg-gradient-to-t  flex items-center gap-2 hover:bg-gradient-to-r from-zinc-900 to-zinc-800 transition-colors;
 }
+
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #52525b;
+  border-radius: 3px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #3f3f46;
+}

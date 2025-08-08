@@ -7,6 +7,7 @@ import type {
 } from '../../types/types';
 import ItemNode from '../itemnode/item-node';
 import SidebarHook from './hooks/sidebar-hook';
+import { useEnviromentStore } from '../enviroment/store.enviroment';
 
 export function SavedRequestsSidebar({
   isOpen,
@@ -20,6 +21,14 @@ export function SavedRequestsSidebar({
     listColeccion,
     handleExportarCollecion,
   } = SidebarHook();
+
+  const enviromentList = useEnviromentStore((state) => state.listEntorno)
+
+  const setEntornoActual = useEnviromentStore((state) => state.setEntornoActual)
+  const entornoActual = useEnviromentStore((state) => state.entornoActual)
+
+
+  
 
   const [currenIdx, setCurrentIdx] = useState<number>(1);
 
@@ -126,66 +135,90 @@ export function SavedRequestsSidebar({
   return (
     <AnimatePresence key={'gokuuu'}>
       {isOpen && (
-        <motion.div className="top-0 left-0 h-svh max-h-svh w-lg bg-black/80 backdrop-blur-3xl p-6 z-50 md:flex flex-col shadow-lg hidden ">
-          <div className="flex justify-start items-center my-8 space-x-3">
-            <span className="pixelarticons--coffee-alt"></span>
-            <h3 className="text-3xl font-bold bg-gradient-to-bl from-white to-zinc-400 bg-clip-text text-transparent flex">
+        <motion.div className="top-0 left-0 h-svh max-h-svh w-lg bg-black backdrop-blur-3xl p-6 z-50 md:flex flex-col hidden shadow-xl border-r border-zinc-800">
+          {/* Header */}
+          <div className="flex justify-start items-center my-6 space-x-3">
+            <span className="pixelarticons--coffee-alt text-2xl text-amber-400"></span>
+            <h3 className="text-2xl font-bold bg-gradient-to-r from-amber-300 to-amber-400 bg-clip-text text-transparent">
               Kitten Axios
             </h3>
           </div>
-
-          <div className="flex flex-row text-xs gap-2 mb-4 ">
+  
+          {/* Action Buttons */}
+          <div className="flex flex-row gap-2 mb-6">
             <button
               aria-label="Exportar coleccion"
               title="Importar coleccion"
-              className=" btn-black transition-transform ellipsis text-ellipsis"
+              className="flex items-center gap-2 px-3 py-2 text-xs bg-zinc-900 hover:bg-zinc-700 rounded-md transition-colors text-zinc-200 hover:text-white"
               onClick={handleClickCargueCollecion}
             >
-              <span className="tabler--file-upload"></span>
-              <span className="">Cargar Coleccion</span>
+              <span className="tabler--file-upload text-sm"></span>
+              <span>Cargar Coleccion</span>
             </button>
             <button
-              className="btn-black ellipsis text-ellipsis"
+              className="flex items-center gap-2 px-3 py-2 text-xs bg-zinc-900 hover:bg-zinc-700 rounded-md transition-colors text-zinc-200 hover:text-white"
               title="Exportar collecion"
               aria-label="exportar colecion"
               onClick={handleExportarCollecion}
             >
-              <span className="tabler--file-export"></span>
-              <span className="">Exportar Coleccion</span>
+              <span className="tabler--file-export text-sm"></span>
+              <span>Exportar Coleccion</span>
             </button>
           </div>
-
-          {/* ------------------------------------ Aqui va la lista de peticiones guardadas ------------------------------------ Ahora migrandose a la esctrtura de postman compatible en vez las misma creada por mi */}
-
-          <div className="flex w-full gap-2">
-            <div className="bg-zinc-900 p-1 list-disc">
+  
+          {/* Main Content */}
+          <div className="flex w-full gap-4 flex-1 overflow-hidden">
+            {/* Sidebar Navigation */}
+            <div className="bg-zinc-900 rounded-lg p-2 truncate w-38 transition-all flex-shrink-0">
               <div
-                className="p-1 hover:bg-zinc-800"
+                className={`p-3 rounded-md cursor-pointer transition-colors ${currenIdx === 1 ? 'bg-amber-500/10 text-amber-400' : 'hover:bg-zinc-700 text-zinc-300'}`}
                 onClick={() => setCurrentIdx(1)}
               >
-                Env
+                <div className="flex items-center gap-2">
+                  <span className="tabler--server text-sm"></span>
+                  <span>Environment ({enviromentList.length}) </span>
+                </div>
               </div>
               <div
-                className="p-1 hover:bg-zinc-800"
+                className={`p-3 rounded-md cursor-pointer transition-colors ${currenIdx === 2 ? 'bg-amber-500/10 text-amber-400' : 'hover:bg-zinc-700 text-zinc-300'}`}
                 onClick={() => setCurrentIdx(2)}
               >
-                Colleciones ({listColeccion.length})
+                <div className="flex items-center gap-2">
+                  <span className="tabler--folder text-sm"></span>
+                  <span>Colleciones ({listColeccion.length})</span>
+                </div>
               </div>
             </div>
-            <div className="flex-1 bg-zinc-900 p-2">
+  
+            {/* Content Area */}
+            <div className="flex-1 bg-zinc-900 rounded-lg p-4 overflow-hidden flex flex-col">
               {currenIdx === 1 && (
                 <div className="flex flex-col gap-2">
-                  {listColeccion.map((e) => (
-                    <div className="bg-black p-2">{e.name}</div>
+                  {enviromentList.map((env, index) => (
+                    <div 
+                      key={`env-${index}`}
+                      onClick={() => setEntornoActual(env.values)}
+                      className="bg-zinc-900/50 p-3 rounded-md border border-zinc-700 hover:border-zinc-600 transition-colors text-zinc-300"
+                    >
+                      <span className='shiny-text'>
+                      {env.name}
+                        </span> 
+                    </div>
                   ))}
                 </div>
               )}
-
+  
               {parsed && currenIdx === 2 && (
-                <div className="overflow-y-scroll h-[70vh] overflow-x-scroll">
-                  {listColeccion.map((e) => (
-                    <div className=" p-2">
-                      {e.name}
+                <div className="overflow-y-auto flex-1 pr-2 custom-scrollbar">
+                  {listColeccion.map((e, index) => (
+                    <div 
+                      key={`col-${index}`}
+                      className="mb-4 last:mb-0"
+                    >
+                      <div className="text-lg font-medium text-zinc-200 mb-2 flex items-center gap-2">
+                        <span className="tabler--folder-filled text-amber-400"></span>
+                        {e.name}
+                      </div>
                       <ItemNode
                         eliminar={handleClickEliminar}
                         actualizarNombre={handleActualizarNombre}

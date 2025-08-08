@@ -100,12 +100,6 @@ export default function ResponsesTypesComponent({
             </AnimatePresence>
           </div>
 
-          {/* <button 
-            className="p-1.5 rounded-md bg-zinc-900 hover:bg-zinc-700 transition-colors"
-            aria-label="Database options"
-          >
-            <Icon icon="tabler:database" width="16px" />
-          </button> */}
         </div>
 
         <div className="flex items-center gap-2">
@@ -139,7 +133,7 @@ export default function ResponsesTypesComponent({
             isChange={false}
             isInterface={false}
             INDENT={1}
-            data={JSON.parse(data)}
+            data={data}
           />
         )}
 
@@ -147,7 +141,7 @@ export default function ResponsesTypesComponent({
           <CodeEditorLazy
             language="xml"
             value={data}
-            className="rounded-md overflow-hidden"
+            classNameContainer='rounded-md overflow-hidden' 
           />
         )}
 

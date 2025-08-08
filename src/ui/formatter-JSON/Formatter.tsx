@@ -87,7 +87,7 @@ export const JsonNode: React.FC<JsonNodeProps> = ({
                             open={collapsed}
                             key={i}
                             data={item}
-                            depth={depth + 1}
+                            depth={depth}
                           />
                         </div>
 
@@ -106,7 +106,7 @@ export const JsonNode: React.FC<JsonNodeProps> = ({
                         key={key}
                         name={key}
                         data={val}
-                        depth={depth + 1}
+                        depth={depth}
                       />
 
                       <span className="text-zinc-300">
