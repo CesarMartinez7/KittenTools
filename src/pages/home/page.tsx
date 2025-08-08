@@ -12,10 +12,11 @@ import {
   GridLayoutLazy,
   JsonDiffLazy,
   JsonViewerLazy,
-} from '../../components/lazy-components';
+} from '../../components/lazy-components.tsx';
 
-import ToolBar from '../../components/toolbar';
-import AuroraStore from '../../ui/aurora/aurora';
+
+import ToolBar from '../../components/toolbar.tsx';
+import AuroraStore from '../../ui/aurora/Aurora.tsx';
 import Console from '../../ui/Console';
 import JWTDecode from '../../ui/DecodeJWT';
 import { ModalViewer } from '../../ui/Difftext';
