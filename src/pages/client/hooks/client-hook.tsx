@@ -13,7 +13,7 @@ const useClientStore = (): RetornoClient => {
 
   const [scriptsValues, setScriptsValues] = useState<string>('');
   const [params2, setParams2] = useState<any>(
-    'Mis datos de parametros van aqui',
+    '',
   );
 
   const [isOpenSiderBar, setIsOpenSiderbar] = useState(true);
