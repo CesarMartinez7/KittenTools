@@ -213,7 +213,7 @@ export function SavedRequestsSidebar({
                   {listColeccion.map((e, index) => (
                     <div 
                       key={`col-${index}`}
-                      className="mb-4 last:mb-0"
+                      className="mb-4 last:mb-0 bg-zinc-800/50 border border-zinc-700 p-2 text-xs"
                     >
                       <div className="text-lg font-medium text-zinc-200 mb-2 flex items-center gap-2">
                         <span className="tabler--folder-filled text-amber-400"></span>

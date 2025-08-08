@@ -32,8 +32,9 @@ export interface SavedRequestsSidebarProps {
     reqUrl: string,
     reqMethod: string,
     reqHeaders: Record<string, string>, // Tipado correcto para params tambien
-    reqParams: string, // Se cambio a simplemente string para el cargue pero en los enviroment por lo general es un array
+    reqParams: string,
     reqEvent: EventRequest,
+    reqResponse: string,
   ) => void;
   currentUrl?: string;
   currentMethod?: string;

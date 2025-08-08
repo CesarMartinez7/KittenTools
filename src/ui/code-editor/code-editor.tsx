@@ -24,9 +24,9 @@ const CodeEditor = ({
   // Referencias al DOOM
   const inputRefTextOld = useRef<HTMLInputElement>(null);
   const inputRefTextNew = useRef<HTMLInputElement>(null);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const highlightRef = useRef<HTMLDivElement>(null);
-  const lineNumbersRef = useRef<HTMLDivElement>(null);
+  const textareaRef     = useRef<HTMLTextAreaElement>(null);
+  const highlightRef    = useRef<HTMLDivElement>(null);
+  const lineNumbersRef  = useRef<HTMLDivElement>(null);
 
   const [isOpenBar, setIsOpenBar] = useState<boolean>(false);
   const [code, setCode] = useState(value);

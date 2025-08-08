@@ -54,6 +54,7 @@ export default function AppClient() {
     setSelectedMethod,
     setResponse,
     setScriptsValues,
+    
   } = setter;
 
   const [timeResponse, setTimeResponse] = useState<number>(0);
@@ -123,6 +124,8 @@ export default function AppClient() {
     reqHeaders: Record<string, string>,
     reqParams: string,
     reqEvent: EventRequest,
+    reqReponse: string
+    
   ) => {
     setBodyJson(reqBody);
     setContentType(reqContentType);
@@ -130,6 +133,7 @@ export default function AppClient() {
     setSelectedMethod(reqMethod);
     setScriptsValues(reqEvent);
     setParams2(reqParams);
+    setResponse(reqReponse)
   };
 
   return (
@@ -272,7 +276,7 @@ export default function AppClient() {
                   variants={VariantsAnimation}
                   className="flex-1"
                 >
-                  <AddQueryParam currentParams={params2} />
+                  <AddQueryParam currentParams={params2} setCurrentParams={setParams2} />
                 </motion.div>
               )}
               {selectedIdx === 2 && (

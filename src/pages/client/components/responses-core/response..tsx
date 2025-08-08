@@ -51,14 +51,14 @@ export default function ResponsesTypesComponent({
       style={{ height }}
     >
       {/* Header */}
-      <div className="w-full bg-gradient-to-r from-zinc-900/80 to-zinc-900 p-2 flex justify-between items-center border-b border-zinc-900">
+      <div className="w-full bg-gradient-to-r from-zinc-900/80 to-zinc-900 px-3 py-2 flex justify-between items-center border-b border-zinc-900">
         <div className="flex items-center gap-2">
           {/* Selector de tipo de contenido */}
           <div className="relative">
             <button
               onClick={() => setShowsContentTypes((prev) => !prev)}
               type="button"
-              className="flex items-center gap-2 px-3 py-1.5 bg-zinc-900 rounded-md border border-zinc-900 hover:bg-zinc-700 transition-colors"
+              className="flex items-center gap-2 px-2 py-1.5 bg-zinc-900 rounded-md border border-zinc-900 hover:bg-zinc-700 transition-colors"
               aria-expanded={showsContentTypes}
               aria-haspopup="listbox"
             >

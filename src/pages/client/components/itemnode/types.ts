@@ -25,5 +25,6 @@ export interface ItemNodeProps {
     reqHeaders: Record<string, string>,
     reqParams: string,
     reqEvent: EventRequest,
+    reqResponse: string,
   ) => void;
 }

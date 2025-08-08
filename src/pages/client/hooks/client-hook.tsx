@@ -5,16 +5,20 @@ import { useStoreHeaders } from '../stores/headers-store';
 import type { RetornoClient } from './types';
 
 const useClientStore = (): RetornoClient => {
-  // Stores que falta arreglar para pasar los que vienen la collecion
+
+  // -------------- Esto actualment no esta en uso , proximamente deprecado  ---------------------------
   const params = useParamsStore((state) => state.valor);
   const cabeceras = useStoreHeaders((state) => state.valor);
 
+  // ------------------------------ Proximamente deprecado arriba  ---------------------------
+
   // Estados Globales
 
+
+
+  
   const [scriptsValues, setScriptsValues] = useState<string>('');
-  const [params2, setParams2] = useState<any>(
-    '',
-  );
+  const [params2, setParams2] = useState<Record<string, string>[]>([]);
 
   const [isOpenSiderBar, setIsOpenSiderbar] = useState(true);
   const [selectedMethod, setSelectedMethod] = useState('GET');
@@ -42,9 +46,7 @@ const useClientStore = (): RetornoClient => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'Enter' && e.ctrlKey) {
         toast.success('Generando petición');
-        refForm.current?.submit();
-        h
-        
+        refForm.current?.submit();        
       }
     };
     window.addEventListener('keydown', handleKey);

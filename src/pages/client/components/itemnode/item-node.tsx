@@ -13,14 +13,13 @@ const ItemNode: React.FC<ItemNodeProps> = ({
   eliminar,
 }) => {
   const [collapsed, setCollapsed] = useState(true);
-  const indent = 2 * level;
-  const isFolder = !!data.item && data.item.length > 0;
-
+  const [showResponses, setShowResponses] = useState(false);
   const [showBar, setShowBar] = useState(false);
+  const [contextPos, setContextPos] = useState<{ x: number; y: number } | null>(null);
+  const indent = 1 * level;
 
-  const [contextPos, setContextPos] = useState<{ x: number; y: number } | null>(
-    null,
-  );
+  const isFolder = !!data.item && data.item.length > 0;
+  const haveResponses = data.response && data.response.length > 0;
 
   const handleClickContextMenu = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -44,9 +43,8 @@ const ItemNode: React.FC<ItemNodeProps> = ({
       const url = data.request?.url?.raw || '';
       const headers = data.request?.header;
       const events = data.event;
-      const params = data.request.url.query
-
-      alert(JSON.stringify(params))
+      const params = data.request.url.query;
+      const responses = data.response;
 
       let body = '';
       let language = '';
@@ -57,10 +55,8 @@ const ItemNode: React.FC<ItemNodeProps> = ({
       }
 
       if (loadRequest) {
-        loadRequest(body, language, url, method, headers, params, events);
+        loadRequest(body, language, url, method, headers, params, events, responses);
       }
-
-      console.log(data);
     }
   };
 
@@ -85,7 +81,7 @@ const ItemNode: React.FC<ItemNodeProps> = ({
     { name: 'Renombrar', action: handleChangeName },
     { name: 'Duplicar', action: handleClickDuplicar },
     { name: 'Eliminar', action: handleClickDelete },
-    { name: 'Nueva peticion' },
+    { name: 'Nueva petición' },
     { name: 'Nueva carpeta' },
     { name: 'Info' },
   ];
@@ -98,105 +94,68 @@ const ItemNode: React.FC<ItemNodeProps> = ({
 
   return (
     <div
-      className="flex flex-col gap-4 relative"
+      className="flex flex-col gap-2 relative"
       onContextMenu={handleClickContextMenu}
-      onClick={() => setShowBar(false)} // Ocultar menú si se hace clic afuera
+      onClick={() => setShowBar(false)}
       style={{ marginLeft: `${indent}px` }}
-    > 
-
-
-      
+    >
       <div
         onMouseDown={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-
-          if (e.button === 1) {
-            e.preventDefault();
-            return;
-          }
+          if (e.button === 1) e.preventDefault();
         }}
-        className="p-1.5 text-ellipsis rounded-md border border-zinc-800 shadow-xl flex justify-between items-center group hover:bg-zinc-800 transition-colors bg-zinc-800/60 truncate text-[8px]"
+        className="p-1.5 rounded-md border border-zinc-800 shadow-xl flex justify-between items-center group hover:bg-zinc-800 transition-colors bg-zinc-800/60 text-xs cursor-pointer"
         onClick={handleClick}
       >
-        <div className="flex items-center gap-2 text-xs cursor-pointer">
+        <div className="flex items-center gap-2">
           {isFolder && (
-            <span className="text-zinc-400 w-4 inline-block text-center">
-              {collapsed ? (
-                <Icon icon="tabler:folder" width="15" height="15" />
-              ) : (
-                <Icon icon="tabler:folder-open" width="15" height="15" />
-              )}
-            </span>
+            <Icon icon={collapsed ? 'tabler:folder' : 'tabler:folder-open'} width="15" height="15" />
           )}
 
           {data.request?.method && !isFolder && (
             <span
-              className={`text-xs font-mono px-1 py-1 rounded-md 
-                ${
-                  data.request.method === 'GET'
-                    ? 'text-green-400'
-                    : data.request.method === 'POST'
-                      ? 'text-blue-400'
-                      : 'text-orange-400'
-                }`}
+              className={`font-mono px-1 py-1 rounded-md ${
+                data.request.method === 'GET'
+                  ? 'text-green-400'
+                  : data.request.method === 'POST'
+                    ? 'text-blue-400'
+                    : 'text-orange-400'
+              }`}
             >
               {data.request.method}
             </span>
           )}
 
-          <p className="text-xs truncate shiny-text">{data.name}</p>
+          <p className="truncate shiny-text">{data.name}</p>
         </div>
       </div>
 
-      {/* Menú contextual personalizado */}
-
+      {/* Menú contextual */}
       {showBar && (
         <div
           className="absolute bg-zinc-900 text-white rounded-md shadow-lg z-50 p-2 w-40"
-          style={{
-            top: '100%',
-            left: 0,
-          }}
+          style={{ top: '100%', left: 0 }}
         >
           <ul className="text-sm space-y-1">
-            {isFolder && (
-              <>
-                {mapperFolder.map((res) => (
-                  <li
-                    className="hover:bg-zinc-700 px-2 py-1 rounded cursor-pointer  flex gap-2"
-                    onClick={res.action}
-                  >
-                    {res.name}
-                  </li>
-                ))}
-              </>
-            )}
-          </ul>
-
-          <ul className="text-sm space-y-1">
-            {!isFolder && (
-              <>
-                {mapperRequest.map((res) => (
-                  <li
-                    className="hover:bg-zinc-700 px-2 py-1 rounded cursor-pointer flex gap-2"
-                    onClick={res.action}
-                  >
-                    {res.name}
-                  </li>
-                ))}
-              </>
-            )}
+            {(isFolder ? mapperFolder : mapperRequest).map((res) => (
+              <li
+                key={res.name}
+                className="hover:bg-zinc-700 px-2 py-1 rounded cursor-pointer flex gap-2"
+                onClick={res.action}
+              >
+                {res.name}
+              </li>
+            ))}
           </ul>
         </div>
       )}
 
+      {/* Subitems si es carpeta */}
       {!collapsed && isFolder && (
-        <div className="ml-2 flex flex-col gap-3">
+        <div className="ml-2 flex flex-col gap-2">
           {data.item!.map((child, index) => (
-            <LazyListPerform>
+            <LazyListPerform key={index}>
               <ItemNode
-                eliminar={handleClickDelete}
+                eliminar={eliminar}
                 actualizarNombre={actualizarNombre}
                 key={index}
                 data={child}
@@ -205,6 +164,35 @@ const ItemNode: React.FC<ItemNodeProps> = ({
               />
             </LazyListPerform>
           ))}
+        </div>
+      )}
+
+      {/* Toggle para mostrar responses */}
+      {haveResponses && (
+        <div className="ml-4 mt-1">
+          <button
+            onClick={() => setShowResponses(!showResponses)}
+            className="text-zinc-400 hover:text-white text-xs"
+          >
+            {showResponses
+              ? `Ocultar respuestas (${data.response.length})`
+              : `Mostrar respuestas (${data.response.length})`}
+          </button>
+
+          {showResponses && (
+            <div className="mt-2 space-y-1 text-[11px]">
+              {data.response.map((resp, i) => (
+                <div key={i} className="py-1 px-2 border border-zinc-700 rounded bg-zinc-900" onClick={() => {
+                
+                }} >
+                  <p className="font-bold text-green-300">{resp.name}</p>
+                  <p className="text-zinc-400">
+                    {resp.status} - {resp.code}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>
