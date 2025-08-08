@@ -193,8 +193,9 @@ export default function EnviromentComponent() {
                     <button
                       onClick={() => handleDeleteVariable(i)}
                       className=" text-white px-2 py-1 rounded"
-                    >
-                      🗑️
+                    > 
+                    <span className="tabler--trash"></span>
+
                     </button>
                   </td>
                 </tr>

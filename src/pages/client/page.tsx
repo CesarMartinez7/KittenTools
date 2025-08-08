@@ -182,7 +182,7 @@ export default function AppClient() {
             </div>
 
             <div className="bg-black relative flex-1 p-2 rounded border border-zinc-800">
-              <div
+              <div className={endpointUrl.length === 0 ? " p-2" : ""}
                 dangerouslySetInnerHTML={{
                   __html: formatterInputRequest(entornoActual, endpointUrl),
                 }}
@@ -227,7 +227,7 @@ export default function AppClient() {
           </div>
         </form>
         <div
-          className="grid relative md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-2  gap-4 h-full max-h-[82vh] overflow-y-scroll"
+          className="grid relative md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-2  gap-4 h-full max-h-[82vh] overflow-y-scroll rounded-xl"
           aria-label="grid"
         >
           <div className="bg-black p-6 rounded-xl border relative border-zinc-800 flex flex-col shadow-lg">

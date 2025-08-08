@@ -43,6 +43,7 @@ const useClientStore = (): RetornoClient => {
       if (e.key === 'Enter' && e.ctrlKey) {
         toast.success('Generando petición');
         refForm.current?.submit();
+        h
         
       }
     };

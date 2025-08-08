@@ -70,6 +70,8 @@ const CodeEditor = ({
     };
   }, []);
 
+
+
   const HandlersMinifyBody = () => {
     if (language === 'json') {
       return minifyJson();
@@ -238,7 +240,7 @@ const CodeEditor = ({
       </AnimatePresence>
 
       <div
-        className={`relative flex  text-xs overflow-hidden bg-zinc-900/60 ring-none backdrop-blur-3xl ${classNameContainer} `}
+        className={`relative flex  text-xs overflow-hidden bg-zinc-900/50 ring-none backdrop-blur-3xl ${classNameContainer} `}
       >
         {/* Line Numbers */}
         <div
@@ -272,6 +274,7 @@ const CodeEditor = ({
               onKeyDown={handleKeyDown}
               className="absolute inset-0  transition-colors p-2 ring-none ring-0 focus:ring-none text-sm font-mono leading-6 resize-none outline-none bg-r whitespace-pre-wrap break-words placeholder-lime-200"
               style={{
+                
                 color: 'transparent',
                 caretColor: '#d4d4d4',
               }}
