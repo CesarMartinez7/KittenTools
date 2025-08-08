@@ -6,18 +6,18 @@ import toast from 'react-hot-toast';
 
 import ContainerDescripcion from '../../components/descripcion';
 
-import ContainerTextArea from '../../components/container-editor.tsx';
+import ContainerTextArea from '../../components/container-editor';
 
 import {
   BaseModalLazy,
   GridLayoutLazy,
   JsonDiffLazy,
   JsonViewerLazy,
-} from '../../components/lazy-components.tsx';
+} from '../../components/lazy-components';
 
 
-import ToolBar from '../../components/toolbar.tsx';
-import AuroraStore from '../../ui/aurora/Aurora.tsx';
+import ToolBar from '../../components/toolbar';
+import AuroraStore from '../../ui/aurora/aurora';
 import Console from '../../ui/Console';
 import JWTDecode from '../../ui/DecodeJWT';
 import { ModalViewer } from '../../ui/Difftext';
