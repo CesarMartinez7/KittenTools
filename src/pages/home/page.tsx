@@ -2,10 +2,7 @@ import { Icon } from '@iconify/react/dist/iconify.js';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-
-
 import ContainerDescripcion from '../../components/descripcion';
-
 import ContainerTextArea from '../../components/container-editor';
 
 import {
