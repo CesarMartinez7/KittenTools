@@ -22,13 +22,12 @@ export function SavedRequestsSidebar({
     handleExportarCollecion,
   } = SidebarHook();
 
-  const enviromentList = useEnviromentStore((state) => state.listEntorno)
+  const enviromentList = useEnviromentStore((state) => state.listEntorno);
 
-  const setEntornoActual = useEnviromentStore((state) => state.setEntornoActual)
-  const entornoActual = useEnviromentStore((state) => state.entornoActual)
-
-
-  
+  const setEntornoActual = useEnviromentStore(
+    (state) => state.setEntornoActual,
+  );
+  const entornoActual = useEnviromentStore((state) => state.entornoActual);
 
   const [currenIdx, setCurrentIdx] = useState<number>(1);
 
@@ -143,7 +142,7 @@ export function SavedRequestsSidebar({
               Kitten Axios
             </h3>
           </div>
-  
+
           {/* Action Buttons */}
           <div className="flex flex-row gap-2 mb-6">
             <button
@@ -165,7 +164,7 @@ export function SavedRequestsSidebar({
               <span>Exportar Coleccion</span>
             </button>
           </div>
-  
+
           {/* Main Content */}
           <div className="flex w-full gap-4 flex-1 overflow-hidden">
             {/* Sidebar Navigation */}
@@ -189,29 +188,27 @@ export function SavedRequestsSidebar({
                 </div>
               </div>
             </div>
-  
+
             {/* Content Area */}
             <div className="flex-1 bg-zinc-900 rounded-lg p-4 overflow-hidden flex flex-col">
               {currenIdx === 1 && (
                 <div className="flex flex-col gap-2">
                   {enviromentList.map((env, index) => (
-                    <div 
+                    <div
                       key={`env-${index}`}
                       onClick={() => setEntornoActual(env.values)}
                       className="bg-zinc-900/50 p-3 rounded-md border border-zinc-700 hover:border-zinc-600 transition-colors text-zinc-300"
                     >
-                      <span className='shiny-text'>
-                      {env.name}
-                        </span> 
+                      <span className="shiny-text">{env.name}</span>
                     </div>
                   ))}
                 </div>
               )}
-  
+
               {parsed && currenIdx === 2 && (
                 <div className="overflow-y-auto flex-1 pr-2 custom-scrollbar">
                   {listColeccion.map((e, index) => (
-                    <div 
+                    <div
                       key={`col-${index}`}
                       className="mb-4 last:mb-0 bg-zinc-800/50 border border-zinc-700 p-2 text-xs"
                     >

@@ -80,10 +80,9 @@ const highlightCode = (code: string, language: string) => {
     });
   }
 
-  
   highlightedCode = highlightedCode.replace(
-    /{{(.*?)}}/g, 
-    `<span style="color: #7bb4ff;">{{$1}}</span>`
+    /{{(.*?)}}/g,
+    `<span style="color: #7bb4ff;">{{$1}}</span>`,
   );
 
   return highlightedCode;

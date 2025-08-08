@@ -1,22 +1,17 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { useEffect, useState } from 'react';
 import { useParamsStore } from './queryparams-store';
-import toast from 'react-hot-toast';
 
-// Current params son los que deben de venir de la collecion
-const AddQueryParam = ({ currentParams }: { currentParams: string }) => {
-  // Params construidos
+type Param = { key: string; value: string };
 
-  console.log(currentParams);
-
-  useEffect(() => {
-    console.log(currentParams);
-    toast.success('Hello world');
-    toast.success(currentParams);
-  }, []);
-
-  const [params, setParams] = useState<{ key: string; value: string }[]>([]);
-  // Params finales formateados
+const AddQueryParam = ({
+  currentParams,
+  setCurrentParams,
+}: {
+  currentParams?: Param[] | null;
+  setCurrentParams: React.Dispatch<React.SetStateAction<Record<string, string>>>;
+}) => {
+  const [params, setParams] = useState<Param[]>([]);
   const [paramsFinal, setParamsFinal] = useState<string>('');
 
   const setValor = useParamsStore((e) => e.setValor);
@@ -60,58 +55,38 @@ const AddQueryParam = ({ currentParams }: { currentParams: string }) => {
     !Array.isArray(currentParams) || currentParams.length === 0;
 
   return (
-    <>
-      <div className="h-full w-full flex flex-col gap-2 my-6">
-        <div className="flex gap-2">
-          <button onClick={handleAddParam} className="btn gray-btn ">
-            <Icon icon="tabler:dog" width="20" height="20" />
-            Añadir Parámetros
-          </button>
+    <div className="h-full w-full flex flex-col gap-2 my-6">
+      {!noParams ? (
+        <table className="border-collapse border border-zinc-800">
+          <thead>
+            <tr>
+              <th className="border border-zinc-800 px-2 py-1">Llave</th>
+              <th className="border border-zinc-800 px-2 py-1">Valor</th>
+            </tr>
+          </thead>
+          <tbody>
+            {currentParams!.map((e, idx) => (
+              <tr key={idx}>
+                <td className="border border-zinc-800 px-2 py-1">
+                  <input type="text" value={e.key} className="w-full" />
+                </td>
+                <td className="border border-zinc-800 px-2 py-1">
+                  <input type="text" value={e.value} className="w-full" />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <div className="h-full flex justify-center items-center flex-col">
+          <Icon icon="tabler:bounce-left-filled" width="44" height="44" />
+          <span className="text-lg text-zinc-400">
+            Todavía no tienes parámetros cargados.
+          </span>
         </div>
-
-        {params.length === 0 && (
-          <div className="h-full flex justify-center-safe items-center flex-col">
-            <Icon icon="tabler:bounce-left-filled" width="44" height="44" />
-            <span className="text-lg text-zinc-400">
-              Todavía no tienes parámetros cargados.
-            </span>
-          </div>
-        )}
-
-        <pre className="bg-zinc-900 text-xs">
-          {JSON.stringify(params, null, 2)}
-        </pre>
-        <p>{paramsFinal}</p>
-        <p>{valor}</p>
-
-        {params.map((_, index) => (
-          <div key={index} className="flex gap-2 justify-between">
-            <input
-              type="text"
-              placeholder="LLave"
-              onBlur={(e) => handleParamChange(index, 'key', e.target.value)}
-              className="border input input-gray flex-1 "
-            />
-            <input
-              type="text"
-              placeholder="Valor"
-              onBlur={(e) => handleParamChange(index, 'value', e.target.value)}
-              className="w-2/4 input-gray flex-1"
-            />
-            <button
-              aria-label="Eliminar"
-              title="Eliminar"
-              className="btn-black"
-              onClick={() => handleClickDelete(index)}
-            >
-              <Icon icon="tabler:trash" width="15" height="15" />
-            </button>
-          </div>
-        ))}
-      </div>
-    </>
+      )}
+    </div>
   );
 };
 
 export default AddQueryParam;
-  

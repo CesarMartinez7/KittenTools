@@ -5,7 +5,6 @@ import { useStoreHeaders } from '../stores/headers-store';
 import type { RetornoClient } from './types';
 
 const useClientStore = (): RetornoClient => {
-
   // -------------- Esto actualment no esta en uso , proximamente deprecado  ---------------------------
   const params = useParamsStore((state) => state.valor);
   const cabeceras = useStoreHeaders((state) => state.valor);
@@ -14,9 +13,6 @@ const useClientStore = (): RetornoClient => {
 
   // Estados Globales
 
-
-
-  
   const [scriptsValues, setScriptsValues] = useState<string>('');
   const [params2, setParams2] = useState<Record<string, string>[]>([]);
 
@@ -30,10 +26,12 @@ const useClientStore = (): RetornoClient => {
 
   const [bodyJson, setBodyJson] = useState('');
   const [showMethods, setShowMethods] = useState(false);
-  const [endpointUrl, setEndpointUrl] = useState('https://jsonplaceholder.typicode.com/comments');
+  const [endpointUrl, setEndpointUrl] = useState(
+    'https://jsonplaceholder.typicode.com/comments',
+  );
 
   const [isLoading, setIsLoading] = useState(false);
-  const [contentType, setContentType] = useState<string>("");
+  const [contentType, setContentType] = useState<string>('');
   const [statusCode, setStatusCode] = useState<number | null>();
 
   const refForm = useRef<HTMLFormElement | null>(null);
@@ -46,7 +44,7 @@ const useClientStore = (): RetornoClient => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'Enter' && e.ctrlKey) {
         toast.success('Generando petición');
-        refForm.current?.submit();        
+        refForm.current?.submit();
       }
     };
     window.addEventListener('keydown', handleKey);

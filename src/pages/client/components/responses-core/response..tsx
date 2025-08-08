@@ -42,8 +42,11 @@ export default function ResponsesTypesComponent({
   };
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(data).then(() => toast.success("Copiado Con exito")).catch(() => toast.error("Ocurrio un error"))
-  }
+    navigator.clipboard
+      .writeText(data)
+      .then(() => toast.success('Copiado Con exito'))
+      .catch(() => toast.error('Ocurrio un error'));
+  };
 
   return (
     <div
@@ -90,8 +93,9 @@ export default function ResponsesTypesComponent({
                         setContentType(type.name);
                         setShowsContentTypes(false);
                       }}
-                      className={`w-full text-left px-4 py-2 flex items-center gap-3 hover:bg-zinc-700 transition-colors ${contentType === type.name ? 'bg-zinc-800' : ''
-                        }`}
+                      className={`w-full text-left px-4 py-2 flex items-center gap-3 hover:bg-zinc-700 transition-colors ${
+                        contentType === type.name ? 'bg-zinc-800' : ''
+                      }`}
                       role="option"
                       aria-selected={contentType === type.name}
                     >
@@ -103,7 +107,6 @@ export default function ResponsesTypesComponent({
               )}
             </AnimatePresence>
           </div>
-
         </div>
 
         <div className="flex items-center gap-2">
@@ -145,7 +148,7 @@ export default function ResponsesTypesComponent({
           <CodeEditorLazy
             language="xml"
             value={data}
-            classNameContainer='rounded-md overflow-hidden'
+            classNameContainer="rounded-md overflow-hidden"
           />
         )}
 

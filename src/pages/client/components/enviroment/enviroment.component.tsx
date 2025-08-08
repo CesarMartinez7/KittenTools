@@ -1,4 +1,3 @@
-import { motion } from 'motion/react';
 import { useEnviromentStore } from './store.enviroment';
 import { BaseModalLazy } from '../../../../components/lazy-components';
 import { useState } from 'react';
@@ -20,8 +19,7 @@ export interface Value {
 }
 
 export default function EnviromentComponent() {
-  const listEntorno = useEnviromentStore((state) => state.listEntorno);
-  const setListEntorno = useEnviromentStore((state) => state.setListEntorno);
+  
   const entornoActual = useEnviromentStore((state) => state.entornoActual);
   const setEntornoActual = useEnviromentStore(
     (state) => state.setEntornoActual,
@@ -51,7 +49,7 @@ export default function EnviromentComponent() {
       }
     };
     reader.readAsText(file);
-    toogleModal()
+    toogleModal();
   };
 
   const handleChange = (index: number, field: keyof Value, value: any) => {
@@ -81,68 +79,63 @@ export default function EnviromentComponent() {
     return color;
   }
 
-
   const toogleModal = () => {
-    setIsOpen((prev) => !prev)
-  }
+    setIsOpen((prev) => !prev);
+  };
 
-  const [isOpen, setIsOpen] = useState<boolean>(false)
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   return (
-    <div className="p-4 space-y-4">
+    <div className="p-4 space-y-4 relative">
       <h1 className="text-lg font-bold shiny-tex">Cargar entorno Postman</h1>
       <BaseModalLazy isOpen={isOpen} onClose={toogleModal}>
-        <div className='bg-zinc-950 rounded p-4  shadow-2xl'>
-        
-          <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-xl h-64 border-2 border-zinc-800  border-dashed rounded-lg cursor-pointer bg-zinc-950 dark:hover:border-gray-700 ">
+        <div className="bg-zinc-950 rounded p-4  shadow-2xl">
+          <label
+            htmlFor="dropzone-file"
+            className="flex flex-col items-center justify-center w-xl h-64 border-2 border-zinc-800  border-dashed rounded-lg cursor-pointer bg-zinc-950 dark:hover:border-gray-700 "
+          >
             <div className="flex flex-col items-center justify-center pt-5 pb-6">
-              <svg className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+              <svg
+                className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 20 16"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                />
               </svg>
-              <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold shiny-text">Empieza dandome click y importando tu JSON :)</span> </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400">Se aceptan JSON</p>
+              <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                <span className="font-semibold shiny-text">
+                  Empieza dandome click y importando tu JSON :)
+                </span>{' '}
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                Se aceptan JSON
+              </p>
             </div>
-            <input id="dropzone-file" type="file" accept=".json"  required className="hidden" onChange={handleFileUpload} />
+            <input
+              id="dropzone-file"
+              type="file"
+              accept=".json"
+              required
+              className="hidden"
+              onChange={handleFileUpload}
+            />
           </label>
-
-
-
-
         </div>
       </BaseModalLazy>
 
+      <div className="flex items-center justify-center w-full"></div>
 
-
-      <div className="flex items-center justify-center w-full">
-
-      </div>
-
-
-
-      <button onClick={toogleModal} className='input-gray'>Importar</button>
-
-      {/* {listEntorno.length > 0 && (
-        <div className="py-4 px-3">
-          <h2 className="font-semibold">Entornos cargados</h2>
-          <motion.ul className="space-y-2  my-3">
-            {listEntorno.map((env, idx) => (
-              <li
-                className="p-1.5 text-ellipsis  rounded-md border border-zinc-800 shadow-xl flex justify-between items-center group hover:bg-zinc-800 transition-colors bg-zinc-800/60 truncate "
-                key={idx}
-                onClick={() => setEntornoActual(env.values)}
-              >
-                <span
-                  className="shiny-text"
-                  style={{ color: getRandomHexColor() }}
-                >
-                  {env.name}
-                </span>
-              </li>
-            ))}
-          </motion.ul>
-        </div>
-      )} */}
-
+      <button onClick={toogleModal} className="input-gray absolute">
+        Importar
+      </button>
       {entornoActual.length > 0 && (
         <div>
           <div className="flex justify-between items-center mb-2 outline-none">
@@ -193,9 +186,8 @@ export default function EnviromentComponent() {
                     <button
                       onClick={() => handleDeleteVariable(i)}
                       className=" text-white px-2 py-1 rounded"
-                    > 
-                    <span className="tabler--trash"></span>
-
+                    >
+                      <span className="tabler--trash"></span>
                     </button>
                   </td>
                 </tr>

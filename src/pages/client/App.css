@@ -12,7 +12,6 @@
   @apply p-2 rounded-md text-zinc-200 bg-gradient-to-t  flex items-center gap-2 hover:bg-gradient-to-r from-zinc-900 to-zinc-800 transition-colors;
 }
 
-
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
 }

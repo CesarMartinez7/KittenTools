@@ -37,7 +37,7 @@ ReactDOM.createRoot(root)!.render(
         <Suspense fallback={<LoadingElement />}>
           <Routes>
             <Route index path="/" element={<MainPageLazy />} />
-            
+
             <Route path="/client" element={<AppClientRouteLazy />} />
             <Route
               path="*"

@@ -24,9 +24,9 @@ const CodeEditor = ({
   // Referencias al DOOM
   const inputRefTextOld = useRef<HTMLInputElement>(null);
   const inputRefTextNew = useRef<HTMLInputElement>(null);
-  const textareaRef     = useRef<HTMLTextAreaElement>(null);
-  const highlightRef    = useRef<HTMLDivElement>(null);
-  const lineNumbersRef  = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const highlightRef = useRef<HTMLDivElement>(null);
+  const lineNumbersRef = useRef<HTMLDivElement>(null);
 
   const [isOpenBar, setIsOpenBar] = useState<boolean>(false);
   const [code, setCode] = useState(value);
@@ -69,8 +69,6 @@ const CodeEditor = ({
       window.removeEventListener('keydown', handleGlobalKeyDown);
     };
   }, []);
-
-
 
   const HandlersMinifyBody = () => {
     if (language === 'json') {
@@ -274,7 +272,6 @@ const CodeEditor = ({
               onKeyDown={handleKeyDown}
               className="absolute inset-0  transition-colors p-2 ring-none ring-0 focus:ring-none text-sm font-mono leading-6 resize-none outline-none bg-r whitespace-pre-wrap break-words placeholder-lime-200"
               style={{
-                
                 color: 'transparent',
                 caretColor: '#d4d4d4',
               }}

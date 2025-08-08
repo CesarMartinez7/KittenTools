@@ -20,7 +20,7 @@ export interface ValuesRetornoClient {
   timeResponse: number;
   statusCode: number | null | undefined;
   scriptsValues: EventRequest;
-  params2: Record<string, string>  ; // En funcionamientos
+  params2: Record<string, string>; // En funcionamientos
 }
 
 export interface SetterRetornoClient {

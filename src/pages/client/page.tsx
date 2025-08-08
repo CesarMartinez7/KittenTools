@@ -1,20 +1,20 @@
-import "./App.css";
-import { Icon } from "@iconify/react";
-import sendIcon from "@iconify-icons/tabler/send";
-import { AnimatePresence, motion } from "framer-motion";
-import { useCallback, useState } from "react";
-import { CodeEditorLazy } from "../../components/lazy-components";
-import AddQueryParam from "./components/addqueryparams/addQueryParams";
-import EnviromentComponent from "./components/enviroment/enviroment.component";
-import { useEnviromentStore } from "./components/enviroment/store.enviroment";
-import { HeadersAddRequest } from "./components/headers/Headers";
-import ScriptComponent from "./components/scripts/script-component";
-import { SavedRequestsSidebar } from "./components/sidebar/SavedRequestSidebar";
-import ClientCustomHook from "./hooks/client-hook";
-import RequestHook from "./hooks/request.client";
-import { Methodos, Opciones, VariantsAnimation } from "./mapper-ops";
-import type { EventRequest } from "./types/types";
-import ResponsesTypesComponent from "./components/responses-core/response.";
+import './App.css';
+import { Icon } from '@iconify/react';
+import sendIcon from '@iconify-icons/tabler/send';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useCallback, useState } from 'react';
+import { CodeEditorLazy } from '../../components/lazy-components';
+import AddQueryParam from './components/addqueryparams/addQueryParams';
+import EnviromentComponent from './components/enviroment/enviroment.component';
+import { useEnviromentStore } from './components/enviroment/store.enviroment';
+import { HeadersAddRequest } from './components/headers/Headers';
+import ScriptComponent from './components/scripts/script-component';
+import { SavedRequestsSidebar } from './components/sidebar/SavedRequestSidebar';
+import ClientCustomHook from './hooks/client-hook';
+import RequestHook from './hooks/request.client';
+import { Methodos, Opciones, VariantsAnimation } from './mapper-ops';
+import type { EventRequest } from './types/types';
+import ResponsesTypesComponent from './components/responses-core/response.';
 
 export default function AppClient() {
   const { value, setter } = ClientCustomHook();
@@ -54,7 +54,6 @@ export default function AppClient() {
     setSelectedMethod,
     setResponse,
     setScriptsValues,
-    
   } = setter;
 
   const [timeResponse, setTimeResponse] = useState<number>(0);
@@ -76,7 +75,7 @@ export default function AppClient() {
   });
 
   const [selectedIdx, setMimeSelected] = useState(
-    Number(sessionStorage.getItem("selectedIdx")) || 0,
+    Number(sessionStorage.getItem('selectedIdx')) || 0,
   );
 
   const handlerChangeInputRequest = (
@@ -124,8 +123,7 @@ export default function AppClient() {
     reqHeaders: Record<string, string>,
     reqParams: string,
     reqEvent: EventRequest,
-    reqReponse: string
-    
+    reqReponse: string,
   ) => {
     setBodyJson(reqBody);
     setContentType(reqContentType);
@@ -133,7 +131,7 @@ export default function AppClient() {
     setSelectedMethod(reqMethod);
     setScriptsValues(reqEvent);
     setParams2(reqParams);
-    setResponse(reqReponse)
+    setResponse(reqReponse);
   };
 
   return (
@@ -154,7 +152,7 @@ export default function AppClient() {
               <button
                 type="button"
                 onClick={handleClickShowMethod}
-                className={`py-1 px-4 rounded-md font-semibold text-lg ${selectedMethod === "GET" ? "bg-green-800 text-green-300" : selectedMethod === "POST" ? "bg-blue-500 text-blue-200" : selectedMethod === "PUT" ? "bg-yellow-800 text-yellow-300" : selectedMethod === "PATCH" ? "bg-orange-800 text-orange-300" : selectedMethod === "DELETE" ? "bg-red-800 text-red-300" : "bg-gray-700"}`} // Dynamic button color based on method
+                className={`py-1 px-4 rounded-md font-semibold text-lg ${selectedMethod === 'GET' ? 'bg-green-800 text-green-300' : selectedMethod === 'POST' ? 'bg-blue-500 text-blue-200' : selectedMethod === 'PUT' ? 'bg-yellow-800 text-yellow-300' : selectedMethod === 'PATCH' ? 'bg-orange-800 text-orange-300' : selectedMethod === 'DELETE' ? 'bg-red-800 text-red-300' : 'bg-gray-700'}`} // Dynamic button color based on method
               >
                 {selectedMethod}
               </button>
@@ -175,7 +173,7 @@ export default function AppClient() {
                           setShowMethods(false);
                         }}
                         className={`w-full text-left px-4 py-2 hover:bg-zinc-700 transition-colors duration-200
-                          ${metodo.name.toUpperCase() === selectedMethod ? "bg-sky-500 text-white" : ""}`}
+                          ${metodo.name.toUpperCase() === selectedMethod ? 'bg-sky-500 text-white' : ''}`}
                       >
                         {metodo.name}
                       </button>
@@ -186,7 +184,8 @@ export default function AppClient() {
             </div>
 
             <div className="bg-black relative flex-1 p-2 rounded border border-zinc-800">
-              <div className={endpointUrl.length === 0 ? " p-2" : ""}
+              <div
+                className={endpointUrl.length === 0 ? ' p-2' : ''}
                 dangerouslySetInnerHTML={{
                   __html: formatterInputRequest(entornoActual, endpointUrl),
                 }}
@@ -211,7 +210,7 @@ export default function AppClient() {
                   <Icon icon="eos-icons:loading" className="animate-spin" />
                 </span>
               ) : (
-                "Enviar"
+                'Enviar'
               )}
             </button>
           </div>
@@ -222,7 +221,7 @@ export default function AppClient() {
                 key={crypto.randomUUID()}
                 type="button"
                 className={`btn btn-sm text-sm py-2 px-4 rounded-t-lg transition-colors duration-200
-                  ${index === selectedIdx ? "border-b-2 border-sky-500 text-sky-500 font-semibold bg-zinc-950" : "text-zinc-400 hover:text-white hover:bg-zinc-800"}`}
+                  ${index === selectedIdx ? 'border-b-2 border-sky-500 text-sky-500 font-semibold bg-zinc-950' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}
                 onClick={() => setMimeSelected(index)}
               >
                 {opcion.name}
@@ -235,7 +234,7 @@ export default function AppClient() {
           aria-label="grid"
         >
           <div className="bg-black p-6 rounded-xl border relative border-zinc-800 flex flex-col shadow-lg">
-            <AnimatePresence mode="wait" key={"uja"}>
+            <AnimatePresence mode="wait" key={'uja'}>
               {selectedIdx === 0 && ( // Body
                 <motion.div
                   key="body-section-body"
@@ -243,7 +242,7 @@ export default function AppClient() {
                   className="flex flex-col flex-1"
                 >
                   <div className="flex gap-4 mb-3">
-                    {["json", "form", "xml", "none"].map((type, idx) => (
+                    {['json', 'form', 'xml', 'none'].map((type, idx) => (
                       <label
                         key={idx}
                         className="text-sm text-gray-300 flex items-center gap-2 cursor-pointer"
@@ -276,7 +275,10 @@ export default function AppClient() {
                   variants={VariantsAnimation}
                   className="flex-1"
                 >
-                  <AddQueryParam currentParams={params2} setCurrentParams={setParams2} />
+                  <AddQueryParam
+                    currentParams={params2}
+                    setCurrentParams={setParams2}
+                  />
                 </motion.div>
               )}
               {selectedIdx === 2 && (
@@ -327,7 +329,10 @@ export default function AppClient() {
                   </div>
                 ) : (
                   <div className="h-[80vh] overflow-y-scroll text-xs">
-                    <ResponsesTypesComponent data={response} statusCode={statusCode} />
+                    <ResponsesTypesComponent
+                      data={response}
+                      statusCode={statusCode}
+                    />
                   </div>
                 )}
               </>
@@ -345,14 +350,14 @@ export default function AppClient() {
                 <p className="text-md text-zinc-400">
                   Puedes comenzar con tu primera solicitud.
                 </p>
-              <div className="my-6 flex flex-col space-y-3">
-                <div className="flex gap-2">
-                  <p>Enviar solicitud</p> <kbd>Ctrl </kbd> + <kbd>Enter</kbd>
+                <div className="my-6 flex flex-col space-y-3">
+                  <div className="flex gap-2">
+                    <p>Enviar solicitud</p> <kbd>Ctrl </kbd> + <kbd>Enter</kbd>
+                  </div>
+                  <div className="flex gap-2">
+                    <p>Editar Entornos</p> <kbd>Ctrl </kbd> + <kbd>e</kbd>
+                  </div>
                 </div>
-                <div className="flex gap-2">
-                  <p>Editar Entornos</p> <kbd>Ctrl </kbd> + <kbd>e</kbd>
-                </div>
-              </div>
               </div>
             )}
           </div>

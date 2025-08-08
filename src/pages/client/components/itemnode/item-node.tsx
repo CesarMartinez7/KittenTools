@@ -15,7 +15,9 @@ const ItemNode: React.FC<ItemNodeProps> = ({
   const [collapsed, setCollapsed] = useState(true);
   const [showResponses, setShowResponses] = useState(false);
   const [showBar, setShowBar] = useState(false);
-  const [contextPos, setContextPos] = useState<{ x: number; y: number } | null>(null);
+  const [contextPos, setContextPos] = useState<{ x: number; y: number } | null>(
+    null,
+  );
   const indent = 1 * level;
 
   const isFolder = !!data.item && data.item.length > 0;
@@ -55,7 +57,16 @@ const ItemNode: React.FC<ItemNodeProps> = ({
       }
 
       if (loadRequest) {
-        loadRequest(body, language, url, method, headers, params, events, responses);
+        loadRequest(
+          body,
+          language,
+          url,
+          method,
+          headers,
+          params,
+          events,
+          responses,
+        );
       }
     }
   };
@@ -98,10 +109,7 @@ const ItemNode: React.FC<ItemNodeProps> = ({
       onContextMenu={handleClickContextMenu}
       onClick={() => setShowBar(false)}
       style={{ marginLeft: `${indent}px` }}
-    > 
-
-
-      
+    >
       <div
         onMouseDown={(e) => {
           if (e.button === 1) e.preventDefault();
@@ -111,7 +119,11 @@ const ItemNode: React.FC<ItemNodeProps> = ({
       >
         <div className="flex items-center gap-2">
           {isFolder && (
-            <Icon icon={collapsed ? 'tabler:folder' : 'tabler:folder-open'} width="15" height="15" />
+            <Icon
+              icon={collapsed ? 'tabler:folder' : 'tabler:folder-open'}
+              width="15"
+              height="15"
+            />
           )}
 
           {data.request?.method && !isFolder && (
@@ -185,9 +197,11 @@ const ItemNode: React.FC<ItemNodeProps> = ({
           {showResponses && (
             <div className="mt-2 space-y-1 text-[11px]">
               {data.response.map((resp, i) => (
-                <div key={i} className="py-1 px-2 border border-zinc-700 rounded bg-zinc-900" onClick={() => {
-                
-                }} >
+                <div
+                  key={i}
+                  className="py-1 px-2 border border-zinc-700 rounded bg-zinc-900"
+                  onClick={() => {}}
+                >
                   <p className="font-bold text-green-300">{resp.name}</p>
                   <p className="text-zinc-400">
                     {resp.status} - {resp.code}
