@@ -164,10 +164,10 @@ export default function AppClient() {
                     exit={{ opacity: 0 }}
                     className="absolute top-full left-0 w-32 bg-black  z-50 rounded shadow-2xl overflow-hidden"
                   >
-                    {Methodos.map((metodo) => (
+                    {Methodos.map((metodo, idx) => (
                       <button
                         type="button"
-                        key={crypto.randomUUID()}
+                        key={idx}
                         onClick={() => {
                           setSelectedMethod(metodo.name.toUpperCase());
                           setShowMethods(false);
@@ -218,7 +218,7 @@ export default function AppClient() {
           <div className="flex gap-2 text-white  rounded-t-lg border-b border-zinc-800 truncate bg-black">
             {Opciones.map((opcion, index) => (
               <button
-                key={crypto.randomUUID()}
+                key={index}
                 type="button"
                 className={`btn btn-sm text-sm py-2 px-4 rounded-t-lg transition-colors duration-200
                   ${index === selectedIdx ? 'border-b-2 border-sky-500 text-sky-500 font-semibold bg-zinc-950' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}
