@@ -5,7 +5,8 @@ import toast from 'react-hot-toast';
 
 
 import ContainerDescripcion from '../../components/descripcion';
-import ContainerTextArea from '../../components/container-editor';
+
+import ContainerTextArea from '../../components/container-editor.tsx';
 
 import {
   BaseModalLazy,
