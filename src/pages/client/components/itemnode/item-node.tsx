@@ -98,7 +98,10 @@ const ItemNode: React.FC<ItemNodeProps> = ({
       onContextMenu={handleClickContextMenu}
       onClick={() => setShowBar(false)}
       style={{ marginLeft: `${indent}px` }}
-    >
+    > 
+
+
+      
       <div
         onMouseDown={(e) => {
           if (e.button === 1) e.preventDefault();
