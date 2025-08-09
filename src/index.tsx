@@ -1,22 +1,23 @@
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter, Route, Routes } from 'react-router';
+import { BrowserRouter, HashRouter, Route, Routes } from 'react-router';
 import './App.css';
 import { Suspense } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { AppClientRouteLazy, MainPageLazy } from './pages/lazy-pages.tsx';
 import Aurora from './ui/aurora/Aurora.tsx';
 
-const LoadingElement = () => {
-  return (
-    <div className="h-screen w-screen flex justify-center items-center bg-black/70">
-      <span className="meteocons--compass-fill"></span>
-    </div>
-  );
-};
+const LoadingElement = () => (
+  <div className="h-screen w-screen flex justify-center items-center bg-black/70">
+    <span className="meteocons--compass-fill"></span>
+  </div>
+);
+
+const Router =
+  process.env.NODE_ENV === 'production' ? HashRouter : BrowserRouter;
 
 const root = document.getElementById('root')!;
 
-ReactDOM.createRoot(root)!.render(
+ReactDOM.createRoot(root).render(
   <div className="bg-black/50">
     <Toaster
       toastOptions={{
@@ -33,23 +34,22 @@ ReactDOM.createRoot(root)!.render(
     </div>
 
     <div className="z-[777] relative">
-      <BrowserRouter>
+      <Router>
         <Suspense fallback={<LoadingElement />}>
           <Routes>
             <Route index path="/" element={<MainPageLazy />} />
-
             <Route path="/client" element={<AppClientRouteLazy />} />
             <Route
               path="*"
               element={
                 <div className="h-screen w-screen grid place-content-center">
-                  No deberias estar aqui{' '}
+                  No deberías estar aquí
                 </div>
               }
             />
           </Routes>
         </Suspense>
-      </BrowserRouter>
+      </Router>
     </div>
-  </div>,
+  </div>
 );

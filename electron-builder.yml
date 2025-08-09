@@ -1,22 +1,27 @@
 appId: com.example.reactmatter
 productName: React Matter
+
 directories:
   output: dist
+
 files:
-  # Incluye la carpeta donde Rsbuild compila tu aplicación React
-  # Asumiendo que el output de 'rsbuild build' es una carpeta llamada 'dist'
   - from: ./dist
     to: .
-  # Incluye los archivos necesarios para Electron
   - package.json
   - main.js
   - build/**/*
+  - "!node_modules/@tailwindcss/oxide-*"
+
+
+asarUnpack:
+  - "!**/node_modules/@tailwindcss/oxide-*/**"
+
+
 win:
   target: nsis
   icon: build/icon.ico
-  # Esta opción evita que el instalador de Windows muestre una advertencia.
-  # Es opcional, pero recomendado.
   verifyUpdateCodeSignature: false
+
 nsis:
   installerIcon: build/installer.ico
   uninstallerIcon: build/uninstaller.ico
