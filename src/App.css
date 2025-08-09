@@ -32,11 +32,8 @@ kbd {
   font-style: normal;
 }
 
-
-
-
 .shiny-text {
-  color: #fbfbfbbc; 
+  color: #fbfbfbbc;
   background: linear-gradient(
     120deg,
     rgba(255, 255, 255, 0.331) 40%,
@@ -59,7 +56,6 @@ kbd {
   }
 }
 
-
 .pixelarticons--coffee-alt {
   display: inline-block;
   width: 70px;
@@ -73,7 +69,6 @@ kbd {
   -webkit-mask-size: 100% 100%;
   mask-size: 100% 100%;
 }
-
 
 .shiny-text.disabled {
   animation: none;
@@ -92,8 +87,6 @@ kbd {
   -webkit-mask-size: 100% 100%;
   mask-size: 100% 100%;
 }
-
-
 
 .meteocons--compass-fill {
   display: inline-block;
@@ -132,7 +125,6 @@ kbd {
   mask-size: 100% 100%;
 }
 
-
 .tabler--file-export {
   display: inline-block;
   width: 20px;
@@ -146,7 +138,6 @@ kbd {
   -webkit-mask-size: 100% 100%;
   mask-size: 100% 100%;
 }
-
 
 .tabler--chess {
   display: inline-block;
@@ -162,7 +153,6 @@ kbd {
   mask-size: 100% 100%;
 }
 
-
 .tabler--file-settings {
   display: inline-block;
   width: 20px;
@@ -176,9 +166,6 @@ kbd {
   -webkit-mask-size: 100% 100%;
   mask-size: 100% 100%;
 }
-
-
-
 
 .tabler--file-upload {
   display: inline-block;
@@ -194,7 +181,6 @@ kbd {
   mask-size: 100% 100%;
 }
 
-
 .tabler--clipboard-smile {
   display: inline-block;
   width: 20px;
@@ -208,7 +194,6 @@ kbd {
   -webkit-mask-size: 100% 100%;
   mask-size: 100% 100%;
 }
-
 
 .game-icons--thorny-vine {
   display: inline-block;
@@ -297,9 +282,8 @@ body {
   @apply w-full flex items-center justify-center gap-2 bg-gradient-to-t from-zinc-900 to-zinc-800 hover:bg-zinc-700 text-zinc-300 px-3 py-2 text-sm rounded-lg transition;
 }
 
-
-.base-modal-btn{
-  @apply bg-auto p-2 rounded font-black
+.base-modal-btn {
+  @apply bg-auto p-2 rounded font-black;
 }
 
 .svg-spinners--gooey-balls-2 {
@@ -354,7 +338,6 @@ button:disabled {
   @apply cursor-not-allowed;
 }
 
-
 .tabler--trash {
   display: inline-block;
   width: 15px;
@@ -392,6 +375,7 @@ button:disabled {
 }
 
 @theme {
+  --color-green-primary: #4ec9b0;
   --color-kanagawa-bg: #1f1f28;
   --color-kanagawa-surface: #2a2a37;
   --color-kanagawa-overlay: #3a3a4a;

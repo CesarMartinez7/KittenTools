@@ -1,6 +1,6 @@
-import { useEnviromentStore } from './store.enviroment';
-import { BaseModalLazy } from '../../../../components/lazy-components';
-import { useState } from 'react';
+import { useEnviromentStore } from "./store.enviroment";
+import { BaseModalLazy } from "../../../../components/lazy-components";
+import { useState } from "react";
 
 export interface EnviromentLayout {
   id: string;
@@ -19,15 +19,12 @@ export interface Value {
 }
 
 export default function EnviromentComponent() {
-  
   const entornoActual = useEnviromentStore((state) => state.entornoActual);
   const setEntornoActual = useEnviromentStore(
     (state) => state.setEntornoActual,
   );
   const addEntorno = useEnviromentStore((state) => state.addEntorno);
-
-  // const [listEntorno, setListEntorno] = useState<EnviromentLayout[]>([]);
-  // const [entornoActual, setEntornoActual] = useState<Value[]>([]);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -44,12 +41,12 @@ export default function EnviromentComponent() {
           setEntornoActual(json.values);
         }
       } catch (error) {
-        console.error('Error leyendo el JSON:', error);
-        alert('El archivo no es un JSON válido de Postman Environment');
+        console.error("Error leyendo el JSON:", error);
+        alert("El archivo no es un JSON válido de Postman Environment");
       }
     };
     reader.readAsText(file);
-    toogleModal();
+    toggleModal();
   };
 
   const handleChange = (index: number, field: keyof Value, value: any) => {
@@ -61,7 +58,7 @@ export default function EnviromentComponent() {
   const handleAddVariable = () => {
     setEntornoActual([
       ...entornoActual,
-      { key: '', value: '', type: 'default', enabled: true },
+      { key: "", value: "", type: "default", enabled: true },
     ]);
   };
 
@@ -70,60 +67,67 @@ export default function EnviromentComponent() {
     setEntornoActual(updated);
   };
 
-  function getRandomHexColor() {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-  }
-
-  const toogleModal = () => {
+  const toggleModal = () => {
     setIsOpen((prev) => !prev);
   };
 
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-
   return (
-    <div className="p-4 space-y-4 relative">
-      <h1 className="text-lg font-bold shiny-tex">Cargar entorno Postman</h1>
-      <BaseModalLazy isOpen={isOpen} onClose={toogleModal}>
-        <div className="bg-zinc-950 rounded p-4  shadow-2xl">
+    <div className=" rounded-lg h-full">
+      <div className="flex justify-between items-center">
+        <h4 className="text-xl font-bold text-zinc-100">
+          Variables de entorno
+        </h4>
+      </div>
+
+      <BaseModalLazy isOpen={isOpen} onClose={toggleModal}>
+        <div className="bg-zinc-900/80 backdrop-blur-sm rounded-xl border border-zinc-800/50 p-6 max-w-md transition-all hover:border-zinc-700/50">
           <label
-            htmlFor="dropzone-file"
-            className="flex flex-col items-center justify-center w-xl h-64 border-2 border-zinc-800  border-dashed rounded-lg cursor-pointer bg-zinc-950 dark:hover:border-gray-700 "
+            htmlFor="environment-upload"
+            className="group flex flex-col items-center justify-center w-full h-64 border-2 border-dashed border-zinc-700/50 rounded-lg cursor-pointer bg-zinc-900/30 hover:bg-zinc-800/20 transition-all duration-200"
           >
-            <div className="flex flex-col items-center justify-center pt-5 pb-6">
-              <svg
-                className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 20 16"
-              >
-                <path
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                />
-              </svg>
-              <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                <span className="font-semibold shiny-text">
-                  Empieza dandome click y importando tu JSON :)
-                </span>{' '}
+            <div className="flex flex-col items-center justify-center p-6 text-center">
+              {/* Icono animado */}
+              <div className="relative mb-4">
+                <div className="w-12 h-12 bg-zinc-800/50 rounded-full flex items-center justify-center group-hover:bg-zinc-700/30 transition-colors duration-200">
+                  <svg
+                    className="w-6 h-6 text-zinc-400 group-hover:text-[#4ec9b0] transition-colors duration-200"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                    ></path>
+                  </svg>
+                </div>
+                <div className="absolute -inset-1 rounded-full bg-[#4ec9b0]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              </div>
+
+              {/* Texto principal */}
+              <h3 className="mb-1 text-lg font-medium text-zinc-200 group-hover:text-white transition-colors">
+                Subir entorno Postman
+              </h3>
+
+              {/* Instrucciones */}
+              <p className="text-sm text-zinc-400 mb-2">
+                Arrastra tu archivo JSON aquí o haz clic para seleccionarlo
               </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                Se aceptan JSON
-              </p>
+
+              {/* Detalles */}
+              <div className="text-xs text-zinc-500 bg-zinc-800/30 px-2 py-1 rounded">
+                Solo se aceptan archivos .json
+              </div>
             </div>
+
+            {/* Input de archivo */}
             <input
-              id="dropzone-file"
+              id="environment-upload"
               type="file"
               accept=".json"
-              required
               className="hidden"
               onChange={handleFileUpload}
             />
@@ -131,69 +135,127 @@ export default function EnviromentComponent() {
         </div>
       </BaseModalLazy>
 
-      <div className="flex items-center justify-center w-full"></div>
-
-      <button onClick={toogleModal} className="input-gray absolute">
-        Importar
-      </button>
-      {entornoActual.length > 0 && (
-        <div>
-          <div className="flex justify-between items-center mb-2 outline-none">
-            <h2 className="font-semibold">Variables del entorno actual</h2>
-            <button onClick={handleAddVariable} className="input-gray">
-              Añadir Variable
+      {entornoActual.length > 0 ? (
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <h2 className="text-zinc-300 font-medium">Current Variables</h2>
+            <button
+              onClick={handleAddVariable}
+              className="px-3 py-1.5 bg-zinc-900 hover:bg-zinc-700 rounded-md text-zinc-200 hover:text-white transition-colors text-sm"
+            >
+              + Añadir Variables
             </button>
           </div>
 
-          <table className="border border-zinc-00 w-full text-left ring-kanagawa-accent border-none">
-            <thead>
-              <tr>
-                <th className="border border-zinc-800 px-2">Llave</th>
-                <th className="border border-zinc-800 px-2">Valor</th>
-                <th className="border border-zinc-800 px-2">Estado</th>
-                <th className="border border-zinc-800 px-2">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {entornoActual.map((v, i) => (
-                <tr key={i}>
-                  <td className="border border-zinc-800 px-2">
-                    <input
-                      type="text"
-                      value={v.key}
-                      onChange={(e) => handleChange(i, 'key', e.target.value)}
-                      className="w-full border-0  outline-0"
-                    />
-                  </td>
-                  <td className="border border-zinc-800 px-2">
-                    <input
-                      type="text"
-                      value={v.value}
-                      onChange={(e) => handleChange(i, 'value', e.target.value)}
-                      className="w-full"
-                    />
-                  </td>
-                  <td className="border border-zinc-800 px-2 text-center">
-                    <input
-                      type="checkbox"
-                      checked={v.enabled}
-                      onChange={(e) =>
-                        handleChange(i, 'enabled', e.target.checked)
-                      }
-                    />
-                  </td>
-                  <td className="border border-zinc-800 px-2 text-center">
-                    <button
-                      onClick={() => handleDeleteVariable(i)}
-                      className=" text-white px-2 py-1 rounded"
-                    >
-                      <span className="tabler--trash"></span>
-                    </button>
-                  </td>
+          <div className="overflow-x-auto  border border-zinc-800">
+            <table className="min-w-full divide-y divide-zinc-800">
+              <thead className="bg-zinc-900">
+                <tr>
+                  <th className="px-2 py-1 text-left text-xs font-medium text-zinc-300 uppercase tracking-wider">
+                    Key
+                  </th>
+                  <th className="px-2 py-1 text-left text-xs font-medium text-zinc-300 uppercase tracking-wider">
+                    Value
+                  </th>
+                  <th className="px-2 py-1 text-center text-xs font-medium text-zinc-300 uppercase tracking-wider">
+                    Enabled
+                  </th>
+                  <th className="px-2 py-1 text-center text-xs font-medium text-zinc-300 uppercase tracking-wider">
+                    Actions
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="bg-zinc-950 divide-y divide-zinc-800">
+                {entornoActual.map((v, i) => (
+                  <tr
+                    key={i}
+                    className="hover:bg-zinc-900/50 transition-colors"
+                  >
+                    <td className="px-2 py-1 whitespace-nowrap">
+                      <input
+                        type="text"
+                        value={v.key}
+                        onChange={(e) => handleChange(i, "key", e.target.value)}
+                        className="w-full bg-transparent border-0 text-zinc-200 focus:ring-1 focus:ring-zinc-600 rounded"
+                      />
+                    </td>
+                    <td className="px-2 py-1 whitespace-nowrap">
+                      <input
+                        type="text"
+                        value={v.value}
+                        onChange={(e) =>
+                          handleChange(i, "value", e.target.value)
+                        }
+                        className="w-full bg-transparent border-0 text-zinc-200 focus:ring-1 focus:ring-zinc-600 rounded"
+                      />
+                    </td>
+                    <td className="px-2 py-1 whitespace-nowrap text-center">
+                      <input
+                        type="checkbox"
+                        checked={v.enabled}
+                        onChange={(e) =>
+                          handleChange(i, "enabled", e.target.checked)
+                        }
+                        className="h-4 w-4 text-zinc-600 rounded border-zinc-700 focus:ring-zinc-600"
+                      />
+                    </td>
+                    <td className="px-2 py-1 whitespace-nowrap text-center">
+                      <button
+                        onClick={() => handleDeleteVariable(i)}
+                        className="text-zinc-400 hover:text-red-400 transition-colors p-1"
+                        title="Delete variable"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M3 6h18" />
+                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                        </svg>
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      ) : (
+        <div className="flex flex-col items-center justify-center py-12 text-center h-full">
+          <svg
+            className="w-16 h-16 text-zinc-600 mb-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="1.5"
+              d="M13 10V3L4 14h7v7l9-11h-7z"
+            ></path>
+          </svg>
+          <h3 className="text-lg font-medium text-zinc-300 mb-1">
+            No Variables de entorno
+          </h3>
+          <p className="text-zinc-500 max-w-md">
+            Importe un archivo JSON del entorno de Postman o agregue variables
+            manualmente para comenzar.
+          </p>
+          <button
+            onClick={toggleModal}
+            className="mt-4 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-md text-zinc-200 hover:text-white transition-colors"
+          >
+            Import Environment
+          </button>
         </div>
       )}
     </div>

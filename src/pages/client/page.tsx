@@ -1,20 +1,21 @@
-import './App.css';
-import { Icon } from '@iconify/react';
-import sendIcon from '@iconify-icons/tabler/send';
-import { AnimatePresence, motion } from 'framer-motion';
-import { useCallback, useState } from 'react';
-import { CodeEditorLazy } from '../../components/lazy-components';
-import AddQueryParam from './components/addqueryparams/addQueryParams';
-import EnviromentComponent from './components/enviroment/enviroment.component';
-import { useEnviromentStore } from './components/enviroment/store.enviroment';
-import { HeadersAddRequest } from './components/headers/Headers';
-import ScriptComponent from './components/scripts/script-component';
-import { SavedRequestsSidebar } from './components/sidebar/SavedRequestSidebar';
-import ClientCustomHook from './hooks/client-hook';
-import RequestHook from './hooks/request.client';
-import { Methodos, Opciones, VariantsAnimation } from './mapper-ops';
-import type { EventRequest } from './types/types';
-import ResponsesTypesComponent from './components/responses-core/response.';
+import "./App.css";
+import { Icon } from "@iconify/react";
+import sendIcon from "@iconify-icons/tabler/send";
+import { AnimatePresence, motion } from "framer-motion";
+import { useCallback, useState } from "react";
+import { CodeEditorLazy } from "../../components/lazy-components";
+import AddQueryParam from "./components/addqueryparams/addQueryParams";
+import EnviromentComponent from "./components/enviroment/enviroment.component";
+import { useEnviromentStore } from "./components/enviroment/store.enviroment";
+import { HeadersAddRequest } from "./components/headers/Headers";
+import ScriptComponent from "./components/scripts/script-component";
+import { SavedRequestsSidebar } from "./components/sidebar/SavedRequestSidebar";
+import ClientCustomHook from "./hooks/client-hook";
+import RequestHook from "./hooks/request.client";
+import { Methodos, Opciones, VariantsAnimation } from "./mapper-ops";
+import type { EventRequest } from "./types/types";
+import ResponsesTypesComponent from "./components/responses-core/response.";
+import { ResizableSidebar } from "./components/itemnode/item-node";
 
 export default function AppClient() {
   const { value, setter } = ClientCustomHook();
@@ -75,7 +76,7 @@ export default function AppClient() {
   });
 
   const [selectedIdx, setMimeSelected] = useState(
-    Number(sessionStorage.getItem('selectedIdx')) || 0,
+    Number(sessionStorage.getItem("selectedIdx")) || 0,
   );
 
   const handlerChangeInputRequest = (
@@ -145,14 +146,14 @@ export default function AppClient() {
         onClose={() => setIsOpenSiderbar(false)}
       />
 
-      <div className="w-full flex flex-col px-4 md:px-8 py-4 gap-2  bg-black/70">
+      <div className="w-full flex flex-col px-4 md:px-8 py-4 gap-2  ">
         <form ref={refForm} onSubmit={handleRequest} className="space-y-4 mb-4">
           <div className="flex flex-col md:flex-row gap-3 md:items-center">
             <div className="relative">
               <button
                 type="button"
                 onClick={handleClickShowMethod}
-                className={`py-1 px-4 rounded-md font-semibold text-lg ${selectedMethod === 'GET' ? 'bg-green-800 text-green-300' : selectedMethod === 'POST' ? 'bg-blue-500 text-blue-200' : selectedMethod === 'PUT' ? 'bg-yellow-800 text-yellow-300' : selectedMethod === 'PATCH' ? 'bg-orange-800 text-orange-300' : selectedMethod === 'DELETE' ? 'bg-red-800 text-red-300' : 'bg-gray-700'}`} // Dynamic button color based on method
+                className={`py-1 px-4  font-semibold text-lg ${selectedMethod === "GET" ? "bg-green-800 text-green-300" : selectedMethod === "POST" ? "bg-blue-500 text-blue-200" : selectedMethod === "PUT" ? "bg-yellow-800 text-yellow-300" : selectedMethod === "PATCH" ? "bg-orange-800 text-orange-300" : selectedMethod === "DELETE" ? "bg-red-800 text-red-300" : "bg-gray-700"}`} // Dynamic button color based on method
               >
                 {selectedMethod}
               </button>
@@ -162,7 +163,7 @@ export default function AppClient() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="absolute top-full left-0 w-32 bg-black  z-50 rounded shadow-2xl overflow-hidden"
+                    className="absolute top-full left-0 w-32 bg-zinc-900/80 backdrop-blur-2xl  z-50 rounded shadow-2xl overflow-hidden"
                   >
                     {Methodos.map((metodo, idx) => (
                       <button
@@ -173,7 +174,7 @@ export default function AppClient() {
                           setShowMethods(false);
                         }}
                         className={`w-full text-left px-4 py-2 hover:bg-zinc-700 transition-colors duration-200
-                          ${metodo.name.toUpperCase() === selectedMethod ? 'bg-sky-500 text-white' : ''}`}
+                          ${metodo.name.toUpperCase() === selectedMethod ? "bg-sky-500 text-white" : ""}`}
                       >
                         {metodo.name}
                       </button>
@@ -183,9 +184,9 @@ export default function AppClient() {
               </AnimatePresence>
             </div>
 
-            <div className="bg-black relative flex-1 p-2 rounded border border-zinc-800">
+            <div className="bg-zinc-900/80 relative flex-1 p-2 rounded border border-zinc-800">
               <div
-                className={endpointUrl.length === 0 ? ' p-2' : ''}
+                className={endpointUrl.length === 0 ? " p-2" : ""}
                 dangerouslySetInnerHTML={{
                   __html: formatterInputRequest(entornoActual, endpointUrl),
                 }}
@@ -202,7 +203,7 @@ export default function AppClient() {
 
             <button
               type="submit"
-              className=" px-6 py-2 rounded-md  bg-gradient-to-br from-green-800 to-green-900 hover:bg-green-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className=" px-6 py-2  bg-gradient-to-br from-green-500 to-green-700 hover:bg-green-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isLoading}
             >
               {isLoading ? (
@@ -210,18 +211,18 @@ export default function AppClient() {
                   <Icon icon="eos-icons:loading" className="animate-spin" />
                 </span>
               ) : (
-                'Enviar'
+                "Enviar"
               )}
             </button>
           </div>
 
-          <div className="flex gap-2 text-white  rounded-t-lg border-b border-zinc-800 truncate bg-black">
+          <div className="flex text-white border-zinc-800 truncate bg-zinc-900/80">
             {Opciones.map((opcion, index) => (
               <button
                 key={index}
                 type="button"
-                className={`btn btn-sm text-sm py-2 px-4 rounded-t-lg transition-colors duration-200
-                  ${index === selectedIdx ? 'border-b-2 border-sky-500 text-sky-500 font-semibold bg-zinc-950' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}
+                className={`btn btn-sm text-sm py-2 px-4  transition-colors duration-200
+                  ${index === selectedIdx ? "border-b-2 border-green-primary text-green-primary font-semibold bg-zinc-950" : "text-zinc-400 hover:text-white hover:bg-zinc-800"}`}
                 onClick={() => setMimeSelected(index)}
               >
                 {opcion.name}
@@ -230,11 +231,11 @@ export default function AppClient() {
           </div>
         </form>
         <div
-          className="grid relative md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-2  gap-4 h-full max-h-[82vh] overflow-y-scroll rounded-xl"
+          className="grid relative md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-2  gap-4 h-full max-h-[82vh] overflow-y-scroll "
           aria-label="grid"
         >
-          <div className="bg-black p-6 rounded-xl border relative border-zinc-800 flex flex-col shadow-lg">
-            <AnimatePresence mode="wait" key={'uja'}>
+          <div className="bg-zinc-900/80 p-4  border relative border-zinc-800 flex flex-col shadow-lg">
+            <AnimatePresence mode="wait" key={"uja"}>
               {selectedIdx === 0 && ( // Body
                 <motion.div
                   key="body-section-body"
@@ -242,7 +243,7 @@ export default function AppClient() {
                   className="flex flex-col flex-1"
                 >
                   <div className="flex gap-4 mb-3">
-                    {['json', 'form', 'xml', 'none'].map((type, idx) => (
+                    {["json", "form", "xml", "none"].map((type, idx) => (
                       <label
                         key={idx}
                         className="text-sm text-gray-300 flex items-center gap-2 cursor-pointer"
@@ -317,7 +318,7 @@ export default function AppClient() {
               )}
             </AnimatePresence>
           </div>
-          <div className="bg-black p-6 rounded-xl border border-zinc-800 flex flex-col overflow-hidden shadow-lg">
+          <div className="bg-zinc-900/80 p-4 border border-zinc-800 flex flex-col overflow-hidden shadow-lg">
             {response || isLoading ? (
               <>
                 {isLoading ? (

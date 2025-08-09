@@ -1,13 +1,13 @@
-import { AnimatePresence, motion } from 'framer-motion';
-import { useState } from 'react';
+import { AnimatePresence, motion } from "framer-motion";
+import { useState } from "react";
 import type {
   EventRequest,
   Item,
   SavedRequestsSidebarProps,
-} from '../../types/types';
-import ItemNode from '../itemnode/item-node';
-import SidebarHook from './hooks/sidebar-hook';
-import { useEnviromentStore } from '../enviroment/store.enviroment';
+} from "../../types/types";
+import ItemNode from "../itemnode/item-node";
+import SidebarHook from "./hooks/sidebar-hook";
+import { useEnviromentStore } from "../enviroment/store.enviroment";
 
 export function SavedRequestsSidebar({
   isOpen,
@@ -31,8 +31,8 @@ export function SavedRequestsSidebar({
 
   const [currenIdx, setCurrentIdx] = useState<number>(1);
 
-  const [currentId, setCurrentId] = useState<string>('');
-  const [currentName, setCurrentName] = useState<string>('');
+  const [currentId, setCurrentId] = useState<string>("");
+  const [currentName, setCurrentName] = useState<string>("");
 
   const actualizarNombre = (oldName: string, newName: string) => {
     const nuevaColeccion = parsed.map((item) => {
@@ -132,14 +132,14 @@ export function SavedRequestsSidebar({
   };
 
   return (
-    <AnimatePresence key={'gokuuu'}>
+    <AnimatePresence key={"gokuuu"}>
       {isOpen && (
-        <motion.div className="top-0 left-0 h-svh max-h-svh w-xs lg:w-lg bg-black backdrop-blur-3xl p-6 z-50 md:flex flex-col hidden shadow-xl border-r border-zinc-800">
+        <motion.div className="top-0 left-0 h-svh max-h-svh w-xs lg:w-lg bg-zinc-900/80 backdrop-blur-3xl p-6 z-50 md:flex flex-col hidden shadow-xl border-r border-zinc-800">
           {/* Header */}
           <div className="flex justify-start items-center my-6 space-x-3">
-            <span className="pixelarticons--coffee-alt text-2xl text-amber-400"></span>
-            <h3 className="text-2xl font-bold bg-gradient-to-r from-amber-300 to-amber-400 bg-clip-text text-transparent">
-              Kitten Axios
+            <span className="pixelarticons--coffee-alt text-2xl "></span>
+            <h3 className="text-2xl font-bold text-white bg-clip-text ">
+              Elise
             </h3>
           </div>
 
@@ -148,7 +148,7 @@ export function SavedRequestsSidebar({
             <button
               aria-label="Exportar coleccion"
               title="Importar coleccion"
-              className="flex items-center gap-2 px-3 py-2 text-xs bg-zinc-900 hover:bg-zinc-700 rounded-md transition-colors text-zinc-200 hover:text-white"
+              className="flex items-center gap-2 px-2 py-1 text-xs bg-zinc-900 hover:bg-zinc-700 rounded-md transition-colors text-zinc-200 hover:text-white"
               onClick={handleClickCargueCollecion}
             >
               <span className="tabler--file-upload text-sm"></span>
@@ -165,29 +165,31 @@ export function SavedRequestsSidebar({
             </button>
           </div>
 
+          <div className="bg-zinc-950/60 px-2 py-1 flex w-full transition-all flex-shrink-0">
+            <div
+              className={`p-2 cursor-pointer transition-colors flex-1 ${currenIdx === 1 ? "bg-green-primary/10 text-green-primary" : "hover:bg-zinc-700 text-zinc-300"}`}
+              onClick={() => setCurrentIdx(1)}
+            >
+              <div className="flex items-center gap-2 text-xs">
+                <span className="tabler--server "></span>
+                <span className="text-xs">
+                  Environment ({enviromentList.length}){" "}
+                </span>
+              </div>
+            </div>
+            <div
+              className={`p-2 flex-1 cursor-pointer transition-colors ${currenIdx === 2 ? "bg-green-primary/10 text-green-primary" : "hover:bg-zinc-700 text-zinc-300"}`}
+              onClick={() => setCurrentIdx(2)}
+            >
+              <div className="flex items-center gap-2">
+                <span className="tabler--folder text-sm"></span>
+                <span>Colleciones ({listColeccion.length})</span>
+              </div>
+            </div>
+          </div>
           {/* Main Content */}
           <div className="flex w-full gap-4 flex-1 overflow-hidden">
             {/* Sidebar Navigation */}
-            <div className="bg-zinc-900 rounded-lg p-2 truncate w-38 transition-all flex-shrink-0">
-              <div
-                className={`p-3 rounded-md cursor-pointer transition-colors ${currenIdx === 1 ? 'bg-amber-500/10 text-amber-400' : 'hover:bg-zinc-700 text-zinc-300'}`}
-                onClick={() => setCurrentIdx(1)}
-              >
-                <div className="flex items-center gap-2">
-                  <span className="tabler--server text-sm"></span>
-                  <span>Environment ({enviromentList.length}) </span>
-                </div>
-              </div>
-              <div
-                className={`p-3 rounded-md cursor-pointer transition-colors ${currenIdx === 2 ? 'bg-amber-500/10 text-amber-400' : 'hover:bg-zinc-700 text-zinc-300'}`}
-                onClick={() => setCurrentIdx(2)}
-              >
-                <div className="flex items-center gap-2">
-                  <span className="tabler--folder text-sm"></span>
-                  <span>Colleciones ({listColeccion.length})</span>
-                </div>
-              </div>
-            </div>
 
             {/* Content Area */}
             <div className="flex-1 bg-zinc-900 rounded-lg p-4 overflow-hidden flex flex-col">
@@ -210,9 +212,9 @@ export function SavedRequestsSidebar({
                   {listColeccion.map((e, index) => (
                     <div
                       key={`col-${index}`}
-                      className="mb-4 last:mb-0 bg-zinc-800/50 border border-zinc-700 p-2 text-xs"
+                      className="p-1.5 rounded-md border border-zinc-800 shadow-xl transition-colors bg-zinc-800/60 text-xs cursor-pointer"
                     >
-                      <div className="text-lg font-medium text-zinc-200 mb-2 flex items-center gap-2">
+                      <div className="text-xs font-medium text-zinc-200 mb-2 flex items-center gap-2">
                         <span className="tabler--folder-filled text-amber-400"></span>
                         {e.name}
                       </div>

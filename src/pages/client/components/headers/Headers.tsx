@@ -1,9 +1,9 @@
-import { Icon } from '@iconify/react/dist/iconify.js';
-import plus from '@iconify-icons/tabler/plus';
-import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
-import toast from 'react-hot-toast';
-import { useStoreHeaders } from '../../stores/headers-store';
+import { Icon } from "@iconify/react/dist/iconify.js";
+import plus from "@iconify-icons/tabler/plus";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { useStoreHeaders } from "../../stores/headers-store";
 
 interface HeaderItem {
   id: string;
@@ -23,17 +23,17 @@ export function HeadersAddRequest() {
   const addNewHeader = () => {
     const newHeader = {
       id: crypto.randomUUID(),
-      key: '',
-      value: '',
+      key: "",
+      value: "",
     };
 
     setHeaders([...headers, newHeader]);
-    toast.success('Nueva cabecera añadida');
+    toast.success("Nueva cabecera añadida");
   };
 
   const updateHeader = (
     id: string,
-    field: 'key' | 'value',
+    field: "key" | "value",
     newValue: string,
   ) => {
     setHeaders(
@@ -47,15 +47,15 @@ export function HeadersAddRequest() {
     if (isDeactivate) {
       setHeadersDeactivate(headers.filter((header) => header.id === id));
       setHeaders(headers.filter((header) => header.id !== id));
-      toast.success('Cabecera desactivada');
+      toast.success("Cabecera desactivada");
       return;
     }
     setHeaders(headers.filter((header) => header.id !== id));
-    toast.success('Cabecera eliminada');
+    toast.success("Cabecera eliminada");
   };
 
   const handleKeySelect = (id: string, selectedKey: string) => {
-    updateHeader(id, 'key', selectedKey);
+    updateHeader(id, "key", selectedKey);
     toast.success(`Cabecera establecida: ${selectedKey}`);
   };
 
@@ -70,73 +70,91 @@ export function HeadersAddRequest() {
         Añadir nueva cabecera
       </button>
 
-      <div className="h-full">
+      <div className="h-full flex flex-col">
+        {/* Estado vacío */}
         {headers.length === 0 && (
-          <div className="h-full flex justify-center-safe items-center w-full flex-col ">
-            <span className="tabler--mood-empty block "></span>
-            <span className="block text-lg text-zinc-400">
-              No existen Cabeceras cargadas.
-            </span>
+          <div className="h-full flex flex-col justify-center items-center gap-3 p-6 text-center">
+            <Icon
+              icon="tabler:file-text"
+              className="text-zinc-500/80"
+              width="48"
+              height="48"
+            />
+            <div className="space-y-1">
+              <h3 className="text-lg font-medium text-zinc-300">
+                No hay cabeceras configuradas
+              </h3>
+              <p className="text-zinc-500 text-sm">
+                Agrega cabeceras HTTP para personalizar tu solicitud
+              </p>
+            </div>
           </div>
         )}
-        <div className="flex flex-col gap-y-4 mt-4">
+
+        {/* Lista de cabeceras */}
+        <div className="flex flex-col gap-3 mt-2">
           {headers.map((header) => (
             <div
-              key={header.id + Math.random()}
-              className="flex gap-4 items-center"
+              key={header.id}
+              className="flex gap-3 items-center bg-zinc-900/50 p-2 rounded-lg border border-zinc-800/50"
             >
-              <div className="relative flex-1">
+              {/* Campo Clave con selección de cabeceras comunes */}
+              <div className="relative flex-1 group">
                 <input
                   type="text"
-                  className="input-gray w-full"
-                  placeholder="Clave"
+                  className="input-custom w-full bg-zinc-900/70"
+                  placeholder="Nombre de cabecera"
                   value={header.key}
                   onChange={(e) =>
-                    updateHeader(header.id, 'key', e.target.value)
+                    updateHeader(header.id, "key", e.target.value)
                   }
                 />
-                <AnimatePresence mode="wait">
-                  <motion.select
-                    className="absolute bg-black overflow-hidden rounded  inset-0 opacity-0 w-full h-full cursor-pointer"
-                    value={header.key}
-                    onChange={(e) => handleKeySelect(header.id, e.target.value)}
-                    whileHover={{ opacity: 1 }}
-                  >
-                    <option value="">Seleccionar cabecera común</option>
-                    {requestHeaders.map((headerOption) => (
-                      <option key={headerOption} value={headerOption}>
-                        {headerOption}
-                      </option>
-                    ))}
-                  </motion.select>
-                </AnimatePresence>
+                <motion.select
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer bg-transparent"
+                  value={header.key}
+                  onChange={(e) => handleKeySelect(header.id, e.target.value)}
+                  whileHover={{ opacity: 1 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <option value="">Cabeceras comunes...</option>
+                  {requestHeaders.map((headerOption) => (
+                    <option key={headerOption} value={headerOption}>
+                      {headerOption}
+                    </option>
+                  ))}
+                </motion.select>
               </div>
 
+              {/* Campo Valor */}
               <input
                 type="text"
-                className="input-gray flex-1"
+                className="input-custom flex-1 bg-zinc-900/70"
                 placeholder="Valor"
-                onChange={(e) => {
-                  updateHeader(header.id, 'value', e.target.value);
-                }}
+                value={header.value}
+                onChange={(e) =>
+                  updateHeader(header.id, "value", e.target.value)
+                }
               />
 
-              <div className="flex gap-2">
+              {/* Botones de acción */}
+              <div className="flex gap-1">
                 <button
                   type="button"
-                  className="btn-black p-2"
+                  className="p-2 text-zinc-400 hover:text-red-400 transition-colors"
                   onClick={() => removeHeader(header.id, false)}
                   aria-label="Eliminar cabecera"
+                  title="Eliminar cabecera"
                 >
-                  <Icon icon="tabler:trash" width="16" height="16" />
+                  <Icon icon="tabler:trash" width="18" height="18" />
                 </button>
                 <button
-                  onClick={() => removeHeader(header.id, true)}
                   type="button"
-                  className="btn-black p-2"
+                  className="p-2 text-zinc-400 hover:text-green-400 transition-colors"
+                  onClick={() => removeHeader(header.id, true)}
                   aria-label="Confirmar cabecera"
+                  title="Confirmar cabecera"
                 >
-                  <Icon icon="tabler:check" width="16" height="16" />
+                  <Icon icon="tabler:check" width="18" height="18" />
                 </button>
               </div>
             </div>
@@ -148,15 +166,15 @@ export function HeadersAddRequest() {
 }
 
 const requestHeaders = [
-  'Accept',
-  'Content-Type',
-  'Authorization',
-  'User-Agent',
-  'Origin',
-  'Cookie',
-  'Cache-Control',
-  'Host',
-  'Referer',
-  'Accept-Encoding',
-  'Accept-Language',
+  "Accept",
+  "Content-Type",
+  "Authorization",
+  "User-Agent",
+  "Origin",
+  "Cookie",
+  "Cache-Control",
+  "Host",
+  "Referer",
+  "Accept-Encoding",
+  "Accept-Language",
 ];

@@ -1,6 +1,6 @@
-import { Icon } from '@iconify/react/dist/iconify.js';
-import { useEffect, useState } from 'react';
-import { useParamsStore } from './queryparams-store';
+import { Icon } from "@iconify/react/dist/iconify.js";
+import { useEffect, useState } from "react";
+import { useParamsStore } from "./queryparams-store";
 
 type Param = { key: string; value: string };
 
@@ -9,10 +9,12 @@ const AddQueryParam = ({
   setCurrentParams,
 }: {
   currentParams?: Param[] | null;
-  setCurrentParams: React.Dispatch<React.SetStateAction<Record<string, string>>>;
+  setCurrentParams: React.Dispatch<
+    React.SetStateAction<Record<string, string>>
+  >;
 }) => {
   const [params, setParams] = useState<Param[]>([]);
-  const [paramsFinal, setParamsFinal] = useState<string>('');
+  const [paramsFinal, setParamsFinal] = useState<string>("");
 
   const setValor = useParamsStore((e) => e.setValor);
 
@@ -24,8 +26,8 @@ const AddQueryParam = ({
 
   const handleParamChange = (
     index: number,
-    field: 'key' | 'value',
-    value: string
+    field: "key" | "value",
+    value: string,
   ) => {
     const updatedParams = [...params];
     updatedParams[index][field] = value;
@@ -47,12 +49,11 @@ const AddQueryParam = ({
       .filter((param) => param.key.trim() && param.value.trim())
       .map(
         (param) =>
-          `${encodeURIComponent(param.key)}=${encodeURIComponent(param.value)}`
+          `${encodeURIComponent(param.key)}=${encodeURIComponent(param.value)}`,
       )
-      .join('&');
+      .join("&");
 
-  const noParams =
-    !Array.isArray(currentParams) || currentParams.length === 0;
+  const noParams = !Array.isArray(currentParams) || currentParams.length === 0;
 
   return (
     <div className="h-full w-full flex flex-col gap-2 my-6">
@@ -78,11 +79,25 @@ const AddQueryParam = ({
           </tbody>
         </table>
       ) : (
-        <div className="h-full flex justify-center items-center flex-col">
-          <Icon icon="tabler:bounce-left-filled" width="44" height="44" />
-          <span className="text-lg text-zinc-400">
-            Todavía no tienes parámetros cargados.
-          </span>
+        <div className="h-full flex flex-col justify-center items-center gap-4 p-6 text-center">
+          <Icon
+            icon="tabler:file-alert"
+            width="48"
+            height="48"
+            className="text-zinc-500/80"
+          />
+          <div className="space-y-2">
+            <h3 className="text-xl font-medium text-zinc-300">
+              No hay parámetros configurados
+            </h3>
+            <p className="text-zinc-500 max-w-md">
+              Aún no has agregado ningún parámetro. Comienza importando un
+              archivo o creando uno nuevo.
+            </p>
+          </div>
+          <button className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-md text-white transition-colors">
+            Agregar parámetros
+          </button>
         </div>
       )}
     </div>

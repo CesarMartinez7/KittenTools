@@ -1,10 +1,10 @@
-import { Icon } from '@iconify/react/dist/iconify.js';
-import { AnimatePresence, motion } from 'framer-motion';
-import { useMemo, useState } from 'react';
-import { CodeEditorLazy } from '../../../../components/lazy-components';
-import { JsonNode } from '../../../../ui/formatter-JSON/Formatter';
-import { TypesResponse } from '../../mapper-ops';
-import toast from 'react-hot-toast';
+import { Icon } from "@iconify/react/dist/iconify.js";
+import { AnimatePresence, motion } from "framer-motion";
+import { useMemo, useState } from "react";
+import { CodeEditorLazy } from "../../../../components/lazy-components";
+import { JsonNode } from "../../../../ui/formatter-JSON/Formatter";
+import { TypesResponse } from "../../mapper-ops";
+import toast from "react-hot-toast";
 
 interface ResponseTypes {
   height: string;
@@ -23,34 +23,34 @@ export default function ResponsesTypesComponent({
 }: ResponseTypes) {
   const [showsContentTypes, setShowsContentTypes] = useState<boolean>(false);
   const [contentType, setContentType] = useState<string>(
-    contentTypeData || 'JSON',
+    contentTypeData || "JSON",
   );
 
   // Calcular tamaño de la respuesta
   const size = useMemo(() => {
     const sizeInKB = new TextEncoder().encode(data).length / 1024;
-    return sizeInKB.toFixed(2) + 'KB';
+    return sizeInKB.toFixed(2) + "KB";
   }, [data]);
 
   // Estilo del código de estado según el rango
   const getStatusCodeStyle = (code: number) => {
-    if (code >= 200 && code < 300) return 'bg-green-900/50 text-green-400';
-    if (code >= 300 && code < 400) return 'bg-blue-900/50 text-blue-400';
-    if (code >= 400 && code < 500) return 'bg-yellow-900/50 text-yellow-400';
-    if (code >= 500) return 'bg-red-900/50 text-red-400';
-    return 'bg-gray-900/50 text-gray-400';
+    if (code >= 200 && code < 300) return "bg-green-900/50 text-green-400";
+    if (code >= 300 && code < 400) return "bg-blue-900/50 text-blue-400";
+    if (code >= 400 && code < 500) return "bg-yellow-900/50 text-yellow-400";
+    if (code >= 500) return "bg-red-900/50 text-red-400";
+    return "bg-gray-900/50 text-gray-400";
   };
 
   const handleCopy = () => {
     navigator.clipboard
       .writeText(data)
-      .then(() => toast.success('Copiado Con exito'))
-      .catch(() => toast.error('Ocurrio un error'));
+      .then(() => toast.success("Copiado Con exito"))
+      .catch(() => toast.error("Ocurrio un error"));
   };
 
   return (
     <div
-      className="h-full flex flex-col border border-zinc-900 rounded-lg overflow-hidden"
+      className="h-full flex flex-col  rounded-lg overflow-hidden"
       style={{ height }}
     >
       {/* Header */}
@@ -69,8 +69,8 @@ export default function ResponsesTypesComponent({
               <Icon
                 icon={
                   showsContentTypes
-                    ? 'tabler:chevron-up'
-                    : 'tabler:chevron-down'
+                    ? "tabler:chevron-up"
+                    : "tabler:chevron-down"
                 }
                 width="16px"
               />
@@ -94,7 +94,7 @@ export default function ResponsesTypesComponent({
                         setShowsContentTypes(false);
                       }}
                       className={`w-full text-left px-4 py-2 flex items-center gap-3 hover:bg-zinc-700 transition-colors ${
-                        contentType === type.name ? 'bg-zinc-800' : ''
+                        contentType === type.name ? "bg-zinc-800" : ""
                       }`}
                       role="option"
                       aria-selected={contentType === type.name}
@@ -124,7 +124,7 @@ export default function ResponsesTypesComponent({
               className="px-2.5 py-1 rounded-md text-sm font-medium bg-zinc-800 text-zinc-300"
               aria-label={`Response time: ${timeResponse}ms`}
             >
-              {typeof timeResponse === 'number'
+              {typeof timeResponse === "number"
                 ? `${timeResponse}ms`
                 : timeResponse}
             </span>
@@ -134,7 +134,7 @@ export default function ResponsesTypesComponent({
 
       {/* Content area */}
       <div className="flex-1 overflow-auto p-4">
-        {contentType === 'JSON' && (
+        {contentType === "JSON" && (
           <JsonNode
             open={true}
             isChange={false}
@@ -144,7 +144,7 @@ export default function ResponsesTypesComponent({
           />
         )}
 
-        {contentType === 'XML' && (
+        {contentType === "XML" && (
           <CodeEditorLazy
             language="xml"
             value={data}
@@ -152,7 +152,7 @@ export default function ResponsesTypesComponent({
           />
         )}
 
-        {contentType === 'BASE64' && (
+        {contentType === "BASE64" && (
           <div className="bg-zinc-800/50 p-4 rounded-md overflow-auto">
             <pre className="text-green-400 break-words whitespace-pre-wrap">
               {btoa(JSON.stringify(data))}

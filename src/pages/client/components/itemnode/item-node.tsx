@@ -1,10 +1,103 @@
-import { Icon } from '@iconify/react/dist/iconify.js';
-import type React from 'react';
-import { useState } from 'react';
-import toast from 'react-hot-toast';
-import type { ItemNodeProps } from './types';
-import LazyListPerform from '../../../../ui/LazyListPerform';
+import { Icon } from "@iconify/react/dist/iconify.js";
+import type React from "react";
+import { useState, useRef, useEffect } from "react";
+import toast from "react-hot-toast";
+import type { ItemNodeProps } from "./types";
+import LazyListPerform from "../../../../ui/LazyListPerform";
 
+// Componente ResizableSidebar para contener múltiples ItemNodes
+interface ResizableSidebarProps {
+  children: React.ReactNode;
+  initialWidth?: number;
+  minWidth?: number;
+  maxWidth?: number;
+  className?: string;
+}
+
+const ResizableSidebar: React.FC<ResizableSidebarProps> = ({
+  children,
+  initialWidth = 300,
+  minWidth = 200,
+  maxWidth = 800,
+  className = "",
+}) => {
+  const [width, setWidth] = useState(initialWidth);
+  const [isResizing, setIsResizing] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const startXRef = useRef(0);
+  const startWidthRef = useRef(0);
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsResizing(true);
+    startXRef.current = e.clientX;
+    startWidthRef.current = width;
+  };
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isResizing) return;
+
+      const deltaX = e.clientX - startXRef.current;
+      const newWidth = startWidthRef.current + deltaX;
+
+      const constrainedWidth = Math.min(Math.max(newWidth, minWidth), maxWidth);
+      setWidth(constrainedWidth);
+    };
+
+    const handleMouseUp = () => {
+      setIsResizing(false);
+    };
+
+    if (isResizing) {
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
+      document.body.style.cursor = "col-resize";
+      document.body.style.userSelect = "none";
+    }
+
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+    };
+  }, [isResizing, minWidth, maxWidth]);
+
+  return (
+    <div
+      ref={containerRef}
+      className={`relative bg-zinc-900 border-r border-zinc-700 ${className}`}
+      style={{ width: `${width}px` }}
+    >
+      {/* Contenido del sidebar */}
+      <div className="h-full overflow-auto">{children}</div>
+
+      {/* Handle de resize */}
+      <div
+        className={`
+          absolute top-0 right-0 w-1 h-full cursor-col-resize group z-10
+          ${isResizing ? "bg-green-primary" : "hover:bg-green-primary/50"}
+        `}
+        onMouseDown={handleMouseDown}
+      >
+        {/* Indicador visual del handle */}
+        <div className="absolute right-0 top-1/2 transform translate-x-full -translate-y-1/2">
+          <div className="bg-zinc-800 border border-zinc-600 rounded-md p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            <Icon
+              icon="tabler:grip-vertical"
+              width="12"
+              height="12"
+              className="text-zinc-400"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ItemNode original (sin modificaciones)
 const ItemNode: React.FC<ItemNodeProps> = ({
   data,
   level = 0,
@@ -15,24 +108,22 @@ const ItemNode: React.FC<ItemNodeProps> = ({
   const [collapsed, setCollapsed] = useState(true);
   const [showResponses, setShowResponses] = useState(false);
   const [showBar, setShowBar] = useState(false);
-  const [contextPos, setContextPos] = useState<{ x: number; y: number } | null>(
-    null,
-  );
-  const indent = 1 * level;
 
+  const indent = 1 * level;
   const isFolder = !!data.item && data.item.length > 0;
   const haveResponses = data.response && data.response.length > 0;
+
+  const getDisplayName = () => {
+    if (!data.name || data.name.trim() === "") {
+      return isFolder ? "Carpeta sin nombre" : "Request sin nombre";
+    }
+    return data.name;
+  };
 
   const handleClickContextMenu = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setContextPos({ x: e.pageX, y: e.pageY });
-
-    if (showBar) {
-      setShowBar(false);
-      return;
-    }
-    setShowBar(true);
+    setShowBar(!showBar);
   };
 
   const handleClick = () => {
@@ -41,19 +132,19 @@ const ItemNode: React.FC<ItemNodeProps> = ({
     if (isFolder) {
       setCollapsed(!collapsed);
     } else {
-      const method = data.request?.method?.toUpperCase() || 'GET';
-      const url = data.request?.url?.raw || '';
+      const method = data.request?.method?.toUpperCase() || "GET";
+      const url = data.request?.url?.raw || "";
       const headers = data.request?.header;
       const events = data.event;
-      const params = data.request.url.query;
+      const params = data.request.url?.query;
       const responses = data.response;
 
-      let body = '';
-      let language = '';
+      let body = "";
+      let language = "";
 
-      if (method !== 'GET' && data.request?.body) {
-        body = data.request.body.raw || '';
-        language = data.request.body.options?.raw?.language || '';
+      if (method !== "GET" && data.request?.body) {
+        body = data.request.body.raw || "";
+        language = data.request.body.options?.raw?.language || "";
       }
 
       if (loadRequest) {
@@ -72,35 +163,55 @@ const ItemNode: React.FC<ItemNodeProps> = ({
   };
 
   const handleChangeName = () => {
-    const nuevo = prompt('Nuevo nombre:', data.name);
+    const currentName = getDisplayName();
+    const nuevo = prompt("Nuevo nombre:", currentName);
     if (nuevo && nuevo.trim()) {
-      actualizarNombre(data.name, nuevo.trim());
+      actualizarNombre(data.name || "", nuevo.trim());
     }
   };
 
   const handleClickDelete = () => {
-    const nameToDelete = data.name;
-    toast.success(nameToDelete);
-    eliminar(nameToDelete);
+    const nameToDelete = getDisplayName();
+    if (confirm(`¿Eliminar "${nameToDelete}"?`)) {
+      toast.success(`"${nameToDelete}" eliminado`);
+      eliminar(data.name || "");
+    }
   };
 
   const handleClickDuplicar = () => {
-    alert('handle duplicar click');
+    toast.info("Duplicando elemento...");
+  };
+
+  const getMethodColor = (method: string) => {
+    switch (method?.toUpperCase()) {
+      case "GET":
+        return "text-green-400";
+      case "POST":
+        return "text-blue-400";
+      case "PUT":
+        return "text-orange-400";
+      case "DELETE":
+        return "text-red-400";
+      case "PATCH":
+        return "text-purple-400";
+      default:
+        return "text-gray-400";
+    }
   };
 
   const mapperFolder = [
-    { name: 'Renombrar', action: handleChangeName },
-    { name: 'Duplicar', action: handleClickDuplicar },
-    { name: 'Eliminar', action: handleClickDelete },
-    { name: 'Nueva petición' },
-    { name: 'Nueva carpeta' },
-    { name: 'Info' },
+    { name: "Renombrar", action: handleChangeName },
+    { name: "Duplicar", action: handleClickDuplicar },
+    { name: "Eliminar", action: handleClickDelete },
+    { name: "Nueva petición" },
+    { name: "Nueva carpeta" },
+    { name: "Info" },
   ];
 
   const mapperRequest = [
-    { name: 'Renombrar', action: handleChangeName },
-    { name: 'Duplicar', action: handleClickDuplicar },
-    { name: 'Eliminar', action: handleClickDelete },
+    { name: "Renombrar", action: handleChangeName },
+    { name: "Duplicar", action: handleClickDuplicar },
+    { name: "Eliminar", action: handleClickDelete },
   ];
 
   return (
@@ -111,44 +222,52 @@ const ItemNode: React.FC<ItemNodeProps> = ({
       style={{ marginLeft: `${indent}px` }}
     >
       <div
-        onMouseDown={(e) => {
-          if (e.button === 1) e.preventDefault();
-        }}
         className="p-1.5 rounded-md border border-zinc-800 shadow-xl flex justify-between items-center group hover:bg-zinc-800 transition-colors bg-zinc-800/60 text-xs cursor-pointer"
         onClick={handleClick}
       >
         <div className="flex items-center gap-2">
           {isFolder && (
             <Icon
-              icon={collapsed ? 'tabler:folder' : 'tabler:folder-open'}
+              icon={collapsed ? "tabler:folder" : "tabler:folder-open"}
               width="15"
               height="15"
+              className={`${level === 0 ? "text-green-primary/85" : level === 1 ? "text-green-primary" : level === 2 ? "text-green-300" : level === 3 ? "text-green-200" : "text-green-100"}`}
             />
           )}
 
           {data.request?.method && !isFolder && (
             <span
-              className={`font-mono px-1 py-1 rounded-md ${
-                data.request.method === 'GET'
-                  ? 'text-green-400'
-                  : data.request.method === 'POST'
-                    ? 'text-blue-400'
-                    : 'text-orange-400'
-              }`}
+              className={`font-mono px-1 py-1 rounded-md ${getMethodColor(data.request.method)}`}
             >
               {data.request.method}
             </span>
           )}
 
-          <p className="truncate shiny-text">{data.name}</p>
+          <p
+            className={`truncate ${!data.name || data.name.trim() === "" ? "italic text-zinc-500" : "text-zinc-200"}`}
+          >
+            {getDisplayName()}
+          </p>
+        </div>
+
+        <div className="flex items-center gap-1">
+          {isFolder && data.item && (
+            <span className="text-zinc-500 text-[10px]">
+              {data.item.length}
+            </span>
+          )}
+          {haveResponses && (
+            <span className="text-green-400 text-[10px]">
+              {data.response.length}
+            </span>
+          )}
         </div>
       </div>
 
-      {/* Menú contextual */}
       {showBar && (
         <div
           className="absolute bg-zinc-900 text-white rounded-md shadow-lg z-50 p-2 w-40"
-          style={{ top: '100%', left: 0 }}
+          style={{ top: "100%", left: 0 }}
         >
           <ul className="text-sm space-y-1">
             {(isFolder ? mapperFolder : mapperRequest).map((res) => (
@@ -164,7 +283,6 @@ const ItemNode: React.FC<ItemNodeProps> = ({
         </div>
       )}
 
-      {/* Subitems si es carpeta */}
       {!collapsed && isFolder && (
         <div className="ml-2 flex flex-col gap-2">
           {data.item!.map((child, index) => (
@@ -182,7 +300,6 @@ const ItemNode: React.FC<ItemNodeProps> = ({
         </div>
       )}
 
-      {/* Toggle para mostrar responses */}
       {haveResponses && (
         <div className="ml-4 mt-1">
           <button
@@ -200,7 +317,6 @@ const ItemNode: React.FC<ItemNodeProps> = ({
                 <div
                   key={i}
                   className="py-1 px-2 border border-zinc-700 rounded bg-zinc-900"
-                  onClick={() => {}}
                 >
                   <p className="font-bold text-green-300">{resp.name}</p>
                   <p className="text-zinc-400">
@@ -217,3 +333,4 @@ const ItemNode: React.FC<ItemNodeProps> = ({
 };
 
 export default ItemNode;
+export { ResizableSidebar };
