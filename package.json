@@ -1,10 +1,9 @@
 {
-   "name": "reactmatter",
+  "name": "KittenTools",
   "version": "1.0.0",
   "main": "main.js",
   "description": "Un visualizador y formateador de JSON hecho con Electron y React",
-  "author": "Cesar Martinez"
-,
+  "author": "Cesar Martinez",
   "scripts": {
     "build": "rsbuild build",
     "elect": "electron main.js",
@@ -17,7 +16,8 @@
     "version": "auto-changelog --tag-prefix '' --unreleased --commit-limit false && git add CHANGELOG.md",
     "start": "electron-forge start",
     "package": "electron-forge package",
-    "make": "electron-forge make"
+    "make": "npm run build && electron-forge make"
+    
   },
   "dependencies": {
     "@iconify-icons/mdi": "^1.2.48",

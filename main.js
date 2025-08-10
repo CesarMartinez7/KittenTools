@@ -5,8 +5,9 @@ const isDev = !app.isPackaged;
 
 function createWindow() {
   const win = new BrowserWindow({
-    width: 1000,
-    height: 800,
+    icon: `/images/coffe-icon.png`,
+    width: 1840,
+    height: 1080,
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: false,
