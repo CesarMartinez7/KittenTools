@@ -139,7 +139,7 @@ export function SavedRequestsSidebar({
           <div className="flex justify-start items-center my-6 space-x-3">
             <span className="pixelarticons--coffee-alt text-2xl "></span>
             <h3 className="text-2xl font-bold text-white bg-clip-text ">
-              Elise
+              Elisa
             </h3>
           </div>
 

@@ -12,12 +12,10 @@
     "format": "biome format --write",
     "lint": "eslint .",
     "preview": "rsbuild preview",
-    "dist": "electron-builder",
     "version": "auto-changelog --tag-prefix '' --unreleased --commit-limit false && git add CHANGELOG.md",
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "npm run build && electron-forge make"
-    
   },
   "dependencies": {
     "@iconify-icons/mdi": "^1.2.48",
