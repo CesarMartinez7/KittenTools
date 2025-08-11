@@ -67,7 +67,7 @@ const ResizableSidebar: React.FC<ResizableSidebarProps> = ({
   return (
     <div
       ref={containerRef}
-      className={`relative bg-zinc-900 border-r border-zinc-700 ${className}`}
+      className={`relative dark:bg-zinc-900 border-r dark:border-zinc-700 border border-zinc-200${className}`}
       style={{ width: `${width}px` }}
     >
       {/* Contenido del sidebar */}

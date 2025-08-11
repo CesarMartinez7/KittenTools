@@ -6,7 +6,7 @@ import type {
   SavedRequestsSidebarProps,
 } from '../../types/types';
 import { useEnviromentStore } from '../enviroment/store.enviroment';
-import ItemNode from '../itemnode/item-node';
+import ItemNode, { ResizableSidebar } from '../itemnode/item-node';
 import SidebarHook from './hooks/sidebar-hook';
 
 export function SavedRequestsSidebar({
@@ -111,6 +111,7 @@ export function SavedRequestsSidebar({
   };
 
   return (
+    <ResizableSidebar minWidth={100} maxWidth={600}>
     <AnimatePresence key={'gokuuu'}>
       {isOpen && (
         <motion.div
@@ -276,5 +277,6 @@ export function SavedRequestsSidebar({
         </motion.div>
       )}
     </AnimatePresence>
+    </ResizableSidebar>
   );
 }
