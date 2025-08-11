@@ -80,59 +80,60 @@ export default function EnviromentComponent() {
       </div>
 
       <BaseModalLazy isOpen={isOpen} onClose={toggleModal}>
-        <div className="bg-zinc-900/80 backdrop-blur-sm rounded-xl border border-zinc-800/50 p-6 max-w-md transition-all hover:border-zinc-700/50">
-          <label
-            htmlFor="environment-upload"
-            className="group flex flex-col items-center justify-center w-full h-64 border-2 border-dashed border-zinc-700/50 rounded-lg cursor-pointer bg-zinc-900/30 hover:bg-zinc-800/20 transition-all duration-200"
+      <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm rounded-xl border border-zinc-300/50 dark:border-zinc-800/50 p-6 max-w-md transition-all hover:border-zinc-400/50 dark:hover:border-zinc-700/50">
+  <label
+    htmlFor="environment-upload"
+    className="group flex flex-col items-center justify-center w-full h-64 border-2 border-dashed border-zinc-300/50 dark:border-zinc-700/50 rounded-lg cursor-pointer bg-zinc-50/30 dark:bg-zinc-900/30 hover:bg-zinc-100/50 dark:hover:bg-zinc-800/20 transition-all duration-200"
+  >
+    <div className="flex flex-col items-center justify-center p-6 text-center">
+      {/* Icono animado */}
+      <div className="relative mb-4">
+        <div className="w-12 h-12 bg-zinc-200/50 dark:bg-zinc-800/50 rounded-full flex items-center justify-center group-hover:bg-zinc-100/30 dark:group-hover:bg-zinc-700/30 transition-colors duration-200">
+          <svg
+            className="w-6 h-6 text-zinc-500 dark:text-zinc-400 group-hover:text-[#4ec9b0] transition-colors duration-200"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
           >
-            <div className="flex flex-col items-center justify-center p-6 text-center">
-              {/* Icono animado */}
-              <div className="relative mb-4">
-                <div className="w-12 h-12 bg-zinc-800/50 rounded-full flex items-center justify-center group-hover:bg-zinc-700/30 transition-colors duration-200">
-                  <svg
-                    className="w-6 h-6 text-zinc-400 group-hover:text-[#4ec9b0] transition-colors duration-200"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                    ></path>
-                  </svg>
-                </div>
-                <div className="absolute -inset-1 rounded-full bg-[#4ec9b0]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              </div>
-
-              {/* Texto principal */}
-              <h3 className="mb-1 text-lg font-medium text-zinc-200 group-hover:text-white transition-colors">
-                Subir entorno Postman
-              </h3>
-
-              {/* Instrucciones */}
-              <p className="text-sm text-zinc-400 mb-2">
-                Arrastra tu archivo JSON aquí o haz clic para seleccionarlo
-              </p>
-
-              {/* Detalles */}
-              <div className="text-xs text-zinc-500 bg-zinc-800/30 px-2 py-1 rounded">
-                Solo se aceptan archivos .json
-              </div>
-            </div>
-
-            {/* Input de archivo */}
-            <input
-              id="environment-upload"
-              type="file"
-              accept=".json"
-              className="hidden"
-              onChange={handleFileUpload}
-            />
-          </label>
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+            ></path>
+          </svg>
         </div>
+        <div className="absolute -inset-1 rounded-full bg-[#4ec9b0]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+      </div>
+
+      {/* Texto principal */}
+      <h3 className="mb-1 text-lg font-medium text-zinc-700 dark:text-zinc-200 group-hover:text-zinc-900 dark:group-hover:text-white transition-colors">
+        Subir entorno Postman
+      </h3>
+
+      {/* Instrucciones */}
+      <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-2">
+        Arrastra tu archivo JSON aquí o haz clic para seleccionarlo
+      </p>
+
+      {/* Detalles */}
+      <div className="text-xs text-zinc-600 dark:text-zinc-500 bg-zinc-200/50 dark:bg-zinc-800/30 px-2 py-1 rounded">
+        Solo se aceptan archivos .json
+      </div>
+    </div>
+
+    {/* Input de archivo */}
+    <input
+      id="environment-upload"
+      type="file"
+      accept=".json"
+      className="hidden"
+      onChange={handleFileUpload}
+    />
+  </label>
+</div>
+
       </BaseModalLazy>
 
       {entornoActual.length > 0 ? (

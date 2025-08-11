@@ -141,11 +141,6 @@ export default function AppClient() {
         onClose={() => setIsOpenSiderbar(false)}
       />
 
-<div className="bg-white text-black dark:bg-zinc-900 dark:text-white min-h-screen flex items-center justify-center">
-  <DarkModeToggle />
-</div>
-
-
       <div className="w-full flex flex-col px-4 md:px-8 py-4 gap-2">
         <form ref={refForm} onSubmit={handleRequest} className="space-y-4 mb-4">
           <div className="flex flex-col md:flex-row gap-3 md:items-center">

@@ -3,8 +3,7 @@ import { BrowserRouter, HashRouter, Route, Routes } from 'react-router';
 import './App.css';
 import { Suspense } from 'react';
 import { Toaster } from 'react-hot-toast';
-import { AppClientRouteLazy, MainPageLazy } from './pages/lazy-pages.tsx';
-import Aurora from './ui/aurora/Aurora.tsx';
+import { AppClientRouteLazy } from './pages/lazy-pages.tsx';
 
 const LoadingElement = () => (
   <div className="h-screen w-screen flex justify-center items-center bg-black/70">

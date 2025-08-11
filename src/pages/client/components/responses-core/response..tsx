@@ -54,8 +54,8 @@ export default function ResponsesTypesComponent({
       style={{ height }}
     >
       {/* Header */}
-      <div className="w-full bg-gradient-to-r from-zinc-900/80 to-zinc-900 px-3 py-2 flex justify-between items-center border-b border-zinc-900">
-        <div className="flex items-center gap-2">
+      <div className="w-full bg-zinc-200 dark:bg-gradient-to-r from-zinc-900/80 to-zinc-900 px-3 py-2 flex justify-between items-center border-b border-zinc-900">
+        <div className="flex items-center gap-2">|
           {/* Selector de tipo de contenido */}
           <div className="relative">
             <button
