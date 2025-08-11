@@ -236,7 +236,7 @@ export default function AppClient() {
                 className={`btn btn-sm text-sm py-2 px-4 transition-colors duration-200
             ${
               index === selectedIdx
-                ? 'border-b-2 border-green-500 text-green-600 dark:text-green-primary font-semibold bg-gray-200 dark:bg-zinc-950'
+                ? 'border-b-2 border-green-primary  dark:text-green-primary font-semibold bg-gray-200 dark:bg-zinc-950'
                 : 'text-gray-500 dark:text-zinc-400 hover:text-gray-800 hover:bg-gray-200 dark:hover:text-white dark:hover:bg-zinc-800'
             }`}
                 onClick={() => setMimeSelected(index)}

@@ -49,7 +49,7 @@ export default function ResponsesTypesComponent({
   };
 
   return (
-    <div
+   <div
       className="h-full flex flex-col  rounded-lg overflow-hidden"
       style={{ height }}
     >
@@ -189,6 +189,6 @@ export default function ResponsesTypesComponent({
           </button>
         </div>
       </div>
-    </div>
+    </div> 
   );
 }

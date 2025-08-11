@@ -189,7 +189,7 @@ export function SavedRequestsSidebar({
             >
               <div className="flex items-center gap-2">
                 <span className="tabler--folder text-sm"></span>
-                <span>Entornos ({listColeccion.length})</span>
+                <span>Entornos ({enviromentList.length})</span>
               </div>
             </div>
           </div>
