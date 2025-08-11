@@ -16,6 +16,7 @@ import RequestHook from './hooks/request.client';
 import { Methodos, Opciones, VariantsAnimation } from './mapper-ops';
 import type { EventRequest } from './types/types';
 import DarkModeToggle from './components/toogle-theme';
+import { ResizableSidebar } from './components/itemnode/item-node';
 
 export default function AppClient() {
   const { value, setter } = ClientCustomHook();
@@ -36,6 +37,7 @@ export default function AppClient() {
     contentType,
     statusCode,
     refForm,
+    headersResponse,
     scriptsValues,
     params2,
   } = value;
@@ -48,6 +50,7 @@ export default function AppClient() {
     setContentType,
     setIsLoading,
     setEndpointUrl,
+    setHeadersResponse,
     setShowMethods,
     setIsOpenSiderbar,
     setErrorAxios,
@@ -77,6 +80,7 @@ export default function AppClient() {
     setResponse,
     setTimeResponse,
     setStatusCode,
+    setHeadersResponse
   });
 
   const [selectedIdx, setMimeSelected] = useState(
@@ -215,10 +219,11 @@ export default function AppClient() {
                 className="p-2 absolute inset-0 text-transparent  transition-colors caret-gray-500 dark:caret-zinc-400"
               />
             </div>
-
+            
+            <div className='divide-x divide-zinc-900'>
             <button
               type="submit"
-              className="px-6 py-2 bg-gradient-to-br from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 text-white rounded transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-2 bg-gradient-to-br bg-blue-500 text-white rounded-l round transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isLoading}
             >
               {isLoading ? (
@@ -229,6 +234,8 @@ export default function AppClient() {
                 'Enviar'
               )}
             </button>
+              <button aria-label='options-envio' className='px-2 py-2 bg-blue-500  text-white rounded-r  transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed'><span className="tabler--arrow-badge-down-filled"></span></button>
+            </div>
           </div>
 
           <div className="flex text-gray-800 dark:text-white border border-gray-200 dark:border-zinc-800 truncate bg-gray-100 dark:bg-zinc-900/80">
@@ -332,8 +339,8 @@ export default function AppClient() {
               {selectedIdx === 5 && <EnviromentComponent />}
             </AnimatePresence>
           </div>
-
           <div className="bg-gray-100 dark:bg-zinc-900/80 p-4 border border-gray-200 dark:border-zinc-800 flex flex-col overflow-hidden shadow-lg">
+          
             {response || isLoading ? (
               <>
                 {isLoading ? (
@@ -341,8 +348,9 @@ export default function AppClient() {
                     <span className="svg-spinners--90-ring-with-bg block"></span>
                   </div>
                 ) : (
-                  <div className="h-[80vh] overflow-y-scroll text-xs">
+                  <div className="h-[88vh]">
                     <ResponsesTypesComponent
+                      headersResponse={headersResponse}
                       data={response}
                       statusCode={statusCode}
                     />

@@ -18,7 +18,7 @@ const CodeEditor = ({
   maxHeight = '100%',
   height = '200px',
   minHeight = '68vh',
-  placeholder = '// Escribe tu código aqui...',
+  placeholder = '// Hola aqui puedes pasarme raw',
   classNameContainer = '',
 }: CodeEditorProps) => {
   // Referencias al DOOM
@@ -176,7 +176,7 @@ const CodeEditor = ({
   };
 
   return (
-    <main className="borde rounded-xl overflow-hidden relative">
+    <main className="overflow-hidden relative">
       <AnimatePresence mode="wait">
         {isOpenBar && (
           <motion.div
@@ -235,7 +235,7 @@ const CodeEditor = ({
         {/* Line Numbers */}
         <div
           ref={lineNumbersRef}
-          className="px-3 py-2 text-sm overflow-hidd bg-gray-200/50  border-r-zinc-200  dark:bg-zinc-950/90   dark:border-zinc-800  text-sky-600 dark:text-[#00a4b9]"
+          className="px-3 py-2 text-sm overflow-hidd bg-gray-200/50  border-r-zinc-200  dark:bg-zinc-950/70  dark:border-zinc-800  text-sky-600 dark:text-teal-200"
           style={{ height, minHeight, maxHeight }}
         >
           {lineNumberElements}
@@ -277,7 +277,7 @@ const CodeEditor = ({
       <div className="relative flex justify-between items-center text-[8px] text-gray-500 dark:text-zinc-400 bg-gray-200/70 dark:bg-zinc-950/50 border-t border-gray-300 dark:border-zinc-800 px-2 py-1.5 shadow-sm">
         <div className="flex items-center gap-1">
           <button
-            className="bg-gray-300 hover:bg-gray-400 dark:bg-zinc-900 dark:hover:bg-zinc-700 px-2.5 py-1 rounded flex items-center gap-1 transition"
+            className="bg-gray-300 hover:bg-gray-400 dark:bg-zinc-900 dark:hover:bg-zinc-700 px-2.5 py-1 flex items-center gap-1 transition"
             onClick={HandlersIdentarBody}
           >
             <Icon icon="tabler:braces" width={14} />
@@ -285,7 +285,7 @@ const CodeEditor = ({
           </button>
 
           <button
-            className="bg-gray-300 hover:bg-gray-400 dark:bg-zinc-900 dark:hover:bg-zinc-700 px-2.5 py-1 rounded flex items-center gap-1 transition"
+            className="bg-gray-300 hover:bg-gray-400 dark:bg-zinc-900 dark:hover:bg-zinc-700 px-2.5 py-1 flex items-center gap-1 transition"
             onClick={HandlersMinifyBody}
           >
             <Icon icon={bolt} width={14} />
@@ -293,7 +293,7 @@ const CodeEditor = ({
           </button>
 
           <button
-            className="bg-gray-300 hover:bg-gray-400 dark:bg-zinc-900 dark:hover:bg-zinc-700 px-2.5 py-1 rounded flex items-center gap-1 transition"
+            className="bg-gray-300 hover:bg-gray-400 dark:bg-zinc-900 dark:hover:bg-zinc-700 px-2.5 py-1 flex items-center gap-1 transition"
             onClick={handleOpenRemplazoBar}
           >
             <Icon icon="tabler:replace" width={14} />

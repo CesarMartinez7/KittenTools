@@ -229,7 +229,7 @@ export function SavedRequestsSidebar({
                         className="card-item"
                       >
                         <span className="shinytext">{env.name}</span>
-                        <button><span className="tabler--circle-check"></span></button>
+                        <button title="check"><span className="tabler--circle-check"></span></button>
                       </div>
                     ))}
                   </div>

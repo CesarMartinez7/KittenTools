@@ -2,11 +2,14 @@
 
 import type { Dispatch, SetStateAction } from 'react';
 import type { EventRequest } from '../types/types';
+import type { AxiosResponseHeaders } from 'axios';
+
 
 export interface ValuesRetornoClient {
   params: string;
   cabeceras: string;
   isOpenSiderBar: boolean;
+  headersResponse: any
   selectedMethod: string;
   response: string;
   errorAxios: string;
@@ -31,6 +34,7 @@ export interface SetterRetornoClient {
   setErrorRequest: Dispatch<SetStateAction<boolean>>;
   setBodyJson: Dispatch<SetStateAction<string>>;
   setShowMethods: Dispatch<SetStateAction<boolean>>;
+  setHeadersResponse: any
   setEndpointUrl: Dispatch<SetStateAction<string>>;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
   setContentType: Dispatch<SetStateAction<string>>;
@@ -48,11 +52,13 @@ export interface RetornoClient {
 export interface RequestHookProps {
   selectedMethod: string;
   params: string;
+  headersResponse:any;
   cabeceras: string;
   bodyJson: string;
   endpointUrl: string;
   contentType: string;
   timeResponse: number;
+  setHeadersResponse: any | AxiosResponseHeaders
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setErrorAxios: React.Dispatch<React.SetStateAction<string>>;
   setErrorRequest: React.Dispatch<React.SetStateAction<boolean>>;

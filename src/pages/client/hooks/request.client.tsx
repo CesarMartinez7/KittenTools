@@ -20,8 +20,11 @@ export default function RequestHook({
   setErrorAxios,
   setErrorRequest,
   setResponse,
+  headersResponse,
   setStatusCode,
   setTimeResponse,
+  setHeadersResponse
+  
 }: RequestHookProps): ReturnHookRequest {
   // Convierte JSON string de headers en objeto
   const prepareHeaders = useCallback((headers: any) => {
@@ -67,11 +70,12 @@ export default function RequestHook({
           data: bodyJson,
           contentType,
           headers: cabeceras ? prepareHeaders(cabeceras) : {},
-        });
-
+        });        
+        setHeadersResponse(response.headers)
         setResponse(response.data);
         setStatusCode(response.status);
         setTimeResponse(response.timeResponse);
+        console.log(response)
       } catch (error) {
         setErrorRequest(true);
         setStatusCode(error.status || 'N/A');
@@ -82,7 +86,8 @@ export default function RequestHook({
         setIsLoading(false);
       }
     },
-    [
+    [ 
+      headersResponse,
       selectedMethod,
       contentType,
       bodyJson,

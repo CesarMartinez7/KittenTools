@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
+import type { RetornoClient } from './types';
 import { useParamsStore } from '../components/addqueryparams/queryparams-store';
 import { useStoreHeaders } from '../stores/headers-store';
-import type { RetornoClient } from './types';
 
 const useClientStore = (): RetornoClient => {
   // -------------- Esto actualment no esta en uso , proximamente deprecado  ---------------------------
@@ -10,11 +10,14 @@ const useClientStore = (): RetornoClient => {
   const cabeceras = useStoreHeaders((state) => state.valor);
 
   // ------------------------------ Proximamente deprecado arriba  ---------------------------
-
   // Estados Globales
 
   const [scriptsValues, setScriptsValues] = useState<string>('');
   const [params2, setParams2] = useState<Record<string, string>[]>([]);
+  // Los nuevos estados Headers response y cookies response
+  
+  const [headersResponse, setHeadersResponse] = useState("")
+  const [cookiesResponse,setCookiesResponse] = useState("")
 
   const [isOpenSiderBar, setIsOpenSiderbar] = useState(true);
   const [selectedMethod, setSelectedMethod] = useState('GET');
@@ -67,6 +70,8 @@ const useClientStore = (): RetornoClient => {
       isLoading,
       contentType,
       params2,
+      cookiesResponse,
+      headersResponse,
       refForm,
       statusCode,
       scriptsValues,
@@ -84,6 +89,8 @@ const useClientStore = (): RetornoClient => {
       setEndpointUrl,
       setIsLoading,
       setParams2,
+      setHeadersResponse,
+      setCookiesResponse,
       setContentType,
       setScriptsValues,
     },

@@ -1,10 +1,38 @@
-import { Icon } from '@iconify/react/dist/iconify.js';
-import { AnimatePresence, motion } from 'framer-motion';
-import { useMemo, useState } from 'react';
-import toast from 'react-hot-toast';
-import { CodeEditorLazy } from '../../../../components/lazy-components';
-import { JsonNode } from '../../../../ui/formatter-JSON/Formatter';
-import { TypesResponse } from '../../mapper-ops';
+import { Icon } from "@iconify/react/dist/iconify.js";
+import { AnimatePresence, motion } from "framer-motion";
+import { useMemo, useState } from "react";
+import toast from "react-hot-toast";
+import { CodeEditorLazy } from "../../../../components/lazy-components";
+import { JsonNode } from "../../../../ui/formatter-JSON/Formatter";
+import { TypesResponse } from "../../mapper-ops";
+import TableData from "../../../../ui/Table";
+
+const tabs = ["Respuesta", "Headers", "Cookies", "Timeline"];
+
+const SelectedType = ({
+  label,
+  isActive,
+  onClick,
+}: {
+  label: string;
+  isActive: boolean;
+  onClick: () => void;
+}) => {
+  return (
+    <motion.button
+      className={`p-4 border-t border-zinc-700 ${
+        isActive
+          ? "border-b-2 border-zinc-300 text-zinc-300 font-semibold"
+          : "text-zinc-500"
+      } hover:text-zinc-300 transition-colors`}
+      onClick={onClick}
+      aria-selected={isActive}
+      role="tab"
+    >
+      {label}
+    </motion.button>
+  );
+};
 
 interface ResponseTypes {
   height: string;
@@ -12,9 +40,11 @@ interface ResponseTypes {
   statusCode: number;
   timeResponse: number | string;
   contentTypeData: string;
+  headersResponse: any
 }
 
 export default function ResponsesTypesComponent({
+  headersResponse,
   statusCode,
   timeResponse,
   height,
@@ -22,119 +52,55 @@ export default function ResponsesTypesComponent({
   contentTypeData,
 }: ResponseTypes) {
   const [showsContentTypes, setShowsContentTypes] = useState<boolean>(false);
+  const [activeTab, setActiveTab] = useState("Respuesta");
   const [contentType, setContentType] = useState<string>(
-    contentTypeData || 'JSON',
+    contentTypeData || "JSON",
   );
 
   // Calcular tamaño de la respuesta
   const size = useMemo(() => {
     const sizeInKB = new TextEncoder().encode(data).length / 1024;
-    return sizeInKB.toFixed(2) + 'KB';
+    return sizeInKB.toFixed(2) + "KB";
   }, [data]);
 
   // Estilo del código de estado según el rango
   const getStatusCodeStyle = (code: number) => {
-    if (code >= 200 && code < 300) return 'bg-green-900/50 text-green-400';
-    if (code >= 300 && code < 400) return 'bg-blue-900/50 text-blue-400';
-    if (code >= 400 && code < 500) return 'bg-yellow-900/50 text-yellow-400';
-    if (code >= 500) return 'bg-red-900/50 text-red-400';
-    return 'bg-gray-900/50 text-gray-400';
+    if (code >= 200 && code < 300) return "bg-green-900/50 text-green-400";
+    if (code >= 300 && code < 400) return "bg-blue-900/50 text-blue-400";
+    if (code >= 400 && code < 500) return "bg-yellow-900/50 text-yellow-400";
+    if (code >= 500) return "bg-red-900/50 text-red-400";
+    return "bg-gray-900/50 text-gray-400";
   };
 
   const handleCopy = () => {
     navigator.clipboard
       .writeText(data)
-      .then(() => toast.success('Copiado Con exito'))
-      .catch(() => toast.error('Ocurrio un error'));
+      .then(() => toast.success("Copiado Con exito"))
+      .catch(() => toast.error("Ocurrio un error"));
   };
 
   return (
-    <div
-      className="h-full flex flex-col  rounded-lg overflow-hidden"
-      style={{ height }}
-    >
-      {/* Header */}
-      <div className="w-full bg-zinc-200 dark:bg-gradient-to-r from-zinc-900/80 to-zinc-900 px-3 py-2 flex justify-between items-center border-b border-zinc-900">
-        <div className="flex items-center gap-2">
-          |{/* Selector de tipo de contenido */}
-          <div className="relative">
-            <button
-              onClick={() => setShowsContentTypes((prev) => !prev)}
-              type="button"
-              className="flex items-center gap-2 px-2 py-1.5 bg-zinc-900 rounded-md border border-zinc-900 hover:bg-zinc-700 transition-colors"
-              aria-expanded={showsContentTypes}
-              aria-haspopup="listbox"
-            >
-              <span className="font-medium">{contentType.toUpperCase()}</span>
-              <Icon
-                icon={
-                  showsContentTypes
-                    ? 'tabler:chevron-up'
-                    : 'tabler:chevron-down'
-                }
-                width="16px"
-              />
-            </button>
+    <div className="h-full flex flex-col overflow-hidden" style={{ height }}>
+      <div className="h-full flex flex-col overflow-hidden">
+        {/* Header */}
+        <nav
+          className="flex border-b border-zinc-700"
+          role="tablist"
+          aria-label="Tipos de respuesta"
+        >
+          {tabs.map((tab) => (
+            <SelectedType
+              key={tab}
+              label={tab}
+              isActive={activeTab === tab}
+              onClick={() => setActiveTab(tab)}
+            />
+          ))}
+        </nav>
 
-            <AnimatePresence>
-              {showsContentTypes && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="absolute top-full left-0 mt-1 w-40 rounded-md shadow-lg  backdrop-blur-2xl z-50 border border-zinc-800"
-                  role="listbox"
-                >
-                  {TypesResponse.map((type) => (
-                    <button
-                      type="button"
-                      key={type.name}
-                      onClick={() => {
-                        setContentType(type.name);
-                        setShowsContentTypes(false);
-                      }}
-                      className={`w-full text-left px-4 py-2 flex items-center gap-3 hover:bg-zinc-700 transition-colors ${
-                        contentType === type.name ? 'bg-zinc-800' : ''
-                      }`}
-                      role="option"
-                      aria-selected={contentType === type.name}
-                    >
-                      <Icon icon={`tabler:${type.icon}`} width="18px" />
-                      <span className="shiny-text">{type.name}</span>
-                    </button>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
+        {/* Aquí puedes hacer render condicional según activeTab */}
 
-        <div className="flex items-center gap-2">
-          {statusCode && (
-            <span
-              className={`px-1.5 py-0.5 bg-black text-[10px] rounded-md  font-medium ${getStatusCodeStyle(statusCode)}`}
-              aria-label={`Status code: ${statusCode}`}
-            >
-              {statusCode}
-            </span>
-          )}
-
-          {timeResponse && (
-            <span
-              className="px-2.5 py-1 rounded-md text-sm font-medium bg-zinc-800 text-zinc-300"
-              aria-label={`Response time: ${timeResponse}ms`}
-            >
-              {typeof timeResponse === 'number'
-                ? `${timeResponse}ms`
-                : timeResponse}
-            </span>
-          )}
-        </div>
-      </div>
-
-      {/* Content area */}
-      <div className="flex-1 overflow-auto p-4">
-        {contentType === 'JSON' && (
+        {activeTab.toLowerCase() === "respuesta" && (
           <JsonNode
             open={true}
             isChange={false}
@@ -144,7 +110,32 @@ export default function ResponsesTypesComponent({
           />
         )}
 
-        {contentType === 'XML' && (
+
+
+        {activeTab.toLowerCase() === "headers" && (
+          <TableData data={headersResponse}/>
+        )}
+
+
+        
+
+        {/* Content area */}
+        {/* ... */}
+      </div>
+
+      {/* Content area */}
+      <div className="flex-1 overflow-auto p-4">
+        {contentType === "JSON" && (
+          <JsonNode
+            open={true}
+            isChange={false}
+            isInterface={false}
+            INDENT={1}
+            data={data}
+          />
+        )}
+
+        {contentType === "XML" && (
           <CodeEditorLazy
             language="xml"
             value={data}
@@ -152,7 +143,7 @@ export default function ResponsesTypesComponent({
           />
         )}
 
-        {contentType === 'BASE64' && (
+        {contentType === "BASE64" && (
           <div className="bg-zinc-800/50 p-4 rounded-md overflow-auto">
             <pre className="text-green-400 break-words whitespace-pre-wrap">
               {btoa(JSON.stringify(data))}

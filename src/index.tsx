@@ -24,12 +24,6 @@ ReactDOM.createRoot(root).render(
       }}
     />
     <div className="z-0 fixed">
-      {/* <Aurora
-        colorStops={['#27272a', '#00d1b2', '#11181b']}
-        blend={0.5}
-        amplitude={1.0}
-        speed={0.5}
-      /> */}
     </div>
 
     <div className="z-[777] relative">
