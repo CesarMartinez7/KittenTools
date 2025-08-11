@@ -1,8 +1,8 @@
 {
-  "name": "KittenTools",
+  "name": "Elisa",
   "version": "1.0.0",
   "main": "main.js",
-  "description": "Un visualizador y formateador de JSON hecho con Electron y React",
+  "description": "Elisa es un potenciado cliente api hecho con React, Axios y Electron",
   "author": "Cesar Martinez",
   "scripts": {
     "build": "rsbuild build",

@@ -1,36 +1,18 @@
 @import "tailwindcss";
 
-@font-face {
-  font-family: RedHat;
-  src: url("./assets/fonts/RedHatText-Light.ttf") format("truetype");
-  font-weight: 300;
-  font-style: normal;
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+  .dark {
+    color-scheme: dark;
+  }
 }
-
 kbd {
   @apply text-[9px] border p-0.5 rounded border-b-3 bg-zinc-900 border-zinc-700 text-white text-center cursor-pointer;
 }
 
-@font-face {
-  font-family: RedHat;
-  src: url("./assets/fonts/RedHatText-Regular.ttf") format("truetype");
-  font-weight: 400;
-  font-style: normal;
-}
 
-@font-face {
-  font-family: RedHat;
-  src: url("./assets/fonts/RedHatText-Medium.ttf") format("truetype");
-  font-weight: 500;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: RedHat;
-  src: url("./assets/fonts/RedHatText-SemiBold.ttf") format("truetype");
-  font-weight: 600;
-  font-style: normal;
-}
 
 .shiny-text {
   color: #fbfbfbbc;
@@ -54,6 +36,20 @@ kbd {
   100% {
     background-position: -100%;
   }
+}
+
+.tabler--notes-off {
+  display: inline-block;
+  width: 55px;
+  height: 5px;
+  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.7' d='M7 3h10a2 2 0 0 1 2 2v10m0 4a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5m6 2h4m-6 4h2m-2 4h4M3 3l18 18'/%3E%3C/svg%3E");
+  background-color: currentColor;
+  -webkit-mask-image: var(--svg);
+  mask-image: var(--svg);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
 }
 
 .pixelarticons--coffee-alt {

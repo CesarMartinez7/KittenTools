@@ -176,7 +176,7 @@ const CodeEditor = ({
   };
 
   return (
-    <main className="border rounded-xl overflow-hidden border-zinc-800 relative">
+    <main className="border rounded-xl overflow-hidden border-gray-200 dark:border-zinc-800 relative">
       <AnimatePresence mode="wait">
         {isOpenBar && (
           <motion.div
@@ -186,11 +186,7 @@ const CodeEditor = ({
               y: 0,
               scale: 1,
               filter: 'blur(0px)',
-              transition: {
-                type: 'spring',
-                stiffness: 200,
-                damping: 20,
-              },
+              transition: { type: 'spring', stiffness: 200, damping: 20 },
             }}
             exit={{
               opacity: 0,
@@ -200,35 +196,31 @@ const CodeEditor = ({
               transition: { duration: 0.2 },
             }}
             layout
-            className="backdrop-blur-3xl bg-zinc-900/35 border border-zinc-900 p-3 flex flex-col w-52 shadow-xl shadow-zinc-800 gap-1 rounded  right-4 top-5 absolute z-[778]"
+            className="backdrop-blur-3xl bg-white/40 dark:bg-zinc-900/35 border border-gray-200 dark:border-zinc-900 p-3 flex flex-col w-52 shadow-xl dark:shadow-zinc-800 shadow-gray-300 gap-1 rounded right-4 top-5 absolute z-[778]"
           >
             <input
               ref={inputRefTextOld}
               type="text"
               autoFocus
               className="input-base"
-              tabIndex={0}
-              title="Valor a buscar"
               placeholder="Valor a buscar"
             />
             <input
               ref={inputRefTextNew}
               type="text"
               className="input-base"
-              placeholder="Valor a Remplazar"
+              placeholder="Valor a Reemplazar"
             />
-            <div className="flex h-6 gap-2 text-wrap whitespace-normal">
+            <div className="flex h-6 gap-2">
               <button
-                className="bg-gradient-to-r flex-1 from-green-400 to-green-500 p-1 rounded-md text-xs truncate"
+                className="bg-gradient-to-r flex-1 from-green-400 to-green-500 p-1 rounded-md text-xs truncate text-white"
                 onClick={handleCLickReplaceTextFirst}
-                title="Reemplazar solo la primera coincidencia"
               >
                 Reemplazar primero
               </button>
               <button
-                className="bg-gradient-to-r flex-1 from-sky-400 to-sky-900 p-1 rounded-md text-xs truncate"
+                className="bg-gradient-to-r flex-1 from-sky-400 to-sky-700 p-1 rounded-md text-xs truncate text-white"
                 onClick={handleCLickReplaceText}
-                title="Reemplazar todas las coincidencias"
               >
                 Reemplazar todo
               </button>
@@ -238,23 +230,23 @@ const CodeEditor = ({
       </AnimatePresence>
 
       <div
-        className={`relative flex  text-xs overflow-hidden bg-zinc-900/50 ring-none backdrop-blur-3xl ${classNameContainer} `}
+        className={`relative flex text-xs overflow-hidden bg-gray-100/50 dark:bg-zinc-900/50 ring-none backdrop-blur-3xl ${classNameContainer}`}
       >
         {/* Line Numbers */}
         <div
           ref={lineNumbersRef}
-          className="px-3 py-2 text-sm overflow-hidden bg-zinc-950/20 border-r rounded-tl-xl border-zinc-800 backdrop-blur-3xl text-[#00a4b9]"
+          className="px-3 py-2 text-sm overflow-hidden bg-gray-200/50 dark:bg-zinc-950/20 border-r rounded-tl-xl border-gray-300 dark:border-zinc-800 backdrop-blur-3xl text-sky-600 dark:text-[#00a4b9]"
           style={{ height, minHeight, maxHeight }}
         >
           {lineNumberElements}
         </div>
 
         {/* Editor Container */}
-        <div className="flex-1 relative ">
+        <div className="flex-1 relative">
           <LazyListItem>
             <div
               ref={highlightRef}
-              className="absolute  inset-0 p-2 text-sm font-mono leading-6 pointer-events-none overflow-hidden whitespace-pre-wrap break-words  text-[#d4d4d4]"
+              className="absolute inset-0 p-2 text-sm font-mono leading-6 pointer-events-none overflow-hidden whitespace-pre-wrap break-words text-gray-800 dark:text-[#d4d4d4]"
               dangerouslySetInnerHTML={{
                 __html: highlightCode(code, language),
               }}
@@ -266,14 +258,13 @@ const CodeEditor = ({
               autoFocus
               ref={textareaRef}
               value={code}
-              aria-placeholder={placeholder}
               onChange={handleChange}
               onScroll={handleScroll}
               onKeyDown={handleKeyDown}
-              className="absolute inset-0  transition-colors p-2 ring-none ring-0 focus:ring-none text-sm font-mono leading-6 resize-none outline-none bg-r whitespace-pre-wrap break-words placeholder-lime-200"
+              className="absolute inset-0 transition-colors p-2 text-sm font-mono leading-6 resize-none outline-none bg-transparent placeholder-lime-600 dark:placeholder-lime-200"
               style={{
                 color: 'transparent',
-                caretColor: '#d4d4d4',
+                caretColor: 'var(--caret-color, #333)',
               }}
               spellCheck={false}
               placeholder={placeholder}
@@ -282,12 +273,11 @@ const CodeEditor = ({
         </div>
       </div>
 
-      {/* Footer toobar abajo */}
-      <div className="relative flex justify-between items-center text-[8px] text-zinc-400 bg-zinc-950/70 border-t border-zinc-800 px-2 py-1.5 shadow-sm">
-        {/* Botones a la izquieaa */}
+      {/* Footer */}
+      <div className="relative flex justify-between items-center text-[8px] text-gray-500 dark:text-zinc-400 bg-gray-200/70 dark:bg-zinc-950/70 border-t border-gray-300 dark:border-zinc-800 px-2 py-1.5 shadow-sm">
         <div className="flex items-center gap-1">
           <button
-            className="bg-zinc-900 hover:bg-zinc-700 px-2.5 py-1 rounded flex items-center gap-1 transition"
+            className="bg-gray-300 hover:bg-gray-400 dark:bg-zinc-900 dark:hover:bg-zinc-700 px-2.5 py-1 rounded flex items-center gap-1 transition"
             onClick={HandlersIdentarBody}
           >
             <Icon icon="tabler:braces" width={14} />
@@ -295,7 +285,7 @@ const CodeEditor = ({
           </button>
 
           <button
-            className="bg-zinc-900 hover:bg-zinc-700 px-2.5 py-1 rounded flex items-center gap-1 transition"
+            className="bg-gray-300 hover:bg-gray-400 dark:bg-zinc-900 dark:hover:bg-zinc-700 px-2.5 py-1 rounded flex items-center gap-1 transition"
             onClick={HandlersMinifyBody}
           >
             <Icon icon={bolt} width={14} />
@@ -303,8 +293,7 @@ const CodeEditor = ({
           </button>
 
           <button
-            title="Abrir barra de reemplazo"
-            className="bg-zinc-900 hover:bg-zinc-700 px-2.5 py-1 rounded flex items-center gap-1 transition"
+            className="bg-gray-300 hover:bg-gray-400 dark:bg-zinc-900 dark:hover:bg-zinc-700 px-2.5 py-1 rounded flex items-center gap-1 transition"
             onClick={handleOpenRemplazoBar}
           >
             <Icon icon="tabler:replace" width={14} />
@@ -313,7 +302,7 @@ const CodeEditor = ({
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-green-400">
+          <span className="text-green-500 dark:text-green-400">
             {(() => {
               try {
                 JSON.parse(value);

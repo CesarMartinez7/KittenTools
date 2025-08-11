@@ -1,9 +1,9 @@
-import { Icon } from "@iconify/react/dist/iconify.js";
-import type React from "react";
-import { useState, useRef, useEffect } from "react";
-import toast from "react-hot-toast";
-import type { ItemNodeProps } from "./types";
-import LazyListPerform from "../../../../ui/LazyListPerform";
+import { Icon } from '@iconify/react/dist/iconify.js';
+import type React from 'react';
+import { useEffect, useRef, useState } from 'react';
+import toast from 'react-hot-toast';
+import LazyListPerform from '../../../../ui/LazyListPerform';
+import type { ItemNodeProps } from './types';
 
 // Componente ResizableSidebar para contener múltiples ItemNodes
 interface ResizableSidebarProps {
@@ -19,7 +19,7 @@ const ResizableSidebar: React.FC<ResizableSidebarProps> = ({
   initialWidth = 300,
   minWidth = 200,
   maxWidth = 800,
-  className = "",
+  className = '',
 }) => {
   const [width, setWidth] = useState(initialWidth);
   const [isResizing, setIsResizing] = useState(false);
@@ -50,17 +50,17 @@ const ResizableSidebar: React.FC<ResizableSidebarProps> = ({
     };
 
     if (isResizing) {
-      document.addEventListener("mousemove", handleMouseMove);
-      document.addEventListener("mouseup", handleMouseUp);
-      document.body.style.cursor = "col-resize";
-      document.body.style.userSelect = "none";
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = 'col-resize';
+      document.body.style.userSelect = 'none';
     }
 
     return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-      document.body.style.cursor = "";
-      document.body.style.userSelect = "";
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
     };
   }, [isResizing, minWidth, maxWidth]);
 
@@ -77,7 +77,7 @@ const ResizableSidebar: React.FC<ResizableSidebarProps> = ({
       <div
         className={`
           absolute top-0 right-0 w-1 h-full cursor-col-resize group z-10
-          ${isResizing ? "bg-green-primary" : "hover:bg-green-primary/50"}
+          ${isResizing ? 'bg-green-primary' : 'hover:bg-green-primary/50'}
         `}
         onMouseDown={handleMouseDown}
       >
@@ -114,8 +114,8 @@ const ItemNode: React.FC<ItemNodeProps> = ({
   const haveResponses = data.response && data.response.length > 0;
 
   const getDisplayName = () => {
-    if (!data.name || data.name.trim() === "") {
-      return isFolder ? "Carpeta sin nombre" : "Request sin nombre";
+    if (!data.name || data.name.trim() === '') {
+      return isFolder ? 'Carpeta sin nombre' : 'Request sin nombre';
     }
     return data.name;
   };
@@ -132,19 +132,19 @@ const ItemNode: React.FC<ItemNodeProps> = ({
     if (isFolder) {
       setCollapsed(!collapsed);
     } else {
-      const method = data.request?.method?.toUpperCase() || "GET";
-      const url = data.request?.url?.raw || "";
+      const method = data.request?.method?.toUpperCase() || 'GET';
+      const url = data.request?.url?.raw || '';
       const headers = data.request?.header;
       const events = data.event;
       const params = data.request.url?.query;
       const responses = data.response;
 
-      let body = "";
-      let language = "";
+      let body = '';
+      let language = '';
 
-      if (method !== "GET" && data.request?.body) {
-        body = data.request.body.raw || "";
-        language = data.request.body.options?.raw?.language || "";
+      if (method !== 'GET' && data.request?.body) {
+        body = data.request.body.raw || '';
+        language = data.request.body.options?.raw?.language || '';
       }
 
       if (loadRequest) {
@@ -164,9 +164,9 @@ const ItemNode: React.FC<ItemNodeProps> = ({
 
   const handleChangeName = () => {
     const currentName = getDisplayName();
-    const nuevo = prompt("Nuevo nombre:", currentName);
+    const nuevo = prompt('Nuevo nombre:', currentName);
     if (nuevo && nuevo.trim()) {
-      actualizarNombre(data.name || "", nuevo.trim());
+      actualizarNombre(data.name || '', nuevo.trim());
     }
   };
 
@@ -174,44 +174,44 @@ const ItemNode: React.FC<ItemNodeProps> = ({
     const nameToDelete = getDisplayName();
     if (confirm(`¿Eliminar "${nameToDelete}"?`)) {
       toast.success(`"${nameToDelete}" eliminado`);
-      eliminar(data.name || "");
+      eliminar(data.name || '');
     }
   };
 
   const handleClickDuplicar = () => {
-    toast.info("Duplicando elemento...");
+    toast.loading('Duplicando elemento...');
   };
 
   const getMethodColor = (method: string) => {
     switch (method?.toUpperCase()) {
-      case "GET":
-        return "text-green-400";
-      case "POST":
-        return "text-blue-400";
-      case "PUT":
-        return "text-orange-400";
-      case "DELETE":
-        return "text-red-400";
-      case "PATCH":
-        return "text-purple-400";
+      case 'GET':
+        return 'text-teal-500';
+      case 'POST':
+        return 'text-sky-400';
+      case 'PUT':
+        return 'text-orange-400';
+      case 'DELETE':
+        return 'text-red-400';
+      case 'PATCH':
+        return 'text-purple-400';
       default:
-        return "text-gray-400";
+        return 'text-gray-400';
     }
   };
 
   const mapperFolder = [
-    { name: "Renombrar", action: handleChangeName },
-    { name: "Duplicar", action: handleClickDuplicar },
-    { name: "Eliminar", action: handleClickDelete },
-    { name: "Nueva petición" },
-    { name: "Nueva carpeta" },
-    { name: "Info" },
+    { name: 'Renombrar', action: handleChangeName },
+    { name: 'Duplicar', action: handleClickDuplicar },
+    { name: 'Eliminar', action: handleClickDelete },
+    { name: 'Nueva petición' },
+    { name: 'Nueva carpeta' },
+    { name: 'Info' },
   ];
 
   const mapperRequest = [
-    { name: "Renombrar", action: handleChangeName },
-    { name: "Duplicar", action: handleClickDuplicar },
-    { name: "Eliminar", action: handleClickDelete },
+    { name: 'Renombrar', action: handleChangeName },
+    { name: 'Duplicar', action: handleClickDuplicar },
+    { name: 'Eliminar', action: handleClickDelete },
   ];
 
   return (
@@ -222,29 +222,29 @@ const ItemNode: React.FC<ItemNodeProps> = ({
       style={{ marginLeft: `${indent}px` }}
     >
       <div
-        className="p-1.5 rounded-md border border-zinc-800 shadow-xl flex justify-between items-center group hover:bg-zinc-800 transition-colors bg-zinc-800/60 text-xs cursor-pointer"
+        className="p-1.5 rounded-md border dark:border-zinc-800 shadow-xl flex justify-between items-center group dark:hover:bg-zinc-800 transition-colors bg-white/90 dark:bg-zinc-800/60 text-xs cursor-pointer text-zinc-200"
         onClick={handleClick}
       >
         <div className="flex items-center gap-2">
           {isFolder && (
             <Icon
-              icon={collapsed ? "tabler:folder" : "tabler:folder-open"}
+              icon={collapsed ? 'tabler:folder' : 'tabler:folder-open'}
               width="15"
               height="15"
-              className={`${level === 0 ? "text-green-primary/85" : level === 1 ? "text-green-primary" : level === 2 ? "text-green-300" : level === 3 ? "text-green-200" : "text-green-100"}`}
+              className={`${level === 0 ? 'text-green-primary/85' : level === 1 ? 'text-green-primary' : level === 2 ? 'text-green-300' : level === 3 ? 'text-green-200' : 'text-green-100'}`}
             />
           )}
 
           {data.request?.method && !isFolder && (
             <span
-              className={`font-mono px-1 py-1 rounded-md ${getMethodColor(data.request.method)}`}
+              className={`font-mono font-bold px-1 py-1 rounded-md ${getMethodColor(data.request.method)}`}
             >
               {data.request.method}
             </span>
           )}
 
           <p
-            className={`truncate ${!data.name || data.name.trim() === "" ? "italic text-zinc-500" : "text-zinc-200"}`}
+            className={`truncate ${!data.name || data.name.trim() === '' ? 'italic text-zinc-500' : ' text-zinc-700 dark:text-zinc-200'}`}
           >
             {getDisplayName()}
           </p>
@@ -252,7 +252,7 @@ const ItemNode: React.FC<ItemNodeProps> = ({
 
         <div className="flex items-center gap-1">
           {isFolder && data.item && (
-            <span className="text-zinc-500 text-[10px]">
+            <span className="dark:text-zinc-500 text-zinc-200 text-[10px]">
               {data.item.length}
             </span>
           )}
@@ -267,7 +267,7 @@ const ItemNode: React.FC<ItemNodeProps> = ({
       {showBar && (
         <div
           className="absolute bg-zinc-900 text-white rounded-md shadow-lg z-50 p-2 w-40"
-          style={{ top: "100%", left: 0 }}
+          style={{ top: '100%', left: 0 }}
         >
           <ul className="text-sm space-y-1">
             {(isFolder ? mapperFolder : mapperRequest).map((res) => (

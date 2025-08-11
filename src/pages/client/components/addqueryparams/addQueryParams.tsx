@@ -1,6 +1,6 @@
-import { Icon } from "@iconify/react/dist/iconify.js";
-import { useEffect, useState } from "react";
-import { useParamsStore } from "./queryparams-store";
+import { Icon } from '@iconify/react/dist/iconify.js';
+import { useEffect, useState } from 'react';
+import { useParamsStore } from './queryparams-store';
 
 type Param = { key: string; value: string };
 
@@ -14,7 +14,7 @@ const AddQueryParam = ({
   >;
 }) => {
   const [params, setParams] = useState<Param[]>([]);
-  const [paramsFinal, setParamsFinal] = useState<string>("");
+  const [paramsFinal, setParamsFinal] = useState<string>('');
 
   const setValor = useParamsStore((e) => e.setValor);
 
@@ -26,7 +26,7 @@ const AddQueryParam = ({
 
   const handleParamChange = (
     index: number,
-    field: "key" | "value",
+    field: 'key' | 'value',
     value: string,
   ) => {
     const updatedParams = [...params];
@@ -51,7 +51,7 @@ const AddQueryParam = ({
         (param) =>
           `${encodeURIComponent(param.key)}=${encodeURIComponent(param.value)}`,
       )
-      .join("&");
+      .join('&');
 
   const noParams = !Array.isArray(currentParams) || currentParams.length === 0;
 
@@ -79,23 +79,23 @@ const AddQueryParam = ({
           </tbody>
         </table>
       ) : (
-        <div className="h-full flex flex-col justify-center items-center gap-4 p-6 text-center">
+        <div className="h-full flex flex-col justify-center items-center gap-4 p-6 text-center transition-colors duration-300">
           <Icon
             icon="tabler:file-alert"
             width="48"
             height="48"
-            className="text-zinc-500/80"
+            className="text-zinc-500 dark:text-zinc-400/80"
           />
           <div className="space-y-2">
-            <h3 className="text-xl font-medium text-zinc-300">
+            <h3 className="text-xl font-medium text-zinc-700 dark:text-zinc-300">
               No hay parámetros configurados
             </h3>
-            <p className="text-zinc-500 max-w-md">
+            <p className="text-zinc-500 dark:text-zinc-400 max-w-md">
               Aún no has agregado ningún parámetro. Comienza importando un
               archivo o creando uno nuevo.
             </p>
           </div>
-          <button className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-md text-white transition-colors">
+          <button className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-500 dark:bg-blue-500 dark:hover:bg-blue-400 rounded-md text-white transition-colors duration-300">
             Agregar parámetros
           </button>
         </div>

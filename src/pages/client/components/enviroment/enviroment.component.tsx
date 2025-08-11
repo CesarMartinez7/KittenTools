@@ -1,6 +1,6 @@
-import { useEnviromentStore } from "./store.enviroment";
-import { BaseModalLazy } from "../../../../components/lazy-components";
-import { useState } from "react";
+import { useState } from 'react';
+import { BaseModalLazy } from '../../../../components/lazy-components';
+import { useEnviromentStore } from './store.enviroment';
 
 export interface EnviromentLayout {
   id: string;
@@ -41,8 +41,8 @@ export default function EnviromentComponent() {
           setEntornoActual(json.values);
         }
       } catch (error) {
-        console.error("Error leyendo el JSON:", error);
-        alert("El archivo no es un JSON válido de Postman Environment");
+        console.error('Error leyendo el JSON:', error);
+        alert('El archivo no es un JSON válido de Postman Environment');
       }
     };
     reader.readAsText(file);
@@ -58,7 +58,7 @@ export default function EnviromentComponent() {
   const handleAddVariable = () => {
     setEntornoActual([
       ...entornoActual,
-      { key: "", value: "", type: "default", enabled: true },
+      { key: '', value: '', type: 'default', enabled: true },
     ]);
   };
 
@@ -175,7 +175,7 @@ export default function EnviromentComponent() {
                       <input
                         type="text"
                         value={v.key}
-                        onChange={(e) => handleChange(i, "key", e.target.value)}
+                        onChange={(e) => handleChange(i, 'key', e.target.value)}
                         className="w-full bg-transparent border-0 text-zinc-200 focus:ring-1 focus:ring-zinc-600 rounded"
                       />
                     </td>
@@ -184,7 +184,7 @@ export default function EnviromentComponent() {
                         type="text"
                         value={v.value}
                         onChange={(e) =>
-                          handleChange(i, "value", e.target.value)
+                          handleChange(i, 'value', e.target.value)
                         }
                         className="w-full bg-transparent border-0 text-zinc-200 focus:ring-1 focus:ring-zinc-600 rounded"
                       />
@@ -194,7 +194,7 @@ export default function EnviromentComponent() {
                         type="checkbox"
                         checked={v.enabled}
                         onChange={(e) =>
-                          handleChange(i, "enabled", e.target.checked)
+                          handleChange(i, 'enabled', e.target.checked)
                         }
                         className="h-4 w-4 text-zinc-600 rounded border-zinc-700 focus:ring-zinc-600"
                       />
@@ -229,34 +229,35 @@ export default function EnviromentComponent() {
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center py-12 text-center h-full">
-          <svg
-            className="w-16 h-16 text-zinc-600 mb-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="1.5"
-              d="M13 10V3L4 14h7v7l9-11h-7z"
-            ></path>
-          </svg>
-          <h3 className="text-lg font-medium text-zinc-300 mb-1">
-            No Variables de entorno
-          </h3>
-          <p className="text-zinc-500 max-w-md">
-            Importe un archivo JSON del entorno de Postman o agregue variables
-            manualmente para comenzar.
-          </p>
-          <button
-            onClick={toggleModal}
-            className="mt-4 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-md text-zinc-200 hover:text-white transition-colors"
-          >
-            Import Environment
-          </button>
-        </div>
+  <svg
+    className="w-16 h-16 text-zinc-600 dark:text-zinc-400 mb-4"
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="1.5"
+      d="M13 10V3L4 14h7v7l9-11h-7z"
+    ></path>
+  </svg>
+  <h3 className="text-lg font-medium text-zinc-800 dark:text-zinc-300 mb-1">
+    No Variables de entorno
+  </h3>
+  <p className="text-zinc-600 dark:text-zinc-500 max-w-md">
+    Importe un archivo JSON del entorno de Postman o agregue variables
+    manualmente para comenzar.
+  </p>
+  <button
+    onClick={toggleModal}
+    className="mt-4 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-md text-zinc-200 hover:text-white transition-colors"
+  >
+    Import Environment
+  </button>
+</div>
+
       )}
     </div>
   );

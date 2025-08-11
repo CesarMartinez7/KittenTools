@@ -18,27 +18,26 @@ const Router =
 const root = document.getElementById('root')!;
 
 ReactDOM.createRoot(root).render(
-  <div className="bg-black/50">
+  <div className="dark:bg-black/50 bg-zinc-100">
     <Toaster
       toastOptions={{
         className: 'bg-zinc-700! text-white!',
       }}
     />
     <div className="z-0 fixed">
-      <Aurora
+      {/* <Aurora
         colorStops={['#27272a', '#00d1b2', '#11181b']}
         blend={0.5}
         amplitude={1.0}
         speed={0.5}
-      />
+      /> */}
     </div>
 
     <div className="z-[777] relative">
       <Router>
         <Suspense fallback={<LoadingElement />}>
           <Routes>
-            <Route index path="/" element={<MainPageLazy />} />
-            <Route path="/client" element={<AppClientRouteLazy />} />
+            <Route index path="/" element={<AppClientRouteLazy />} />
             <Route
               path="*"
               element={
@@ -51,5 +50,5 @@ ReactDOM.createRoot(root).render(
         </Suspense>
       </Router>
     </div>
-  </div>
+  </div>,
 );

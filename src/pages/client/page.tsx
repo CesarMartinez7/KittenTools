@@ -1,21 +1,22 @@
-import "./App.css";
-import { Icon } from "@iconify/react";
-import sendIcon from "@iconify-icons/tabler/send";
-import { AnimatePresence, motion } from "framer-motion";
-import { useCallback, useState } from "react";
-import { CodeEditorLazy } from "../../components/lazy-components";
-import AddQueryParam from "./components/addqueryparams/addQueryParams";
-import EnviromentComponent from "./components/enviroment/enviroment.component";
-import { useEnviromentStore } from "./components/enviroment/store.enviroment";
-import { HeadersAddRequest } from "./components/headers/Headers";
-import ScriptComponent from "./components/scripts/script-component";
-import { SavedRequestsSidebar } from "./components/sidebar/SavedRequestSidebar";
-import ClientCustomHook from "./hooks/client-hook";
-import RequestHook from "./hooks/request.client";
-import { Methodos, Opciones, VariantsAnimation } from "./mapper-ops";
-import type { EventRequest } from "./types/types";
-import ResponsesTypesComponent from "./components/responses-core/response.";
-import { ResizableSidebar } from "./components/itemnode/item-node";
+import './App.css';
+import { Icon } from '@iconify/react';
+import sendIcon from '@iconify-icons/tabler/send';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useCallback, useState } from 'react';
+import { CodeEditorLazy } from '../../components/lazy-components';
+import AddQueryParam from './components/addqueryparams/addQueryParams';
+import EnviromentComponent from './components/enviroment/enviroment.component';
+import { useEnviromentStore } from './components/enviroment/store.enviroment';
+import { HeadersAddRequest } from './components/headers/Headers';
+import { ResizableSidebar } from './components/itemnode/item-node';
+import ResponsesTypesComponent from './components/responses-core/response.';
+import ScriptComponent from './components/scripts/script-component';
+import { SavedRequestsSidebar } from './components/sidebar/SavedRequestSidebar';
+import ClientCustomHook from './hooks/client-hook';
+import RequestHook from './hooks/request.client';
+import { Methodos, Opciones, VariantsAnimation } from './mapper-ops';
+import type { EventRequest } from './types/types';
+import DarkModeToggle from './components/toogle-theme';
 
 export default function AppClient() {
   const { value, setter } = ClientCustomHook();
@@ -76,7 +77,7 @@ export default function AppClient() {
   });
 
   const [selectedIdx, setMimeSelected] = useState(
-    Number(sessionStorage.getItem("selectedIdx")) || 0,
+    Number(sessionStorage.getItem('selectedIdx')) || 0,
   );
 
   const handlerChangeInputRequest = (
@@ -84,12 +85,6 @@ export default function AppClient() {
   ) => {
     setEndpointUrl(e.target.value);
   };
-
-  // const [openInfoCollecion, setOpenInfoCollecion] = useState<boolean>(true);
-
-  // const saveToLocalStorage = useCallback((name, value) => {
-  //   localStorage.setItem(name, value);
-  // }, []);
 
   const handleClickShowMethod = useCallback(
     () => setShowMethods((prev) => !prev),
@@ -146,14 +141,32 @@ export default function AppClient() {
         onClose={() => setIsOpenSiderbar(false)}
       />
 
-      <div className="w-full flex flex-col px-4 md:px-8 py-4 gap-2  ">
+<div className="bg-white text-black dark:bg-zinc-900 dark:text-white min-h-screen flex items-center justify-center">
+  <DarkModeToggle />
+</div>
+
+
+      <div className="w-full flex flex-col px-4 md:px-8 py-4 gap-2">
         <form ref={refForm} onSubmit={handleRequest} className="space-y-4 mb-4">
           <div className="flex flex-col md:flex-row gap-3 md:items-center">
             <div className="relative">
               <button
                 type="button"
                 onClick={handleClickShowMethod}
-                className={`py-1 px-4  font-semibold text-lg ${selectedMethod === "GET" ? "bg-green-800 text-green-300" : selectedMethod === "POST" ? "bg-blue-500 text-blue-200" : selectedMethod === "PUT" ? "bg-yellow-800 text-yellow-300" : selectedMethod === "PATCH" ? "bg-orange-800 text-orange-300" : selectedMethod === "DELETE" ? "bg-red-800 text-red-300" : "bg-gray-700"}`} // Dynamic button color based on method
+                className={`py-1 px-4 font-semibold text-lg
+            ${
+              selectedMethod === 'GET'
+                ? 'bg-green-800 text-green-300'
+                : selectedMethod === 'POST'
+                  ? 'bg-blue-500 text-blue-200'
+                  : selectedMethod === 'PUT'
+                    ? 'bg-yellow-800 text-yellow-300'
+                    : selectedMethod === 'PATCH'
+                      ? 'bg-orange-800 text-orange-300'
+                      : selectedMethod === 'DELETE'
+                        ? 'bg-red-800 text-red-300'
+                        : 'bg-gray-700 text-gray-200 dark:bg-zinc-700 dark:text-zinc-200'
+            }`}
               >
                 {selectedMethod}
               </button>
@@ -163,7 +176,7 @@ export default function AppClient() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="absolute top-full left-0 w-32 bg-zinc-900/80 backdrop-blur-2xl  z-50 rounded shadow-2xl overflow-hidden"
+                    className="absolute top-full left-0 w-32 bg-white/90 text-gray-800 dark:bg-zinc-900/80 dark:text-slate-200 backdrop-blur-2xl z-50 rounded shadow-2xl overflow-hidden"
                   >
                     {Methodos.map((metodo, idx) => (
                       <button
@@ -173,8 +186,12 @@ export default function AppClient() {
                           setSelectedMethod(metodo.name.toUpperCase());
                           setShowMethods(false);
                         }}
-                        className={`w-full text-left px-4 py-2 hover:bg-zinc-700 transition-colors duration-200
-                          ${metodo.name.toUpperCase() === selectedMethod ? "bg-sky-500 text-white" : ""}`}
+                        className={`w-full text-left px-4 py-2 hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors duration-200
+                    ${
+                      metodo.name.toUpperCase() === selectedMethod
+                        ? 'bg-sky-500 text-white'
+                        : ''
+                    }`}
                       >
                         {metodo.name}
                       </button>
@@ -184,9 +201,9 @@ export default function AppClient() {
               </AnimatePresence>
             </div>
 
-            <div className="bg-zinc-900/80 relative flex-1 p-2 rounded border border-zinc-800">
+            <div className="bg-gray-100 dark:bg-zinc-900/80 text-zinc-700  dark:text-zinc-200 relative flex-1 p-2 rounded border border-gray-200 dark:border-zinc-800">
               <div
-                className={endpointUrl.length === 0 ? " p-2" : ""}
+                className={endpointUrl.length === 0 ? 'p-2' : ''}
                 dangerouslySetInnerHTML={{
                   __html: formatterInputRequest(entornoActual, endpointUrl),
                 }}
@@ -197,13 +214,13 @@ export default function AppClient() {
                 placeholder="https://api.example.com/endpoint"
                 value={endpointUrl}
                 onChange={handlerChangeInputRequest}
-                className="p-2 absolute inset-0 text-transparent transition-colors caret-zinc-400 "
+                className="p-2 absolute inset-0 text-transparent  transition-colors caret-gray-500 dark:caret-zinc-400"
               />
             </div>
 
             <button
               type="submit"
-              className=" px-6 py-2  bg-gradient-to-br from-green-500 to-green-700 hover:bg-green-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-2 bg-gradient-to-br from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 text-white rounded transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isLoading}
             >
               {isLoading ? (
@@ -211,18 +228,22 @@ export default function AppClient() {
                   <Icon icon="eos-icons:loading" className="animate-spin" />
                 </span>
               ) : (
-                "Enviar"
+                'Enviar'
               )}
             </button>
           </div>
 
-          <div className="flex text-white border-zinc-800 truncate bg-zinc-900/80">
+          <div className="flex text-gray-800 dark:text-white border border-gray-200 dark:border-zinc-800 truncate bg-gray-100 dark:bg-zinc-900/80">
             {Opciones.map((opcion, index) => (
               <button
                 key={index}
                 type="button"
-                className={`btn btn-sm text-sm py-2 px-4  transition-colors duration-200
-                  ${index === selectedIdx ? "border-b-2 border-green-primary text-green-primary font-semibold bg-zinc-950" : "text-zinc-400 hover:text-white hover:bg-zinc-800"}`}
+                className={`btn btn-sm text-sm py-2 px-4 transition-colors duration-200
+            ${
+              index === selectedIdx
+                ? 'border-b-2 border-green-500 text-green-600 dark:text-green-primary font-semibold bg-gray-200 dark:bg-zinc-950'
+                : 'text-gray-500 dark:text-zinc-400 hover:text-gray-800 hover:bg-gray-200 dark:hover:text-white dark:hover:bg-zinc-800'
+            }`}
                 onClick={() => setMimeSelected(index)}
               >
                 {opcion.name}
@@ -230,38 +251,36 @@ export default function AppClient() {
             ))}
           </div>
         </form>
-        <div
-          className="grid relative md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-2  gap-4 h-full max-h-[82vh] overflow-y-scroll "
-          aria-label="grid"
-        >
-          <div className="bg-zinc-900/80 p-4  border relative border-zinc-800 flex flex-col shadow-lg">
-            <AnimatePresence mode="wait" key={"uja"}>
-              {selectedIdx === 0 && ( // Body
+
+        <div className="grid relative md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-2 gap-4 h-full max-h-[82vh]">
+          <div className="bg-gray-100 dark:bg-zinc-900/80 p-4 border border-gray-200 dark:border-zinc-800 relative flex flex-col shadow-lg">
+            <AnimatePresence mode="wait" key={'uja'}>
+              {selectedIdx === 0 && (
                 <motion.div
                   key="body-section-body"
                   variants={VariantsAnimation}
                   className="flex flex-col flex-1"
                 >
                   <div className="flex gap-4 mb-3">
-                    {["json", "form", "xml", "none"].map((type, idx) => (
+                    {['json', 'form', 'xml', 'none'].map((type, idx) => (
                       <label
                         key={idx}
-                        className="text-sm text-gray-300 flex items-center gap-2 cursor-pointer"
+                        className="text-sm text-gray-800 dark:text-gray-300 flex items-center gap-2 cursor-pointer"
                       >
                         <input
                           type="radio"
                           name="contentType"
                           checked={contentType === type}
                           onChange={() => setContentType(type)}
-                          className="form-radio text-sky-500 bg-zinc-700 border-zinc-600 focus:ring-sky-500"
+                          className="form-radio text-sky-500 bg-gray-200 dark:bg-zinc-700 border-gray-300 dark:border-zinc-600 focus:ring-sky-500"
                         />
-                        <span className="text-zinc-300">
+                        <span className="text-gray-700 dark:text-zinc-300">
                           {type.toUpperCase()}
                         </span>
                       </label>
                     ))}
                   </div>
-                  <div className="flex-1 min-h-0  ">
+                  <div className="flex-1 min-h-0">
                     <CodeEditorLazy
                       value={bodyJson}
                       language={contentType}
@@ -298,35 +317,27 @@ export default function AppClient() {
                 <motion.div
                   key="auth-section"
                   variants={VariantsAnimation}
-                  className="flex-1 flex items-center justify-center text-zinc-500"
+                  className="flex-1 flex items-center justify-center text-gray-500 dark:text-zinc-500"
                 >
                   <p className="text-lg">Proximamente</p>
                 </motion.div>
               )}
-
               {selectedIdx === 4 && (
                 <ScriptComponent
                   value={scriptsValues}
                   setValue={setScriptsValues}
                 />
               )}
-
-              {selectedIdx === 5 && (
-                <>
-                  <EnviromentComponent />
-                </>
-              )}
+              {selectedIdx === 5 && <EnviromentComponent />}
             </AnimatePresence>
           </div>
-          <div className="bg-zinc-900/80 p-4 border border-zinc-800 flex flex-col overflow-hidden shadow-lg">
+
+          <div className="bg-gray-100 dark:bg-zinc-900/80 p-4 border border-gray-200 dark:border-zinc-800 flex flex-col overflow-hidden shadow-lg">
             {response || isLoading ? (
               <>
                 {isLoading ? (
                   <div className="flex justify-center items-center flex-col h-full">
                     <span className="svg-spinners--90-ring-with-bg block"></span>
-
-                    {/* // Uso de time de respuesta */}
-                    {/* <span className="block">{timeResponse}</span> */}
                   </div>
                 ) : (
                   <div className="h-[80vh] overflow-y-scroll text-xs">
@@ -338,25 +349,25 @@ export default function AppClient() {
                 )}
               </>
             ) : (
-              <div className="flex flex-col items-center justify-center h-full text-zinc-500 text-center">
+              <div className="flex flex-col items-center justify-center h-full text-gray-500 dark:text-zinc-500 text-center">
                 <Icon
                   icon={sendIcon}
                   width="100"
                   height="100"
-                  className="text-zinc-700 mb-4 animate-bounce-slow" // Added a subtle animation
+                  className="text-gray-400 dark:text-zinc-700 mb-4 animate-bounce-slow"
                 />
-                <p className="text-lg font-medium text-zinc-300">
+                <p className="text-lg font-medium text-gray-700 dark:text-zinc-300">
                   ¡Todo listo para que hagas tu primera solicitud!
                 </p>
-                <p className="text-md text-zinc-400">
+                <p className="text-md text-gray-500 dark:text-zinc-400">
                   Puedes comenzar con tu primera solicitud.
                 </p>
                 <div className="my-6 flex flex-col space-y-3">
                   <div className="flex gap-2">
-                    <p>Enviar solicitud</p> <kbd>Ctrl </kbd> + <kbd>Enter</kbd>
+                    <p>Enviar solicitud</p> <kbd>Ctrl</kbd> + <kbd>Enter</kbd>
                   </div>
                   <div className="flex gap-2">
-                    <p>Editar Entornos</p> <kbd>Ctrl </kbd> + <kbd>e</kbd>
+                    <p>Editar Entornos</p> <kbd>Ctrl</kbd> + <kbd>e</kbd>
                   </div>
                 </div>
               </div>

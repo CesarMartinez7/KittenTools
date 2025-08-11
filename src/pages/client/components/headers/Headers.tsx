@@ -1,9 +1,9 @@
-import { Icon } from "@iconify/react/dist/iconify.js";
-import plus from "@iconify-icons/tabler/plus";
-import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import { useStoreHeaders } from "../../stores/headers-store";
+import { Icon } from '@iconify/react/dist/iconify.js';
+import plus from '@iconify-icons/tabler/plus';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
+import { useStoreHeaders } from '../../stores/headers-store';
 
 interface HeaderItem {
   id: string;
@@ -23,17 +23,17 @@ export function HeadersAddRequest() {
   const addNewHeader = () => {
     const newHeader = {
       id: crypto.randomUUID(),
-      key: "",
-      value: "",
+      key: '',
+      value: '',
     };
 
     setHeaders([...headers, newHeader]);
-    toast.success("Nueva cabecera añadida");
+    toast.success('Nueva cabecera añadida');
   };
 
   const updateHeader = (
     id: string,
-    field: "key" | "value",
+    field: 'key' | 'value',
     newValue: string,
   ) => {
     setHeaders(
@@ -47,15 +47,15 @@ export function HeadersAddRequest() {
     if (isDeactivate) {
       setHeadersDeactivate(headers.filter((header) => header.id === id));
       setHeaders(headers.filter((header) => header.id !== id));
-      toast.success("Cabecera desactivada");
+      toast.success('Cabecera desactivada');
       return;
     }
     setHeaders(headers.filter((header) => header.id !== id));
-    toast.success("Cabecera eliminada");
+    toast.success('Cabecera eliminada');
   };
 
   const handleKeySelect = (id: string, selectedKey: string) => {
-    updateHeader(id, "key", selectedKey);
+    updateHeader(id, 'key', selectedKey);
     toast.success(`Cabecera establecida: ${selectedKey}`);
   };
 
@@ -106,7 +106,7 @@ export function HeadersAddRequest() {
                   placeholder="Nombre de cabecera"
                   value={header.key}
                   onChange={(e) =>
-                    updateHeader(header.id, "key", e.target.value)
+                    updateHeader(header.id, 'key', e.target.value)
                   }
                 />
                 <motion.select
@@ -132,7 +132,7 @@ export function HeadersAddRequest() {
                 placeholder="Valor"
                 value={header.value}
                 onChange={(e) =>
-                  updateHeader(header.id, "value", e.target.value)
+                  updateHeader(header.id, 'value', e.target.value)
                 }
               />
 
@@ -166,15 +166,15 @@ export function HeadersAddRequest() {
 }
 
 const requestHeaders = [
-  "Accept",
-  "Content-Type",
-  "Authorization",
-  "User-Agent",
-  "Origin",
-  "Cookie",
-  "Cache-Control",
-  "Host",
-  "Referer",
-  "Accept-Encoding",
-  "Accept-Language",
+  'Accept',
+  'Content-Type',
+  'Authorization',
+  'User-Agent',
+  'Origin',
+  'Cookie',
+  'Cache-Control',
+  'Host',
+  'Referer',
+  'Accept-Encoding',
+  'Accept-Language',
 ];
