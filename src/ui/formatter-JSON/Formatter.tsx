@@ -56,7 +56,7 @@ export const JsonNode: React.FC<JsonNodeProps> = ({
       style={{ marginLeft: depth * INDENT }}
     >
       {name !== undefined && (
-        <strong className="text-purple-600 mr-3 rounded-2xl ">
+        <strong className="text-purple-400 mr-3 rounded-2xl ">
           &quot;{name}&quot;:
         </strong>
       )}

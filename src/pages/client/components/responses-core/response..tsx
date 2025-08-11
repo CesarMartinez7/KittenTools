@@ -49,14 +49,14 @@ export default function ResponsesTypesComponent({
   };
 
   return (
-   <div
+    <div
       className="h-full flex flex-col  rounded-lg overflow-hidden"
       style={{ height }}
     >
       {/* Header */}
       <div className="w-full bg-zinc-200 dark:bg-gradient-to-r from-zinc-900/80 to-zinc-900 px-3 py-2 flex justify-between items-center border-b border-zinc-900">
-        <div className="flex items-center gap-2">|
-          {/* Selector de tipo de contenido */}
+        <div className="flex items-center gap-2">
+          |{/* Selector de tipo de contenido */}
           <div className="relative">
             <button
               onClick={() => setShowsContentTypes((prev) => !prev)}
@@ -189,6 +189,6 @@ export default function ResponsesTypesComponent({
           </button>
         </div>
       </div>
-    </div> 
+    </div>
   );
 }

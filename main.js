@@ -1,7 +1,30 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
+const fs = require('fs');
 
 const isDev = !app.isPackaged;
+
+const dataFilePath = path.join(app.getPath('userData'), 'datos.json');
+
+function guardarJSON(data) {
+  try {
+    fs.writeFileSync(dataFilePath, JSON.stringify(data, null, 2), 'utf-8');
+    console.log('Datos guardados');
+  } catch (err) {
+    console.error('Error guardando datos:', err);
+  }
+}
+
+function cargarJSON() {
+  try {
+    if (!fs.existsSync(dataFilePath)) return null;
+    const contenido = fs.readFileSync(dataFilePath, 'utf-8');
+    return JSON.parse(contenido);
+  } catch (err) {
+    console.error('Error leyendo datos:', err);
+    return null;
+  }
+}
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -11,6 +34,7 @@ function createWindow() {
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: false,
+      preload: path.join(__dirname, 'preload.js'), // IMPORTANTE: agregar preload
     },
   });
 
@@ -26,4 +50,14 @@ app.whenReady().then(createWindow);
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
+});
+
+// IPC: escucha peticiones del renderer
+ipcMain.handle('guardar-datos', (event, data) => {
+  guardarJSON(data);
+  return true; // puede devolver algo si quieres
+});
+
+ipcMain.handle('cargar-datos', () => {
+  return cargarJSON();
 });

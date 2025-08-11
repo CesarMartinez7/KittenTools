@@ -5,6 +5,9 @@
   "description": "Elisa es un potenciado cliente api hecho con React, Axios y Electron",
   "author": "Cesar Martinez",
   "scripts": {
+    "tauri": "tauri",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build",
     "build": "rsbuild build",
     "elect": "electron main.js",
     "check": "biome check --write",
@@ -56,6 +59,8 @@
     "@iconify/react": "^6.0.0",
     "@rsbuild/core": "^1.4.2",
     "@rsbuild/plugin-react": "^1.3.2",
+    "@tauri-apps/api": "^2.7.0",
+    "@tauri-apps/cli": "^2.7.1",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "auto-changelog": "^2.5.0",

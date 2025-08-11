@@ -5,9 +5,11 @@ const FormatDataTypeLabel = ({ data }: { data: JsonValue }) => {
   const [collapsedLabel, setCollapsedLabel] = useState(true);
 
   const LabelBadge = ({ type }: { type: string }) => (
-    <b className="text-[9px] p-1 rounded-md 
+    <b
+      className="text-[9px] p-1 rounded-md 
       text-zinc-700 dark:text-zinc-200 
-      bg-gradient-to-t from-zinc-200 to-zinc-100 dark:from-zinc-900 dark:to-zinc-700">
+      bg-gradient-to-t from-zinc-200 to-zinc-100 dark:from-zinc-900 dark:to-zinc-700"
+    >
       {type}
     </b>
   );
@@ -80,7 +82,7 @@ const FormatDataTypeLabel = ({ data }: { data: JsonValue }) => {
   if (typeof data === 'string' && data.startsWith('http')) {
     return (
       <Text
-        color="text-green-600 dark:text-lime-400"
+        color="text-green-500 dark:text-lime-400"
         isLink
         href={data}
         title="Link externo"
@@ -94,7 +96,7 @@ const FormatDataTypeLabel = ({ data }: { data: JsonValue }) => {
   if (typeof data === 'string' && collapsedLabel && data.length >= 50) {
     return (
       <Text
-        color="text-pink-600 dark:text-pink-400"
+        color="text-pink-400 dark:text-pink-400"
         title="Haz clic para expandir"
         onClick={() => setCollapsedLabel(false)}
       >
@@ -118,7 +120,10 @@ const FormatDataTypeLabel = ({ data }: { data: JsonValue }) => {
 
   // fallback o expandido
   return (
-    <Text color="text-emerald-700 dark:text-emerald-300" onClick={() => setCollapsedLabel(true)}>
+    <Text
+      color="text-emerald-700 dark:text-emerald-300"
+      onClick={() => setCollapsedLabel(true)}
+    >
       &quot;{String(data)}&quot; <LabelBadge type={typeof data} />
     </Text>
   );

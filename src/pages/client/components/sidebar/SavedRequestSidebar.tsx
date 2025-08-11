@@ -1,13 +1,13 @@
-import { AnimatePresence, motion } from 'framer-motion';
-import { useState } from 'react';
+import { AnimatePresence, motion } from "framer-motion";
+import { useState } from "react";
 import type {
   EventRequest,
   Item,
   SavedRequestsSidebarProps,
-} from '../../types/types';
-import { useEnviromentStore } from '../enviroment/store.enviroment';
-import ItemNode, { ResizableSidebar } from '../itemnode/item-node';
-import SidebarHook from './hooks/sidebar-hook';
+} from "../../types/types";
+import { useEnviromentStore } from "../enviroment/store.enviroment";
+import ItemNode, { ResizableSidebar } from "../itemnode/item-node";
+import SidebarHook from "./hooks/sidebar-hook";
 
 export function SavedRequestsSidebar({
   isOpen,
@@ -29,8 +29,8 @@ export function SavedRequestsSidebar({
   const entornoActual = useEnviromentStore((state) => state.entornoActual);
 
   const [currenIdx, setCurrentIdx] = useState<number>(1);
-  const [currentId, setCurrentId] = useState<string>('');
-  const [currentName, setCurrentName] = useState<string>('');
+  const [currentId, setCurrentId] = useState<string>("");
+  const [currentName, setCurrentName] = useState<string>("");
 
   const actualizarNombre = (oldName: string, newName: string) => {
     const nuevaColeccion = parsed.map((item) => {
@@ -111,172 +111,174 @@ export function SavedRequestsSidebar({
   };
 
   return (
-    <ResizableSidebar minWidth={100} maxWidth={600}>
-    <AnimatePresence key={'gokuuu'}>
-      {isOpen && (
-        <motion.div
-          className="
-            top-0 left-0 h-svh max-h-svh w-xs lg:w-lg
+    <ResizableSidebar minWidth={100} maxWidth={800} initialWidth={470}>
+      <AnimatePresence key={"gokuuu"}>
+        {isOpen && (
+          <motion.div
+            className="
+             h-svh max-h-svh 
             bg-white/90 text-gray-800
             dark:bg-zinc-900/80 dark:text-slate-200
             backdrop-blur-3xl p-6 z-50 md:flex flex-col hidden shadow-xl
             border-r border-gray-200 dark:border-zinc-800
           "
-        >
-          {/* Header */}
-          <div className="flex justify-start items-center my-6 space-x-3">
-            <span className="pixelarticons--coffee-alt text-2xl"></span>
-            <h3 className="text-2xl font-bold">Elisa</h3>
-          </div>
+          >
+            {/* Header */}
+            <div className="flex justify-start items-center my-6 space-x-3 relative">
+              {/* Logo con gradiente en texto usando bg-clip y text-transparent */}
+              <span className="pixelarticons--coffee-alt text-4xl bg-gradient-to-tr " />
 
-          {/* Action Buttons */}
-          <div className="flex flex-row gap-2 mb-6">
-            <button
-              aria-label="Exportar coleccion"
-              title="Importar coleccion"
-              className="
+              
+              <h3 className="text-4xl font-bold bg-gradient-to-tr text-zinc-800  dark:text-lime-50">
+                Elisa
+              </h3>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex flex-row gap-2 mb-6">
+              <button
+                aria-label="Exportar coleccion"
+                title="Importar coleccion"
+                className="
                 flex items-center gap-2 px-2 py-1 text-xs rounded-md transition-colors
                 bg-gray-200 text-gray-800 hover:bg-gray-300
                 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-700
               "
-              onClick={handleClickCargueCollecion}
-            >
-              <span className="tabler--file-upload text-sm"></span>
-              <span>Cargar Coleccion</span>
-            </button>
-            <button
-              className="
+                onClick={handleClickCargueCollecion}
+              >
+                <span className="tabler--file-upload text-sm"></span>
+                <span>Cargar Coleccion</span>
+              </button>
+              <button
+                className="
                 flex items-center gap-2 px-3 py-2 text-xs rounded-md transition-colors
                 bg-gray-200 text-gray-800 hover:bg-gray-300
                 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-700
               "
-              title="Exportar collecion"
-              aria-label="exportar coleccion"
-              onClick={handleExportarCollecion}
-            >
-              <span className="tabler--file-export text-sm"></span>
-              <span>Exportar Coleccion</span>
-            </button>
-          </div>
-
-          {/* Tabs */}
-          <div
-            className="
-            bg-gray-100 dark:bg-zinc-950/60 px-2 py-1 flex w-full transition-all flex-shrink-0
-          "
-          >
-            <div
-              className={`p-2 cursor-pointer transition-colors flex-1 ${
-                currenIdx === 1
-                  ? 'bg-green-500/10  dark:text-green-primary dark:bg-green-primary'
-                  : 'hover:bg-gray-200 dark:hover:bg-green-primary/30 text-gray-600 dark:text-zinc-300'
-              }`}
-              onClick={() => setCurrentIdx(1)}
-            >
-              <div className="flex items-center gap-2 text-xs">
-                <span className="tabler--server"></span>
-                <span className="text-xs">
-                  Colecciones ({listColeccion.length})
-                </span>
-              </div>
+                title="Exportar collecion"
+                aria-label="exportar coleccion"
+                onClick={handleExportarCollecion}
+              >
+                <span className="tabler--file-export text-sm"></span>
+                <span>Exportar Coleccion</span>
+              </button>
             </div>
-            <div
-              className={`p-2 flex-1 cursor-pointer transition-colors ${
-                currenIdx === 2
-                  ? 'bg-green-500/10  dark:text-green-primary dark:bg-green-primary/10'
-                  : 'hover:bg-gray-200 dark:hover:bg-green-primary/90 text-gray-600 dark:text-zinc-300'
-              }`}
-              onClick={() => setCurrentIdx(2)}
-            >
-              <div className="flex items-center gap-2">
-                <span className="tabler--folder text-sm"></span>
-                <span>Entornos ({enviromentList.length})</span>
-              </div>
-            </div>
-          </div>
 
-          {/* Main Content */}
-          <div className="flex w-full gap-4 flex-1 overflow-hidden">
+            {/* Tabs */}
             <div
               className="
+            bg-gray-100 dark:bg-zinc-950/60 px-2 py-1 flex w-full transition-all flex-shrink-0
+          "
+            >
+              <div
+                className={`p-2 cursor-pointer transition-colors flex-1 ${
+                  currenIdx === 1
+                    ? "bg-green-500/10  dark:text-green-primary dark:bg-green-primary"
+                    : "hover:bg-gray-200 dark:hover:bg-green-primary/30 text-gray-600 dark:text-zinc-300"
+                }`}
+                onClick={() => setCurrentIdx(1)}
+              >
+                <div className="flex items-center gap-2 text-xs">
+                  <span className="tabler--server"></span>
+                  <span className="text-xs">
+                    Colecciones ({listColeccion.length})
+                  </span>
+                </div>
+              </div>
+              <div
+                className={`p-2 flex-1 cursor-pointer transition-colors ${
+                  currenIdx === 2
+                    ? "bg-green-500/10  dark:text-green-primary dark:bg-green-primary/10"
+                    : "hover:bg-gray-200 dark:hover:bg-green-primary/90 text-gray-600 dark:text-zinc-300"
+                }`}
+                onClick={() => setCurrentIdx(2)}
+              >
+                <div className="flex items-center gap-2">
+                  <span className="tabler--folder text-sm"></span>
+                  <span>Entornos ({enviromentList.length})</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Main Content */}
+            <div className="flex w-full gap-4 flex-1 overflow-hidden">
+              <div
+                className="
               flex-1 rounded-lg p-4 overflow-hidden h-full flex flex-col
               bg-gray-100 dark:bg-zinc-900
             "
-            >
-              {currenIdx === 2 && (
-                <div className="flex flex-col gap-2 h-full">
-                  {enviromentList.length === 0 && (
-                    <div className="h-full w-full flex flex-col justify-center items-center text-center space-y-2">
-                      <span className="tabler--notes-off text-gray-400 dark:text-zinc-400"></span>
-                      <p className="text-base text-gray-500 dark:text-zinc-400">
-                        No hay entornos disponibles
-                      </p>
-                      <span className="text-sm text-gray-400 dark:text-zinc-500">
-                        Por favor, carga algunos para comenzar
-                      </span>
-                    </div>
-                  )}
+              >
+                {currenIdx === 2 && (
+                  <div className="flex flex-col gap-2 h-full">
+                    {enviromentList.length === 0 && (
+                      <div className="h-full w-full flex flex-col justify-center items-center text-center space-y-2">
+                        <span className="tabler--notes-off text-gray-400 dark:text-zinc-400"></span>
+                        <p className="text-base text-gray-500 dark:text-zinc-400">
+                          No hay entornos disponibles
+                        </p>
+                        <span className="text-sm text-gray-400 dark:text-zinc-500">
+                          Por favor, carga algunos para comenzar
+                        </span>
+                      </div>
+                    )}
 
-                  {enviromentList.map((env, index) => (
-                    <div
-                      key={`env-${index}`}
-                      onClick={() => setEntornoActual(env.values)}
-                      className="
-                        p-3 rounded-md border transition-colors
-                        bg-gray-50 border-gray-200 text-gray-800 hover:border-gray-400
-                        dark:bg-zinc-900/50 dark:border-zinc-700 dark:hover:border-zinc-600 dark:text-zinc-300
-                      "
-                    >
-                      <span className="shiny-text">{env.name}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
+                    {enviromentList.map((env, index) => (
+                      <div
+                        key={`env-${index}`}
+                        onClick={() => setEntornoActual(env.values)}
+                        className="card-item"
+                      >
+                        <span className="shinytext">{env.name}</span>
+                        <button><span className="tabler--circle-check"></span></button>
+                      </div>
+                    ))}
+                  </div>
+                )}
 
-              {currenIdx === 1 && (
-                <div className="overflow-y-auto flex-1 pr-2 custom-scrollbar">
-                  {listColeccion.length === 0 && (
-                    <div className="flex flex-col items-center justify-center h-full w-full text-center space-y-2">
-                      <span className="tabler--notes-off text-gray-400 dark:text-zinc-400 text-4xl"></span>
-                      <p className="text-base text-gray-500 dark:text-zinc-400 font-medium">
-                        No hay colecciones disponibles
-                      </p>
-                      <span className="text-sm text-gray-400 dark:text-zinc-500">
-                        Por favor, agrega una colección para comenzar
-                      </span>
-                    </div>
-                  )}
+                {currenIdx === 1 && (
+                  <div className="overflow-y-auto flex-1 pr-2 custom-scrollbar">
+                    {listColeccion.length === 0 && (
+                      <div className="flex flex-col items-center justify-center h-full w-full text-center space-y-2">
+                        <span className="tabler--notes-off "></span>
+                        <p className="text-base text-gray-500 dark:text-zinc-400 font-medium">
+                          No hay colecciones disponibles
+                        </p>
+                        <span className="text-sm text-gray-400 dark:text-zinc-500">
+                          Por favor, agrega una colección para comenzar
+                        </span>
+                      </div>
+                    )}
 
-                  {listColeccion.map((e, index) => (
-                    <div
-                      key={`col-${index}`}
-                      className="
+                    {listColeccion.map((e, index) => (
+                      <div
+                        key={`col-${index}`}
+                        className="
                         p-1.5 rounded-md border shadow-xl transition-colors cursor-pointer
                         bg-gray-50 border-gray-200 text-gray-800
                         dark:bg-zinc-800/60 dark:border-zinc-800 dark:text-zinc-200
                       "
-                    >
-                      <div className="text-xs font-medium mb-2 flex items-center gap-2">
-                        <span className="tabler--folder-filled text-amber-500"></span>
-                        {e.name}
+                      >
+                        <div className="text-xs font-medium mb-2 flex items-center gap-2">
+                          <span className="tabler--folder-filled text-amber-500"></span>
+                          {e.name}
+                        </div>
+                        <ItemNode
+                          eliminar={handleClickEliminar}
+                          actualizarNombre={handleActualizarNombre}
+                          level={0}
+                          data={e.item}
+                          setData={setParsed}
+                          loadRequest={parsedLoadRequest}
+                        />
                       </div>
-                      <ItemNode
-                        eliminar={handleClickEliminar}
-                        actualizarNombre={handleActualizarNombre}
-                        level={0}
-                        data={e.item}
-                        setData={setParsed}
-                        loadRequest={parsedLoadRequest}
-                      />
-                    </div>
-                  ))}
-                </div>
-              )}
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </ResizableSidebar>
   );
 }

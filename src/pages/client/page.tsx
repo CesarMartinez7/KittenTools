@@ -2,13 +2,12 @@ import './App.css';
 import { Icon } from '@iconify/react';
 import sendIcon from '@iconify-icons/tabler/send';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { CodeEditorLazy } from '../../components/lazy-components';
 import AddQueryParam from './components/addqueryparams/addQueryParams';
 import EnviromentComponent from './components/enviroment/enviroment.component';
 import { useEnviromentStore } from './components/enviroment/store.enviroment';
 import { HeadersAddRequest } from './components/headers/Headers';
-import { ResizableSidebar } from './components/itemnode/item-node';
 import ResponsesTypesComponent from './components/responses-core/response.';
 import ScriptComponent from './components/scripts/script-component';
 import { SavedRequestsSidebar } from './components/sidebar/SavedRequestSidebar';
@@ -57,6 +56,10 @@ export default function AppClient() {
     setResponse,
     setScriptsValues,
   } = setter;
+
+
+
+
 
   const [timeResponse, setTimeResponse] = useState<number>(0);
 
@@ -141,8 +144,8 @@ export default function AppClient() {
         onClose={() => setIsOpenSiderbar(false)}
       />
 
-      <div className="w-full flex flex-col px-4 md:px-8 py-4 gap-2">
-        <form ref={refForm} onSubmit={handleRequest} className="space-y-4 mb-4">
+      <div className="w-full flex flex-col">
+        <form ref={refForm} onSubmit={handleRequest} >
           <div className="flex flex-col md:flex-row gap-3 md:items-center">
             <div className="relative">
               <button
@@ -247,7 +250,7 @@ export default function AppClient() {
           </div>
         </form>
 
-        <div className="grid relative md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-2 gap-4 h-full max-h-[82vh]">
+        <div className="grid relative md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-2  h-full max-h-[92vh]">
           <div className="bg-gray-100 dark:bg-zinc-900/80 p-4 border border-gray-200 dark:border-zinc-800 relative flex flex-col shadow-lg">
             <AnimatePresence mode="wait" key={'uja'}>
               {selectedIdx === 0 && (
@@ -277,9 +280,12 @@ export default function AppClient() {
                   </div>
                   <div className="flex-1 min-h-0">
                     <CodeEditorLazy
+                      height='80vh'
+                      minHeight='80vh'
+                      maxHeight='200px'
                       value={bodyJson}
                       language={contentType}
-                      placeholder="Escribe tu request body justo aqui ..."
+                      
                     />
                   </div>
                 </motion.div>

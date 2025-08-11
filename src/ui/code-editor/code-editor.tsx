@@ -176,7 +176,7 @@ const CodeEditor = ({
   };
 
   return (
-    <main className="border rounded-xl overflow-hidden border-gray-200 dark:border-zinc-800 relative">
+    <main className="borde rounded-xl overflow-hidden relative">
       <AnimatePresence mode="wait">
         {isOpenBar && (
           <motion.div
@@ -235,7 +235,7 @@ const CodeEditor = ({
         {/* Line Numbers */}
         <div
           ref={lineNumbersRef}
-          className="px-3 py-2 text-sm overflow-hidden bg-gray-200/50 dark:bg-zinc-950/20 border-r rounded-tl-xl border-gray-300 dark:border-zinc-800 backdrop-blur-3xl text-sky-600 dark:text-[#00a4b9]"
+          className="px-3 py-2 text-sm overflow-hidd bg-gray-200/50  border-r-zinc-200  dark:bg-zinc-950/90   dark:border-zinc-800  text-sky-600 dark:text-[#00a4b9]"
           style={{ height, minHeight, maxHeight }}
         >
           {lineNumberElements}
@@ -264,7 +264,7 @@ const CodeEditor = ({
               className="absolute inset-0 transition-colors p-2 text-sm font-mono leading-6 resize-none outline-none bg-transparent placeholder-lime-600 dark:placeholder-lime-200"
               style={{
                 color: 'transparent',
-                caretColor: 'var(--caret-color, #333)',
+                caretColor: 'var(--caret-color, gray)',
               }}
               spellCheck={false}
               placeholder={placeholder}
@@ -274,7 +274,7 @@ const CodeEditor = ({
       </div>
 
       {/* Footer */}
-      <div className="relative flex justify-between items-center text-[8px] text-gray-500 dark:text-zinc-400 bg-gray-200/70 dark:bg-zinc-950/70 border-t border-gray-300 dark:border-zinc-800 px-2 py-1.5 shadow-sm">
+      <div className="relative flex justify-between items-center text-[8px] text-gray-500 dark:text-zinc-400 bg-gray-200/70 dark:bg-zinc-950/50 border-t border-gray-300 dark:border-zinc-800 px-2 py-1.5 shadow-sm">
         <div className="flex items-center gap-1">
           <button
             className="bg-gray-300 hover:bg-gray-400 dark:bg-zinc-900 dark:hover:bg-zinc-700 px-2.5 py-1 rounded flex items-center gap-1 transition"
