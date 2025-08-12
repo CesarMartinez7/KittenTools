@@ -9,7 +9,7 @@
   }
 }
 kbd {
-  @apply text-[9px] border p-0.5 rounded border-b-3 bg-zinc-900 border-zinc-700 text-white text-center cursor-pointer;
+  @apply text-[9px] border border-zinc-400 p-0.5 rounded border-b-3 bg-white text-gray-700 dark:bg-zinc-900 dark:border-zinc-700 text-center cursor-pointer;
 }
 
 

@@ -162,15 +162,15 @@ export default function AppClient() {
                 className={`py-1 px-4 font-semibold text-lg
             ${
               selectedMethod === 'GET'
-                ? 'bg-green-800 text-green-300'
+                ? 'bg-green-800 text-green-1s00'
                 : selectedMethod === 'POST'
-                  ? 'bg-blue-500 text-blue-200'
+                  ? 'bg-blue-500 text-blue-100'
                   : selectedMethod === 'PUT'
-                    ? 'bg-yellow-800 text-yellow-300'
+                    ? 'bg-yellow-800 text-yellow-100'
                     : selectedMethod === 'PATCH'
-                      ? 'bg-orange-800 text-orange-300'
+                      ? 'bg-orange-800 text-orange-100'
                       : selectedMethod === 'DELETE'
-                        ? 'bg-red-800 text-red-300'
+                        ? 'bg-red-800 text-red-100'
                         : 'bg-gray-700 text-gray-200 dark:bg-zinc-700 dark:text-zinc-200'
             }`}
               >
@@ -182,7 +182,7 @@ export default function AppClient() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="absolute top-full left-0 w-32 bg-white/90 text-gray-800 dark:bg-zinc-900/80 dark:text-slate-200 backdrop-blur-2xl z-50 rounded shadow-2xl overflow-hidden"
+                    className="absolute top-full left-0 w-32 bg-white/90 text-gray-800 dark:bg-zinc-900/80 dark:text-slate-200 backdrop-blur-2xl z-50  shadow-2xl overflow-hidden"
                   >
                     {Methodos.map((metodo, idx) => (
                       <button
@@ -227,7 +227,7 @@ export default function AppClient() {
             <div className="divide-x divide-zinc-900">
               <button
                 type="submit"
-                className="px-6 py-2 bg-gradient-to-br bg-blue-500 text-white rounded-l round transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-6 py-2 bg-gradient-to-br bg-blue-500 text-white  round transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={isLoading}
               >
                 {isLoading ? (
@@ -238,7 +238,7 @@ export default function AppClient() {
               </button>
               <button
                 aria-label="options-envio"
-                className="px-2 py-2 bg-blue-500  text-white rounded-r  transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-2 py-2 bg-blue-500  text-white  transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <span className="iconamoon--arrow-down-2"></span>
               </button>
@@ -264,13 +264,10 @@ export default function AppClient() {
           </div>
         </form>
 
-
-
-    {/* ---------------------------- Panel Group -------------------------- */}
-
+        {/* ---------------------------- Panel Group -------------------------- */}
 
         <PanelGroup direction="horizontal">
-          <Panel defaultSize={50} minSize={20} className='h-[86vh]'>
+          <Panel defaultSize={50} minSize={20} className="h-[86vh]">
             <div className="h-full bg-white/90 dark:bg-zinc-900/80 p-4  border-gray-200 dark:border-zinc-800 relative flex flex-col shadow-lg overflow-hidden">
               <AnimatePresence mode="wait">
                 {selectedIdx === 0 && (
@@ -302,8 +299,7 @@ export default function AppClient() {
                       <CodeEditorLazy
                         value={bodyJson}
                         language={contentType}
-                        height='700px'
-                        
+                        height="700px"
                       />
                     </div>
                   </motion.div>
@@ -354,7 +350,7 @@ export default function AppClient() {
 
           <PanelResizeHandle className="w-1 bg-gray-300 dark:bg-zinc-700 cursor-col-resize" />
 
-          <Panel className='h-[86vh]' defaultSize={50}>
+          <Panel className="h-[86vh]" defaultSize={50}>
             <div className="h-full bg-white/90 dark:bg-zinc-900/80 p-4 border-gray-200 dark:border-zinc-800 flex flex-col overflow-hidden shadow-lg">
               {response || isLoading ? (
                 <>

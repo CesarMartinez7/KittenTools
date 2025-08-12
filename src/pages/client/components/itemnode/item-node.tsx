@@ -104,7 +104,7 @@ const ItemNode: React.FC<ItemNodeProps> = ({
   loadRequest,
   actualizarNombre,
   eliminar,
-  nameItem
+  nameItem,
 }) => {
   const [collapsed, setCollapsed] = useState(true);
   const [showResponses, setShowResponses] = useState(false);
@@ -316,11 +316,27 @@ const ItemNode: React.FC<ItemNodeProps> = ({
               {data.response.map((resp, i) => (
                 <div
                   key={i}
+                  onClick={() => {
+                    alert('sfdsf');
+
+                    loadRequest(
+                      resp.body,
+                      data.request.body.options?.raw?.language,
+                      data.request?.url?.raw,
+                      data.request?.method,
+                      data.request?.header,
+                      data.request.url?.query,
+                      data.event,
+                      data.response,
+                    );
+                  }}
                   className="py-1 px-2 border bg-white shadow border-gray-300 dark:border-zinc-700 rounded dark:bg-zinc-900"
                 >
-                  <p className="font-bold text-teal-500 dark:text-teal-300">{resp.name}</p>
+                  <p className="font-bold text-teal-500 dark:text-teal-300">
+                    {resp.name}
+                  </p>
                   <p className=" text-zinc-600 dark:text-zinc-400">
-                    {resp.status} - {resp.code}
+                    {resp.status} - {resp.code} {resp.body}
                   </p>
                 </div>
               ))}

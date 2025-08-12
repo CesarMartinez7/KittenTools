@@ -8,6 +8,7 @@ import type {
 import { useEnviromentStore } from '../enviroment/store.enviroment';
 import ItemNode, { ResizableSidebar } from '../itemnode/item-node';
 import SidebarHook from './hooks/sidebar-hook';
+import ToolTipButton from '../../../../ui/tooltip/TooltipButton';
 
 export function SavedRequestsSidebar({
   isOpen,
@@ -123,6 +124,10 @@ export function SavedRequestsSidebar({
             border-r border-gray-200 dark:border-zinc-800
           "
           >
+            <div className="flex flex-row gap-2 mb-6 justify-end">
+              <ToolTipButton ariaText="Importar" tooltipText="sdfsfd" />
+              <ToolTipButton ariaText="Exportar" tooltipText="sdfsfd" />
+            </div>
             {/* Header */}
             <div className="flex justify-start items-center my-6 space-x-3 relative">
               {/* Logo con gradiente en texto usando bg-clip y text-transparent */}
@@ -148,6 +153,7 @@ export function SavedRequestsSidebar({
                 <span className="tabler--file-upload text-sm"></span>
                 <span>Cargar Coleccion</span>
               </button>
+
               <button
                 className="
                 flex items-center gap-2 px-3 py-2 text-xs rounded-md transition-colors

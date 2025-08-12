@@ -116,4 +116,5 @@ export default function TableData({ data }: TableDataProps) {
       )}
     </motion.div>
   );
-}5
+}
+5;
