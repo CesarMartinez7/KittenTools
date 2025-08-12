@@ -259,11 +259,12 @@ export function SavedRequestsSidebar({
                         dark:bg-zinc-800/60 dark:border-zinc-800 dark:text-zinc-200
                       "
                       >
-                        <div className="text-xs font-medium mb-2 flex items-center gap-2">
+                        {/* <div className="text-xs font-medium mb-2 flex items-center gap-2">
                           <span className="tabler--folder-filled text-amber-500"></span>
                           {e.name}
-                        </div>
+                        </div> */}
                         <ItemNode
+                          nameItem={e.name}
                           eliminar={handleClickEliminar}
                           actualizarNombre={handleActualizarNombre}
                           level={0}

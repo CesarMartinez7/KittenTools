@@ -104,6 +104,7 @@ const ItemNode: React.FC<ItemNodeProps> = ({
   loadRequest,
   actualizarNombre,
   eliminar,
+  nameItem
 }) => {
   const [collapsed, setCollapsed] = useState(true);
   const [showResponses, setShowResponses] = useState(false);
@@ -115,7 +116,7 @@ const ItemNode: React.FC<ItemNodeProps> = ({
 
   const getDisplayName = () => {
     if (!data.name || data.name.trim() === '') {
-      return isFolder ? 'Carpeta sin nombre' : 'Request sin nombre';
+      return isFolder ? nameItem : 'Request sin nombre';
     }
     return data.name;
   };
@@ -242,7 +243,6 @@ const ItemNode: React.FC<ItemNodeProps> = ({
               {data.request.method}
             </span>
           )}
-
           <p
             className={`truncate ${!data.name || data.name.trim() === '' ? 'italic text-zinc-500' : ' text-zinc-700 dark:text-zinc-200'}`}
           >

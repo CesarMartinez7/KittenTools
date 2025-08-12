@@ -13,6 +13,7 @@ export interface LoadRequestProps {
 export interface ItemNodeProps {
   data: Item;
   level: number;
+  nameItem: string;
   setCurrentName: string;
   actualizarNombre: (oldName: string, newName: string) => void; /// Actulizar nombre metodo
   eliminar: (name: string) => void;
