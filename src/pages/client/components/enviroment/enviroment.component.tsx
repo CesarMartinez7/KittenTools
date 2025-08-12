@@ -74,7 +74,7 @@ export default function EnviromentComponent() {
   return (
     <div className=" rounded-lg h-full">
       <div className="flex justify-between items-center">
-        <input type='file' onChange={handleFileUpload}/>
+        <input type="file" onChange={handleFileUpload} />
       </div>
 
       <BaseModalLazy isOpen={isOpen} onClose={toggleModal}>
@@ -138,13 +138,13 @@ export default function EnviromentComponent() {
           <div className="flex justify-between items-center">
             <button
               onClick={handleAddVariable}
-              className="px-3 py-1.5 bg-zinc-900 hover:bg-zinc-700 rounded-md text-zinc-200 hover:text-white transition-colors text-sm"
+              className="px-3 py-1.5 bg-zinc-950 hover:bg-zinc-700 rounded-md text-zinc-200 hover:text-white transition-colors text-sm"
             >
               + Añadir Variables
             </button>
           </div>
 
-          <div className="overflow-x-auto  border  dark:border-zinc-800">
+          <div className="overflow-x-auto dark:border-zinc-800">
             <table className="min-w-full divide-y dark:divide-zinc-800">
               <thead className="dark:bg-zinc-900 dark:text-zinc-200 text-zinc-700 bg-zinc-200">
                 <tr>
@@ -162,7 +162,7 @@ export default function EnviromentComponent() {
                   </th>
                 </tr>
               </thead>
-              <tbody className="dark:bg-zinc-950 text-zinc-800 divide-y dark:divide-zinc-800">
+              <tbody className="dark:bg-zinc-900/60 text-zinc-800 divide-y dark:divide-zinc-900">
                 {entornoActual.map((v, i) => (
                   <tr
                     key={i}
@@ -223,7 +223,6 @@ export default function EnviromentComponent() {
               </tbody>
             </table>
           </div>
-          
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center py-12 text-center h-full">

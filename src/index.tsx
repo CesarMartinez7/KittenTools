@@ -17,14 +17,13 @@ const Router =
 const root = document.getElementById('root')!;
 
 ReactDOM.createRoot(root).render(
-  <div className="dark:bg-black/50 bg-zinc-100">
+  <div className="dark:bg-zinc-900 bg-zinc-100">
     <Toaster
       toastOptions={{
         className: 'bg-zinc-700! text-white!',
       }}
     />
-    <div className="z-0 fixed">
-    </div>
+    <div className="z-0 fixed"></div>
 
     <div className="z-[777] relative">
       <Router>

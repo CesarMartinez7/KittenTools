@@ -1,13 +1,13 @@
-import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { AnimatePresence, motion } from 'framer-motion';
+import { useState } from 'react';
 import type {
   EventRequest,
   Item,
   SavedRequestsSidebarProps,
-} from "../../types/types";
-import { useEnviromentStore } from "../enviroment/store.enviroment";
-import ItemNode, { ResizableSidebar } from "../itemnode/item-node";
-import SidebarHook from "./hooks/sidebar-hook";
+} from '../../types/types';
+import { useEnviromentStore } from '../enviroment/store.enviroment';
+import ItemNode, { ResizableSidebar } from '../itemnode/item-node';
+import SidebarHook from './hooks/sidebar-hook';
 
 export function SavedRequestsSidebar({
   isOpen,
@@ -29,8 +29,8 @@ export function SavedRequestsSidebar({
   const entornoActual = useEnviromentStore((state) => state.entornoActual);
 
   const [currenIdx, setCurrentIdx] = useState<number>(1);
-  const [currentId, setCurrentId] = useState<string>("");
-  const [currentName, setCurrentName] = useState<string>("");
+  const [currentId, setCurrentId] = useState<string>('');
+  const [currentName, setCurrentName] = useState<string>('');
 
   const actualizarNombre = (oldName: string, newName: string) => {
     const nuevaColeccion = parsed.map((item) => {
@@ -112,7 +112,7 @@ export function SavedRequestsSidebar({
 
   return (
     <ResizableSidebar minWidth={100} maxWidth={800} initialWidth={470}>
-      <AnimatePresence key={"gokuuu"}>
+      <AnimatePresence key={'gokuuu'}>
         {isOpen && (
           <motion.div
             className="
@@ -128,7 +128,6 @@ export function SavedRequestsSidebar({
               {/* Logo con gradiente en texto usando bg-clip y text-transparent */}
               <span className="pixelarticons--coffee-alt text-4xl bg-gradient-to-tr " />
 
-              
               <h3 className="text-4xl font-bold bg-gradient-to-tr text-zinc-800  dark:text-lime-50">
                 Elisa
               </h3>
@@ -173,8 +172,8 @@ export function SavedRequestsSidebar({
               <div
                 className={`p-2 cursor-pointer transition-colors flex-1 ${
                   currenIdx === 1
-                    ? "bg-green-500/10  dark:text-green-primary dark:bg-green-primary"
-                    : "hover:bg-gray-200 dark:hover:bg-green-primary/30 text-gray-600 dark:text-zinc-300"
+                    ? 'bg-green-500/10  dark:text-green-primary dark:bg-green-primary'
+                    : 'hover:bg-gray-200 dark:hover:bg-green-primary/30 text-gray-600 dark:text-zinc-300'
                 }`}
                 onClick={() => setCurrentIdx(1)}
               >
@@ -188,8 +187,8 @@ export function SavedRequestsSidebar({
               <div
                 className={`p-2 flex-1 cursor-pointer transition-colors ${
                   currenIdx === 2
-                    ? "bg-green-500/10  dark:text-green-primary dark:bg-green-primary/10"
-                    : "hover:bg-gray-200 dark:hover:bg-green-primary/90 text-gray-600 dark:text-zinc-300"
+                    ? 'bg-green-500/10  dark:text-green-primary dark:bg-green-primary/10'
+                    : 'hover:bg-gray-200 dark:hover:bg-green-primary/90 text-gray-600 dark:text-zinc-300'
                 }`}
                 onClick={() => setCurrentIdx(2)}
               >
@@ -229,7 +228,9 @@ export function SavedRequestsSidebar({
                         className="card-item"
                       >
                         <span className="shinytext">{env.name}</span>
-                        <button title="check"><span className="tabler--circle-check"></span></button>
+                        <button title="check">
+                          <span className="tabler--circle-check"></span>
+                        </button>
                       </div>
                     ))}
                   </div>

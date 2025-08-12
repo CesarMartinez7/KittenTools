@@ -16,6 +16,14 @@ import RequestHook from './hooks/request.client';
 import { Methodos, Opciones, VariantsAnimation } from './mapper-ops';
 import type { EventRequest } from './types/types';
 import DarkModeToggle from './components/toogle-theme';
+import {
+  getPanelElement,
+  getPanelGroupElement,
+  getResizeHandleElement,
+  Panel,
+  PanelGroup,
+  PanelResizeHandle,
+} from 'react-resizable-panels';
 import { ResizableSidebar } from './components/itemnode/item-node';
 
 export default function AppClient() {
@@ -60,10 +68,6 @@ export default function AppClient() {
     setScriptsValues,
   } = setter;
 
-
-
-
-
   const [timeResponse, setTimeResponse] = useState<number>(0);
 
   const { handleRequest } = RequestHook({
@@ -80,7 +84,7 @@ export default function AppClient() {
     setResponse,
     setTimeResponse,
     setStatusCode,
-    setHeadersResponse
+    setHeadersResponse,
   });
 
   const [selectedIdx, setMimeSelected] = useState(
@@ -112,7 +116,7 @@ export default function AppClient() {
       if (existe) {
         return `<span style="color: #7bb4ff;">{{${grupo}}}</span>`;
       } else {
-        return `<span style="color: red;">{{${grupo}}}</span>`;
+        return `<span style="color: #D2042D;">{{${grupo}}}</span>`;
       }
     });
   };
@@ -138,7 +142,7 @@ export default function AppClient() {
   };
 
   return (
-    <div className="min-h-screen  flex text-white overflow-hidden">
+    <div className="min-h-screen flex text-white overflow-hidden">
       <SavedRequestsSidebar
         onLoadRequest={onLoadRequest}
         currentUrl={endpointUrl}
@@ -149,7 +153,7 @@ export default function AppClient() {
       />
 
       <div className="w-full flex flex-col">
-        <form ref={refForm} onSubmit={handleRequest} >
+        <form className="p-4 space-y-3" ref={refForm} onSubmit={handleRequest}>
           <div className="flex flex-col md:flex-row gap-3 md:items-center">
             <div className="relative">
               <button
@@ -203,7 +207,7 @@ export default function AppClient() {
               </AnimatePresence>
             </div>
 
-            <div className="bg-gray-100 dark:bg-zinc-900/80 text-zinc-700  dark:text-zinc-200 relative flex-1 p-2 rounded border border-gray-200 dark:border-zinc-800">
+            <div className="bg-white dark:bg-zinc-900/80 text-zinc-700  dark:text-zinc-200 relative flex-1 p-2 rounded border border-gray-200 dark:border-zinc-800">
               <div
                 className={endpointUrl.length === 0 ? 'p-2' : ''}
                 dangerouslySetInnerHTML={{
@@ -216,29 +220,32 @@ export default function AppClient() {
                 placeholder="https://api.example.com/endpoint"
                 value={endpointUrl}
                 onChange={handlerChangeInputRequest}
-                className="p-2 absolute inset-0 text-transparent  transition-colors caret-gray-500 dark:caret-zinc-400"
+                className="p-2 absolute inset-0 text-transparent transition-colors caret-gray-500 dark:caret-zinc-400"
               />
             </div>
-            
-            <div className='divide-x divide-zinc-900'>
-            <button
-              type="submit"
-              className="px-6 py-2 bg-gradient-to-br bg-blue-500 text-white rounded-l round transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <span className="flex items-center gap-2">
-                  <Icon icon="eos-icons:loading" className="animate-spin" />
-                </span>
-              ) : (
-                'Enviar'
-              )}
-            </button>
-              <button aria-label='options-envio' className='px-2 py-2 bg-blue-500  text-white rounded-r  transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed'><span className="tabler--arrow-badge-down-filled"></span></button>
+
+            <div className="divide-x divide-zinc-900">
+              <button
+                type="submit"
+                className="px-6 py-2 bg-gradient-to-br bg-blue-500 text-white rounded-l round transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <span className="flex items-center gap-2">Enviando ...</span>
+                ) : (
+                  'Enviar'
+                )}
+              </button>
+              <button
+                aria-label="options-envio"
+                className="px-2 py-2 bg-blue-500  text-white rounded-r  transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <span className="iconamoon--arrow-down-2"></span>
+              </button>
             </div>
           </div>
 
-          <div className="flex text-gray-800 dark:text-white border border-gray-200 dark:border-zinc-800 truncate bg-gray-100 dark:bg-zinc-900/80">
+          <div className="flex text-gray-800 dark:text-white border border-gray-200 dark:border-zinc-800 truncate bg-white dark:bg-zinc-900/80">
             {Opciones.map((opcion, index) => (
               <button
                 key={index}
@@ -257,132 +264,141 @@ export default function AppClient() {
           </div>
         </form>
 
-        <div className="grid relative md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-2  h-full max-h-[92vh]">
-          <div className="bg-gray-100 dark:bg-zinc-900/80 p-4 border border-gray-200 dark:border-zinc-800 relative flex flex-col shadow-lg">
-            <AnimatePresence mode="wait" key={'uja'}>
-              {selectedIdx === 0 && (
-                <motion.div
-                  key="body-section-body"
-                  variants={VariantsAnimation}
-                  className="flex flex-col flex-1"
-                >
-                  <div className="flex gap-4 mb-3">
-                    {['json', 'form', 'xml', 'none'].map((type, idx) => (
-                      <label
-                        key={idx}
-                        className="text-sm text-gray-800 dark:text-gray-300 flex items-center gap-2 cursor-pointer"
-                      >
-                        <input
-                          type="radio"
-                          name="contentType"
-                          checked={contentType === type}
-                          onChange={() => setContentType(type)}
-                          className="form-radio text-sky-500 bg-gray-200 dark:bg-zinc-700 border-gray-300 dark:border-zinc-600 focus:ring-sky-500"
-                        />
-                        <span className="text-gray-700 dark:text-zinc-300">
-                          {type.toUpperCase()}
-                        </span>
-                      </label>
-                    ))}
-                  </div>
-                  <div className="flex-1 min-h-0">
-                    <CodeEditorLazy
-                      height='80vh'
-                      minHeight='80vh'
-                      maxHeight='200px'
-                      value={bodyJson}
-                      language={contentType}
-                      
-                    />
-                  </div>
-                </motion.div>
-              )}
-              {selectedIdx === 1 && (
-                <motion.div
-                  key="query-params-section"
-                  variants={VariantsAnimation}
-                  className="flex-1"
-                >
-                  <AddQueryParam
-                    currentParams={params2}
-                    setCurrentParams={setParams2}
-                  />
-                </motion.div>
-              )}
-              {selectedIdx === 2 && (
-                <motion.div
-                  key="headers-section"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.2 }}
-                  className="flex-1"
-                >
-                  <HeadersAddRequest />
-                </motion.div>
-              )}
-              {selectedIdx === 3 && (
-                <motion.div
-                  key="auth-section"
-                  variants={VariantsAnimation}
-                  className="flex-1 flex items-center justify-center text-gray-500 dark:text-zinc-500"
-                >
-                  <p className="text-lg">Proximamente</p>
-                </motion.div>
-              )}
-              {selectedIdx === 4 && (
-                <ScriptComponent
-                  value={scriptsValues}
-                  setValue={setScriptsValues}
-                />
-              )}
-              {selectedIdx === 5 && <EnviromentComponent />}
-            </AnimatePresence>
-          </div>
-          <div className="bg-gray-100 dark:bg-zinc-900/80 p-4 border border-gray-200 dark:border-zinc-800 flex flex-col overflow-hidden shadow-lg">
-          
-            {response || isLoading ? (
-              <>
-                {isLoading ? (
-                  <div className="flex justify-center items-center flex-col h-full">
-                    <span className="svg-spinners--90-ring-with-bg block"></span>
-                  </div>
-                ) : (
-                  <div className="h-[88vh]">
-                    <ResponsesTypesComponent
-                      headersResponse={headersResponse}
-                      data={response}
-                      statusCode={statusCode}
-                    />
-                  </div>
+
+
+    {/* ---------------------------- Panel Group -------------------------- */}
+
+
+        <PanelGroup direction="horizontal">
+          <Panel defaultSize={50} minSize={20} className='h-[86vh]'>
+            <div className="h-full bg-white/90 dark:bg-zinc-900/80 p-4  border-gray-200 dark:border-zinc-800 relative flex flex-col shadow-lg overflow-hidden">
+              <AnimatePresence mode="wait">
+                {selectedIdx === 0 && (
+                  <motion.div
+                    key="body-section-body"
+                    variants={VariantsAnimation}
+                    className="flex flex-col flex-1 min-h-0"
+                  >
+                    <div className="flex gap-4 mb-3">
+                      {['json', 'form', 'xml', 'none'].map((type, idx) => (
+                        <label
+                          key={idx}
+                          className="text-sm text-gray-800 dark:text-gray-300 flex items-center gap-2 cursor-pointer"
+                        >
+                          <input
+                            type="radio"
+                            name="contentType"
+                            checked={contentType === type}
+                            onChange={() => setContentType(type)}
+                            className="form-radio text-sky-500 bg-gray-200 dark:bg-zinc-700 border-gray-300 dark:border-zinc-600 focus:ring-sky-500"
+                          />
+                          <span className="text-gray-700 dark:text-zinc-300">
+                            {type.toUpperCase()}
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                    <div className="">
+                      <CodeEditorLazy
+                        value={bodyJson}
+                        language={contentType}
+                        height='700px'
+                        
+                      />
+                    </div>
+                  </motion.div>
                 )}
-              </>
-            ) : (
-              <div className="flex flex-col items-center justify-center h-full text-gray-500 dark:text-zinc-500 text-center">
-                <Icon
-                  icon={sendIcon}
-                  width="100"
-                  height="100"
-                  className="text-gray-400 dark:text-zinc-700 mb-4 animate-bounce-slow"
-                />
-                <p className="text-lg font-medium text-gray-700 dark:text-zinc-300">
-                  ¡Todo listo para que hagas tu primera solicitud!
-                </p>
-                <p className="text-md text-gray-500 dark:text-zinc-400">
-                  Puedes comenzar con tu primera solicitud.
-                </p>
-                <div className="my-6 flex flex-col space-y-3">
-                  <div className="flex gap-2">
-                    <p>Enviar solicitud</p> <kbd>Ctrl</kbd> + <kbd>Enter</kbd>
-                  </div>
-                  <div className="flex gap-2">
-                    <p>Editar Entornos</p> <kbd>Ctrl</kbd> + <kbd>e</kbd>
+                {selectedIdx === 1 && (
+                  <motion.div
+                    key="query-params-section"
+                    variants={VariantsAnimation}
+                    className="flex-1 overflow-auto"
+                  >
+                    <AddQueryParam
+                      currentParams={params2}
+                      setCurrentParams={setParams2}
+                    />
+                  </motion.div>
+                )}
+                {selectedIdx === 2 && (
+                  <motion.div
+                    key="headers-section"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
+                    className="flex-1 overflow-auto"
+                  >
+                    <HeadersAddRequest />
+                  </motion.div>
+                )}
+                {selectedIdx === 3 && (
+                  <motion.div
+                    key="auth-section"
+                    variants={VariantsAnimation}
+                    className="flex-1 flex items-center justify-center text-gray-500 dark:text-zinc-500"
+                  >
+                    <p className="text-lg">Proximamente</p>
+                  </motion.div>
+                )}
+                {selectedIdx === 4 && (
+                  <ScriptComponent
+                    value={scriptsValues}
+                    setValue={setScriptsValues}
+                  />
+                )}
+                {selectedIdx === 5 && <EnviromentComponent />}
+              </AnimatePresence>
+            </div>
+          </Panel>
+
+          <PanelResizeHandle className="w-1 bg-gray-300 dark:bg-zinc-700 cursor-col-resize" />
+
+          <Panel className='h-[86vh]' defaultSize={50}>
+            <div className="h-full bg-white/90 dark:bg-zinc-900/80 p-4 border-gray-200 dark:border-zinc-800 flex flex-col overflow-hidden shadow-lg">
+              {response || isLoading ? (
+                <>
+                  {isLoading ? (
+                    <div className="flex justify-center items-center flex-col h-full">
+                      <span className="svg-spinners--90-ring-with-bg block"></span>
+                    </div>
+                  ) : (
+                    <div className="flex-1 overflow-auto">
+                      <ResponsesTypesComponent
+                        headersResponse={headersResponse}
+                        data={response}
+                        statusCode={statusCode}
+                      />
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="flex flex-col items-center justify-center h-full text-gray-500 dark:text-zinc-500 text-center">
+                  <Icon
+                    icon={sendIcon}
+                    width="100"
+                    height="100"
+                    className="text-gray-400 dark:text-zinc-700 mb-4 animate-bounce-slow"
+                  />
+                  <p className="text-lg font-medium text-gray-700 dark:text-zinc-300">
+                    ¡Todo listo para que hagas tu primera solicitud!
+                  </p>
+                  <p className="text-md text-gray-500 dark:text-zinc-400">
+                    Puedes comenzar con tu primera solicitud.
+                  </p>
+                  <div className="my-6 flex flex-col space-y-3">
+                    <div className="flex gap-2">
+                      <p>Enviar solicitud</p> <kbd>Ctrl</kbd> + <kbd>Enter</kbd>
+                    </div>
+                    <div className="flex gap-2">
+                      <p>Editar Entornos</p> <kbd>Ctrl</kbd> + <kbd>e</kbd>
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
-          </div>
-        </div>
+              )}
+            </div>
+          </Panel>
+        </PanelGroup>
       </div>
     </div>
   );

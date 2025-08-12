@@ -15,9 +15,9 @@ const useClientStore = (): RetornoClient => {
   const [scriptsValues, setScriptsValues] = useState<string>('');
   const [params2, setParams2] = useState<Record<string, string>[]>([]);
   // Los nuevos estados Headers response y cookies response
-  
-  const [headersResponse, setHeadersResponse] = useState("")
-  const [cookiesResponse,setCookiesResponse] = useState("")
+
+  const [headersResponse, setHeadersResponse] = useState('');
+  const [cookiesResponse, setCookiesResponse] = useState('');
 
   const [isOpenSiderBar, setIsOpenSiderbar] = useState(true);
   const [selectedMethod, setSelectedMethod] = useState('GET');

@@ -304,7 +304,7 @@ const ItemNode: React.FC<ItemNodeProps> = ({
         <div className="ml-4 mt-1">
           <button
             onClick={() => setShowResponses(!showResponses)}
-            className="text-zinc-400 hover:text-white text-xs"
+            className="dark:text-zinc-400 dark:hover:text-white text-zinc-500 text-xs"
           >
             {showResponses
               ? `Ocultar respuestas (${data.response.length})`
@@ -316,10 +316,10 @@ const ItemNode: React.FC<ItemNodeProps> = ({
               {data.response.map((resp, i) => (
                 <div
                   key={i}
-                  className="py-1 px-2 border border-zinc-700 rounded bg-zinc-900"
+                  className="py-1 px-2 border bg-white shadow border-gray-300 dark:border-zinc-700 rounded dark:bg-zinc-900"
                 >
-                  <p className="font-bold text-green-300">{resp.name}</p>
-                  <p className="text-zinc-400">
+                  <p className="font-bold text-teal-500 dark:text-teal-300">{resp.name}</p>
+                  <p className=" text-zinc-600 dark:text-zinc-400">
                     {resp.status} - {resp.code}
                   </p>
                 </div>
@@ -331,16 +331,6 @@ const ItemNode: React.FC<ItemNodeProps> = ({
     </div>
   );
 };
-
-
-
-
-
-
-
-
-
-
 
 export default ItemNode;
 export { ResizableSidebar };

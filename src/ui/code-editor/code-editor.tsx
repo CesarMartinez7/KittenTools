@@ -18,7 +18,7 @@ const CodeEditor = ({
   maxHeight = '100%',
   height = '200px',
   minHeight = '68vh',
-  placeholder = '// Hola aqui puedes pasarme raw',
+  placeholder = '',
   classNameContainer = '',
 }: CodeEditorProps) => {
   // Referencias al DOOM

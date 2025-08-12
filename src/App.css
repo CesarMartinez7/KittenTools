@@ -12,6 +12,21 @@ kbd {
   @apply text-[9px] border p-0.5 rounded border-b-3 bg-zinc-900 border-zinc-700 text-white text-center cursor-pointer;
 }
 
+
+.iconamoon--arrow-down-2 {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.7' d='m7 10l5 5m0 0l5-5'/%3E%3C/svg%3E");
+  background-color: currentColor;
+  -webkit-mask-image: var(--svg);
+  mask-image: var(--svg);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+}
+
 .shiny-text {
   color: #fbfbfbbc;
   background: linear-gradient(
@@ -385,7 +400,20 @@ button:disabled {
 /* Firefox */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #585758 #2a2a2a;
+}
+
+
+@media (prefers-color-scheme: dark) {
+   * {
+    scrollbar-color: #3a3a3a #2a2a2a;
+   }
+}
+
+
+@media (prefers-color-scheme: light) {
+  * {
+   scrollbar-color: #787171 #989898 ;
+  }
 }
 
 /* Chrome, Edge, and Safari */
