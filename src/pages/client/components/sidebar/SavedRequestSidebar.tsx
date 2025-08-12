@@ -128,7 +128,7 @@ export function SavedRequestsSidebar({
               {/* Logo con gradiente en texto usando bg-clip y text-transparent */}
               <span className="pixelarticons--coffee-alt text-4xl bg-gradient-to-tr " />
 
-              <h3 className="text-4xl font-bold bg-gradient-to-tr text-zinc-800  dark:text-lime-50">
+              <h3 className="text-4xl font-bold bg-gradient-to-tr text-gray-700  dark:text-lime-50">
                 Elisa
               </h3>
             </div>
@@ -211,7 +211,7 @@ export function SavedRequestsSidebar({
                   <div className="flex flex-col gap-2 h-full">
                     {enviromentList.length === 0 && (
                       <div className="h-full w-full flex flex-col justify-center items-center text-center space-y-2">
-                        <span className="tabler--notes-off text-gray-400 dark:text-zinc-400"></span>
+                        <span className="tabler--bolt-off text-zinc-600"></span>
                         <p className="text-base text-gray-500 dark:text-zinc-400">
                           No hay entornos disponibles
                         </p>
@@ -240,7 +240,7 @@ export function SavedRequestsSidebar({
                   <div className="overflow-y-auto flex-1 pr-2 custom-scrollbar">
                     {listColeccion.length === 0 && (
                       <div className="flex flex-col items-center justify-center h-full w-full text-center space-y-2">
-                        <span className="tabler--notes-off "></span>
+                        <span className="tabler--bolt-off text-zinc-600"></span>
                         <p className="text-base text-gray-500 dark:text-zinc-400 font-medium">
                           No hay colecciones disponibles
                         </p>

@@ -69,7 +69,7 @@ export default function TableData({ data }: TableDataProps) {
       {!error ? (
         <div className="relative">
           <table className="w-full text-xs text-left rtl:text-right text-gray-500 dark:text-gray-400">
-            <thead className="text-xs text-zinc-400 uppercase bg-zinc-500 dark:bg-zinc-900  sticky top-0">
+            <thead className="text-xs text-zinc-700 dark:text-zinc-400  uppercase bg-zinc-300 dark:bg-zinc-900  sticky top-0">
               <tr>
                 {columnNames?.map((col, idx) => (
                   <th scope="col" key={idx} className="px-6 py-3">
@@ -83,7 +83,7 @@ export default function TableData({ data }: TableDataProps) {
                 valuesColums.map((row: any[], rowIndex: number) => (
                   <tr
                     key={rowIndex}
-                    className="bg-white border-b dark:border-zinc-700 dark:bg-zinc-800"
+                    className="bg-white border-b dark:border-zinc-700 dark:bg-zinc-800 text-gray-700"
                   >
                     {row.map((cell: any, cellIndex: number) => (
                       <td
@@ -116,4 +116,4 @@ export default function TableData({ data }: TableDataProps) {
       )}
     </motion.div>
   );
-}
+}5

@@ -20,7 +20,7 @@ ReactDOM.createRoot(root).render(
   <div className="dark:bg-zinc-900 bg-zinc-100">
     <Toaster
       toastOptions={{
-        className: 'bg-zinc-700! text-white!',
+        className: 'dark:bg-zinc-700! dark:text-white! text-gray-500',
       }}
     />
     <div className="z-0 fixed"></div>

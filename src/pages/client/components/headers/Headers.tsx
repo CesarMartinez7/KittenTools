@@ -81,7 +81,7 @@ export function HeadersAddRequest() {
               height="48"
             />
             <div className="space-y-1">
-              <h3 className="text-lg font-medium text-zinc-300">
+              <h3 className="text-lg font-medium text-gray-700 dark:text-zinc-300">
                 No hay cabeceras configuradas
               </h3>
               <p className="text-zinc-500 text-sm">

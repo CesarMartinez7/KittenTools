@@ -374,6 +374,20 @@ body {
   @apply bg-zinc-800 text-zinc-200;
 }
 
+
+.tabler--bolt-off {
+  display: inline-block;
+  width: 55px;
+  height: 55px;
+  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.7' d='m3 3l18 18m-5.788-5.79L11 21v-7H5l3.79-5.21m1.685-2.32L13 3v6m1 1h5l-2.104 2.893'/%3E%3C/svg%3E");
+  background-color: currentColor;
+  -webkit-mask-image: var(--svg);
+  mask-image: var(--svg);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;}
+
 button {
   @apply cursor-pointer;
 }
