@@ -1,12 +1,12 @@
 const colors = {
-  keyword: '#267f99',
-  string: '#a31515',
-  comment: '#008000',
-  number: '#098658',
-  function: '#795e26',
-  tag: '#2b91af',
-  attribute: '#d8610d',
-  value: '#a31515',
+  keyword: '#3FA1B5',    // Azul petróleo balanceado
+  string: '#E07A7A',     // Rojo suave con buen contraste
+  comment: '#7DBE5A',    // Verde natural
+  number: '#4DB3E3',     // Azul agua brillante
+  function: '#CE85B5',   // Lila cálido
+  tag: '#3DB69A',        // Verde-azulado equilibrado
+  attribute: '#F0A542',  // Mostaza vibrante
+  value: '#E07A7A',      // Igual que string
 };
 
 export default colors;

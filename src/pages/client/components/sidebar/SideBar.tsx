@@ -143,6 +143,7 @@ export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
             </div>
             {/* Header */}
             <div className="flex justify-start items-center my-6 space-x-3 relative">
+              <span className='pixelarticons--coffee-alt'/>
               <h3 className="text-4xl font-bold bg-gradient-to-tr text-gray-700  dark:text-lime-50">
                 Elisa
               </h3>

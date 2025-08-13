@@ -17,7 +17,7 @@ const CodeEditor = ({
   language = 'json',
   onChange,
   maxHeight = '100%',
-  height = '200px',
+  height = '700px',
   minHeight = '68vh',
   placeholder = '',
   classNameContainer = '',
@@ -101,7 +101,7 @@ const CodeEditor = ({
     };
   }, [isOpenFindBar, findResults.length]);
 
-  // Lógica de búsqueda
+  
   useEffect(() => {
     if (searchValue && code) {
       const results: number[] = [];
@@ -118,7 +118,7 @@ const CodeEditor = ({
     }
   }, [searchValue, code]);
 
-  // Lógica para hacer scroll al match actual (sin focus ni selección de texto)
+
   useEffect(() => {
     if (currentMatchIndex !== -1 && textareaRef.current && highlightRef.current) {
         const matchPos = findResults[currentMatchIndex];
@@ -137,7 +137,7 @@ const CodeEditor = ({
   }, [currentMatchIndex, findResults, code]);
 
 
-  // Lógica de identado y minificación
+  
   const HandlersMinifyBody = () => {
     if (language === 'json') return minifyJson();
     if (language === 'xml') return minifyXml();
@@ -308,10 +308,10 @@ const CodeEditor = ({
               <span className="text-xs text-gray-500 dark:text-zinc-400">
                 {findResults.length > 0 ? `${currentMatchIndex + 1}` : 0} de {findResults.length}
               </span>
-              <button onClick={handlePrevMatch} disabled={findResults.length === 0} className="p-1 rounded-md hover:bg-gray-300 dark:hover:bg-zinc-700 disabled:opacity-50 text-gray-800 dark:text-zinc-300">
+              <button onClick={handlePrevMatch} disabled={findResults.length === 0} className="p-1 rounded-md hover:bg-gray-300 dark:hover:bg-zinc-700 disabled:opacity-50 text-gray-800 dark:text-zinc-300 disabled:text-red-500">
                 <Icon icon="tabler:chevron-up" width={16} />
               </button>
-              <button onClick={handleNextMatch} disabled={findResults.length === 0} className="p-1 rounded-md hover:bg-gray-300 dark:hover:bg-zinc-700 disabled:opacity-50 text-gray-800 dark:text-zinc-300">
+              <button onClick={handleNextMatch} disabled={findResults.length === 0} className="p-1 rounded-md hover:bg-gray-300 dark:hover:bg-zinc-700 disabled:opacity-50 text-gray-800 dark:text-zinc-300 disabled:text-red-500">
                 <Icon icon="tabler:chevron-down" width={16} />
               </button>
               <button onClick={() => setIsOpenFindBar(false)} className="p-1 rounded-md hover:bg-gray-300 dark:hover:bg-zinc-700 text-gray-800 dark:text-zinc-300">

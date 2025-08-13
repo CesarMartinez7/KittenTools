@@ -5,7 +5,7 @@ import toast from 'react-hot-toast';
 import { JsonNode } from '../../../../ui/formatter-JSON/Formatter';
 import TableData from '../../../../ui/Table';
 
-const tabs = ['Respuesta', 'Headers', 'Cookies', 'Timeline'];
+const tabs = ['Respuesta', 'Cabeceras', 'Cookies', 'Timeline'];
 
 const SelectedType = ({
   label,

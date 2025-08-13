@@ -6,8 +6,8 @@ import { Toaster } from 'react-hot-toast';
 import { AppClientRouteLazy } from './pages/lazy-pages.tsx';
 
 const LoadingElement = () => (
-  <div className="h-screen w-screen flex justify-center items-center bg-black/70">
-    <span className="meteocons--compass-fill"></span>
+  <div className="h-screen w-screen flex justify-center items-center backdrop-blur-xl">
+    <span className="meteocons--extreme-night-smoke-fill"></span>
   </div>
 );
 
