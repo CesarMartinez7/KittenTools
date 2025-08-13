@@ -3,19 +3,6 @@ import { Icon } from '@iconify/react';
 import sendIcon from '@iconify-icons/tabler/send';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useState } from 'react';
-import { CodeEditorLazy } from '../../components/lazy-components';
-import AddQueryParam from './components/addqueryparams/addQueryParams';
-import EnviromentComponent from './components/enviroment/enviroment.component';
-import { useEnviromentStore } from './components/enviroment/store.enviroment';
-import { HeadersAddRequest } from './components/headers/Headers';
-import ResponsesTypesComponent from './components/responses-core/response.';
-import ScriptComponent from './components/scripts/script-component';
-import { SavedRequestsSidebar } from './components/sidebar/SavedRequestSidebar';
-import ClientCustomHook from './hooks/client-hook';
-import RequestHook from './hooks/request.client';
-import { Methodos, Opciones, VariantsAnimation } from './mapper-ops';
-import type { EventRequest } from './types/types';
-import DarkModeToggle from './components/toogle-theme';
 import {
   getPanelElement,
   getPanelGroupElement,
@@ -24,7 +11,20 @@ import {
   PanelGroup,
   PanelResizeHandle,
 } from 'react-resizable-panels';
+import { CodeEditorLazy } from '../../components/lazy-components';
+import AddQueryParam from './components/addqueryparams/addQueryParams';
+import EnviromentComponent from './components/enviroment/enviroment.component';
+import { useEnviromentStore } from './components/enviroment/store.enviroment';
+import { HeadersAddRequest } from './components/headers/Headers';
 import { ResizableSidebar } from './components/itemnode/item-node';
+import ResponsesTypesComponent from './components/responses-core/response.';
+import ScriptComponent from './components/scripts/script-component';
+import { SideBar } from './components/sidebar/SideBar';
+import DarkModeToggle from './components/toogle-theme';
+import ClientCustomHook from './hooks/client-hook';
+import RequestHook from './hooks/request.client';
+import { Methodos, Opciones, VariantsAnimation } from './mapper-ops';
+import type { EventRequest } from './types/types';
 
 export default function AppClient() {
   const { value, setter } = ClientCustomHook();
@@ -143,7 +143,7 @@ export default function AppClient() {
 
   return (
     <div className="min-h-screen flex text-white overflow-hidden">
-      <SavedRequestsSidebar
+      <SideBar
         onLoadRequest={onLoadRequest}
         currentUrl={endpointUrl}
         currentBody={bodyJson}
@@ -192,7 +192,7 @@ export default function AppClient() {
                           setSelectedMethod(metodo.name.toUpperCase());
                           setShowMethods(false);
                         }}
-                        className={`w-full text-left px-4 py-2 hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors duration-200
+                        className={`w-full text-left px-4 py-2 hover:bg-gray-800 dark:hover:bg-zinc-700 transition-colors duration-200
                     ${
                       metodo.name.toUpperCase() === selectedMethod
                         ? 'bg-sky-500 text-white'
@@ -254,7 +254,7 @@ export default function AppClient() {
             ${
               index === selectedIdx
                 ? 'border-b-2 border-green-primary  dark:text-green-primary font-semibold bg-gray-200 dark:bg-zinc-950'
-                : 'text-gray-500 dark:text-zinc-400 hover:text-gray-800 hover:bg-gray-200 dark:hover:text-white dark:hover:bg-zinc-800'
+                : 'text-gray-500 dark:text-zinc-400 hover:text-gray-800 dakr:hover:bg-gray-800 dark:hover:text-white dark:hover:bg-zinc-800'
             }`}
                 onClick={() => setMimeSelected(index)}
               >
@@ -365,7 +365,6 @@ export default function AppClient() {
                         data={response}
                         statusCode={statusCode}
                       />
-                      
                     </div>
                   )}
                 </>

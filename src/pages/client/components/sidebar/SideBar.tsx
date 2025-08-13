@@ -1,5 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
+import toast from 'react-hot-toast';
+import ToolTipButton from '../../../../ui/tooltip/TooltipButton';
 import type {
   EventRequest,
   Item,
@@ -8,13 +10,8 @@ import type {
 import { useEnviromentStore } from '../enviroment/store.enviroment';
 import ItemNode, { ResizableSidebar } from '../itemnode/item-node';
 import SidebarHook from './hooks/sidebar-hook';
-import ToolTipButton from '../../../../ui/tooltip/TooltipButton';
-import toast from 'react-hot-toast';
 
-export function SavedRequestsSidebar({
-  isOpen,
-  onLoadRequest,
-}: SavedRequestsSidebarProps) {
+export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
   const {
     parsed,
     setColeccion,
@@ -99,13 +96,12 @@ export function SavedRequestsSidebar({
     reqHeaders: Record<string, string>,
     reqParams: string,
     reqEvent: EventRequest | null,
-    reqResponse: string
+    reqResponse: string,
   ) => {
     const requestScriptEvents = reqEvent ? reqEvent : null;
 
-
-    toast.success(reqResponse)
-    console.log(reqResponse)
+    toast.success(reqResponse);
+    console.log(reqResponse);
 
     onLoadRequest(
       reqBody,
@@ -115,8 +111,8 @@ export function SavedRequestsSidebar({
       reqHeaders,
       reqParams,
       //@ts-ignore
-      requestScriptEvents, 
-      reqResponse
+      requestScriptEvents,
+      reqResponse,
     );
   };
 
@@ -134,31 +130,34 @@ export function SavedRequestsSidebar({
           "
           >
             <div className="flex flex-row gap-2 mb-6 justify-end">
-              <ToolTipButton ariaText="Importar" tooltipText="Importar coleccion" onClick={handleClickCargueCollecion} />
-              <ToolTipButton ariaText="Exportar" tooltipText="Importar coleccion POSTMAN" onClick={handleClickCargueCollecion} />
+              <ToolTipButton
+                ariaText="Importar"
+                tooltipText="Importar coleccion"
+                onClick={handleClickCargueCollecion}
+              />
+              <ToolTipButton
+                ariaText="Exportar"
+                tooltipText="Exportar coleccion "
+                onClick={handleClickCargueCollecion}
+              />
             </div>
             {/* Header */}
             <div className="flex justify-start items-center my-6 space-x-3 relative">
-              {/* Logo con gradiente en texto usando bg-clip y text-transparent */}
-              <span className="pixelarticons--coffee-alt text-4xl bg-gradient-to-tr " />
-
               <h3 className="text-4xl font-bold bg-gradient-to-tr text-gray-700  dark:text-lime-50">
                 Elisa
               </h3>
             </div>
 
-  
             {/* Tabs */}
-             <div
+            <div
               className="
-            bg-gray-100 dark:bg-zinc-950/60 px-2 py-1 flex w-full transition-all flex-shrink-0
-          "
+            bg-gray-100 dark:bg-zinc-950/60 px-2 py-1 flex w-full transition-all flex-shrink-0"
             >
               <div
                 className={`p-2 cursor-pointer transition-colors flex-1 ${
                   currenIdx === 1
-                    ? 'bg-green-500/10  dark:text-green-primary dark:bg-green-primary'
-                    : 'hover:bg-gray-200 dark:hover:bg-green-primary/30 text-gray-600 dark:text-zinc-300'
+                    ? 'bg-green-500/10  dark:hover:bg-zinc-950 dark:text-green-primary dark:bg-green-primary'
+                    : 'hover:bg-gray-200  dark:hover:bg-green-primary/30 text-gray-600 dark:text-zinc-300'
                 }`}
                 onClick={() => setCurrentIdx(1)}
               >

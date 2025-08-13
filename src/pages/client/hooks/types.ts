@@ -1,8 +1,8 @@
 // use client-hook.tsx
 
+import type { AxiosResponseHeaders } from 'axios';
 import type { Dispatch, SetStateAction } from 'react';
 import type { EventRequest } from '../types/types';
-import type { AxiosResponseHeaders } from 'axios';
 
 export interface ValuesRetornoClient {
   params: string;

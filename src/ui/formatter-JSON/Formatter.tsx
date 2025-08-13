@@ -63,12 +63,12 @@ export const JsonNode: React.FC<JsonNodeProps> = ({
       {isObject ? (
         <>
           <span
-            className="text-zinc-400 cursor-pointer select-none hover:text-zinc-300 transition-colors duration-500"
+            className="text-gray-400 cursor-pointer select-none hover:text-gray-300 transition-colors duration-500"
             onClick={toggle}
           >
             {isArray
               ? !collapsed
-                ? '['
+                ? `[ `
                 : '[..]'
               : !collapsed && !isArray
                 ? '{'
@@ -109,7 +109,7 @@ export const JsonNode: React.FC<JsonNodeProps> = ({
                         depth={depth}
                       />
 
-                      <span className="text-zinc-300">
+                      <span className="text-zinc-300 cursor-pointer">
                         {Object.entries(data as JsonObject).length === idx + 1
                           ? '}'
                           : ''}

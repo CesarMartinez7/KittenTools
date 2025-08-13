@@ -1,5 +1,5 @@
-import type { EventHandler } from "react";
-import "./tooltip.css";
+import type { EventHandler } from 'react';
+import './tooltip.css';
 
 export default function ToolTipButton({
   ariaText,

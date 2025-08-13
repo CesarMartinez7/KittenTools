@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
-import type { RetornoClient } from './types';
 import { useParamsStore } from '../components/addqueryparams/queryparams-store';
 import { useStoreHeaders } from '../stores/headers-store';
+import type { RetornoClient } from './types';
 
 const useClientStore = (): RetornoClient => {
   // -------------- Esto actualment no esta en uso , proximamente deprecado  ---------------------------

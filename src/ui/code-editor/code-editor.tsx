@@ -22,11 +22,23 @@ const CodeEditor = ({
   classNameContainer = '',
 }: CodeEditorProps) => {
   // Referencias al DOOM
+
+
   const inputRefTextOld = useRef<HTMLInputElement>(null);
   const inputRefTextNew = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const highlightRef = useRef<HTMLDivElement>(null);
   const lineNumbersRef = useRef<HTMLDivElement>(null);
+
+
+  const [valueSearch, setValueSearch] = useState("CESAR")
+
+  useEffect(() => {
+    const targetTextArea = textareaRef.current
+    targetTextArea?.focus()
+    targetTextArea?.setSelectionRange(1, 4)
+  }, [valueSearch])
+
 
   const [isOpenBar, setIsOpenBar] = useState<boolean>(false);
   const [code, setCode] = useState(value);
@@ -176,10 +188,13 @@ const CodeEditor = ({
   };
 
   return (
+    <>
+    <input type="text" className='text-red-400' onChange={(e) => setValueSearch(e.target.value)} />
     <main className="overflow-hidden relative">
       <AnimatePresence mode="wait">
         {isOpenBar && (
           <motion.div
+              
             initial={{ opacity: 0, y: -10, scale: 0.95 }}
             animate={{
               opacity: 1,
@@ -322,6 +337,7 @@ const CodeEditor = ({
         </div>
       </div>
     </main>
+    </>
   );
 };
 

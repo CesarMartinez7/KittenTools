@@ -1,10 +1,9 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { JsonNode } from '../../../../ui/formatter-JSON/Formatter';
 import TableData from '../../../../ui/Table';
-import { AnimatePresence } from 'framer-motion';
 
 const tabs = ['Respuesta', 'Headers', 'Cookies', 'Timeline'];
 
@@ -67,7 +66,8 @@ export default function ResponsesTypesComponent({
 
   // Calcular tamaño de la respuesta
   const size = useMemo(() => {
-    const sizeInKB = new TextEncoder().encode(JSON.stringify(data)).length / 1024;
+    const sizeInKB =
+      new TextEncoder().encode(JSON.stringify(data)).length / 1024;
     return sizeInKB.toFixed(2) + 'KB';
   }, [data]);
 
@@ -123,17 +123,25 @@ export default function ResponsesTypesComponent({
                 <TableData data={headersResponse} />
               </div>
             )}
-            
+
             {activeTab.toLowerCase() === 'cookies' && (
-                <div className="p-4">
-                   <TableData data={headersResponse['Set-Cookie'] ? headersResponse['Set-Cookie'].split(';').reduce((acc, current) => {
-                      const [key, value] = current.split('=');
-                      if (key && value) {
-                          acc[key.trim()] = value.trim();
-                      }
-                      return acc;
-                  }, {}) : {}} />
-                </div>
+              <div className="p-4">
+                <TableData
+                  data={
+                    headersResponse['Set-Cookie']
+                      ? headersResponse['Set-Cookie']
+                          .split(';')
+                          .reduce((acc, current) => {
+                            const [key, value] = current.split('=');
+                            if (key && value) {
+                              acc[key.trim()] = value.trim();
+                            }
+                            return acc;
+                          }, {})
+                      : {}
+                  }
+                />
+              </div>
             )}
           </motion.div>
         </AnimatePresence>

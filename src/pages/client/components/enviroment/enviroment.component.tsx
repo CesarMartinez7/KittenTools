@@ -1,82 +1,21 @@
-import { useState } from 'react';
 import { BaseModalLazy } from '../../../../components/lazy-components';
-import { useEnviromentStore } from './store.enviroment';
-
-export interface EnviromentLayout {
-  id: string;
-  name: string;
-  values: Value[];
-  _postman_variable_scope: string;
-  _postman_exported_at: string;
-  _postman_exported_using: string;
-}
-
-export interface Value {
-  key: string;
-  value: string;
-  type: string;
-  enabled: boolean;
-}
+import useEnviromentHook from './enviromentHook';
 
 export default function EnviromentComponent() {
-  const entornoActual = useEnviromentStore((state) => state.entornoActual);
-  const setEntornoActual = useEnviromentStore(
-    (state) => state.setEntornoActual,
-  );
-  const addEntorno = useEnviromentStore((state) => state.addEntorno);
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      try {
-        const json: EnviromentLayout = JSON.parse(
-          event.target?.result as string,
-        );
-        addEntorno(json);
-        if (entornoActual.length === 0) {
-          setEntornoActual(json.values);
-        }
-      } catch (error) {
-        console.error('Error leyendo el JSON:', error);
-        alert('El archivo no es un JSON válido de Postman Environment');
-      }
-    };
-    reader.readAsText(file);
-    toggleModal();
-  };
-
-  const handleChange = (index: number, field: keyof Value, value: any) => {
-    const updated = [...entornoActual];
-    (updated[index] as any)[field] = value;
-    setEntornoActual(updated);
-  };
-
-  const handleAddVariable = () => {
-    setEntornoActual([
-      ...entornoActual,
-      { key: '', value: '', type: 'default', enabled: true },
-    ]);
-  };
-
-  const handleDeleteVariable = (index: number) => {
-    const updated = entornoActual.filter((_, i) => i !== index);
-    setEntornoActual(updated);
-  };
-
-  const toggleModal = () => {
-    setIsOpen((prev) => !prev);
-  };
+  const {
+    handleAddVariable,
+    handleDeleteVariable,
+    handleChange,
+    handleFileUpload,
+    isOpen,
+    setIsOpen,
+    entornoActual,
+    setEntornoActual,
+    toggleModal,
+  } = useEnviromentHook();
 
   return (
     <div className=" rounded-lg h-full">
-      <div className="flex justify-between items-center">
-        <input type="file" onChange={handleFileUpload} />
-      </div>
-
       <BaseModalLazy isOpen={isOpen} onClose={toggleModal}>
         <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm rounded-xl border border-zinc-300/50 dark:border-zinc-800/50 p-6 max-w-md transition-all hover:border-zinc-400/50 dark:hover:border-zinc-700/50">
           <label
@@ -142,6 +81,10 @@ export default function EnviromentComponent() {
             >
               + Añadir Variables
             </button>
+
+            <div className="flex justify-between items-center">
+              <input type="file" onChange={handleFileUpload} />
+            </div>
           </div>
 
           <div className="overflow-x-auto dark:border-zinc-800 overflow-y-scroll h-[700px]">
@@ -166,8 +109,7 @@ export default function EnviromentComponent() {
                 {entornoActual.map((v, i) => (
                   <tr
                     key={i}
-                    className={`dark:hover:bg-zinc-900 hover:bg-zinc-300 text-gray-600  dark:text-zinc-300 transition-colors border-zinc-700 ${i %2 === 0 ?  "dark:bg-zinc-950/30": ""} `}
-
+                    className={`dark:hover:bg-zinc-900 hover:bg-zinc-300 text-gray-600  dark:text-zinc-300 transition-colors border-zinc-700 ${i % 2 === 0 ? 'dark:bg-zinc-950/30' : ''} `}
                   >
                     <td className="px-2 py-1 whitespace-nowrap">
                       <input
@@ -196,6 +138,7 @@ export default function EnviromentComponent() {
                         }
                         className="h-4 w-4 outline-none  text-zinc-600 rounded border-zinc-700 focus:ring-zinc-600"
                       />
+                      <p>{JSON.stringify(v.enabled)}</p>
                     </td>
                     <td className="px-2 py-1 whitespace-nowrap text-center">
                       <button

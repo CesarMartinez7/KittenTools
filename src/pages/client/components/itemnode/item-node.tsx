@@ -138,7 +138,6 @@ const ItemNode: React.FC<ItemNodeProps> = ({
       const headers = data.request?.header;
       const events = data.event;
       const params = data.request.url?.query;
-      
 
       let body = '';
       let language = '';
@@ -157,7 +156,7 @@ const ItemNode: React.FC<ItemNodeProps> = ({
           headers,
           params,
           events,
-          "no hay response"
+          undefined,
         );
       }
     }
@@ -181,6 +180,7 @@ const ItemNode: React.FC<ItemNodeProps> = ({
 
   const handleClickDuplicar = () => {
     toast.loading('Duplicando elemento...');
+    toast.remove();
   };
 
   const getMethodColor = (method: string) => {
@@ -266,14 +266,14 @@ const ItemNode: React.FC<ItemNodeProps> = ({
 
       {showBar && (
         <div
-          className="absolute bg-zinc-900 text-white rounded-md shadow-lg z-50 p-2 w-40"
+          className="absolute text-xs text-gray-700 bg-white dark:bg-zinc-900 dark:text-white rounded-md shadow-lg z-50 p-2 w-40"
           style={{ top: '100%', left: 0 }}
         >
           <ul className="text-sm space-y-1">
             {(isFolder ? mapperFolder : mapperRequest).map((res) => (
               <li
                 key={res.name}
-                className="hover:bg-zinc-700 px-2 py-1 rounded cursor-pointer flex gap-2"
+                className="dark:hover:bg-zinc-700 hover:bg-zinc-200 px-2 py-1 text-xs rounded cursor-pointer flex gap-2"
                 onClick={res.action}
               >
                 {res.name}
@@ -317,7 +317,6 @@ const ItemNode: React.FC<ItemNodeProps> = ({
                 <div
                   key={i}
                   onClick={() => {
-                    
                     try {
                       loadRequest(
                         data.request.body.raw,
@@ -327,11 +326,10 @@ const ItemNode: React.FC<ItemNodeProps> = ({
                         data.request?.header,
                         data.request.url?.query,
                         data.event,
-                        resp.body                        ,
+                        resp.body,
                       );
-
-                    }catch(e) {
-                      toast.error(e)
+                    } catch (e) {
+                      toast.error(e);
                     }
                   }}
                   className="py-1 px-2 border bg-white shadow border-gray-300 dark:border-zinc-700 rounded dark:bg-zinc-900"
@@ -339,7 +337,6 @@ const ItemNode: React.FC<ItemNodeProps> = ({
                   <p className="font-bold text-teal-500 dark:text-teal-300">
                     {resp.name}
                   </p>
-                  
                 </div>
               ))}
             </div>

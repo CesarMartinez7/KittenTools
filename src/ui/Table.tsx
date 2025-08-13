@@ -117,7 +117,9 @@ export default function TableData({ data }: TableDataProps) {
       ) : (
         <div className="w-full h-full flex flex-col items-center justify-center text-center text-slate-500 dark:text-zinc-400">
           <Icon icon="fxemoji:cat" width="128" height="128" />
-          <p className="mt-4 text-sm font-medium">No puedo generar la tabla, lo siento.</p>
+          <p className="mt-4 text-sm font-medium">
+            No puedo generar la tabla, lo siento.
+          </p>
         </div>
       )}
     </motion.div>

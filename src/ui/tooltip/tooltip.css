@@ -17,12 +17,12 @@
 }
 
 .tooltip .tooltiptext {
-    width: 120px;
-    top: 100%;
-    left: 50%;
-    margin-bottom: 4px;
-    margin-left: -60px; /* Use half of the width (120/2 = 60), to center the tooltip */
-  }
+  width: 120px;
+  top: 100%;
+  left: 50%;
+  margin-bottom: 4px;
+  margin-left: -60px; /* Use half of the width (120/2 = 60), to center the tooltip */
+}
 /* Show the tooltip text when you mouse over the tooltip container */
 .tooltip:hover .tooltiptext {
   visibility: visible;
