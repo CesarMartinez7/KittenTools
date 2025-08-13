@@ -365,6 +365,7 @@ export default function AppClient() {
                         data={response}
                         statusCode={statusCode}
                       />
+                      
                     </div>
                   )}
                 </>

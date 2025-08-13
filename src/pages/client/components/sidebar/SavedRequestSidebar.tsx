@@ -9,6 +9,7 @@ import { useEnviromentStore } from '../enviroment/store.enviroment';
 import ItemNode, { ResizableSidebar } from '../itemnode/item-node';
 import SidebarHook from './hooks/sidebar-hook';
 import ToolTipButton from '../../../../ui/tooltip/TooltipButton';
+import toast from 'react-hot-toast';
 
 export function SavedRequestsSidebar({
   isOpen,
@@ -98,8 +99,14 @@ export function SavedRequestsSidebar({
     reqHeaders: Record<string, string>,
     reqParams: string,
     reqEvent: EventRequest | null,
+    reqResponse: string
   ) => {
     const requestScriptEvents = reqEvent ? reqEvent : null;
+
+
+    toast.success(reqResponse)
+    console.log(reqResponse)
+
     onLoadRequest(
       reqBody,
       reqContentType,
@@ -107,7 +114,9 @@ export function SavedRequestsSidebar({
       reqMethod,
       reqHeaders,
       reqParams,
-      requestScriptEvents,
+      //@ts-ignore
+      requestScriptEvents, 
+      reqResponse
     );
   };
 
@@ -138,37 +147,7 @@ export function SavedRequestsSidebar({
               </h3>
             </div>
 
-            {/* Action Buttons */}
-            {/* <div className="flex flex-row gap-2 mb-6">
-              <button
-                aria-label="Exportar coleccion"
-                title="Importar coleccion"
-                className="
-                flex items-center gap-2 px-2 py-1 text-xs rounded-md transition-colors
-                bg-gray-200 text-gray-800 hover:bg-gray-300
-                dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-700
-              "
-                onClick={handleClickCargueCollecion}
-              >
-                <span className="tabler--file-upload text-sm"></span>
-                <span>Cargar Coleccion</span>
-              </button>
-
-              <button
-                className="
-                flex items-center gap-2 px-3 py-2 text-xs rounded-md transition-colors
-                bg-gray-200 text-gray-800 hover:bg-gray-300
-                dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-700
-              "
-                title="Exportar collecion"
-                aria-label="exportar coleccion"
-                onClick={handleExportarCollecion}
-              >
-                <span className="tabler--file-export text-sm"></span>
-                <span>Exportar Coleccion</span>
-              </button>
-            </div> */}
-
+  
             {/* Tabs */}
              <div
               className="

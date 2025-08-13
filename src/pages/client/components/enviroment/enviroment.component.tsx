@@ -144,7 +144,7 @@ export default function EnviromentComponent() {
             </button>
           </div>
 
-          <div className="overflow-x-auto dark:border-zinc-800">
+          <div className="overflow-x-auto dark:border-zinc-800 overflow-y-scroll h-[700px]">
             <table className="min-w-full divide-y dark:divide-zinc-800">
               <thead className="dark:bg-zinc-900 dark:text-zinc-200 text-zinc-700 bg-zinc-200">
                 <tr>
@@ -166,7 +166,8 @@ export default function EnviromentComponent() {
                 {entornoActual.map((v, i) => (
                   <tr
                     key={i}
-                    className="dark:hover:bg-zinc-900/50 hover:bg-zinc-300 dark:text-zinc-300 transition-colors border-zinc-300"
+                    className={`dark:hover:bg-zinc-900 hover:bg-zinc-300 text-gray-600  dark:text-zinc-300 transition-colors border-zinc-700 ${i %2 === 0 ?  "dark:bg-zinc-950/30": ""} `}
+
                   >
                     <td className="px-2 py-1 whitespace-nowrap">
                       <input
@@ -249,9 +250,9 @@ export default function EnviromentComponent() {
           </p>
           <button
             onClick={toggleModal}
-            className="mt-4 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-md  hover:text-white transition-colors"
+            className="mt-4 px-4 py-2 bg-gray-300  text-shadow-2xs dark:text-zinc-300 text-zinc-800 dark:bg-zinc-800 hover:bg-zinc-700 rounded-md  hover:text-white transition-colors"
           >
-            Import Environment
+            Importar entornos
           </button>
         </div>
       )}

@@ -138,7 +138,7 @@ const ItemNode: React.FC<ItemNodeProps> = ({
       const headers = data.request?.header;
       const events = data.event;
       const params = data.request.url?.query;
-      const responses = data.response;
+      
 
       let body = '';
       let language = '';
@@ -157,7 +157,7 @@ const ItemNode: React.FC<ItemNodeProps> = ({
           headers,
           params,
           events,
-          responses,
+          "no hay response"
         );
       }
     }
@@ -317,27 +317,29 @@ const ItemNode: React.FC<ItemNodeProps> = ({
                 <div
                   key={i}
                   onClick={() => {
-                    alert('sfdsf');
+                    
+                    try {
+                      loadRequest(
+                        data.request.body.raw,
+                        data.request.body.options?.raw?.language,
+                        data.request?.url?.raw,
+                        data.request?.method,
+                        data.request?.header,
+                        data.request.url?.query,
+                        data.event,
+                        resp.body                        ,
+                      );
 
-                    loadRequest(
-                      resp.body,
-                      data.request.body.options?.raw?.language,
-                      data.request?.url?.raw,
-                      data.request?.method,
-                      data.request?.header,
-                      data.request.url?.query,
-                      data.event,
-                      data.response,
-                    );
+                    }catch(e) {
+                      toast.error(e)
+                    }
                   }}
                   className="py-1 px-2 border bg-white shadow border-gray-300 dark:border-zinc-700 rounded dark:bg-zinc-900"
                 >
                   <p className="font-bold text-teal-500 dark:text-teal-300">
                     {resp.name}
                   </p>
-                  <p className=" text-zinc-600 dark:text-zinc-400">
-                    {resp.status} - {resp.code} {resp.body}
-                  </p>
+                  
                 </div>
               ))}
             </div>
