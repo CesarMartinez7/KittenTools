@@ -98,27 +98,165 @@ const ResizableSidebar: React.FC<ResizableSidebarProps> = ({
 };
 
 // ItemNode original (sin modificaciones)
-const ItemNode: React.FC<ItemNodeProps> = ({
-  data,
-  level = 0,
-  loadRequest,
-  actualizarNombre,
-  eliminar,
-  nameItem,
-}) => {
+function actualizarNombreEnItems(items: Item[], oldName: string, newName: string): Item[] {
+  return items.map((item) => {
+    if (item.name === oldName) {
+      return { ...item, name: newName };
+    }
+    if (item.item) {
+      return {
+        ...item,
+        item: actualizarNombreEnItems(item.item, oldName, newName),
+      };
+    }
+    return item;
+  });
+}
+
+function eliminarItemPorNombre(items: Item[], nameToDelete: string): Item[] {
+  return items
+    .filter((item) => item.name !== nameToDelete)
+    .map((item) => {
+      if (item.item) {
+        return {
+          ...item,
+          item: eliminarItemPorNombre(item.item, nameToDelete),
+        };
+      }
+      return item;
+    });
+}
+
+const ItemNode: React.FC<ItemNodeProps> = ({ data, level = 0, loadRequest, nameItem }) => {
+  
+  const [nodeData, setNodeData] = useState(data);
   const [collapsed, setCollapsed] = useState(true);
   const [showResponses, setShowResponses] = useState(false);
   const [showBar, setShowBar] = useState(false);
 
-  const indent = 1 * level;
-  const isFolder = !!data.item && data.item.length > 0;
-  const haveResponses = data.response && data.response.length > 0;
+  if (!nodeData) {
+    return null; // Evita el TypeError
+  }
 
+
+  const indent = 1 * level;
+  const isFolder = !!nodeData.item && nodeData.item.length > 0;
+  const haveResponses = nodeData.response && nodeData.response.length > 0;
+
+  // === Funciones internas ===
+  function actualizarNombreEnItems(items: Item[], oldName: string, newName: string): Item[] {
+    return items.map((item) => {
+      if (item.name === oldName) {
+        return { ...item, name: newName };
+      }
+      if (item.item) {
+        return {
+          ...item,
+          item: actualizarNombreEnItems(item.item, oldName, newName),
+        };
+      }
+      return item;
+    });
+  }
+
+  function eliminarItemPorNombre(items: Item[], nameToDelete: string): Item[] {
+    return items
+      .filter((item) => item.name !== nameToDelete)
+      .map((item) => {
+        if (item.item) {
+          return {
+            ...item,
+            item: eliminarItemPorNombre(item.item, nameToDelete),
+          };
+        }
+        return item;
+      });
+  }
+
+  function duplicarItem(items: Item[], nameToDuplicate: string): Item[] {
+    const duplicated: Item[] = [];
+    items.forEach((item) => {
+      duplicated.push(item);
+      if (item.name === nameToDuplicate) {
+        duplicated.push({
+          ...item,
+          name: `${item.name} copia`,
+        });
+      }
+      if (item.item) {
+        item.item = duplicarItem(item.item, nameToDuplicate);
+      }
+    });
+    return duplicated;
+  }
+
+  // 👇 Nueva función para crear una nueva petición
+  const handleNuevaPeticion = () => {
+    const nameNewRequest = window.prompt("Nombre de tu nueva peticion")
+    const newRequest = {
+      name: nameNewRequest,
+      request: {
+        method: 'GET',
+        header: [],
+        body: {
+          mode: 'raw',
+          raw: '',
+          options: {
+            raw: {
+              language: 'json'
+            }
+          }
+        },
+        url: {
+          raw: '',
+          host: [''],
+          query: []
+        }
+      },
+      response: []
+    };
+
+    const updatedNodeData = {
+      ...nodeData,
+      item: nodeData.item ? [...nodeData.item, newRequest] : [newRequest],
+    };
+    
+    setNodeData(updatedNodeData);
+    setCollapsed(false); // Abrimos la carpeta automáticamente
+    toast.success('Nueva petición creada.');
+  };
+
+  const handleChangeName = () => {
+    const oldName = nodeData.name || '';
+    const nuevo = prompt('Nuevo nombre:', oldName || getDisplayName());
+    if (nuevo && nuevo.trim()) {
+      const updated = actualizarNombreEnItems([nodeData], oldName, nuevo.trim());
+      setNodeData(updated[0]);
+      toast.success(`"${oldName}" renombrado a "${nuevo.trim()}"`);
+    }
+  };
+
+  const handleClickDelete = () => {
+    const displayName = getDisplayName();
+    if (confirm(`¿Eliminar "${displayName}"?`)) {
+      toast.success(`"${displayName}" eliminado`);
+      setNodeData(null as any); // Lo removemos del estado
+    }
+  };
+
+  const handleClickDuplicar = () => {
+    const updated = duplicarItem([nodeData], nodeData.name || '');
+    if (updated.length > 1) {
+      toast.success(`"${nodeData.name}" duplicado`);
+    }
+  };
+
+  // === Auxiliares ===
   const getDisplayName = () => {
-    if (!data.name || data.name.trim() === '') {
+    if (!nodeData.name || nodeData.name.trim() === '') {
       return isFolder ? nameItem : 'Request sin nombre';
     }
-    return data.name;
+    return nodeData.name;
   };
 
   const handleClickContextMenu = (e: React.MouseEvent) => {
@@ -133,18 +271,18 @@ const ItemNode: React.FC<ItemNodeProps> = ({
     if (isFolder) {
       setCollapsed(!collapsed);
     } else {
-      const method = data.request?.method?.toUpperCase() || 'GET';
-      const url = data.request?.url?.raw || '';
-      const headers = data.request?.header;
-      const events = data.event;
-      const params = data.request.url?.query;
+      const method = nodeData.request?.method?.toUpperCase() || 'GET';
+      const url = nodeData.request?.url?.raw || '';
+      const headers = nodeData.request?.header;
+      const events = nodeData.event;
+      const params = nodeData.request.url?.query;
 
       let body = '';
       let language = '';
 
-      if (method !== 'GET' && data.request?.body) {
-        body = data.request.body.raw || '';
-        language = data.request.body.options?.raw?.language || '';
+      if (method !== 'GET' && nodeData.request?.body) {
+        body = nodeData.request.body.raw || '';
+        language = nodeData.request.body.options?.raw?.language || '';
       }
 
       if (loadRequest) {
@@ -160,27 +298,6 @@ const ItemNode: React.FC<ItemNodeProps> = ({
         );
       }
     }
-  };
-
-  const handleChangeName = () => {
-    const currentName = getDisplayName();
-    const nuevo = prompt('Nuevo nombre:', currentName);
-    if (nuevo && nuevo.trim()) {
-      actualizarNombre(data.name || '', nuevo.trim());
-    }
-  };
-
-  const handleClickDelete = () => {
-    const nameToDelete = getDisplayName();
-    if (confirm(`¿Eliminar "${nameToDelete}"?`)) {
-      toast.success(`"${nameToDelete}" eliminado`);
-      eliminar(data.name || '');
-    }
-  };
-
-  const handleClickDuplicar = () => {
-    toast.loading('Duplicando elemento...');
-    toast.remove();
   };
 
   const getMethodColor = (method: string) => {
@@ -200,11 +317,14 @@ const ItemNode: React.FC<ItemNodeProps> = ({
     }
   };
 
+  if (!nodeData) return null;
+
   const mapperFolder = [
     { name: 'Renombrar', action: handleChangeName },
     { name: 'Duplicar', action: handleClickDuplicar },
     { name: 'Eliminar', action: handleClickDelete },
-    { name: 'Nueva petición' },
+    // 👇 Se añade la nueva acción al menú contextual de carpetas
+    { name: 'Nueva petición', action: handleNuevaPeticion }, 
     { name: 'Nueva carpeta' },
     { name: 'Info' },
   ];
@@ -214,7 +334,6 @@ const ItemNode: React.FC<ItemNodeProps> = ({
     { name: 'Duplicar', action: handleClickDuplicar },
     { name: 'Eliminar', action: handleClickDelete },
   ];
-
   return (
     <div
       className="flex flex-col gap-2 relative"
@@ -235,30 +354,28 @@ const ItemNode: React.FC<ItemNodeProps> = ({
               className={`${level === 0 ? 'text-green-primary/85' : level === 1 ? 'text-green-primary' : level === 2 ? 'text-green-300' : level === 3 ? 'text-green-200' : 'text-green-100'}`}
             />
           )}
-
-          {data.request?.method && !isFolder && (
+          {nodeData.request?.method && !isFolder && (
             <span
-              className={`font-mono font-bold px-1 py-1 rounded-md ${getMethodColor(data.request.method)}`}
+              className={`font-mono font-bold px-1 py-1 rounded-md ${getMethodColor(nodeData.request.method)}`}
             >
-              {data.request.method}
+              {nodeData.request.method}
             </span>
           )}
           <p
-            className={`truncate ${!data.name || data.name.trim() === '' ? 'italic text-zinc-500' : ' text-zinc-700 dark:text-zinc-200'}`}
+            className={`truncate ${!nodeData.name || nodeData.name.trim() === '' ? 'italic text-zinc-500' : ' text-zinc-700 dark:text-zinc-200'}`}
           >
             {getDisplayName()}
           </p>
         </div>
-
         <div className="flex items-center gap-1">
-          {isFolder && data.item && (
+          {isFolder && nodeData.item && (
             <span className="dark:text-zinc-500 text-zinc-200 text-[10px]">
-              {data.item.length}
+              {nodeData.item.length}
             </span>
           )}
           {haveResponses && (
             <span className="text-green-400 text-[10px]">
-              {data.response.length}
+              {nodeData.response.length}
             </span>
           )}
         </div>
@@ -266,14 +383,14 @@ const ItemNode: React.FC<ItemNodeProps> = ({
 
       {showBar && (
         <div
-          className="absolute text-xs text-gray-700 bg-white dark:bg-zinc-900 dark:text-white rounded-md shadow-lg z-50 p-2 w-40"
+          className="absolute text-xs text-gray-700 bg-white dark:bg-zinc-900 dark:text-white rounded-md shadow-lg z-50 p-2 w-50"
           style={{ top: '100%', left: 0 }}
         >
-          <ul className="text-sm space-y-1">
+          <ul className="text-sm space-y-1 divide-y divide-gray-200 dark:divide-zinc-800">
             {(isFolder ? mapperFolder : mapperRequest).map((res) => (
               <li
                 key={res.name}
-                className="dark:hover:bg-zinc-700 hover:bg-zinc-200 px-2 py-1 text-xs rounded cursor-pointer flex gap-2"
+                className="dark:hover:bg-zinc-700 hover:bg-zinc-200 px-2 py-1 text-xs  cursor-pointer flex gap-2"
                 onClick={res.action}
               >
                 {res.name}
@@ -283,17 +400,16 @@ const ItemNode: React.FC<ItemNodeProps> = ({
         </div>
       )}
 
-      {!collapsed && isFolder && (
+      {!collapsed && isFolder && nodeData.item && (
         <div className="ml-2 flex flex-col gap-2">
-          {data.item!.map((child, index) => (
+          {nodeData.item.map((child, index) => (
             <LazyListPerform key={index}>
               <ItemNode
-                eliminar={eliminar}
-                actualizarNombre={actualizarNombre}
                 key={index}
                 data={child}
                 level={level + 1}
                 loadRequest={loadRequest}
+                nameItem={nameItem}
               />
             </LazyListPerform>
           ))}
@@ -307,29 +423,28 @@ const ItemNode: React.FC<ItemNodeProps> = ({
             className="dark:text-zinc-400 dark:hover:text-white text-zinc-500 text-xs"
           >
             {showResponses
-              ? `Ocultar respuestas (${data.response.length})`
-              : `Mostrar respuestas (${data.response.length})`}
+              ? `Ocultar respuestas (${nodeData.response.length})`
+              : `Mostrar respuestas (${nodeData.response.length})`}
           </button>
-
           {showResponses && (
             <div className="mt-2 space-y-1 text-[11px]">
-              {data.response.map((resp, i) => (
+              {nodeData.response.map((resp, i) => (
                 <div
                   key={i}
                   onClick={() => {
                     try {
-                      loadRequest(
-                        data.request.body.raw,
-                        data.request.body.options?.raw?.language,
-                        data.request?.url?.raw,
-                        data.request?.method,
-                        data.request?.header,
-                        data.request.url?.query,
-                        data.event,
-                        resp.body,
+                      loadRequest?.(
+                        nodeData.request.body.raw,
+                        nodeData.request.body.options?.raw?.language,
+                        nodeData.request?.url?.raw,
+                        nodeData.request?.method,
+                        nodeData.request?.header,
+                        nodeData.request.url?.query,
+                        nodeData.event,
+                        resp.body
                       );
                     } catch (e) {
-                      toast.error(e);
+                      toast.error(String(e));
                     }
                   }}
                   className="py-1 px-2 border bg-white shadow border-gray-300 dark:border-zinc-700 rounded dark:bg-zinc-900"
@@ -346,6 +461,7 @@ const ItemNode: React.FC<ItemNodeProps> = ({
     </div>
   );
 };
+
 
 export default ItemNode;
 export { ResizableSidebar };

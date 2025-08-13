@@ -58,7 +58,7 @@ const AddQueryParam = ({
   return (
     <div className="h-full w-full flex flex-col gap-2 my-6">
       {!noParams ? (
-        <table className="border-collapse border border-zinc-800">
+        <table className="border-collapse border border-zinc-800 text-gray-700 dark:text-zinc-300">
           <thead>
             <tr>
               <th className="border border-zinc-800 px-2 py-1">Llave</th>

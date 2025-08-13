@@ -25,26 +25,62 @@ export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
   const setEntornoActual = useEnviromentStore(
     (state) => state.setEntornoActual,
   );
-  const entornoActual = useEnviromentStore((state) => state.entornoActual);
 
   const [currenIdx, setCurrentIdx] = useState<number>(1);
-  const [currentId, setCurrentId] = useState<string>('');
-  const [currentName, setCurrentName] = useState<string>('');
 
-  const actualizarNombre = (oldName: string, newName: string) => {
-    const nuevaColeccion = parsed.map((item) => {
-      if (item.name === oldName) {
-        return { ...item, name: newName };
-      }
-      return item;
-    });
-    setColeccion(nuevaColeccion);
-  };
+
+  // function actualizarNombreEnItems(
+  //   items: Item[],
+  //   oldName: string,
+  //   newName: string,
+  // ): Item[] {
+  //   return items.map((item) => {
+  //     if (item.name === oldName) {
+  //       return { ...item, name: newName };
+  //     }
+  //     if (item.item) {
+  //       return {
+  //         ...item,
+  //         item: actualizarNombreEnItems(item.item, oldName, newName),
+  //       };
+  //     }
+  //     return item;
+  //   });
+  // }
+
+  // function eliminarItemPorNombre(items: Item[], nameToDelete: string): Item[] {
+  //   return items
+  //     .filter((item) => item.name !== nameToDelete)
+  //     .map((item) => {
+  //       if (item.item) {
+  //         return {
+  //           ...item,
+  //           item: eliminarItemPorNombre(item.item, nameToDelete),
+  //         };
+  //       }
+  //       return item;
+  //     });
+  // }
+
+  // const handleActualizarNombre = (oldName: string, newName: string) => {
+  //   if (!parsed) return;
+  //   const updatedItems = actualizarNombreEnItems(parsed.item, oldName, newName);
+  //   const nuevaParsed = { ...parsed, item: updatedItems };
+  //   setParsed(nuevaParsed);
+  // };
+
+  // const handleClickEliminar = (name: string) => {
+  //   if (!parsed) return;
+  //   const updatedItems = eliminarItemPorNombre(parsed.item, name);
+  //   const nuevoParsed = { ...parsed, item: updatedItems };
+  //   setParsed(nuevoParsed);
+  // };
+
 
   function actualizarNombreEnItems(
     items: Item[],
     oldName: string,
-    newName: string,
+    newName: string
   ): Item[] {
     return items.map((item) => {
       if (item.name === oldName) {
@@ -59,7 +95,7 @@ export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
       return item;
     });
   }
-
+  
   function eliminarItemPorNombre(items: Item[], nameToDelete: string): Item[] {
     return items
       .filter((item) => item.name !== nameToDelete)
@@ -73,20 +109,26 @@ export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
         return item;
       });
   }
-
+  
+  // --- Handlers que pasas como props a ItemNode ---
   const handleActualizarNombre = (oldName: string, newName: string) => {
     if (!parsed) return;
-    const updatedItems = actualizarNombreEnItems(parsed.item, oldName, newName);
-    const nuevaParsed = { ...parsed, item: updatedItems };
-    setParsed(nuevaParsed);
+    setParsed((prev) => {
+      if (!prev) return prev;
+      const updatedItems = actualizarNombreEnItems(prev.item, oldName, newName);
+      return { ...prev, item: updatedItems };
+    });
   };
-
-  const handleClickEliminar = (name: string) => {
+  
+  const handleEliminar = (name: string) => {
     if (!parsed) return;
-    const updatedItems = eliminarItemPorNombre(parsed.item, name);
-    const nuevoParsed = { ...parsed, item: updatedItems };
-    setParsed(nuevoParsed);
+    setParsed((prev) => {
+      if (!prev) return prev;
+      const updatedItems = eliminarItemPorNombre(prev.item, name);
+      return { ...prev, item: updatedItems };
+    });
   };
+  
 
   const parsedLoadRequest = (
     reqBody: string,
@@ -100,8 +142,7 @@ export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
   ) => {
     const requestScriptEvents = reqEvent ? reqEvent : null;
 
-    toast.success(reqResponse);
-    console.log(reqResponse);
+    
 
     onLoadRequest(
       reqBody,
@@ -250,7 +291,7 @@ export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
                         </div> */}
                         <ItemNode
                           nameItem={e.name}
-                          eliminar={handleClickEliminar}
+                          eliminar={handleEliminar}
                           actualizarNombre={handleActualizarNombre}
                           level={0}
                           data={e.item}
