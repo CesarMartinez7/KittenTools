@@ -125,8 +125,8 @@ export function SavedRequestsSidebar({
           "
           >
             <div className="flex flex-row gap-2 mb-6 justify-end">
-              <ToolTipButton ariaText="Importar" tooltipText="sdfsfd" />
-              <ToolTipButton ariaText="Exportar" tooltipText="sdfsfd" />
+              <ToolTipButton ariaText="Importar" tooltipText="Importar coleccion" onClick={handleClickCargueCollecion} />
+              <ToolTipButton ariaText="Exportar" tooltipText="Importar coleccion POSTMAN" onClick={handleClickCargueCollecion} />
             </div>
             {/* Header */}
             <div className="flex justify-start items-center my-6 space-x-3 relative">
@@ -139,7 +139,7 @@ export function SavedRequestsSidebar({
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-row gap-2 mb-6">
+            {/* <div className="flex flex-row gap-2 mb-6">
               <button
                 aria-label="Exportar coleccion"
                 title="Importar coleccion"
@@ -167,10 +167,10 @@ export function SavedRequestsSidebar({
                 <span className="tabler--file-export text-sm"></span>
                 <span>Exportar Coleccion</span>
               </button>
-            </div>
+            </div> */}
 
             {/* Tabs */}
-            <div
+             <div
               className="
             bg-gray-100 dark:bg-zinc-950/60 px-2 py-1 flex w-full transition-all flex-shrink-0
           "

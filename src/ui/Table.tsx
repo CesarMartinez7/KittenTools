@@ -1,6 +1,5 @@
-// import LazyListItem from './LazyListPerform'; // LazyListItem is not used in the provided code
 import { Icon } from '@iconify/react/dist/iconify.js';
-import { motion } from 'framer-motion'; // Corrected import
+import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 
@@ -65,33 +64,40 @@ export default function TableData({ data }: TableDataProps) {
   }, [data]);
 
   return (
-    <motion.div exit={{ opacity: 0 }} className="p-6 h-full overflow-auto">
+    <motion.div
+      exit={{ opacity: 0 }}
+      className="p-6 h-full overflow-auto bg-slate-50 dark:bg-zinc-900 transition-colors duration-300"
+    >
       {!error ? (
-        <div className="relative">
-          <table className="w-full text-xs text-left rtl:text-right text-gray-500 dark:text-gray-400">
-            <thead className="text-xs text-zinc-700 dark:text-zinc-400  uppercase bg-zinc-300 dark:bg-zinc-900  sticky top-0">
+        <div className="relative shadow-lg rounded-lg overflow-hidden">
+          <table className="w-full text-xs text-left text-slate-700 dark:text-zinc-300">
+            <thead className="text-sm uppercase text-slate-600 dark:text-zinc-400 bg-slate-200 dark:bg-zinc-800 sticky top-0 shadow-sm z-10">
               <tr>
                 {columnNames?.map((col, idx) => (
-                  <th scope="col" key={idx} className="px-6 py-3">
+                  <th scope="col" key={idx} className="px-6 py-4 font-semibold">
                     {col}
                   </th>
                 ))}
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-slate-200 dark:divide-zinc-700">
               {valuesColums &&
                 valuesColums.map((row: any[], rowIndex: number) => (
                   <tr
                     key={rowIndex}
-                    className="bg-white border-b dark:border-zinc-700 dark:bg-zinc-800 text-gray-700"
+                    className="bg-white dark:bg-zinc-900 hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors duration-200"
                   >
                     {row.map((cell: any, cellIndex: number) => (
                       <td
-                        key={`${rowIndex}-${cellIndex}`} // Unique key for cells
-                        className={`px-6 py-4 ${cellIndex === 0 ? 'font-medium text-gray-900 whitespace-nowrap dark:text-white' : 'text-ellipsis'}`}
+                        key={`${rowIndex}-${cellIndex}`}
+                        className={`px-6 py-4 ${
+                          cellIndex === 0
+                            ? 'font-medium text-slate-900 whitespace-nowrap dark:text-white'
+                            : 'text-ellipsis'
+                        }`}
                       >
                         {typeof cell === 'object' && cell !== null ? (
-                          <pre className="whitespace-pre-wrap break-words">
+                          <pre className="whitespace-pre-wrap break-words text-xs">
                             {JSON.stringify(cell, null, 1)}
                           </pre>
                         ) : (
@@ -109,12 +115,11 @@ export default function TableData({ data }: TableDataProps) {
           </table>
         </div>
       ) : (
-        <div className="w-full h-full grid place-content-center text-center text-gray-500 dark:text-gray-400">
-          <Icon icon="fxemoji:cat" width="322" height="322" />
-          <p className="mt-4 text-xs">No puedo generar la tabla, lo siento.</p>
+        <div className="w-full h-full flex flex-col items-center justify-center text-center text-slate-500 dark:text-zinc-400">
+          <Icon icon="fxemoji:cat" width="128" height="128" />
+          <p className="mt-4 text-sm font-medium">No puedo generar la tabla, lo siento.</p>
         </div>
       )}
     </motion.div>
   );
 }
-5;
