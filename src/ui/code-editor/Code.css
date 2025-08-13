@@ -1,0 +1,17 @@
+.highlight-match {
+  background-color: #ffd764;
+  border-radius: 2px;
+  padding: 0 2px;
+}
+
+.highlight-match-active {
+  background-color: #ff9800; 
+}
+
+[data-theme="dark"] .highlight-match {
+  background-color: #615024; 
+}
+
+[data-theme="dark"] .highlight-match-active {
+  background-color: #a76b07; 
+}
