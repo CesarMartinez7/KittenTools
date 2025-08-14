@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import type React from 'react';
 import { useEffect, useState } from 'react';
-import { CodeEditorLazy } from '../../../../components/lazy-components';
+import { CodeEditorLazy } from '../../../../ui/lazy-components';
 import { VariantsAnimation } from '../../mapper-ops';
 import type { EventRequest } from '../../types/types';
 
@@ -55,13 +55,14 @@ const ScriptComponent: React.FC<ScriptComponentProps> = ({
       className="text-zinc-500"
     >
       <CodeEditorLazy
+        height='100px'
         language="javascript"
         value={script.join('')}
         onChange={handleChange}
       />
-      <button className="btn-black" onClick={handleExecuteScript}>
+      {/* <button className="btn-black" onClick={handleExecuteScript}>
         Execute
-      </button>
+      </button> */}
       <pre>{result}</pre>
     </motion.div>
   );

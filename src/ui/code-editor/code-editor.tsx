@@ -6,7 +6,7 @@ import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import LazyListItem from '../LazyListPerform';
 import highlightCode from './higlight-code';
-import "./Code.css"
+import './Code.css';
 
 import { useJsonHook } from './methods-json/method';
 import { useXmlHook } from './methos-xml/method.xml';
@@ -78,19 +78,24 @@ const CodeEditor = ({
         e.preventDefault();
         HandlersIdentarBody();
       }
-      
+
       // Navegación con Enter y Shift + Enter
       if (isOpenFindBar && e.key === 'Enter') {
-          e.preventDefault();
-          if (findResults.length > 0) {
-              if (e.shiftKey) {
-                  // Shift + Enter: anterior
-                  setCurrentMatchIndex((prevIndex) => (prevIndex - 1 + findResults.length) % findResults.length);
-              } else {
-                  // Enter: siguiente
-                  setCurrentMatchIndex((prevIndex) => (prevIndex + 1) % findResults.length);
-              }
+        e.preventDefault();
+        if (findResults.length > 0) {
+          if (e.shiftKey) {
+            // Shift + Enter: anterior
+            setCurrentMatchIndex(
+              (prevIndex) =>
+                (prevIndex - 1 + findResults.length) % findResults.length,
+            );
+          } else {
+            // Enter: siguiente
+            setCurrentMatchIndex(
+              (prevIndex) => (prevIndex + 1) % findResults.length,
+            );
           }
+        }
       }
     };
 
@@ -101,7 +106,6 @@ const CodeEditor = ({
     };
   }, [isOpenFindBar, findResults.length]);
 
-  
   useEffect(() => {
     if (searchValue && code) {
       const results: number[] = [];
@@ -118,26 +122,33 @@ const CodeEditor = ({
     }
   }, [searchValue, code]);
 
-
   useEffect(() => {
-    if (currentMatchIndex !== -1 && textareaRef.current && highlightRef.current) {
-        const matchPos = findResults[currentMatchIndex];
-        const lines = code.substring(0, matchPos).split('\n');
-        const lineIndex = lines.length - 1;
-        
-        const lineHeight = parseInt(getComputedStyle(textareaRef.current).lineHeight, 10);
-        if (!isNaN(lineHeight)) {
-            const scrollPosition = (lineIndex * lineHeight) - (textareaRef.current.clientHeight / 2) + (lineHeight / 2);
-            textareaRef.current.scrollTo({
-                top: scrollPosition,
-                behavior: 'smooth'
-            });
-        }
+    if (
+      currentMatchIndex !== -1 &&
+      textareaRef.current &&
+      highlightRef.current
+    ) {
+      const matchPos = findResults[currentMatchIndex];
+      const lines = code.substring(0, matchPos).split('\n');
+      const lineIndex = lines.length - 1;
+
+      const lineHeight = parseInt(
+        getComputedStyle(textareaRef.current).lineHeight,
+        10,
+      );
+      if (!isNaN(lineHeight)) {
+        const scrollPosition =
+          lineIndex * lineHeight -
+          textareaRef.current.clientHeight / 2 +
+          lineHeight / 2;
+        textareaRef.current.scrollTo({
+          top: scrollPosition,
+          behavior: 'smooth',
+        });
+      }
     }
   }, [currentMatchIndex, findResults, code]);
 
-
-  
   const HandlersMinifyBody = () => {
     if (language === 'json') return minifyJson();
     if (language === 'xml') return minifyXml();
@@ -228,20 +239,22 @@ const CodeEditor = ({
       )),
     [lineCount],
   );
-  
+
   const handleNextMatch = () => {
     setCurrentMatchIndex((prevIndex) => (prevIndex + 1) % findResults.length);
   };
 
   const handlePrevMatch = () => {
-    setCurrentMatchIndex((prevIndex) => (prevIndex - 1 + findResults.length) % findResults.length);
+    setCurrentMatchIndex(
+      (prevIndex) => (prevIndex - 1 + findResults.length) % findResults.length,
+    );
   };
 
   return (
     <>
       <main className="overflow-hidden relative">
         <AnimatePresence mode="wait">
-          {isOpenBar && (
+          {/* {isOpenBar && (
             <motion.div
               initial={{ opacity: 0, y: -10, scale: 0.95 }}
               animate={{
@@ -289,40 +302,97 @@ const CodeEditor = ({
                 </button>
               </div>
             </motion.div>
-          )}
+          )} */}
 
           {isOpenFindBar && (
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="absolute right-2 top-2 z-[778] p-2 bg-gray-100 border dark:border-zinc-800 border-gray-200 dark:bg-zinc-950/90 rounded-md shadow-lg flex items-center gap-2"
+              className="absolute right-2  top-2 z-[778] p-2 bg-gray-100 border dark:border-zinc-800 border-gray-200 dark:bg-zinc-950/90 rounded-md shadow-lg flex items-center gap-2 flex-col"
             >
-              <input
-                ref={searchInputRef}
-                type="text"
-                className="input-base-editor text-xs w-40 px-2 py-1"
-                placeholder="Buscar..."
-                onChange={(e) => setSearchValue(e.target.value)}
-              />
-              <span className="text-xs text-gray-500 dark:text-zinc-400">
-                {findResults.length > 0 ? `${currentMatchIndex + 1}` : 0} de {findResults.length}
-              </span>
-              <button onClick={handlePrevMatch} disabled={findResults.length === 0} className="p-1 rounded-md hover:bg-gray-300 dark:hover:bg-zinc-700 disabled:opacity-50 text-gray-800 dark:text-zinc-300 disabled:text-red-500">
-                <Icon icon="tabler:chevron-up" width={16} />
-              </button>
-              <button onClick={handleNextMatch} disabled={findResults.length === 0} className="p-1 rounded-md hover:bg-gray-300 dark:hover:bg-zinc-700 disabled:opacity-50 text-gray-800 dark:text-zinc-300 disabled:text-red-500">
-                <Icon icon="tabler:chevron-down" width={16} />
-              </button>
-              <button onClick={() => setIsOpenFindBar(false)} className="p-1 rounded-md hover:bg-gray-300 dark:hover:bg-zinc-700 text-gray-800 dark:text-zinc-300">
-                <Icon icon="tabler:x" width={16} />
-              </button>
+              <div className=" flex justify-center items-center gap-2">
+                <button
+                  onClick={() => setIsOpenBar((prev) => !prev)}
+                  className="p-1 rounded-md hover:bg-gray-300 dark:hover:bg-zinc-700 disabled:opacity-50 text-gray-800 dark:text-zinc-300 disabled:text-red-500"
+                >
+                  <Icon
+                    icon={`tabler:chevron-${isOpenBar ? 'down' : 'left'}`}
+                    width={16}
+                  />
+                </button>
+                <input
+                  ref={searchInputRef}
+                  type="text"
+                  className="input-base-editor text-xs w-40 px-2 py-1"
+                  placeholder="Buscar..."
+                  onChange={(e) => setSearchValue(e.target.value)}
+                />
+                <span className="text-xs text-gray-500 dark:text-zinc-400">
+                  {findResults.length > 0 ? `${currentMatchIndex + 1}` : 0} de{' '}
+                  {findResults.length}
+                </span>
+                <button
+                  onClick={handlePrevMatch}
+                  disabled={findResults.length === 0}
+                  className="p-1 rounded-md hover:bg-gray-300 dark:hover:bg-zinc-700 disabled:opacity-50 text-gray-800 dark:text-zinc-300 disabled:text-red-500"
+                >
+                  <Icon icon="tabler:chevron-up" width={16} />
+                </button>
+                <button
+                  onClick={handleNextMatch}
+                  disabled={findResults.length === 0}
+                  className="p-1 rounded-md hover:bg-gray-300 dark:hover:bg-zinc-700 disabled:opacity-50 text-gray-800 dark:text-zinc-300 disabled:text-red-500"
+                >
+                  <Icon icon="tabler:chevron-down" width={16} />
+                </button>
+                <button
+                  onClick={() => setIsOpenFindBar(false)}
+                  className="p-1 rounded-md hover:bg-gray-300 dark:hover:bg-zinc-700 text-gray-800 dark:text-zinc-300"
+                >
+                  <Icon icon="tabler:x" width={16} />
+                </button>
+              </div>
+
+              {isOpenBar && (
+                <motion.div>
+                  <div className="flex flex-col">
+                    <input
+                      ref={inputRefTextOld}
+                      type="text"
+                      autoFocus
+                      className="input-base-editor text-xs w-40 px-2 py-1"
+                      placeholder="Valor a buscar"
+                    />
+                    <input
+                      ref={inputRefTextNew}
+                      type="text"
+                      className="input-base-editor text-xs w-40 px-2 py-1"
+                      placeholder="Valor a Reemplazar"
+                    />
+                  </div>
+                  <div className="flex h-6 gap-2">
+                    <button
+                      className="bg-gradient-to-r flex-1 from-green-400 to-green-500 p-1  text-xs truncate text-white"
+                      onClick={handleCLickReplaceTextFirst}
+                    >
+                      Reemplazar primero
+                    </button>
+                    <button
+                      className="bg-gradient-to-r flex-1 from-sky-400 to-sky-700 p-1 rounded-md text-xs truncate text-white"
+                      onClick={handleCLickReplaceText}
+                    >
+                      Reemplazar todo
+                    </button>
+                  </div>
+                </motion.div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
 
         <div
-          className={`relative flex text-xs overflow-hidden bg-gray-100/50 dark:bg-zinc-900/50 ring-none backdrop-blur-3xl ${classNameContainer}`}
+          className={`relative flex text-xs overflow-hidden bg-gray-100/50 dark:bg-zinc-900/50 ring-none backdrop-blur-3xl border dark:border-zinc-800 border-gray-200 ${classNameContainer}`}
         >
           {/* Line Numbers */}
           <div
@@ -340,7 +410,13 @@ const CodeEditor = ({
                 ref={highlightRef}
                 className="absolute inset-0 p-2 text-sm font-mono leading-6 pointer-events-none overflow-hidden whitespace-pre-wrap break-words text-gray-800 dark:text-[#d4d4d4]"
                 dangerouslySetInnerHTML={{
-                  __html: highlightCode(code, language, findResults, searchValue, currentMatchIndex),
+                  __html: highlightCode(
+                    code,
+                    language,
+                    findResults,
+                    searchValue,
+                    currentMatchIndex,
+                  ),
                 }}
               />
             </LazyListItem>

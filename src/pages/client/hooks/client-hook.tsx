@@ -46,8 +46,7 @@ const useClientStore = (): RetornoClient => {
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'Enter' && e.ctrlKey) {
-        toast.success('Generando petición');
-        refForm.current?.submit();
+        refForm.current?.requestSubmit(); // apredinedo sobre el nuevo submit que si respesta las validaciones de las entradsa o inputs en html y js nativo
       }
     };
     window.addEventListener('keydown', handleKey);

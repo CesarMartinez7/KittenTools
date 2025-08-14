@@ -1,5 +1,3 @@
-//@ts-nocheck
-
 import { useState } from 'react';
 import { useEnviromentStore } from './store.enviroment';
 import type { EnviromentLayout, Value } from './types';

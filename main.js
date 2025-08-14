@@ -28,7 +28,7 @@ function cargarJSON() {
 
 function createWindow() {
   const win = new BrowserWindow({
-    icon: `/images/coffe-icon.png`,
+    icon: `/src/public/coffe.png`,
     width: 1840,
     height: 1080,
     webPreferences: {

@@ -6,7 +6,7 @@ const highlightCode = (
   language: string,
   findResults: number[] = [],
   searchValue: string = '',
-  currentMatchIndex: number = -1
+  currentMatchIndex: number = -1,
 ) => {
   let highlightedCode = code;
 

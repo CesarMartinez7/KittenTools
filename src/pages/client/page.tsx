@@ -11,16 +11,14 @@ import {
   PanelGroup,
   PanelResizeHandle,
 } from 'react-resizable-panels';
-import { CodeEditorLazy } from '../../components/lazy-components';
+import { CodeEditorLazy } from '../../ui/lazy-components';
 import AddQueryParam from './components/addqueryparams/addQueryParams';
 import EnviromentComponent from './components/enviroment/enviroment.component';
 import { useEnviromentStore } from './components/enviroment/store.enviroment';
 import { HeadersAddRequest } from './components/headers/Headers';
-import { ResizableSidebar } from './components/itemnode/item-node';
 import ResponsesTypesComponent from './components/responses-core/response.';
 import ScriptComponent from './components/scripts/script-component';
 import { SideBar } from './components/sidebar/SideBar';
-import DarkModeToggle from './components/toogle-theme';
 import ClientCustomHook from './hooks/client-hook';
 import RequestHook from './hooks/request.client';
 import { Methodos, Opciones, VariantsAnimation } from './mapper-ops';
@@ -28,6 +26,8 @@ import type { EventRequest } from './types/types';
 
 export default function AppClient() {
   const { value, setter } = ClientCustomHook();
+
+  const listEntornos = useEnviromentStore((state) => state.listEntorno);
 
   // Custom Hook VALUES
   const {
@@ -121,6 +121,33 @@ export default function AppClient() {
     });
   };
 
+  const Opciones = [
+    {
+      name: 'Cuerpo de Peticion',
+      icon: bodyJson,
+    },
+    {
+      name: 'Parametros',
+      icon: params2,
+    },
+    {
+      name: 'Cabeceras',
+      icon: headersResponse,
+    },
+    {
+      name: 'Autenticacion',
+      icon: '',
+    },
+    {
+      name: 'Scripts',
+      icon: '',
+    },
+    {
+      name: 'Entorno',
+      icon: listEntornos,
+    },
+  ];
+
   // Manejador global de todo
   const onLoadRequest = (
     reqBody: string,
@@ -141,6 +168,35 @@ export default function AppClient() {
     setResponse(reqReponse);
   };
 
+  const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
+
+  const toogleFullScreen = () => {
+    if (isFullScreen) {
+      exitFullscreen();
+      setIsFullScreen((prev) => !prev);
+    } else {
+      document.body.requestFullscreen();
+      setIsFullScreen((prev) => !prev);
+    }
+  };
+
+  function exitFullscreen() {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.mozCancelFullScreen) {
+      /* Firefox */
+      document.mozCancelFullScreen();
+    } else if (document.webkitExitFullscreen) {
+      /* Chrome, Safari and Opera */
+      document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) {
+      /* IE/Edge */
+      document.msExitFullscreen();
+    }
+  }
+
+  // Llama a la función para salir de pantalla completa
+  exitFullscreen();
   return (
     <div className="min-h-screen flex text-white overflow-hidden">
       <SideBar
@@ -153,6 +209,9 @@ export default function AppClient() {
       />
 
       <div className="w-full flex flex-col">
+        <div>
+          <button onClick={toogleFullScreen}>Pantalla completa</button>
+        </div>
         <form className="p-4 space-y-3" ref={refForm} onSubmit={handleRequest}>
           <div className="flex flex-col md:flex-row gap-3 md:items-center">
             <div className="relative">
@@ -207,7 +266,7 @@ export default function AppClient() {
               </AnimatePresence>
             </div>
 
-            <div className="bg-white dark:bg-zinc-900/80 text-zinc-700  dark:text-zinc-200 relative flex-1 p-2 rounded border border-gray-200 dark:border-zinc-800">
+            <div className="bg-white dark:bg-zinc-800  text-zinc-700  dark:text-zinc-200 relative flex-1 p-2 rounded border border-gray-200 dark:border-zinc-800">
               <div
                 className={endpointUrl.length === 0 ? 'p-2' : ''}
                 dangerouslySetInnerHTML={{
@@ -220,7 +279,7 @@ export default function AppClient() {
                 placeholder="https://api.example.com/endpoint"
                 value={endpointUrl}
                 onChange={handlerChangeInputRequest}
-                className="p-2 absolute inset-0 text-transparent transition-colors caret-gray-500 dark:caret-zinc-400"
+                className="p-2 absolute inset-0 text-transparent transition-colors caret-gray-500 dark:caret-zinc-400 "
               />
             </div>
 
@@ -250,7 +309,7 @@ export default function AppClient() {
               <button
                 key={index}
                 type="button"
-                className={`btn btn-sm text-sm py-2 px-4 transition-colors duration-200
+                className={`btn relative btn-sm text-sm py-2 px-4 transition-colors duration-200 flex
             ${
               index === selectedIdx
                 ? 'border-b-2 border-green-primary  dark:text-green-primary font-semibold bg-gray-200 dark:bg-zinc-950'
@@ -258,7 +317,11 @@ export default function AppClient() {
             }`}
                 onClick={() => setMimeSelected(index)}
               >
-                {opcion.name}
+                <span>{opcion.name}</span>
+                
+                {opcion.icon.length > 0 && (
+                  <div className=" absolute  right-1 bg-green-primary h-[7px] w-[7px] rounded-full animate-pulse"></div>
+                )}
               </button>
             ))}
           </div>
@@ -338,10 +401,18 @@ export default function AppClient() {
                   </motion.div>
                 )}
                 {selectedIdx === 4 && (
-                  <ScriptComponent
-                    value={scriptsValues}
-                    setValue={setScriptsValues}
-                  />
+                  <div>
+                    <ScriptComponent
+                      value={scriptsValues}
+                      setValue={setScriptsValues}
+                    />
+
+                    <ScriptComponent
+                      value={scriptsValues}
+                      setValue={setScriptsValues}
+                    />
+
+                  </div>
                 )}
                 {selectedIdx === 5 && <EnviromentComponent />}
               </AnimatePresence>
@@ -359,7 +430,7 @@ export default function AppClient() {
                       <span className="svg-spinners--90-ring-with-bg block"></span>
                     </div>
                   ) : (
-                    <div className="flex-1 overflow-auto">
+                    <div className="flex-1 overflow-scroll">
                       <ResponsesTypesComponent
                         headersResponse={headersResponse}
                         data={response}

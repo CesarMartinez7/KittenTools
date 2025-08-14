@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { useState } from 'react';
-import toast from 'react-hot-toast';
+import { useEffect, useState } from 'react';
+
 import ToolTipButton from '../../../../ui/tooltip/TooltipButton';
 import type {
   EventRequest,
@@ -10,6 +10,7 @@ import type {
 import { useEnviromentStore } from '../enviroment/store.enviroment';
 import ItemNode, { ResizableSidebar } from '../itemnode/item-node';
 import SidebarHook from './hooks/sidebar-hook';
+import toast from 'react-hot-toast';
 
 export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
   const {
@@ -27,7 +28,6 @@ export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
   );
 
   const [currenIdx, setCurrentIdx] = useState<number>(1);
-
 
   // function actualizarNombreEnItems(
   //   items: Item[],
@@ -76,11 +76,10 @@ export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
   //   setParsed(nuevoParsed);
   // };
 
-
   function actualizarNombreEnItems(
     items: Item[],
     oldName: string,
-    newName: string
+    newName: string,
   ): Item[] {
     return items.map((item) => {
       if (item.name === oldName) {
@@ -95,7 +94,7 @@ export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
       return item;
     });
   }
-  
+
   function eliminarItemPorNombre(items: Item[], nameToDelete: string): Item[] {
     return items
       .filter((item) => item.name !== nameToDelete)
@@ -109,7 +108,7 @@ export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
         return item;
       });
   }
-  
+
   // --- Handlers que pasas como props a ItemNode ---
   const handleActualizarNombre = (oldName: string, newName: string) => {
     if (!parsed) return;
@@ -119,7 +118,7 @@ export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
       return { ...prev, item: updatedItems };
     });
   };
-  
+
   const handleEliminar = (name: string) => {
     if (!parsed) return;
     setParsed((prev) => {
@@ -128,7 +127,6 @@ export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
       return { ...prev, item: updatedItems };
     });
   };
-  
 
   const parsedLoadRequest = (
     reqBody: string,
@@ -141,8 +139,6 @@ export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
     reqResponse: string,
   ) => {
     const requestScriptEvents = reqEvent ? reqEvent : null;
-
-    
 
     onLoadRequest(
       reqBody,
@@ -157,6 +153,18 @@ export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
     );
   };
 
+  // useEffect(() => {
+  //   const requests = localStorage.getItem("requests")
+  //   if(requests){
+  //     setColeccion(requests)
+  //   }
+  // }, [] )
+
+  // useEffect(() => {
+  //   localStorage.setItem( "requests", JSON.stringify(listColeccion))
+  //   toast.success("Cambiando colecciones")
+  // }, [listColeccion])
+
   return (
     <ResizableSidebar minWidth={100} maxWidth={800} initialWidth={470}>
       <AnimatePresence key={'gokuuu'}>
@@ -166,7 +174,7 @@ export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
              h-svh max-h-svh 
             bg-white/90 text-gray-800
             dark:bg-zinc-900/80 dark:text-slate-200
-            backdrop-blur-3xl p-6 z-50 md:flex flex-col hidden shadow-xl
+            backdrop-blur-3xl p-4 z-50 md:flex flex-col hidden shadow-xl
             border-r border-gray-200 dark:border-zinc-800
           "
           >
@@ -183,8 +191,8 @@ export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
               />
             </div>
             {/* Header */}
-            <div className="flex justify-start items-center my-6 space-x-3 relative">
-              <span className='pixelarticons--coffee-alt'/>
+            <div className="flex justify-start items-center my-4 space-x-3 relative">
+              <span className="pixelarticons--coffee-alt" />
               <h3 className="text-4xl font-bold bg-gradient-to-tr text-gray-700  dark:text-lime-50">
                 Elisa
               </h3>

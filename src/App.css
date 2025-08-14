@@ -321,7 +321,7 @@ input[type="radio"]:checked {
 }
 
 .input-base-editor {
-  @apply dark:focus:bg-zinc-800 outline focus:bg-gray-200 bg-white text-zinc-400 dark:bg-zinc-900 p-1;
+  @apply dark:focus:bg-zinc-800 outline focus:bg-gray-100 bg-white text-zinc-400 dark:bg-zinc-900 p-1;
 }
 
 body {

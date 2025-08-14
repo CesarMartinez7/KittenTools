@@ -98,7 +98,11 @@ const ResizableSidebar: React.FC<ResizableSidebarProps> = ({
 };
 
 // ItemNode original (sin modificaciones)
-function actualizarNombreEnItems(items: Item[], oldName: string, newName: string): Item[] {
+function actualizarNombreEnItems(
+  items: Item[],
+  oldName: string,
+  newName: string,
+): Item[] {
   return items.map((item) => {
     if (item.name === oldName) {
       return { ...item, name: newName };
@@ -127,8 +131,12 @@ function eliminarItemPorNombre(items: Item[], nameToDelete: string): Item[] {
     });
 }
 
-const ItemNode: React.FC<ItemNodeProps> = ({ data, level = 0, loadRequest, nameItem }) => {
-  
+const ItemNode: React.FC<ItemNodeProps> = ({
+  data,
+  level = 0,
+  loadRequest,
+  nameItem,
+}) => {
   const [nodeData, setNodeData] = useState(data);
   const [collapsed, setCollapsed] = useState(true);
   const [showResponses, setShowResponses] = useState(false);
@@ -138,13 +146,16 @@ const ItemNode: React.FC<ItemNodeProps> = ({ data, level = 0, loadRequest, nameI
     return null; // Evita el TypeError
   }
 
-
   const indent = 1 * level;
   const isFolder = !!nodeData.item && nodeData.item.length > 0;
   const haveResponses = nodeData.response && nodeData.response.length > 0;
 
   // === Funciones internas ===
-  function actualizarNombreEnItems(items: Item[], oldName: string, newName: string): Item[] {
+  function actualizarNombreEnItems(
+    items: Item[],
+    oldName: string,
+    newName: string,
+  ): Item[] {
     return items.map((item) => {
       if (item.name === oldName) {
         return { ...item, name: newName };
@@ -192,7 +203,7 @@ const ItemNode: React.FC<ItemNodeProps> = ({ data, level = 0, loadRequest, nameI
 
   // 👇 Nueva función para crear una nueva petición
   const handleNuevaPeticion = () => {
-    const nameNewRequest = window.prompt("Nombre de tu nueva peticion")
+    const nameNewRequest = window.prompt('Nombre de tu nueva peticion');
     const newRequest = {
       name: nameNewRequest,
       request: {
@@ -203,24 +214,24 @@ const ItemNode: React.FC<ItemNodeProps> = ({ data, level = 0, loadRequest, nameI
           raw: '',
           options: {
             raw: {
-              language: 'json'
-            }
-          }
+              language: 'json',
+            },
+          },
         },
         url: {
           raw: '',
           host: [''],
-          query: []
-        }
+          query: [],
+        },
       },
-      response: []
+      response: [],
     };
 
     const updatedNodeData = {
       ...nodeData,
       item: nodeData.item ? [...nodeData.item, newRequest] : [newRequest],
     };
-    
+
     setNodeData(updatedNodeData);
     setCollapsed(false); // Abrimos la carpeta automáticamente
     toast.success('Nueva petición creada.');
@@ -230,7 +241,11 @@ const ItemNode: React.FC<ItemNodeProps> = ({ data, level = 0, loadRequest, nameI
     const oldName = nodeData.name || '';
     const nuevo = prompt('Nuevo nombre:', oldName || getDisplayName());
     if (nuevo && nuevo.trim()) {
-      const updated = actualizarNombreEnItems([nodeData], oldName, nuevo.trim());
+      const updated = actualizarNombreEnItems(
+        [nodeData],
+        oldName,
+        nuevo.trim(),
+      );
       setNodeData(updated[0]);
       toast.success(`"${oldName}" renombrado a "${nuevo.trim()}"`);
     }
@@ -324,7 +339,7 @@ const ItemNode: React.FC<ItemNodeProps> = ({ data, level = 0, loadRequest, nameI
     { name: 'Duplicar', action: handleClickDuplicar },
     { name: 'Eliminar', action: handleClickDelete },
     // 👇 Se añade la nueva acción al menú contextual de carpetas
-    { name: 'Nueva petición', action: handleNuevaPeticion }, 
+    { name: 'Nueva petición', action: handleNuevaPeticion },
     { name: 'Nueva carpeta' },
     { name: 'Info' },
   ];
@@ -441,7 +456,7 @@ const ItemNode: React.FC<ItemNodeProps> = ({ data, level = 0, loadRequest, nameI
                         nodeData.request?.header,
                         nodeData.request.url?.query,
                         nodeData.event,
-                        resp.body
+                        resp.body,
                       );
                     } catch (e) {
                       toast.error(String(e));
@@ -461,7 +476,6 @@ const ItemNode: React.FC<ItemNodeProps> = ({ data, level = 0, loadRequest, nameI
     </div>
   );
 };
-
 
 export default ItemNode;
 export { ResizableSidebar };

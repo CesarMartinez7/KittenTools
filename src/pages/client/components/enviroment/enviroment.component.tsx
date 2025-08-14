@@ -1,4 +1,4 @@
-import { BaseModalLazy } from '../../../../components/lazy-components';
+import { BaseModalLazy } from '../../../../ui/lazy-components';
 import useEnviromentHook from './enviromentHook';
 
 export default function EnviromentComponent() {

@@ -5,13 +5,13 @@
 }
 
 .highlight-match-active {
-  background-color: #ff9800; 
+  background-color: #ff9800;
 }
 
 [data-theme="dark"] .highlight-match {
-  background-color: #615024; 
+  background-color: #615024;
 }
 
 [data-theme="dark"] .highlight-match-active {
-  background-color: #a76b07; 
+  background-color: #a76b07;
 }
