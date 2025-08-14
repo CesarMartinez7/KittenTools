@@ -195,8 +195,7 @@ export default function AppClient() {
     }
   }
 
-  // Llama a la función para salir de pantalla completa
-  exitFullscreen();
+  
   return (
     <div className="min-h-screen flex text-white overflow-hidden">
       <SideBar
@@ -318,9 +317,10 @@ export default function AppClient() {
                 onClick={() => setMimeSelected(index)}
               >
                 <span>{opcion.name}</span>
+
                 
-                {opcion.icon.length > 0 && (
-                  <div className=" absolute  right-1 bg-green-primary h-[7px] w-[7px] rounded-full animate-pulse"></div>
+                {String(opcion.icon).length > 0 && (
+                  <div className=" absolute right-1 bg-green-primary h-[7px] w-[7px] rounded-full animate-pulse"></div>
                 )}
               </button>
             ))}
@@ -411,7 +411,6 @@ export default function AppClient() {
                       value={scriptsValues}
                       setValue={setScriptsValues}
                     />
-
                   </div>
                 )}
                 {selectedIdx === 5 && <EnviromentComponent />}

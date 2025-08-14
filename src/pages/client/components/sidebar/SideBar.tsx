@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
-
+import toast from 'react-hot-toast';
 import ToolTipButton from '../../../../ui/tooltip/TooltipButton';
 import type {
   EventRequest,
@@ -10,7 +10,6 @@ import type {
 import { useEnviromentStore } from '../enviroment/store.enviroment';
 import ItemNode, { ResizableSidebar } from '../itemnode/item-node';
 import SidebarHook from './hooks/sidebar-hook';
-import toast from 'react-hot-toast';
 
 export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
   const {

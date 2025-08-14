@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const DB_NAME = 'myDatabase';
 const STORE_NAME = 'myStore';

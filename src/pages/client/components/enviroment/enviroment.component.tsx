@@ -138,7 +138,6 @@ export default function EnviromentComponent() {
                         }
                         className="h-4 w-4 outline-none  text-zinc-600 rounded border-zinc-700 focus:ring-zinc-600"
                       />
-                      
                     </td>
                     <td className="px-2 py-1 whitespace-nowrap text-center">
                       <button

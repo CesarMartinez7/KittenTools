@@ -2,24 +2,23 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 import type { RootBody } from '../../../types/types';
 
+
+
 export default function SidebarHook() {
-  const [openModalNewRequest, setOpenModalNewRequest] =
-    useState<boolean>(false);
-  const [openModalDeleteRequest, setOpenModalDeleteRequest] =
-    useState<boolean>(false);
-  const [isOpenModalSaveRequest, setIsOpenModalSaveRequest] =
-    useState<boolean>(false);
+  const [openModalNewRequest, setOpenModalNewRequest] = useState<boolean>(false);
+  const [openModalDeleteRequest, setOpenModalDeleteRequest] = useState<boolean>(false);
+  const [isOpenModalSaveRequest, setIsOpenModalSaveRequest] = useState<boolean>(false);
 
   const [coleccion, setColeccion] = useState<ArrayBuffer | string | File>();
   const [parsed, setParsed] = useState<RootBody>();
-
+  const [informacionColeccion, setInformacionColeccion] = useState<string>(null)
   const [listColeccion, setListColeccion] = useState<any[]>([]);
 
   /// <---------------------------------------------- Manejadores o Handlders -------------------------------->
 
   const handleClickCargueCollecion = async () => {
     try {
-      // Crear y configurar el input de archivo
+      
       const input = document.createElement('input');
       input.type = 'file';
       input.accept = '.json, .txt';
@@ -66,6 +65,8 @@ export default function SidebarHook() {
 
       // Actualizar estados
       setParsed(parsedData);
+      console.log(parsedData?.info)
+      setInformacionColeccion(parsedData?.info)
       setListColeccion((prev) => [
         ...prev,
         {
@@ -143,6 +144,7 @@ export default function SidebarHook() {
     isOpenModalSaveRequest,
     listColeccion,
     setListColeccion,
+    informacionColeccion,
     setIsOpenModalSaveRequest,
   };
 }

@@ -18,9 +18,9 @@ const SelectedType = ({
 }) => {
   return (
     <motion.button
-      className={`p-4 border-zinc-600 ${
+      className={`p-3  ${
         isActive
-          ? 'border-b-2 border-zinc-100 text-zinc-600 dark:text-zinc-200 font-semibold'
+          ? 'border-b-2  border-green-primary text-green-primary dark:text-green-primary font-semibold bg-black'
           : 'text-zinc-500'
       } dark:hover:text-zinc-300 hover:text-zinc-900 transition-colors`}
       onClick={onClick}
@@ -118,7 +118,10 @@ export default function ResponsesTypesComponent({
               </div>
             )}
 
-            {activeTab.toLowerCase() === 'headers' && (
+
+            
+
+            {activeTab.toLowerCase() === 'cabeceras' && (
               <div className="p-4">
                 <TableData data={headersResponse} />
               </div>

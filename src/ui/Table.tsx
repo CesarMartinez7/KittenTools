@@ -66,7 +66,7 @@ export default function TableData({ data }: TableDataProps) {
   return (
     <motion.div
       exit={{ opacity: 0 }}
-      className="p-6 h-full overflow-auto bg-slate-50 dark:bg-zinc-900 transition-colors duration-300"
+      className=" h-full overflow-auto bg-slate-50 dark:bg-zinc-900 transition-colors duration-300"
     >
       {!error ? (
         <div className="relative shadow-lg rounded-lg overflow-hidden">

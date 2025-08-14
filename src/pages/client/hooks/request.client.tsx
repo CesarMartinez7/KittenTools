@@ -61,14 +61,12 @@ export default function RequestHook({
       setErrorAxios(null);
       setErrorRequest(false);
 
-      const body = JSON.stringify(bodyJson);
-
       try {
         const response = await axiosInstance({
           method: selectedMethod,
           baseURL: baseUrl || undefined, // axiosInstance hará el replace {{var}}
           url: `${finalUrl}${finalParams}`,
-          data: body,
+          data: bodyJson,
           contentType,
           headers: cabeceras ? prepareHeaders(cabeceras) : {},
         });

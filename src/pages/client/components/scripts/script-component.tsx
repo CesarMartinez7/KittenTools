@@ -55,7 +55,7 @@ const ScriptComponent: React.FC<ScriptComponentProps> = ({
       className="text-zinc-500"
     >
       <CodeEditorLazy
-        height='100px'
+        height="100px"
         language="javascript"
         value={script.join('')}
         onChange={handleChange}
