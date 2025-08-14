@@ -207,7 +207,7 @@ export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
                 className={`p-2 cursor-pointer transition-colors flex-1 ${
                   currenIdx === 1
                     ? 'bg-green-500/10  dark:hover:bg-zinc-950 dark:text-green-primary dark:bg-green-primary'
-                    : 'hover:bg-gray-200  dark:hover:bg-green-primary/30 text-gray-600 dark:text-zinc-300'
+                    : 'hover:bg-gray-200 dark:hover:bg-zinc-950  dark:hover:bg-green-primary/30 text-gray-600 dark:text-zinc-300'
                 }`}
                 onClick={() => setCurrentIdx(1)}
               >

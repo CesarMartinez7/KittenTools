@@ -126,7 +126,7 @@ export default function EnviromentComponent() {
                         onChange={(e) =>
                           handleChange(i, 'value', e.target.value)
                         }
-                        className="w-full bg-transparent border-0 outline-none  focus:ring-1 focus:ring-zinc-600 rounded"
+                        className="w-full bg-transparent accent-green-600 border-0 outline-none  focus:ring-1 focus:ring-zinc-600 rounded"
                       />
                     </td>
                     <td className="px-2 py-1 whitespace-nowrap text-center">
@@ -138,7 +138,7 @@ export default function EnviromentComponent() {
                         }
                         className="h-4 w-4 outline-none  text-zinc-600 rounded border-zinc-700 focus:ring-zinc-600"
                       />
-                      <p>{JSON.stringify(v.enabled)}</p>
+                      
                     </td>
                     <td className="px-2 py-1 whitespace-nowrap text-center">
                       <button

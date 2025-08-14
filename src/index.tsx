@@ -4,10 +4,19 @@ import './App.css';
 import { Suspense } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { AppClientRouteLazy } from './pages/lazy-pages.tsx';
+import { AnimatePresence } from 'motion/react';
+import {motion} from "motion/react"
+import TextType from './ui/TextEncode.tsx';
 
 const LoadingElement = () => (
-  <div className="h-screen w-screen flex justify-center items-center backdrop-blur-xl">
-    <span className="meteocons--extreme-night-smoke-fill"></span>
+  <div className="h-screen w-screen flex justify-center items-center backdrop-blur-xl flex-col">
+    
+        <p className='text-zinc-500 my-4'>Cargando  <TextType pauseDuration={1000} draggable typingSpeed={100} text={[".", "..", "..."]} /></p>
+    <div className=' w-2/4 lg:w-[200px] h-[10px] rounded-lg bg-zinc-800 overflow-hidden relative'>
+
+        <div className='animate-loading'>
+        </div>
+    </div>
   </div>
 );
 
@@ -27,8 +36,9 @@ ReactDOM.createRoot(root).render(
 
     <div className="z-[777] relative">
       <Router>
-        <Suspense fallback={<LoadingElement />}>
+        <Suspense fallback={ <AnimatePresence><motion.div initial={{ opacity: 0}} whileHover={{opacity: 1}} exit={{opacity: 0}}  > <LoadingElement /></motion.div></AnimatePresence> }>
           <Routes>
+            <Route path='/loading' element={<LoadingElement/>} />
             <Route index path="/" element={<AppClientRouteLazy />} />
             <Route
               path="*"
