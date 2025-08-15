@@ -156,7 +156,7 @@ export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
             {/* Tabs */}
             <div
               className="
-            bg-gray-100 dark:bg-zinc-950/60 px-2 py-1 flex w-full transition-all flex-shrink-0"
+            bg-gray-100 dark:bg-zinc-950/60 px-2 py-1 flex w-full transition-all truncate"
             >
               <div
                 className={`p-2 cursor-pointer transition-colors flex-2 ${

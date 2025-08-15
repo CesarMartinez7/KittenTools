@@ -138,7 +138,7 @@ const RequestForm = ({
         </div>
         <div className="bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 relative flex-1 p-2 rounded-md border border-gray-200 dark:border-zinc-800">
           <div
-            className={endpointUrl.length === 0 ? "p-2" : ""}
+            className={String(endpointUrl).length === 0 ? "p-2" : ""}
             dangerouslySetInnerHTML={{
               __html: formatterInputRequest(entornoActual, endpointUrl),
             }}
@@ -517,7 +517,7 @@ export default function AppClient() {
           nombreEntorno={nombreEntorno}
           toogleFullScreen={toogleFullScreen}
         />
-        <div className="flex border-b border-zinc-300 dark:border-zinc-700 overflow-x-auto shrink-0 bg-gray-100 max-w-[78vw]">
+        <div className="flex border-b border-zinc-300 dark:border-zinc-700 overflow-x-auto shrink-0 bg-gray-100 dark:bg-zinc-900 max-w-[78vw]">
           {listTabs.length > 0 &&
             listTabs.map((e, idx) => {
               const isActive = idx === activeTab; // estado de tab activo
@@ -528,10 +528,10 @@ export default function AppClient() {
                     handleLoadRequestTabs(e);
                     setActiveTab(idx);
                   }}
-                  className={`px-5 group relative py-2 cursor-pointer text-sm font-medium whitespace-nowrap transition-colors duration-200
+                  className={`px-5 group hover:bg-gray-100 dark:hover:bg-zinc-800 relative py-2 cursor-pointer text-sm font-medium whitespace-nowrap transition-colors duration-200
             ${
               isActive
-                ? "text-blue-600 dark:text-blue-400 border-b-2 border-blue-500 bg-white dark:bg-zinc-900"
+                ? "text-blue-600 dark:text-blue-400 border-b-2 border-blue-500 bg-white dark:bg-zinc-800"
                 : "text-zinc-600 dark:text-zinc-300 border-b-2 border-transparent hover:text-zinc-900 dark:hover:text-white hover:border-blue-500"
             }`}
                 >
