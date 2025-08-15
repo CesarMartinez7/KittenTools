@@ -18,7 +18,7 @@ import { Methodos, VariantsAnimation } from "./mapper-ops";
 import arrowsMaximize from "@iconify-icons/tabler/arrows-maximize";
 import arrowsMinimize from "@iconify-icons/tabler/arrows-minimize";
 import { useStoreTabs } from "./tabs";
-import toast from "react-hot-toast";
+
 
 // --- Subcomponente: Header (Botón de pantalla completa) ---
 const Header = ({
@@ -30,29 +30,31 @@ const Header = ({
   toogleFullScreen: () => void;
   nombreEntorno: string | null;
 }) => (
-  <div className="flex items-center text-xs justify-between px-4 py-2 border-b border-gray-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm">
+  <div className="flex items-center text-xs gap-2 justify-end px-4 py-2 border- border-gray-200 dark:border-zinc-800  dark:bg-zinc-900/80 backdrop-blur-sm">
     {/* Botón pantalla completa */}
-    <button
-      onClick={toogleFullScreen}
-      className="flex items-center gap-2 px-3 py-1 rounded-md bg-zinc-900 text-white text-sm font-medium shadow-sm hover:bg-blue-600 dark:bg-zinc-800 dark:hover:bg-blue-500 transition-colors"
-    >
-      <Icon icon={isFullScreen ? arrowsMinimize : arrowsMaximize} width={18} />
-      <span>
-        {isFullScreen ? "Salir de pantalla completa" : "Pantalla completa"}
-      </span>
-    </button>
+
+  
 
     {/* Nombre entorno */}
     <div
       className={`font-medium text-zinc-800 dark:text-zinc-300 truncate max-w-[250px] px-3 py-1 rounded-full 
     ${
       nombreEntorno === null
-        ? "bg-red-200 dark:bg-red-700"
+        ? "bg-red-200 dark:bg-red-900"
         : "bg-green-200 dark:bg-green-700"
     }`}
     >
       {nombreEntorno ?? "No hay entornos activos"}
     </div>
+
+
+    <button
+      onClick={toogleFullScreen}
+      className="flex items-center gap-2 px-3 py-1 text-xs rounded-md  text-zinc-600 dark:text-zinc-200 font-medium shadow-sm hover:bg-gray-300 dark:bg-zinc-800 bg-gray-200 dark:hover:bg-blue-500 transition-colors"
+    >
+      <Icon icon={isFullScreen ? arrowsMinimize : arrowsMaximize} width={14} />
+      
+    </button>
   </div>
 );
 
@@ -289,7 +291,7 @@ const ContentPanel = ({
         );
       case 5:
         return (
-          <motion.div key="env-section" variants={VariantsAnimation}>
+          <motion.div key="env-section" variants={VariantsAnimation} className="h-full">
             <EnviromentComponent />
           </motion.div>
         );

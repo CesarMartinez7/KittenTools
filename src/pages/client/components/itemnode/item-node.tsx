@@ -191,7 +191,7 @@ const ItemNode: React.FC<ItemNodeProps> = (props) => {
                 className="dark:hover:bg-zinc-700 hover:bg-zinc-200 px-2 py-1 text-xs  cursor-pointer flex gap-2"
                 onClick={res.action}
               >
-                {res.name}  es request
+                {res.name} 
               </li> 
             ))}
           </ul>
