@@ -64,6 +64,7 @@ axiosInstance.interceptors.response.use(
     const endTime = performance.now();
     response.timeResponse = ((endTime - response.config.meta.startTime) / 1000).toFixed(3);
     response.typeResponse = detectResponseType(response.headers);
+    console.log(response.typeResponse)
     return response;
   },
   (error) => {

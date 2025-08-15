@@ -159,7 +159,7 @@ export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
             bg-gray-100 dark:bg-zinc-950/60 px-2 py-1 flex w-full transition-all flex-shrink-0"
             >
               <div
-                className={`p-2 cursor-pointer transition-colors flex-1 ${
+                className={`p-2 cursor-pointer transition-colors flex-2 ${
                   currenIdx === 1
                     ? 'bg-green-500/10  dark:hover:bg-zinc-950 dark:text-green-primary dark:bg-green-primary'
                     : 'hover:bg-gray-200  dark:hover:bg-green-primary/30 text-gray-600 dark:text-zinc-300'
@@ -219,7 +219,7 @@ export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
                         }}
                         className="card-item"
                       >
-                        <span className="shiny-text">{env.name}</span>
+                        <span className=" text-gray-500 dark:shiny-text">{env.name}</span>
                         <button title="check">
                           <span className="tabler--circle-check"></span>
                         </button>

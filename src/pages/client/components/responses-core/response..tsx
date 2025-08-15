@@ -18,9 +18,9 @@ const SelectedType = ({
 }) => {
   return (
     <motion.button
-      className={`p-3  ${
+      className={`p-2 ${
         isActive
-          ? 'border-b-2  border-green-primary text-green-primary dark:text-green-primary font-semibold bg-black'
+          ? 'border-b-2 text-blue-500  dark:border-green-primary dark:text-green-primary  text-blue-500 font-semibold bg-gray-100 dark:bg-black'
           : 'text-zinc-500'
       } dark:hover:text-zinc-300 hover:text-zinc-900 transition-colors`}
       onClick={onClick}

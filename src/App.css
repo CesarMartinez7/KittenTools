@@ -166,7 +166,7 @@ kbd {
 }
 
 .card-item{
-  @apply text-gray-700 border-zinc-200 dark:text-zinc-200 p-1.5 rounded-md border shadow-xl flex justify-between items-center dark:border-zinc-800 dark:hover:bg-zinc-800 transition-colors bg-white/90 dark:bg-zinc-800/60  text-xs cursor-pointer 
+  @apply text-gray-900 border-zinc-200 dark:text-zinc-200 p-1.5 rounded-md border shadow-xl flex justify-between items-center dark:border-zinc-800 dark:hover:bg-zinc-800 transition-colors bg-white/90 dark:bg-zinc-800/60  text-xs cursor-pointer 
 }
 
 
