@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import {  useState } from 'react';
 import toast from 'react-hot-toast';
 import ToolTipButton from '../../../../ui/tooltip/TooltipButton';
 import type {
@@ -10,6 +10,7 @@ import type {
 import { useEnviromentStore } from '../enviroment/store.enviroment';
 import ItemNode, { ResizableSidebar } from '../itemnode/item-node';
 import SidebarHook from './hooks/sidebar-hook';
+
 
 export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
   const {
@@ -22,58 +23,13 @@ export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
   } = SidebarHook();
 
   const enviromentList = useEnviromentStore((state) => state.listEntorno);
+  const setNameEntornoActual = useEnviromentStore((state) => state.setNameEntornoActual)
   const setEntornoActual = useEnviromentStore(
     (state) => state.setEntornoActual,
   );
 
   const [currenIdx, setCurrentIdx] = useState<number>(1);
 
-  // function actualizarNombreEnItems(
-  //   items: Item[],
-  //   oldName: string,
-  //   newName: string,
-  // ): Item[] {
-  //   return items.map((item) => {
-  //     if (item.name === oldName) {
-  //       return { ...item, name: newName };
-  //     }
-  //     if (item.item) {
-  //       return {
-  //         ...item,
-  //         item: actualizarNombreEnItems(item.item, oldName, newName),
-  //       };
-  //     }
-  //     return item;
-  //   });
-  // }
-
-  // function eliminarItemPorNombre(items: Item[], nameToDelete: string): Item[] {
-  //   return items
-  //     .filter((item) => item.name !== nameToDelete)
-  //     .map((item) => {
-  //       if (item.item) {
-  //         return {
-  //           ...item,
-  //           item: eliminarItemPorNombre(item.item, nameToDelete),
-  //         };
-  //       }
-  //       return item;
-  //     });
-  // }
-
-  // const handleActualizarNombre = (oldName: string, newName: string) => {
-  //   if (!parsed) return;
-  //   const updatedItems = actualizarNombreEnItems(parsed.item, oldName, newName);
-  //   const nuevaParsed = { ...parsed, item: updatedItems };
-  //   setParsed(nuevaParsed);
-  // };
-
-  // const handleClickEliminar = (name: string) => {
-  //   if (!parsed) return;
-  //   const updatedItems = eliminarItemPorNombre(parsed.item, name);
-  //   const nuevoParsed = { ...parsed, item: updatedItems };
-  //   setParsed(nuevoParsed);
-  // };
 
   function actualizarNombreEnItems(
     items: Item[],
@@ -206,7 +162,7 @@ export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
                 className={`p-2 cursor-pointer transition-colors flex-1 ${
                   currenIdx === 1
                     ? 'bg-green-500/10  dark:hover:bg-zinc-950 dark:text-green-primary dark:bg-green-primary'
-                    : 'hover:bg-gray-200 dark:hover:bg-zinc-950  dark:hover:bg-green-primary/30 text-gray-600 dark:text-zinc-300'
+                    : 'hover:bg-gray-200  dark:hover:bg-green-primary/30 text-gray-600 dark:text-zinc-300'
                 }`}
                 onClick={() => setCurrentIdx(1)}
               >
@@ -257,10 +213,13 @@ export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
                     {enviromentList.map((env, index) => (
                       <div
                         key={`env-${index}`}
-                        onClick={() => setEntornoActual(env.values)}
+                        onClick={() => {
+                          setNameEntornoActual(env.name)
+                          setEntornoActual(env.values)
+                        }}
                         className="card-item"
                       >
-                        <span className="shinytext">{env.name}</span>
+                        <span className="shiny-text">{env.name}</span>
                         <button title="check">
                           <span className="tabler--circle-check"></span>
                         </button>

@@ -7,14 +7,6 @@ import TableData from '../../../../ui/Table';
 
 const tabs = ['Respuesta', 'Cabeceras', 'Cookies', 'Timeline'];
 
-
-
-
-
-
-
-
-
 const SelectedType = ({
   label,
   isActive,
@@ -87,14 +79,18 @@ export default function ResponsesTypesComponent({
       .catch(() => toast.error('Ocurrió un error'));
   };
 
+
+
+
   return (
-    <div className="h-full flex flex-col overflow-hidden" style={{ height }}>
-      <div className="h-full flex flex-col overflow-hidden">
+    <div className="h-full flex flex-col " style={{ height }}>
+      <div className="h-full flex flex-col ">
         <nav
           className="flex border-b border-zinc-400 dark:border-zinc-700"
           role="tablist"
           aria-label="Tipos de respuesta"
         >
+          <p>{timeResponse}</p>
           {tabs.map((tab) => (
             <SelectedType
               key={tab}

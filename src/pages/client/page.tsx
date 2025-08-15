@@ -1,50 +1,89 @@
-import './App.css';
-import { Icon } from '@iconify/react';
-import sendIcon from '@iconify-icons/tabler/send';
-import { AnimatePresence, motion } from 'framer-motion';
-import { useCallback, useState, useRef } from 'react';
-import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
-import { CodeEditorLazy } from '../../ui/lazy-components';
-import AddQueryParam from './components/addqueryparams/addQueryParams';
-import EnviromentComponent from './components/enviroment/enviroment.component';
-import { useEnviromentStore } from './components/enviroment/store.enviroment';
-import { HeadersAddRequest } from './components/headers/Headers';
-import ResponsesTypesComponent from './components/responses-core/response.';
-import ScriptComponent from './components/scripts/script-component';
-import { SideBar } from './components/sidebar/SideBar';
-import ClientCustomHook from './hooks/client-hook';
-import RequestHook from './hooks/request.client';
-import { Methodos, VariantsAnimation } from './mapper-ops';
+import "./App.css";
+import { Icon } from "@iconify/react";
+import sendIcon from "@iconify-icons/tabler/send";
+import { AnimatePresence, motion } from "framer-motion";
+import { useCallback, useState, useRef } from "react";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
+import { CodeEditorLazy } from "../../ui/lazy-components";
+import AddQueryParam from "./components/addqueryparams/addQueryParams";
+import EnviromentComponent from "./components/enviroment/enviroment.component";
+import { useEnviromentStore } from "./components/enviroment/store.enviroment";
+import { HeadersAddRequest } from "./components/headers/Headers";
+import ResponsesTypesComponent from "./components/responses-core/response.";
+import ScriptComponent from "./components/scripts/script-component";
+import { SideBar } from "./components/sidebar/SideBar";
+import ClientCustomHook from "./hooks/client-hook";
+import RequestHook from "./hooks/request.client";
+import { Methodos, VariantsAnimation } from "./mapper-ops";
 import arrowsMaximize from "@iconify-icons/tabler/arrows-maximize";
 import arrowsMinimize from "@iconify-icons/tabler/arrows-minimize";
-import type { EventRequest } from './types/types';
+import { useStoreTabs } from "./tabs";
+import toast from "react-hot-toast";
 
 // --- Subcomponente: Header (Botón de pantalla completa) ---
-const Header = ({ isFullScreen, toogleFullScreen }) => (
-  <div className="flex gap-2 p-2 border-b border-gray-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm">
+const Header = ({
+  isFullScreen,
+  toogleFullScreen,
+  nombreEntorno,
+}: {
+  isFullScreen: boolean;
+  toogleFullScreen: () => void;
+  nombreEntorno: string | null;
+}) => (
+  <div className="flex items-center text-xs justify-between px-4 py-2 border-b border-gray-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm">
+    {/* Botón pantalla completa */}
     <button
       onClick={toogleFullScreen}
-      className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gradient-to-r from-zinc-900 to-zinc-950 text-white hover:from-blue-600 hover:to-blue-700 transition"
+      className="flex items-center gap-2 px-3 py-1 rounded-md bg-zinc-900 text-white text-sm font-medium shadow-sm hover:bg-blue-600 dark:bg-zinc-800 dark:hover:bg-blue-500 transition-colors"
     >
       <Icon icon={isFullScreen ? arrowsMinimize : arrowsMaximize} width={18} />
-      {isFullScreen ? "Salir Pantalla Completa" : "Pantalla Completa"}
+      <span>
+        {isFullScreen ? "Salir de pantalla completa" : "Pantalla completa"}
+      </span>
     </button>
+
+    {/* Nombre entorno */}
+    <div
+      className={`font-medium text-zinc-800 dark:text-zinc-300 truncate max-w-[250px] px-3 py-1 rounded-full 
+    ${
+      nombreEntorno === null
+        ? "bg-red-200 dark:bg-red-700"
+        : "bg-green-200 dark:bg-green-700"
+    }`}
+    >
+      {nombreEntorno ?? "No hay entornos activos"}
+    </div>
   </div>
 );
 
 // --- Subcomponente: RequestForm (Formulario de URL y método) ---
 const RequestForm = ({
-  refForm, onSubmit, selectedMethod, handleClickShowMethod, showMethods, setSelectedMethod, setShowMethods,
-  entornoActual, endpointUrl, handlerChangeInputRequest, isLoading,
+  refForm,
+  onSubmit,
+  selectedMethod,
+  handleClickShowMethod,
+  showMethods,
+  setSelectedMethod,
+  setShowMethods,
+  entornoActual,
+  endpointUrl,
+  handlerChangeInputRequest,
+  isLoading,
 }) => {
   const getMethodColor = (method) => {
     switch (method) {
-      case 'GET': return 'bg-green-800 text-green-100';
-      case 'POST': return 'bg-blue-500 text-blue-100';
-      case 'PUT': return 'bg-yellow-800 text-yellow-100';
-      case 'PATCH': return 'bg-orange-800 text-orange-100';
-      case 'DELETE': return 'bg-red-800 text-red-100';
-      default: return 'bg-gray-700 text-gray-200 dark:bg-zinc-700 dark:text-zinc-200';
+      case "GET":
+        return "bg-green-800 text-green-100";
+      case "POST":
+        return "bg-blue-500 text-blue-100";
+      case "PUT":
+        return "bg-yellow-800 text-yellow-100";
+      case "PATCH":
+        return "bg-orange-800 text-orange-100";
+      case "DELETE":
+        return "bg-red-800 text-red-100";
+      default:
+        return "bg-gray-700 text-gray-200 dark:bg-zinc-700 dark:text-zinc-200";
     }
   };
 
@@ -52,9 +91,9 @@ const RequestForm = ({
     const regex = /{{(.*?)}}/g;
     return busquedaKey.replace(regex, (match, grupo) => {
       const existe = listBusqueda.some((item) => item.key === grupo);
-      return existe ?
-        `<span style="color: #7bb4ff;">{{${grupo}}}</span>` :
-        `<span style="color: #D2042D;">{{${grupo}}}</span>`;
+      return existe
+        ? `<span style="color: #7bb4ff;">{{${grupo}}}</span>`
+        : `<span style="color: #D2042D;">{{${grupo}}}</span>`;
     });
   };
 
@@ -86,7 +125,7 @@ const RequestForm = ({
                       setShowMethods(false);
                     }}
                     className={`w-full text-left px-4 py-2 hover:bg-gray-800 dark:hover:bg-zinc-700 transition-colors duration-200
-                      ${metodo.name.toUpperCase() === selectedMethod ? 'bg-sky-500 text-white' : ''}`}
+                      ${metodo.name.toUpperCase() === selectedMethod ? "bg-sky-500 text-white" : ""}`}
                   >
                     {metodo.name}
                   </button>
@@ -97,8 +136,10 @@ const RequestForm = ({
         </div>
         <div className="bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 relative flex-1 p-2 rounded-md border border-gray-200 dark:border-zinc-800">
           <div
-            className={endpointUrl.length === 0 ? 'p-2' : ''}
-            dangerouslySetInnerHTML={{ __html: formatterInputRequest(entornoActual, endpointUrl) }}
+            className={endpointUrl.length === 0 ? "p-2" : ""}
+            dangerouslySetInnerHTML={{
+              __html: formatterInputRequest(entornoActual, endpointUrl),
+            }}
           ></div>
           <input
             type="text"
@@ -114,7 +155,11 @@ const RequestForm = ({
             className="px-6 py-2 bg-blue-500 text-white transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isLoading}
           >
-            {isLoading ? <span className="flex items-center gap-2">Enviando ...</span> : 'Enviar'}
+            {isLoading ? (
+              <span className="flex items-center gap-2">Enviando ...</span>
+            ) : (
+              "Enviar"
+            )}
           </button>
           <button
             aria-label="options-envio"
@@ -136,7 +181,7 @@ const TabNavigation = ({ Opciones, selectedIdx, setMimeSelected }) => (
         key={index}
         type="button"
         className={`relative btn btn-sm text-sm py-2 px-4 transition-colors duration-200 flex
-        ${index === selectedIdx ? 'border-b-2 border-green-primary dark:text-green-primary font-semibold bg-gray-200 dark:bg-zinc-950' : 'text-gray-500 dark:text-zinc-400 hover:text-gray-800 dakr:hover:bg-gray-800 dark:hover:text-white dark:hover:bg-zinc-800'}`}
+        ${index === selectedIdx ? "border-b-2 border-green-primary dark:text-green-primary font-semibold bg-gray-200 dark:bg-zinc-950" : "text-gray-500 dark:text-zinc-400 hover:text-gray-800 dakr:hover:bg-gray-800 dark:hover:text-white dark:hover:bg-zinc-800"}`}
         onClick={() => setMimeSelected(index)}
       >
         <span>{opcion.name}</span>
@@ -149,15 +194,31 @@ const TabNavigation = ({ Opciones, selectedIdx, setMimeSelected }) => (
 );
 
 // --- Subcomponente: ContentPanel (Contenido de las pestañas) ---
-const ContentPanel = ({ selectedIdx, bodyJson, contentType, setContentType, params2, setParams2, scriptsValues, setScriptsValues }) => {
+const ContentPanel = ({
+  selectedIdx,
+  bodyJson,
+  contentType,
+  setContentType,
+  params2,
+  setParams2,
+  scriptsValues,
+  setScriptsValues,
+}) => {
   const getContent = () => {
     switch (selectedIdx) {
       case 0:
         return (
-          <motion.div key="body-section-body" variants={VariantsAnimation} className="flex flex-col flex-1 min-h-0">
+          <motion.div
+            key="body-section-body"
+            variants={VariantsAnimation}
+            className="flex flex-col flex-1 min-h-0"
+          >
             <div className="flex gap-4 mb-3">
-              {['json', 'form', 'xml', 'none'].map((type, idx) => (
-                <label key={idx} className="text-sm text-gray-800 dark:text-gray-300 flex items-center gap-2 cursor-pointer">
+              {["json", "form", "xml", "none"].map((type, idx) => (
+                <label
+                  key={idx}
+                  className="text-sm text-gray-800 dark:text-gray-300 flex items-center gap-2 cursor-pointer"
+                >
                   <input
                     type="radio"
                     name="contentType"
@@ -165,38 +226,65 @@ const ContentPanel = ({ selectedIdx, bodyJson, contentType, setContentType, para
                     onChange={() => setContentType(type)}
                     className="form-radio text-sky-500 bg-gray-200 dark:bg-zinc-700 border-gray-300 dark:border-zinc-600 focus:ring-sky-500"
                   />
-                  <span className="text-gray-700 dark:text-zinc-300">{type.toUpperCase()}</span>
+                  <span className="text-gray-700 dark:text-zinc-300">
+                    {type.toUpperCase()}
+                  </span>
                 </label>
               ))}
             </div>
             <div className="flex-1 overflow-auto">
-              <CodeEditorLazy value={bodyJson} language={contentType} height="100%" />
+              <CodeEditorLazy
+                value={bodyJson}
+                language={contentType}
+                height="100%"
+              />
             </div>
           </motion.div>
         );
       case 1:
         return (
-          <motion.div key="query-params-section" variants={VariantsAnimation} className="flex-1 overflow-auto">
-            <AddQueryParam currentParams={params2} setCurrentParams={setParams2} />
+          <motion.div
+            key="query-params-section"
+            variants={VariantsAnimation}
+            className="flex-1 overflow-auto"
+          >
+            <AddQueryParam
+              currentParams={params2}
+              setCurrentParams={setParams2}
+            />
           </motion.div>
         );
       case 2:
         return (
-          <motion.div key="headers-section" variants={VariantsAnimation} className="flex-1 overflow-auto">
+          <motion.div
+            key="headers-section"
+            variants={VariantsAnimation}
+            className="flex-1 overflow-auto"
+          >
             <HeadersAddRequest />
           </motion.div>
         );
       case 3:
         return (
-          <motion.div key="auth-section" variants={VariantsAnimation} className="flex-1 flex items-center justify-center text-gray-500 dark:text-zinc-500">
+          <motion.div
+            key="auth-section"
+            variants={VariantsAnimation}
+            className="flex-1 flex items-center justify-center text-gray-500 dark:text-zinc-500"
+          >
             <p className="text-lg">Proximamente</p>
           </motion.div>
         );
       case 4:
         return (
           <motion.div key="scripts-section" variants={VariantsAnimation}>
-            <ScriptComponent value={scriptsValues} setValue={setScriptsValues} />
-            <ScriptComponent value={scriptsValues} setValue={setScriptsValues} />
+            <ScriptComponent
+              value={scriptsValues}
+              setValue={setScriptsValues}
+            />
+            <ScriptComponent
+              value={scriptsValues}
+              setValue={setScriptsValues}
+            />
           </motion.div>
         );
       case 5:
@@ -212,15 +300,18 @@ const ContentPanel = ({ selectedIdx, bodyJson, contentType, setContentType, para
 
   return (
     <div className="h-full bg-white/90 dark:bg-zinc-900/80 p-4 border-gray-200 dark:border-zinc-800 relative flex flex-col shadow-lg overflow-hidden">
-      <AnimatePresence mode="wait">
-        {getContent()}
-      </AnimatePresence>
+      <AnimatePresence mode="wait">{getContent()}</AnimatePresence>
     </div>
   );
 };
 
 // --- Subcomponente: ResponsePanel (Panel de respuesta) ---
-const ResponsePanel = ({ response, isLoading, headersResponse, statusCode }) => (
+const ResponsePanel = ({
+  response,
+  isLoading,
+  headersResponse,
+  statusCode,
+}) => (
   <div className="h-full bg-white/90 dark:bg-zinc-900/80 p-4 border-gray-200 dark:border-zinc-800 flex flex-col overflow-hidden shadow-lg">
     {response || isLoading ? (
       <>
@@ -229,7 +320,7 @@ const ResponsePanel = ({ response, isLoading, headersResponse, statusCode }) => 
             <span className="svg-spinners--90-ring-with-bg block"></span>
           </div>
         ) : (
-          <div className="flex-1 overflow-scroll">
+          <div className="flex-1 overflow-hidden">
             <ResponsesTypesComponent
               headersResponse={headersResponse}
               data={response}
@@ -271,31 +362,78 @@ export default function AppClient() {
   const listEntornos = useEnviromentStore((state) => state.listEntorno);
   const entornoActual = useEnviromentStore((state) => state.entornoActual);
   const refForm = useRef(null);
+  const nombreEntorno = useEnviromentStore((state) => state.nameEntornoActual);
 
   const {
-    isOpenSiderBar, selectedMethod, response, params, cabeceras, errorAxios, errorRequest,
-    bodyJson, showMethods, endpointUrl, isLoading, contentType, statusCode, headersResponse,
-    scriptsValues, params2,
+    isOpenSiderBar,
+    selectedMethod,
+    response,
+    params,
+    cabeceras,
+    errorAxios,
+    errorRequest,
+    bodyJson,
+    showMethods,
+    endpointUrl,
+    isLoading,
+    contentType,
+    statusCode,
+    headersResponse,
+    scriptsValues,
+    params2,
   } = value;
 
   const {
-    setParams2, setBodyJson, setStatusCode, setContentType, setIsLoading, setEndpointUrl,
-    setHeadersResponse, setShowMethods, setIsOpenSiderbar, setErrorAxios, setErrorRequest,
-    setSelectedMethod, setResponse, setScriptsValues,
+    setParams2,
+    setBodyJson,
+    setStatusCode,
+    setContentType,
+    setIsLoading,
+    setEndpointUrl,
+    setHeadersResponse,
+    setShowMethods,
+    setIsOpenSiderbar,
+    setErrorAxios,
+    setErrorRequest,
+    setSelectedMethod,
+    setResponse,
+    setScriptsValues,
   } = setter;
 
   const [timeResponse, setTimeResponse] = useState(0);
-  const [selectedIdx, setMimeSelected] = useState(Number(sessionStorage.getItem('selectedIdx')) || 0);
+  const [selectedIdx, setMimeSelected] = useState(
+    Number(sessionStorage.getItem("selectedIdx")) || 0,
+  );
   const [isFullScreen, setIsFullScreen] = useState(false);
 
+  const listTabs = useStoreTabs((e) => e.listTabs);
+  const removeTab = useStoreTabs((e) => e.removeTab)
+
   const { handleRequest } = RequestHook({
-    selectedMethod, timeResponse, params, cabeceras, bodyJson, endpointUrl, contentType,
-    setIsLoading, setErrorAxios, setErrorRequest, setResponse, setTimeResponse, setStatusCode,
+    selectedMethod,
+    timeResponse,
+    params,
+    cabeceras,
+    bodyJson,
+    endpointUrl,
+    contentType,
+    setIsLoading,
+    setErrorAxios,
+    setErrorRequest,
+    setResponse,
+    setTimeResponse,
+    setStatusCode,
     setHeadersResponse,
   });
 
-  const handlerChangeInputRequest = useCallback((e) => setEndpointUrl(e.target.value), [setEndpointUrl]);
-  const handleClickShowMethod = useCallback(() => setShowMethods(prev => !prev), [setShowMethods]);
+  const handlerChangeInputRequest = useCallback(
+    (e) => setEndpointUrl(e.target.value),
+    [setEndpointUrl],
+  );
+  const handleClickShowMethod = useCallback(
+    () => setShowMethods((prev) => !prev),
+    [setShowMethods],
+  );
   const toogleFullScreen = () => {
     if (!document.fullscreenElement) {
       document.body.requestFullscreen();
@@ -306,24 +444,59 @@ export default function AppClient() {
     }
   };
 
-  const onLoadRequest = useCallback((reqBody, reqContentType, reqUrl, reqMethod, reqHeaders, reqParams, reqEvent, reqReponse) => {
-    setBodyJson(reqBody);
-    setContentType(reqContentType);
-    setEndpointUrl(reqUrl);
-    setSelectedMethod(reqMethod);
-    setScriptsValues(reqEvent);
-    setParams2(reqParams);
-    setResponse(reqReponse);
-  }, [setBodyJson, setContentType, setEndpointUrl, setSelectedMethod, setScriptsValues, setParams2, setResponse]);
+  const onLoadRequest = useCallback(
+    (
+      reqBody,
+      reqContentType,
+      reqUrl,
+      reqMethod,
+      reqHeaders,
+      reqParams,
+      reqEvent,
+      reqReponse,
+    ) => {
+      setBodyJson(reqBody);
+      setContentType(reqContentType);
+      setEndpointUrl(reqUrl);
+      setSelectedMethod(reqMethod);
+      setScriptsValues(reqEvent);
+      setParams2(reqParams);
+      setResponse(reqReponse);
+    },
+    [
+      setBodyJson,
+      setContentType,
+      setEndpointUrl,
+      setSelectedMethod,
+      setScriptsValues,
+      setParams2,
+      setResponse,
+    ],
+  );
 
   const Opciones = [
-    { name: 'Cuerpo de Peticion', icon: bodyJson },
-    { name: 'Parametros', icon: params2 },
-    { name: 'Cabeceras', icon: headersResponse },
-    { name: 'Autenticacion', icon: '' },
-    { name: 'Scripts', icon: '' },
-    { name: 'Entorno', icon: listEntornos },
+    { name: "Cuerpo de Peticion", icon: bodyJson },
+    { name: "Parametros", icon: params2 },
+    { name: "Cabeceras", icon: headersResponse },
+    { name: "Autenticacion", icon: "" },
+    { name: "Scripts", icon: "" },
+    { name: "Entorno", icon: listEntornos },
   ];
+
+  const [activeTab, setActiveTab] = useState<number>(0);
+
+  const handleLoadRequestTabs = (e: any) => {
+    onLoadRequest(
+      e?.request.body.raw,
+      e?.request.body.options?.raw?.language,
+      e?.request?.url?.raw,
+      e?.request?.method,
+      e?.request.header,
+      e.request.url?.query,
+      e.event,
+      e.request.body,
+    );
+  };
 
   return (
     <div className="min-h-screen flex text-white overflow-hidden">
@@ -337,24 +510,69 @@ export default function AppClient() {
       />
 
       <div className="w-full flex flex-col">
-        <Header isFullScreen={isFullScreen} toogleFullScreen={toogleFullScreen} />
-        
+        <Header
+          isFullScreen={isFullScreen}
+          nombreEntorno={nombreEntorno}
+          toogleFullScreen={toogleFullScreen}
+        />
+        <div className="flex border-b border-zinc-300 dark:border-zinc-700 overflow-x-auto shrink-0 bg-gray-100 max-w-[78vw]">
+          {listTabs.length > 0 &&
+            listTabs.map((e, idx) => {
+              const isActive = idx === activeTab; // estado de tab activo
+              return (
+                <div
+                  key={idx}
+                  onClick={() => {
+                    handleLoadRequestTabs(e);
+                    setActiveTab(idx);
+                  }}
+                  className={`px-5 group relative py-2 cursor-pointer text-sm font-medium whitespace-nowrap transition-colors duration-200
+            ${
+              isActive
+                ? "text-blue-600 dark:text-blue-400 border-b-2 border-blue-500 bg-white dark:bg-zinc-900"
+                : "text-zinc-600 dark:text-zinc-300 border-b-2 border-transparent hover:text-zinc-900 dark:hover:text-white hover:border-blue-500"
+            }`}
+                >
+                  {e?.name}
+                  <div className="group-hover:flex group-hover:text-red-500 hidden absolute top-2 right-2">
+                  <button className="tabler--x" aria-label="Eliminar button"  title={`Eliminar ${e?.name} `}  onClick={() => removeTab(idx) } ></button>
+                  </div>
+                </div>
+              );
+            })}
+        </div>
+
         <RequestForm
-          refForm={refForm} onSubmit={handleRequest} selectedMethod={selectedMethod}
-          handleClickShowMethod={handleClickShowMethod} showMethods={showMethods}
-          setSelectedMethod={setSelectedMethod} setShowMethods={setShowMethods}
-          entornoActual={entornoActual} endpointUrl={endpointUrl}
-          handlerChangeInputRequest={handlerChangeInputRequest} isLoading={isLoading}
+          refForm={refForm}
+          onSubmit={handleRequest}
+          selectedMethod={selectedMethod}
+          handleClickShowMethod={handleClickShowMethod}
+          showMethods={showMethods}
+          setSelectedMethod={setSelectedMethod}
+          setShowMethods={setShowMethods}
+          entornoActual={entornoActual}
+          endpointUrl={endpointUrl}
+          handlerChangeInputRequest={handlerChangeInputRequest}
+          isLoading={isLoading}
         />
 
-        <TabNavigation Opciones={Opciones} selectedIdx={selectedIdx} setMimeSelected={setMimeSelected} />
+        <TabNavigation
+          Opciones={Opciones}
+          selectedIdx={selectedIdx}
+          setMimeSelected={setMimeSelected}
+        />
 
         <PanelGroup direction="horizontal">
           <Panel defaultSize={50} minSize={20} className="h-full">
             <ContentPanel
-              selectedIdx={selectedIdx} bodyJson={bodyJson} contentType={contentType}
-              setContentType={setContentType} params2={params2} setParams2={setParams2}
-              scriptsValues={scriptsValues} setScriptsValues={setScriptsValues}
+              selectedIdx={selectedIdx}
+              bodyJson={bodyJson}
+              contentType={contentType}
+              setContentType={setContentType}
+              params2={params2}
+              setParams2={setParams2}
+              scriptsValues={scriptsValues}
+              setScriptsValues={setScriptsValues}
             />
           </Panel>
 
@@ -362,8 +580,10 @@ export default function AppClient() {
 
           <Panel defaultSize={50} minSize={20} className="h-full">
             <ResponsePanel
-              response={response} isLoading={isLoading}
-              headersResponse={headersResponse} statusCode={statusCode}
+              response={response}
+              isLoading={isLoading}
+              headersResponse={headersResponse}
+              statusCode={statusCode}
             />
           </Panel>
         </PanelGroup>

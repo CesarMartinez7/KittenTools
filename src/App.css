@@ -1,3 +1,54 @@
+
+
+@view-transition {
+  navigation: auto;
+}
+
+/* Create a custom animation */
+@keyframes move-out {
+  from {
+    transform: translateY(0%);
+  }
+
+  to {
+    transform: translateY(-100%);
+  }
+}
+
+@keyframes move-in {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0%);
+  }
+}
+
+
+.tabler--x {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.7' d='M18 6L6 18M6 6l12 12'/%3E%3C/svg%3E");
+  background-color: currentColor;
+  -webkit-mask-image: var(--svg);
+  mask-image: var(--svg);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+}
+
+/* Apply the custom animation to the old and new page states */
+::view-transition-old(root) {
+  animation: 0.4s ease-in both move-out;
+}
+
+::view-transition-new(root) {
+  animation: 0.4s ease-in both move-in;
+}
+
 @import "tailwindcss";
 
 @layer base {
@@ -22,6 +73,11 @@ kbd {
   animation: animate-loading-keyframe 1s infinite  ease-in-out;
   inset: 0;
 }
+
+
+
+
+
 
 @keyframes animate-loading-keyframe {
   0% {

@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import toast from 'react-hot-toast';
 import { useEnviromentStore } from './store.enviroment';
 import type { EnviromentLayout, Value } from './types';
+import toast from 'react-hot-toast';
 export default function useEnviromentHook() {
   const entornoActual = useEnviromentStore((state) => state.entornoActual);
   const setEntornoActual = useEnviromentStore(
@@ -13,6 +13,8 @@ export default function useEnviromentHook() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+    
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -22,14 +24,18 @@ export default function useEnviromentHook() {
         const json: EnviromentLayout = JSON.parse(
           event.target?.result as string,
         );
-
+        
         if (entornoActual.length === 0) {
+          
           if (!json._postman_exported_using) {
             toast.error('El archivo no contiene la estructura esperada');
             return;
           }
           addEntorno(json);
           // setEntornoActual(json.values);
+          
+          
+
         }
       } catch (error) {
         console.error('Error leyendo el JSON:', error);

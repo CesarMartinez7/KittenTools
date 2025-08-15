@@ -452,7 +452,7 @@ const CodeEditor = ({
         <div className="relative flex justify-between items-center text-[8px] text-gray-500 dark:text-zinc-400 bg-gray-200/70 dark:bg-zinc-950/50 border-t border-gray-300 dark:border-zinc-800 px-2 py-1.5 shadow-sm">
           <div className="flex items-center gap-1">
             <button
-              className="bg-gray-300 hover:bg-gray-400 dark:bg-zinc-900 dark:hover:bg-zinc-700 px-2.5 py-1 flex items-center gap-1 transition"
+              className="button-code-tools"
               onClick={HandlersIdentarBody}
             >
               <Icon icon="tabler:braces" width={14} />
@@ -460,7 +460,7 @@ const CodeEditor = ({
             </button>
 
             <button
-              className="bg-gray-300 hover:bg-gray-400 dark:bg-zinc-900 dark:hover:bg-zinc-700 px-2.5 py-1 flex items-center gap-1 transition"
+              className="button-code-tools"
               onClick={HandlersMinifyBody}
             >
               <Icon icon={bolt} width={14} />
@@ -468,7 +468,7 @@ const CodeEditor = ({
             </button>
 
             <button
-              className="bg-gray-300 hover:bg-gray-400 dark:bg-zinc-900 dark:hover:bg-zinc-700 px-2.5 py-1 flex items-center gap-1 transition"
+              className="button-code-tools"
               onClick={() => setIsOpenBar(!isOpenBar)}
             >
               <Icon icon="tabler:replace" width={14} />
@@ -478,11 +478,11 @@ const CodeEditor = ({
 
           <div className="flex items-center gap-2">
             <button
-              className="p-1 rounded-md hover:bg-gray-300 dark:hover:bg-zinc-700"
+              className="button-code-tools"
               onClick={() => setIsOpenFindBar(!isOpenFindBar)}
               aria-label="Buscar"
             >
-              <Icon icon="tabler:search" width={16} />
+              <Icon icon="tabler:search" width={14} />
             </button>
             <span className="text-green-500 dark:text-green-400">
               {(() => {

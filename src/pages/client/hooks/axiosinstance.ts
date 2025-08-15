@@ -12,6 +12,16 @@ const replaceEnvVariables = (text, variables) => {
   });
 };
 
+// 📌 Función para detectar el tipo de respuesta por Content-Type
+const detectResponseType = (headers) => {
+  const contentType = headers?.['content-type'] || '';
+  if (contentType.includes('application/json')) return 'json';
+  if (contentType.includes('text/html')) return 'html';
+  if (contentType.includes('application/xml') || contentType.includes('text/xml')) return 'xml';
+  if (contentType.includes('text/plain')) return 'text';
+  return 'unknown';
+};
+
 const axiosInstance = axios.create();
 
 // 📌 Interceptor de request
@@ -52,7 +62,8 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => {
     const endTime = performance.now();
-    response.timeResponse = ((endTime - response.config.meta.startTime) / 1000).toFixed(3); // segundos con ms
+    response.timeResponse = ((endTime - response.config.meta.startTime) / 1000).toFixed(3);
+    response.typeResponse = detectResponseType(response.headers);
     return response;
   },
   (error) => {
@@ -64,6 +75,7 @@ axiosInstance.interceptors.response.use(
     return Promise.reject({
       status: error.response?.status ?? 'N/A',
       data: error.response?.data ?? { message: error.message },
+      typeResponse: detectResponseType(error.response?.headers),
       raw: error.toJSON ? error.toJSON() : error,
       timeResponse: error.timeResponse ?? null,
     });

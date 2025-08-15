@@ -1,26 +1,14 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { AnimatePresence, motion } from 'framer-motion';
 import type BaseModalProps from './types';
+import modalVariants from './variants';
 
 const BaseModal = ({ isOpen, onClose, children }: BaseModalProps) => {
-  const modalVariants = {
-    hidden: { opacity: 0, scale: 0.95 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      transition: { duration: 0.2, ease: 'easeOut' },
-    },
-    exit: {
-      opacity: 0,
-      scale: 0.95,
-      transition: { duration: 0.15, ease: 'easeIn' },
-    },
-  };
 
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[887] flex items-center justify-center p-4 dark:bg-black/40 backdrop-blur-sm">
+        <motion.div autoFocus initial={{y: -20}} whileInView={{y: 0}}  className="fixed inset-0 z-[887] flex items-center justify-center p-4 dark:bg-black/40 backdrop-blur-sm">
           {/* Botón cerrar fuera del modal */}
           <button
             onClick={onClose}
@@ -40,7 +28,7 @@ const BaseModal = ({ isOpen, onClose, children }: BaseModalProps) => {
           >
             {children}
           </motion.div>
-        </div>
+        </motion.div>
       )}
     </AnimatePresence>
   );
