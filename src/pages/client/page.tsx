@@ -177,7 +177,7 @@ const RequestForm = ({
 
 // --- Subcomponente: TabNavigation (Pestañas de opciones) ---
 const TabNavigation = ({ Opciones, selectedIdx, setMimeSelected }) => (
-  <div className="flex text-gray-800 dark:text-white border border-gray-200 dark:border-zinc-800 truncate bg-white dark:bg-zinc-900/80">
+  <div className="flex text-gray-800 dark:text-white border border-gray-200 dark:border-zinc-800 truncate bg-white dark:bg-zinc-900/80 ">
     {Opciones.map((opcion, index) => (
       <button
         key={index}

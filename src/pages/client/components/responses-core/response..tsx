@@ -20,7 +20,7 @@ const SelectedType = ({
     <motion.button
       className={`p-2 ${
         isActive
-          ? 'border-b-2 text-blue-500  dark:border-green-primary dark:text-green-primary   font-semibold bg-gray-100 dark:bg-black'
+          ? 'border-b-2 text-green-primary  dark:border-green-primary dark:text-green-primary   font-semibold bg-gray-100 dark:bg-black'
           : 'text-zinc-500'
       } dark:hover:text-zinc-300 hover:text-zinc-900 transition-colors`}
       onClick={onClick}
@@ -83,7 +83,7 @@ export default function ResponsesTypesComponent({
 
 
   return (
-    <div className="h-full flex flex-col " style={{ height }}>
+    <div className="h-full flex flex-col max-h-[700px] " style={{ height }}>
       <div className="h-full flex flex-col ">
         <nav
           className="flex border-b border-zinc-400 dark:border-zinc-700"
