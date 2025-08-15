@@ -39,6 +39,13 @@ const CodeEditor = ({
   const [findResults, setFindResults] = useState<number[]>([]);
   const [currentMatchIndex, setCurrentMatchIndex] = useState(-1);
 
+
+  useEffect(() => {
+    setCode(value)
+  }, [value])
+
+
+
   // --------------------------------------- Custom Hooks -------------------------------------
   const { JsonSchema, minifyJson } = useJsonHook({
     code: code,

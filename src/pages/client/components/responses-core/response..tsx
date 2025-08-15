@@ -7,6 +7,14 @@ import TableData from '../../../../ui/Table';
 
 const tabs = ['Respuesta', 'Cabeceras', 'Cookies', 'Timeline'];
 
+
+
+
+
+
+
+
+
 const SelectedType = ({
   label,
   isActive,

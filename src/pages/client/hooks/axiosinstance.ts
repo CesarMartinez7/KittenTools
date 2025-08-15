@@ -2,72 +2,72 @@
 import axios from 'axios';
 import { useEnviromentStore } from '../components/enviroment/store.enviroment';
 
-// Función para reemplazar {{key}} con valores del entorno activo
+// ✅ Función segura para reemplazar {{key}} en strings usando variables del entorno
 const replaceEnvVariables = (text, variables) => {
-  if (!text) return text;
+  if (typeof text !== 'string') return text; // evita romper números u objetos
 
   return text.replace(/{{(.*?)}}/g, (_, key) => {
-    const variable = variables.find((v) => v.key === key && v.enabled);
-    return variable ? variable.value : `{{${key}}}`; // si no existe o está deshabilitada, lo deja igual
+    const variable = variables.find((v) => v.key.trim() === key.trim() && v.enabled);
+    return variable?.value ?? `{{${key}}}`; // mantiene la variable si no existe
   });
 };
 
 const axiosInstance = axios.create();
 
+// 📌 Interceptor de request
 axiosInstance.interceptors.request.use(
   (config) => {
-    config.meta = { startTime: Date.now() };
+    config.meta = { startTime: performance.now() }; // más preciso que Date.now()
 
-    // Leer entorno actual del store
-    const entornoActual = useEnviromentStore.getState().entornoActual;
+    const { entornoActual } = useEnviromentStore.getState();
 
-    // Reemplazar variables en baseURL y url
-    if (config.baseURL) {
-      config.baseURL = replaceEnvVariables(config.baseURL, entornoActual);
-    }
-    if (config.url) {
-      config.url = replaceEnvVariables(config.url, entornoActual);
-    }
+    // 🔹 Reemplazo en baseURL y url
+    if (config.baseURL) config.baseURL = replaceEnvVariables(config.baseURL, entornoActual);
+    if (config.url) config.url = replaceEnvVariables(config.url, entornoActual);
 
-    // Reemplazar variables también en headers
+    // 🔹 Reemplazo en headers (solo strings)
     if (config.headers) {
-      for (const header in config.headers) {
-        config.headers[header] = replaceEnvVariables(
-          config.headers[header],
-          entornoActual,
-        );
-      }
+      Object.keys(config.headers).forEach((header) => {
+        if (typeof config.headers[header] === 'string') {
+          config.headers[header] = replaceEnvVariables(config.headers[header], entornoActual);
+        }
+      });
+    }
+
+    // 🔹 Reemplazo en params si son strings
+    if (config.params) {
+      Object.keys(config.params).forEach((param) => {
+        if (typeof config.params[param] === 'string') {
+          config.params[param] = replaceEnvVariables(config.params[param], entornoActual);
+        }
+      });
     }
 
     return config;
   },
-  (error) => Promise.reject(error),
+  (error) => Promise.reject(error)
 );
 
+// 📌 Interceptor de response
 axiosInstance.interceptors.response.use(
   (response) => {
-    const endTime = Date.now();
-    const duration = Math.floor(
-      (endTime - response.config.meta.startTime) / 1000,
-    );
-    response.timeResponse = duration;
+    const endTime = performance.now();
+    response.timeResponse = ((endTime - response.config.meta.startTime) / 1000).toFixed(3); // segundos con ms
     return response;
   },
   (error) => {
-    const endTime = Date.now();
+    const endTime = performance.now();
     if (error.config?.meta?.startTime) {
-      error.timeResponse = Math.floor(
-        (endTime - error.config.meta.startTime) / 1000,
-      );
+      error.timeResponse = ((endTime - error.config.meta.startTime) / 1000).toFixed(3);
     }
 
     return Promise.reject({
-      status: error.response?.status || 'N/A',
-      data: error.response?.data || { message: error.message },
+      status: error.response?.status ?? 'N/A',
+      data: error.response?.data ?? { message: error.message },
       raw: error.toJSON ? error.toJSON() : error,
-      timeResponse: error.timeResponse || null,
+      timeResponse: error.timeResponse ?? null,
     });
-  },
+  }
 );
 
 export default axiosInstance;
