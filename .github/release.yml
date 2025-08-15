@@ -1,20 +1,41 @@
-# .github/release.yml
+name: Release en cada Push
 
-changelog:
-  exclude:
-    labels:
-      - ignore-for-release
-    authors:
-      - octocat
-  categories:
-    - title: Breaking Changes 🛠
-      labels:
-        - Semver-Major
-        - breaking-change
-    - title: Exciting New Features 🎉
-      labels:
-        - Semver-Minor
-        - enhancement
-    - title: Other Changes
-      labels:
-        - "*"
+on:
+  push:
+    branches:
+      - main  # Cambia 'main' a la rama que uses (ej. 'master', 'develop')
+
+jobs:
+  build_and_release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Necesario para obtener el historial de Git
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Puedes cambiar la versión de Node.js
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Crear Release de GitHub
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/heads/')
+        with:
+          tag_name: ${{ github.run_number }}-${{ github.sha }} # Crea un tag único basado en el número de ejecución y el hash del commit
+          name: Release ${{ github.run_number }}
+          body: |
+            🎉 ¡Nueva versión automática!
+
+            Se ha creado una nueva release a partir del commit:
+            - ${{ github.event.head_commit.message }}
+
+            Mira el historial de cambios aquí:
+            - https://github.com/${{ github.repository }}/compare/${{ github.event.before }}...${{ github.sha }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
