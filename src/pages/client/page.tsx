@@ -18,6 +18,7 @@ import ClientCustomHook from './hooks/client-hook';
 import RequestHook from './hooks/request.client';
 import { Methodos, VariantsAnimation } from './mapper-ops';
 import { useStoreTabs } from './tabs';
+import DarkModeToggle from './components/toogle-theme';
 
 // --- Subcomponente: Header (Botón de pantalla completa) ---
 const Header = ({
@@ -29,7 +30,7 @@ const Header = ({
   toogleFullScreen: () => void;
   nombreEntorno: string | null;
 }) => (
-  <div className="flex items-center text-xs gap-2 justify-end px-4 py-2 border- border-gray-200 dark:border-zinc-800  dark:bg-zinc-900/80 backdrop-blur-sm">
+  <div className="flex dark items-center text-xs gap-2 justify-end px-4 py-2 border- border-gray-200 dark:border-zinc-800  dark:bg-red-900 bg-white backdrop-blur-sm">
     {/* Botón pantalla completa */}
 
     {/* Nombre entorno */}
@@ -50,6 +51,8 @@ const Header = ({
     >
       <Icon icon={isFullScreen ? arrowsMinimize : arrowsMaximize} width={14} />
     </button>
+
+    <DarkModeToggle/>
   </div>
 );
 
@@ -525,6 +528,8 @@ export default function AppClient() {
           nombreEntorno={nombreEntorno}
           toogleFullScreen={toogleFullScreen}
         />
+
+
 
         {/* Panel de pestañas: desplazable en móvil, se adapta en escritorio */}
         <div className="flex border-b border-zinc-300 dark:border-zinc-700 overflow-x-auto bg-gray-100 dark:bg-zinc-900">
