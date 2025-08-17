@@ -21,7 +21,7 @@ export function useXmlHook({ setCode, code }: JsonHookProps): ReturnXmlHook {
       return;
     }
 
-    const newCodeMinify = code.trim().replace(/\>\s+\</g, '><');
+    const newCodeMinify = code.trim().replace(/>\s+</g, '><');
 
     try {
       const parser = new DOMParser();
@@ -34,13 +34,11 @@ export function useXmlHook({ setCode, code }: JsonHookProps): ReturnXmlHook {
 
       setCode(newCodeMinify);
       toast.success('XML minificado correctamente');
-    } catch (e)   {
+    } catch (e) {
       toast.error(`Ocurrió un error al minificar: ${(e as Error).message}`);
     }
   };
 
-
- 
   // const xmlSchema = () => {
   //   try {
   //     const parser = new DOMParser();
@@ -74,13 +72,13 @@ export function useXmlHook({ setCode, code }: JsonHookProps): ReturnXmlHook {
     xml = xml.replace(reg, '$1\r\n$2$3');
     const lines = xml.split('\r\n');
 
-    for (let line of lines) {
+    for (const line of lines) {
       if (line.match(/^<\/\w/)) pad -= 1;
       formatted += PADDING.repeat(pad) + line + '\r\n';
-      if (line.match(/^<\w[^>]*[^\/]>.*$/)) pad += 1;
+      if (line.match(/^<\w[^>]*[^/]>.*$/)) pad += 1;
     }
 
-    toast.success("kjdsfjsdkl")
+    toast.success('kjdsfjsdkl');
     return formatted.trim();
   };
 

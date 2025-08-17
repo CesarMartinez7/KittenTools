@@ -1,5 +1,6 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
-import React, { useState } from 'react';
+import type React from 'react';
+import { useState } from 'react';
 
 interface XmlNodeProps {
   node: Node;
@@ -13,14 +14,15 @@ const XmlNode: React.FC<XmlNodeProps> = ({ node, depth = 0 }) => {
     setIsCollapsed(!isCollapsed);
   };
 
-  const hasChildren = node.hasChildNodes() && Array.from(node.childNodes).some(child => child.nodeType === 1);
+  const hasChildren =
+    node.hasChildNodes() &&
+    Array.from(node.childNodes).some((child) => child.nodeType === 1);
 
   const renderAttributes = (element: Element) => {
     return Array.from(element.attributes).map((attr) => (
       <span key={attr.name} className="text-yellow-400">
         {' '}
-        {attr.name}=
-        <span className="text-orange-400">"{attr.value}"</span>
+        {attr.name}=<span className="text-orange-400">"{attr.value}"</span>
       </span>
     ));
   };
@@ -37,7 +39,10 @@ const XmlNode: React.FC<XmlNodeProps> = ({ node, depth = 0 }) => {
     return (
       <div style={{ marginLeft: depth * 16 }} className="text-sm">
         <span className="text-gray-400">{'<'}</span>
-        <span className="text-purple-400 cursor-pointer" onClick={hasChildren ? toggleCollapse : undefined}>
+        <span
+          className="text-purple-400 cursor-pointer"
+          onClick={hasChildren ? toggleCollapse : undefined}
+        >
           {element.nodeName}
         </span>
         {renderAttributes(element)}
@@ -56,7 +61,13 @@ const XmlNode: React.FC<XmlNodeProps> = ({ node, depth = 0 }) => {
                 </div>
               </>
             )}
-            {isCollapsed && <span className="text-gray-400">... {'</'}{element.nodeName}{'>'}</span>}
+            {isCollapsed && (
+              <span className="text-gray-400">
+                ... {'</'}
+                {element.nodeName}
+                {'>'}
+              </span>
+            )}
           </>
         ) : (
           <span className="text-gray-400">{' />'}</span>

@@ -1,5 +1,5 @@
-import { BaseModalLazy } from '../../../ui/lazy-components';
 import type BaseModalProps from '../../../ui/base-modal/types';
+import { BaseModalLazy } from '../../../ui/lazy-components';
 
 interface ModalDeleteProps extends BaseModalProps {
   handleClickConfirm: (id: string) => void;

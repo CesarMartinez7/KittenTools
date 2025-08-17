@@ -90,7 +90,7 @@ export default function RequestHook({
         setResponse(response.data);
         setStatusCode(response.status);
         setTimeResponse(response?.timeResponse);
-        setTypeResponse(response?.typeResponse)
+        setTypeResponse(response?.typeResponse);
         console.log(response.config);
       } catch (error) {
         setErrorRequest(true);
@@ -98,7 +98,7 @@ export default function RequestHook({
         setResponse(error.data);
         setErrorAxios(error.raw);
         setTimeResponse(error.timeResponse);
-        setTypeResponse(error?.typeResponse)
+        setTypeResponse(error?.typeResponse);
       } finally {
         setIsLoading(false);
       }

@@ -1,8 +1,10 @@
 import './App.css';
 import { Icon } from '@iconify/react';
+import arrowsMaximize from '@iconify-icons/tabler/arrows-maximize';
+import arrowsMinimize from '@iconify-icons/tabler/arrows-minimize';
 import sendIcon from '@iconify-icons/tabler/send';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useCallback, useState, useRef } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import { CodeEditorLazy } from '../../ui/lazy-components';
 import AddQueryParam from './components/addqueryparams/addQueryParams';
@@ -15,8 +17,6 @@ import { SideBar } from './components/sidebar/SideBar';
 import ClientCustomHook from './hooks/client-hook';
 import RequestHook from './hooks/request.client';
 import { Methodos, VariantsAnimation } from './mapper-ops';
-import arrowsMaximize from '@iconify-icons/tabler/arrows-maximize';
-import arrowsMinimize from '@iconify-icons/tabler/arrows-minimize';
 import { useStoreTabs } from './tabs';
 
 // --- Subcomponente: Header (Botón de pantalla completa) ---
@@ -411,16 +411,28 @@ export default function AppClient() {
     Number(sessionStorage.getItem('selectedIdx')) || 0,
   );
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const [typeResponse,setTypeResponse] = useState<string | null>(null)
+  const [typeResponse, setTypeResponse] = useState<string | null>(null);
 
   const listTabs = useStoreTabs((e) => e.listTabs);
   const removeTab = useStoreTabs((e) => e.removeTab);
 
- 
-
-
-
-  const { handleRequest } = RequestHook({selectedMethod,params,cabeceras,bodyJson,endpointUrl,contentType,setIsLoading,setErrorAxios,setErrorRequest,setResponse,headersResponse,setStatusCode,setTimeResponse,setTypeResponse,setHeadersResponse});
+  const { handleRequest } = RequestHook({
+    selectedMethod,
+    params,
+    cabeceras,
+    bodyJson,
+    endpointUrl,
+    contentType,
+    setIsLoading,
+    setErrorAxios,
+    setErrorRequest,
+    setResponse,
+    headersResponse,
+    setStatusCode,
+    setTimeResponse,
+    setTypeResponse,
+    setHeadersResponse,
+  });
 
   const handlerChangeInputRequest = useCallback(
     (e) => setEndpointUrl(e.target.value),

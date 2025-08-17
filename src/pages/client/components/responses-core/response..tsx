@@ -2,10 +2,10 @@ import { Icon } from '@iconify/react/dist/iconify.js';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
-import { JsonNode } from '../../../../ui/formatter-JSON/Formatter';
-import TableData from '../../../../ui/Table';
-import XmlNode from '../json-node/jsonnode';
+import { JsonNode } from '../../../../ui/formatter-JSON/jsonnode.';
 import { CodeEditorLazy } from '../../../../ui/lazy-components'; // Importa el componente para mostrar código sin formato
+import TableData from '../../../../ui/Table';
+import XmlNode from '../../../../ui/xml-node/xmlnode';
 
 const tabs = ['Respuesta', 'Cabeceras', 'Cookies', 'Timeline'];
 
@@ -65,7 +65,8 @@ export default function ResponsesTypesComponent({
 
   const size = useMemo(() => {
     try {
-      const sizeInKB = new TextEncoder().encode(JSON.stringify(data)).length / 1024;
+      const sizeInKB =
+        new TextEncoder().encode(JSON.stringify(data)).length / 1024;
       return sizeInKB.toFixed(2) + ' KB';
     } catch (e) {
       return '0.00 KB';
@@ -73,7 +74,10 @@ export default function ResponsesTypesComponent({
   }, [data]);
 
   const handleCopy = () => {
-    const contentToCopy = typeof parsedData === 'object' ? JSON.stringify(parsedData, null, 2) : String(parsedData);
+    const contentToCopy =
+      typeof parsedData === 'object'
+        ? JSON.stringify(parsedData, null, 2)
+        : String(parsedData);
     navigator.clipboard
       .writeText(contentToCopy)
       .then(() => toast.success('Copiado con éxito'))
@@ -101,7 +105,7 @@ export default function ResponsesTypesComponent({
         />
       );
     }
-    
+
     if (typeResponse.toLowerCase() === 'xml') {
       try {
         const parser = new DOMParser();
@@ -181,13 +185,13 @@ export default function ResponsesTypesComponent({
                 {renderResponseContent()}
               </div>
             )}
-            
+
             {activeTab.toLowerCase() === 'cabeceras' && (
               <div className="p-4">
                 <TableData data={headersResponse} />
               </div>
             )}
-            
+
             {activeTab.toLowerCase() === 'cookies' && (
               <div className="p-4">
                 <TableData
@@ -209,7 +213,9 @@ export default function ResponsesTypesComponent({
             )}
             {activeTab.toLowerCase() === 'timeline' && (
               <div className="p-4">
-                <p className="text-zinc-500 dark:text-zinc-400">No hay datos de timeline disponibles.</p>
+                <p className="text-zinc-500 dark:text-zinc-400">
+                  No hay datos de timeline disponibles.
+                </p>
               </div>
             )}
           </motion.div>

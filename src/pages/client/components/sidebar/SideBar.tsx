@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import {  useState } from 'react';
+import { useState } from 'react';
 import toast from 'react-hot-toast';
 import ToolTipButton from '../../../../ui/tooltip/TooltipButton';
 import type {
@@ -10,7 +10,6 @@ import type {
 import { useEnviromentStore } from '../enviroment/store.enviroment';
 import ItemNode, { ResizableSidebar } from '../itemnode/item-node';
 import SidebarHook from './hooks/sidebar-hook';
-
 
 export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
   const {
@@ -23,13 +22,14 @@ export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
   } = SidebarHook();
 
   const enviromentList = useEnviromentStore((state) => state.listEntorno);
-  const setNameEntornoActual = useEnviromentStore((state) => state.setNameEntornoActual)
+  const setNameEntornoActual = useEnviromentStore(
+    (state) => state.setNameEntornoActual,
+  );
   const setEntornoActual = useEnviromentStore(
     (state) => state.setEntornoActual,
   );
 
   const [currenIdx, setCurrentIdx] = useState<number>(1);
-
 
   function actualizarNombreEnItems(
     items: Item[],
@@ -214,12 +214,14 @@ export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
                       <div
                         key={`env-${index}`}
                         onClick={() => {
-                          setNameEntornoActual(env.name)
-                          setEntornoActual(env.values)
+                          setNameEntornoActual(env.name);
+                          setEntornoActual(env.values);
                         }}
                         className="card-item"
                       >
-                        <span className=" text-gray-500 dark:shiny-text">{env.name}</span>
+                        <span className=" text-gray-500 dark:shiny-text">
+                          {env.name}
+                        </span>
                         <button title="check">
                           <span className="tabler--circle-check"></span>
                         </button>

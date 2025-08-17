@@ -1,11 +1,12 @@
-import { Icon } from "@iconify/react/dist/iconify.js";
-import type React from "react";
-import { useEffect, useRef, useState } from "react";
-import toast from "react-hot-toast";
-import LazyListPerform from "../../../../ui/LazyListPerform";
-import type { ItemNodeProps } from "./types";
-import useItemNodeLogic from "./item.hook";
-import { useStoreTabs } from "../../tabs";
+import { Icon } from '@iconify/react/dist/iconify.js';
+import type React from 'react';
+import { useEffect, useRef, useState } from 'react';
+import toast from 'react-hot-toast';
+import LazyListPerform from '../../../../ui/LazyListPerform';
+import { useStoreTabs } from '../../tabs';
+import useItemNodeLogic from './item.hook';
+import type { ItemNodeProps } from './types';
+
 // Componente ResizableSidebar (sin modificaciones)
 interface ResizableSidebarProps {
   children: React.ReactNode;
@@ -20,7 +21,7 @@ const ResizableSidebar: React.FC<ResizableSidebarProps> = ({
   initialWidth = 300,
   minWidth = 200,
   maxWidth = 800,
-  className = "",
+  className = '',
 }) => {
   const [width, setWidth] = useState(initialWidth);
   const [isResizing, setIsResizing] = useState(false);
@@ -49,17 +50,17 @@ const ResizableSidebar: React.FC<ResizableSidebarProps> = ({
     };
 
     if (isResizing) {
-      document.addEventListener("mousemove", handleMouseMove);
-      document.addEventListener("mouseup", handleMouseUp);
-      document.body.style.cursor = "col-resize";
-      document.body.style.userSelect = "none";
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = 'col-resize';
+      document.body.style.userSelect = 'none';
     }
 
     return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-      document.body.style.cursor = "";
-      document.body.style.userSelect = "";
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
     };
   }, [isResizing, minWidth, maxWidth]);
 
@@ -76,7 +77,7 @@ const ResizableSidebar: React.FC<ResizableSidebarProps> = ({
       <div
         className={`
           absolute top-0 right-0 w-1 h-full cursor-col-resize group z-10
-          ${isResizing ? "bg-green-primary" : "hover:bg-green-primary/50"}
+          ${isResizing ? 'bg-green-primary' : 'hover:bg-green-primary/50'}
         `}
         onMouseDown={handleMouseDown}
       >
@@ -118,17 +119,13 @@ const ItemNode: React.FC<ItemNodeProps> = (props) => {
     setShowBar,
   } = useItemNodeLogic(props);
 
+  const listTabs = useStoreTabs((state) => state.listTabs);
+  const removeTabs = useStoreTabs((state) => state.removeTab);
+  const addTabs = useStoreTabs((state) => state.addTabs);
 
-  const listTabs = useStoreTabs((state) => state.listTabs)
-  const removeTabs = useStoreTabs((state) => state.removeTab)
-  const addTabs = useStoreTabs((state) => state.addTabs)
-
-  
-  
   if (!nodeData) {
     return null;
   }
-
 
   return (
     <div
@@ -144,25 +141,25 @@ const ItemNode: React.FC<ItemNodeProps> = (props) => {
         <div className="flex items-center gap-2">
           {isFolder && (
             <Icon
-              icon={collapsed ? "tabler:folder" : "tabler:folder-open"}
+              icon={collapsed ? 'tabler:folder' : 'tabler:folder-open'}
               width="15"
               height="15"
-              className={`${props.level === 0 ? "text-green-primary/85" : props.level === 1 ? "text-green-primary" : props.level === 2 ? "text-green-300" : props.level === 3 ? "text-green-200" : "text-green-100"}`}
+              className={`${props.level === 0 ? 'text-green-primary/85' : props.level === 1 ? 'text-green-primary' : props.level === 2 ? 'text-green-300' : props.level === 3 ? 'text-green-200' : 'text-green-100'}`}
             />
           )}
 
-           {/* ------------------------------------------ Si es un request ---------------------------------------- */}
+          {/* ------------------------------------------ Si es un request ---------------------------------------- */}
           {nodeData.request?.method && !isFolder && (
             <span
               className={`font-mono font-bold px-1 py-1 rounded-md ${getMethodColor(nodeData.request.method)}`}
             >
-              {nodeData.request.method} 
+              {nodeData.request.method}
             </span>
           )}
           <p
-            className={`truncate ${!nodeData.name || nodeData.name.trim() === "" ? "italic text-zinc-500" : " text-zinc-700 dark:text-zinc-200"}`}
-          > 
-            {getDisplayName()} 
+            className={`truncate ${!nodeData.name || nodeData.name.trim() === '' ? 'italic text-zinc-500' : ' text-zinc-700 dark:text-zinc-200'}`}
+          >
+            {getDisplayName()}
           </p>
         </div>
         <div className="flex items-center gap-1">
@@ -182,7 +179,7 @@ const ItemNode: React.FC<ItemNodeProps> = (props) => {
       {showBar && (
         <div
           className="absolute text-xs text-gray-700 bg-white dark:bg-zinc-900 dark:text-white rounded-md shadow-lg z-50 p-2 w-50"
-          style={{ top: "100%", left: 0 }}
+          style={{ top: '100%', left: 0 }}
         >
           <ul className="text-sm space-y-1 divide-y divide-gray-200 dark:divide-zinc-800">
             {(isFolder ? mapperFolder : mapperRequest).map((res) => (
@@ -191,8 +188,8 @@ const ItemNode: React.FC<ItemNodeProps> = (props) => {
                 className="dark:hover:bg-zinc-700 hover:bg-zinc-200 px-2 py-1 text-xs  cursor-pointer flex gap-2"
                 onClick={res.action}
               >
-                {res.name} 
-              </li> 
+                {res.name}
+              </li>
             ))}
           </ul>
         </div>
@@ -209,7 +206,6 @@ const ItemNode: React.FC<ItemNodeProps> = (props) => {
                 loadRequest={props.loadRequest}
                 nameItem={props.nameItem}
               />
-              
             </LazyListPerform>
           ))}
         </div>
@@ -231,9 +227,8 @@ const ItemNode: React.FC<ItemNodeProps> = (props) => {
                 <div
                   key={i}
                   onClick={() => {
-                    
-                    addTabs(nodeData)
-                    
+                    addTabs(nodeData);
+
                     try {
                       props.loadRequest?.(
                         nodeData.request.body.raw,
@@ -252,7 +247,7 @@ const ItemNode: React.FC<ItemNodeProps> = (props) => {
                   className="py-1 px-2 border bg-white shadow border-gray-300 dark:border-zinc-700 rounded dark:bg-zinc-900"
                 >
                   <p className="font-bold text-teal-500 dark:text-teal-300">
-                    {resp.name}  
+                    {resp.name}
                   </p>
                 </div>
               ))}

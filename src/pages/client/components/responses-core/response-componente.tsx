@@ -4,8 +4,8 @@ import plusIcon from '@iconify-icons/tabler/plus';
 import searchIcon from '@iconify-icons/tabler/search';
 import { AnimatePresence, motion } from 'motion/react';
 import { useMemo, useState } from 'react';
+import { JsonNode } from '../../../../ui/formatter-JSON/jsonnode.';
 import { CodeEditorLazy } from '../../../../ui/lazy-components';
-import { JsonNode } from '../../../../ui/formatter-JSON/Formatter';
 import { TypesResponse } from '../../mapper-ops';
 
 interface ResponseTypes {

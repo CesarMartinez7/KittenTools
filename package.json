@@ -15,10 +15,7 @@
     "format": "biome format --write",
     "lint": "eslint .",
     "preview": "rsbuild preview",
-    "version": "auto-changelog --tag-prefix '' --unreleased --commit-limit false && git add CHANGELOG.md",
-    "start": "electron-forge start",
-    "package": "electron-forge package",
-    "make": "npm run build && electron-forge make"
+    "version": "auto-changelog --tag-prefix '' --unreleased --commit-limit false && git add CHANGELOG.md"
   },
   "dependencies": {
     "@iconify-icons/mdi": "^1.2.48",
