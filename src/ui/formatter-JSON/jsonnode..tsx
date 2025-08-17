@@ -1,7 +1,8 @@
 import type React from 'react';
 import { useState } from 'react';
 import LazyListItem from '../LazyListPerform.tsx';
-import FormatDataTypeLabel from './components/formatlabel.tsx';
+import FormatDataTypeLabel from './formatlabel.tsx';
+
 
 type JsonValue =
   | string

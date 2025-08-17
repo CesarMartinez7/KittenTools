@@ -147,7 +147,7 @@ export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
             </div>
             {/* Header */}
             <div className="flex justify-start items-center my-4 space-x-3 relative">
-              <span className="pixelarticons--coffee-alt" />
+              <span className="tabler--bolt-off text-zinc-400"></span>
               <h3 className="text-4xl font-bold bg-gradient-to-tr text-gray-700  dark:text-lime-50">
                 Elisa
               </h3>
@@ -278,3 +278,43 @@ export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
     </ResizableSidebar>
   );
 }
+
+
+
+// Puedes guardar esto como `ElisaLogo.jsx` y usarlo en tu React app
+const ElisaLogo = ({ size = 40 }) => (
+  <svg 
+    width={size} 
+    height={size} 
+    viewBox="0 0 100 100"  // ViewBox más ajustado
+    fill="none" 
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    {/* Rayo principal - más compacto y centrado */}
+    <path 
+      d="M50 5L15 50H40L30 95L85 50H60L70 5H50Z" 
+      fill="url(#logoGradient)"
+    />
+    
+    {/* Efecto de brillo interno - ajustado al nuevo tamaño */}
+    <path 
+      d="M50 15L25 50H40L35 85L75 50H60L65 15H50Z" 
+      fill="white" 
+      opacity="0.3"
+    />
+    
+    {/* Gradiente */}
+    <defs>
+      <linearGradient 
+        id="logoGradient" 
+        x1="0%" 
+        y1="0%" 
+        x2="100%" 
+        y2="100%"
+      >
+        <stop offset="0%" stopColor="#5eead4" />
+        <stop offset="100%" stopColor="#67e8f9" />
+      </linearGradient>
+    </defs>
+  </svg>
+);
