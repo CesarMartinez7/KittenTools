@@ -360,12 +360,7 @@ kbd {
   mask-size: 100% 100%;
 }
 
-@font-face {
-  font-family: RedHat;
-  src: url("./assets/fonts/RedHatText-Bold.ttf") format("truetype");
-  font-weight: 700;
-  font-style: normal;
-}
+
 
 /* Oculta el radio original */
 input[type="radio"] {

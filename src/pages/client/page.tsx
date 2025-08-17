@@ -1,24 +1,23 @@
-import "./App.css";
-import { Icon } from "@iconify/react";
-import sendIcon from "@iconify-icons/tabler/send";
-import { AnimatePresence, motion } from "framer-motion";
-import { useCallback, useState, useRef } from "react";
-import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
-import { CodeEditorLazy } from "../../ui/lazy-components";
-import AddQueryParam from "./components/addqueryparams/addQueryParams";
-import EnviromentComponent from "./components/enviroment/enviroment.component";
-import { useEnviromentStore } from "./components/enviroment/store.enviroment";
-import { HeadersAddRequest } from "./components/headers/Headers";
-import ResponsesTypesComponent from "./components/responses-core/response.";
-import ScriptComponent from "./components/scripts/script-component";
-import { SideBar } from "./components/sidebar/SideBar";
-import ClientCustomHook from "./hooks/client-hook";
-import RequestHook from "./hooks/request.client";
-import { Methodos, VariantsAnimation } from "./mapper-ops";
-import arrowsMaximize from "@iconify-icons/tabler/arrows-maximize";
-import arrowsMinimize from "@iconify-icons/tabler/arrows-minimize";
-import { useStoreTabs } from "./tabs";
-
+import './App.css';
+import { Icon } from '@iconify/react';
+import sendIcon from '@iconify-icons/tabler/send';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useCallback, useState, useRef } from 'react';
+import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
+import { CodeEditorLazy } from '../../ui/lazy-components';
+import AddQueryParam from './components/addqueryparams/addQueryParams';
+import EnviromentComponent from './components/enviroment/enviroment.component';
+import { useEnviromentStore } from './components/enviroment/store.enviroment';
+import { HeadersAddRequest } from './components/headers/Headers';
+import ResponsesTypesComponent from './components/responses-core/response.';
+import ScriptComponent from './components/scripts/script-component';
+import { SideBar } from './components/sidebar/SideBar';
+import ClientCustomHook from './hooks/client-hook';
+import RequestHook from './hooks/request.client';
+import { Methodos, VariantsAnimation } from './mapper-ops';
+import arrowsMaximize from '@iconify-icons/tabler/arrows-maximize';
+import arrowsMinimize from '@iconify-icons/tabler/arrows-minimize';
+import { useStoreTabs } from './tabs';
 
 // --- Subcomponente: Header (Botón de pantalla completa) ---
 const Header = ({
@@ -33,27 +32,23 @@ const Header = ({
   <div className="flex items-center text-xs gap-2 justify-end px-4 py-2 border- border-gray-200 dark:border-zinc-800  dark:bg-zinc-900/80 backdrop-blur-sm">
     {/* Botón pantalla completa */}
 
-  
-
     {/* Nombre entorno */}
     <div
       className={`font-medium text-zinc-800 dark:text-zinc-300 truncate max-w-[250px] px-3 py-1 rounded-full 
     ${
       nombreEntorno === null
-        ? "bg-red-200 dark:bg-red-900"
-        : "bg-green-200 dark:bg-green-700"
+        ? 'bg-red-200 dark:bg-red-900'
+        : 'bg-green-200 dark:bg-green-700'
     }`}
     >
-      {nombreEntorno ?? "No hay entornos activos"}
+      {nombreEntorno ?? 'No hay entornos activos'}
     </div>
-
 
     <button
       onClick={toogleFullScreen}
       className="flex items-center gap-2 px-3 py-1 text-xs rounded-md  text-zinc-600 dark:text-zinc-200 font-medium shadow-sm hover:bg-gray-300 dark:bg-zinc-800 bg-gray-200 dark:hover:bg-blue-500 transition-colors"
     >
       <Icon icon={isFullScreen ? arrowsMinimize : arrowsMaximize} width={14} />
-      
     </button>
   </div>
 );
@@ -74,18 +69,18 @@ const RequestForm = ({
 }) => {
   const getMethodColor = (method) => {
     switch (method) {
-      case "GET":
-        return "bg-green-800 text-green-100";
-      case "POST":
-        return "bg-blue-500 text-blue-100";
-      case "PUT":
-        return "bg-yellow-800 text-yellow-100";
-      case "PATCH":
-        return "bg-orange-800 text-orange-100";
-      case "DELETE":
-        return "bg-red-800 text-red-100";
+      case 'GET':
+        return 'bg-green-800 text-green-100';
+      case 'POST':
+        return 'bg-blue-500 text-blue-100';
+      case 'PUT':
+        return 'bg-yellow-800 text-yellow-100';
+      case 'PATCH':
+        return 'bg-orange-800 text-orange-100';
+      case 'DELETE':
+        return 'bg-red-800 text-red-100';
       default:
-        return "bg-gray-700 text-gray-200 dark:bg-zinc-700 dark:text-zinc-200";
+        return 'bg-gray-700 text-gray-200 dark:bg-zinc-700 dark:text-zinc-200';
     }
   };
 
@@ -127,7 +122,7 @@ const RequestForm = ({
                       setShowMethods(false);
                     }}
                     className={`w-full text-left px-4 py-2 hover:bg-gray-800 dark:hover:bg-zinc-700 transition-colors duration-200
-                      ${metodo.name.toUpperCase() === selectedMethod ? "bg-sky-500 text-white" : ""}`}
+                      ${metodo.name.toUpperCase() === selectedMethod ? 'bg-sky-500 text-white' : ''}`}
                   >
                     {metodo.name}
                   </button>
@@ -138,7 +133,7 @@ const RequestForm = ({
         </div>
         <div className="bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 relative flex-1 p-2 rounded-md border border-gray-200 dark:border-zinc-800">
           <div
-            className={String(endpointUrl).length === 0 ? "p-2" : ""}
+            className={String(endpointUrl).length === 0 ? 'p-2' : ''}
             dangerouslySetInnerHTML={{
               __html: formatterInputRequest(entornoActual, endpointUrl),
             }}
@@ -160,7 +155,7 @@ const RequestForm = ({
             {isLoading ? (
               <span className="flex items-center gap-2">Enviando ...</span>
             ) : (
-              "Enviar"
+              'Enviar'
             )}
           </button>
           <button
@@ -183,7 +178,7 @@ const TabNavigation = ({ Opciones, selectedIdx, setMimeSelected }) => (
         key={index}
         type="button"
         className={`relative btn btn-sm text-sm py-2 px-4 transition-colors duration-200 flex
-        ${index === selectedIdx ? "border-b-2 border-green-primary dark:text-green-primary font-semibold bg-gray-200 dark:bg-zinc-950" : "text-gray-500 dark:text-zinc-400 hover:text-gray-800 dakr:hover:bg-gray-800 dark:hover:text-white dark:hover:bg-zinc-800"}`}
+        ${index === selectedIdx ? 'border-b-2 border-green-primary dark:text-green-primary font-semibold bg-gray-200 dark:bg-zinc-950' : 'text-gray-500 dark:text-zinc-400 hover:text-gray-800 dakr:hover:bg-gray-800 dark:hover:text-white dark:hover:bg-zinc-800'}`}
         onClick={() => setMimeSelected(index)}
       >
         <span>{opcion.name}</span>
@@ -216,7 +211,7 @@ const ContentPanel = ({
             className="flex flex-col flex-1 min-h-0"
           >
             <div className="flex gap-4 mb-3">
-              {["json", "form", "xml", "none"].map((type, idx) => (
+              {['json', 'form', 'xml', 'none'].map((type, idx) => (
                 <label
                   key={idx}
                   className="text-sm text-gray-800 dark:text-gray-300 flex items-center gap-2 cursor-pointer"
@@ -235,17 +230,14 @@ const ContentPanel = ({
               ))}
             </div>
             <div className="flex-1 overflow-auto">
-            
-
-<CodeEditorLazy
-            value={bodyJson}
-            // onChange={handleChange}
-            language={contentType}
-            // Importante: le decimos al editor que se adapte al 100% de la altura de su contenedor padre
-            height="100%" 
-            minHeight="100%"
-          />
-              
+              <CodeEditorLazy
+                value={bodyJson}
+                maxHeight="65vh"
+                // onChange={handleChange}
+                language={contentType}
+                height="100%"
+                minHeight="65vh"
+              />
             </div>
           </motion.div>
         );
@@ -297,7 +289,11 @@ const ContentPanel = ({
         );
       case 5:
         return (
-          <motion.div key="env-section" variants={VariantsAnimation} className="h-full">
+          <motion.div
+            key="env-section"
+            variants={VariantsAnimation}
+            className="h-full"
+          >
             <EnviromentComponent />
           </motion.div>
         );
@@ -315,6 +311,7 @@ const ContentPanel = ({
 
 // --- Subcomponente: ResponsePanel (Panel de respuesta) ---
 const ResponsePanel = ({
+  typeResponse,
   response,
   isLoading,
   headersResponse,
@@ -330,6 +327,7 @@ const ResponsePanel = ({
         ) : (
           <div className="flex-1 overflow-hidden">
             <ResponsesTypesComponent
+              typeResponse={typeResponse}
               headersResponse={headersResponse}
               data={response}
               statusCode={statusCode}
@@ -410,29 +408,19 @@ export default function AppClient() {
 
   const [timeResponse, setTimeResponse] = useState(0);
   const [selectedIdx, setMimeSelected] = useState(
-    Number(sessionStorage.getItem("selectedIdx")) || 0,
+    Number(sessionStorage.getItem('selectedIdx')) || 0,
   );
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const [typeResponse,setTypeResponse] = useState<string | null>(null)
 
   const listTabs = useStoreTabs((e) => e.listTabs);
-  const removeTab = useStoreTabs((e) => e.removeTab)
+  const removeTab = useStoreTabs((e) => e.removeTab);
 
-  const { handleRequest } = RequestHook({
-    selectedMethod,
-    timeResponse,
-    params,
-    cabeceras,
-    bodyJson,
-    endpointUrl,
-    contentType,
-    setIsLoading,
-    setErrorAxios,
-    setErrorRequest,
-    setResponse,
-    setTimeResponse,
-    setStatusCode,
-    setHeadersResponse,
-  });
+ 
+
+
+
+  const { handleRequest } = RequestHook({selectedMethod,params,cabeceras,bodyJson,endpointUrl,contentType,setIsLoading,setErrorAxios,setErrorRequest,setResponse,headersResponse,setStatusCode,setTimeResponse,setTypeResponse,setHeadersResponse});
 
   const handlerChangeInputRequest = useCallback(
     (e) => setEndpointUrl(e.target.value),
@@ -483,12 +471,12 @@ export default function AppClient() {
   );
 
   const Opciones = [
-    { name: "Cuerpo de Peticion", icon: bodyJson },
-    { name: "Parametros", icon: params2 },
-    { name: "Cabeceras", icon: headersResponse },
-    { name: "Autenticacion", icon: "" },
-    { name: "Scripts", icon: "" },
-    { name: "Entorno", icon: listEntornos },
+    { name: 'Cuerpo de Peticion', icon: bodyJson },
+    { name: 'Parametros', icon: params2 },
+    { name: 'Cabeceras', icon: headersResponse },
+    { name: 'Autenticacion', icon: '' },
+    { name: 'Scripts', icon: '' },
+    { name: 'Entorno', icon: listEntornos },
   ];
 
   const [activeTab, setActiveTab] = useState<number>(0);
@@ -507,112 +495,113 @@ export default function AppClient() {
   };
 
   return (
-   <div className="min-h-screen flex text-white overflow-hidden">
-  {/* SideBar en escritorio y modal en móvil */}
-  <SideBar
-    onLoadRequest={onLoadRequest}
-    currentUrl={endpointUrl}
-    currentBody={bodyJson}
-    currentMethod={selectedMethod}
-    isOpen={isOpenSiderBar}
-    onClose={() => setIsOpenSiderbar(false)}
-  />
+    <div className="min-h-screen flex text-white overflow-hidden">
+      {/* SideBar en escritorio y modal en móvil */}
+      <SideBar
+        onLoadRequest={onLoadRequest}
+        currentUrl={endpointUrl}
+        currentBody={bodyJson}
+        currentMethod={selectedMethod}
+        isOpen={isOpenSiderBar}
+        onClose={() => setIsOpenSiderbar(false)}
+      />
 
-  {/* Contenido principal, ocupa el ancho completo */}
-  <div className="w-full flex flex-col">
-    <Header
-      isFullScreen={isFullScreen}
-      nombreEntorno={nombreEntorno}
-      toogleFullScreen={toogleFullScreen}
-    />
+      {/* Contenido principal, ocupa el ancho completo */}
+      <div className="w-full flex flex-col">
+        <Header
+          isFullScreen={isFullScreen}
+          nombreEntorno={nombreEntorno}
+          toogleFullScreen={toogleFullScreen}
+        />
 
-    {/* Panel de pestañas: desplazable en móvil, se adapta en escritorio */}
-    <div className="flex border-b border-zinc-300 dark:border-zinc-700 overflow-x-auto bg-gray-100 dark:bg-zinc-900">
-      {listTabs.length > 0 &&
-        listTabs.map((e, idx) => {
-          const isActive = idx === activeTab;
-          return (
-            <motion.div
-              key={idx}
-              initial={{ y: 0 }}
-              animate={{ y: isActive ? -2 : 0 }}
-              transition={{ duration: 0.1 }}
-              onClick={() => {
-                handleLoadRequestTabs(e);
-                setActiveTab(idx);
-              }}
-              className={`px-5 group relative py-2 cursor-pointer text-sm font-medium whitespace-nowrap transition-colors duration-200 flex-shrink-0
+        {/* Panel de pestañas: desplazable en móvil, se adapta en escritorio */}
+        <div className="flex border-b border-zinc-300 dark:border-zinc-700 overflow-x-auto bg-gray-100 dark:bg-zinc-900">
+          {listTabs.length > 0 &&
+            listTabs.map((e, idx) => {
+              const isActive = idx === activeTab;
+              return (
+                <motion.div
+                  key={idx}
+                  initial={{ y: 0 }}
+                  animate={{ y: isActive ? -2 : 0 }}
+                  transition={{ duration: 0.1 }}
+                  onClick={() => {
+                    handleLoadRequestTabs(e);
+                    setActiveTab(idx);
+                  }}
+                  className={`px-5 group relative py-2 cursor-pointer text-sm font-medium whitespace-nowrap transition-colors duration-200 flex-shrink-0
                 ${
                   isActive
-                    ? "text-blue-600 dark:text-blue-400 border-b-2 border-blue-500 bg-white dark:bg-zinc-800"
-                    : "text-zinc-600 dark:text-zinc-300 border-b-2 border-transparent hover:text-zinc-900 dark:hover:text-white hover:border-blue-500"
+                    ? 'text-blue-600 dark:text-blue-400 border-b-2 border-blue-500 bg-white dark:bg-zinc-800'
+                    : 'text-zinc-600 dark:text-zinc-300 border-b-2 border-transparent hover:text-zinc-900 dark:hover:text-white hover:border-blue-500'
                 }`}
-            >
-              {e?.name}
-              <div className="group-hover:flex group-hover:text-red-500 hidden absolute top-2 right-2">
-                <button
-                  className="tabler--x"
-                  aria-label="Eliminar button"
-                  title={`Eliminar ${e?.name}`}
-                  onClick={() => removeTab(idx)}
-                ></button>
-              </div>
-            </motion.div>
-          );
-        })}
-    </div>
+                >
+                  {e?.name}
+                  <div className="group-hover:flex group-hover:text-red-500 hidden absolute top-2 right-2">
+                    <button
+                      className="tabler--x"
+                      aria-label="Eliminar button"
+                      title={`Eliminar ${e?.name}`}
+                      onClick={() => removeTab(idx)}
+                    ></button>
+                  </div>
+                </motion.div>
+              );
+            })}
+        </div>
 
-    {/* Formulario de solicitud (RequestForm) */}
-    <RequestForm
-      refForm={refForm}
-      onSubmit={handleRequest}
-      selectedMethod={selectedMethod}
-      handleClickShowMethod={handleClickShowMethod}
-      showMethods={showMethods}
-      setSelectedMethod={setSelectedMethod}
-      setShowMethods={setShowMethods}
-      entornoActual={entornoActual}
-      endpointUrl={endpointUrl}
-      handlerChangeInputRequest={handlerChangeInputRequest}
-      isLoading={isLoading}
-    />
-
-    {/* Panel de navegación (TabNavigation) */}
-    <TabNavigation
-      Opciones={Opciones}
-      selectedIdx={selectedIdx}
-      setMimeSelected={setMimeSelected}
-    />
-
-    {/* Panel principal de contenido y respuesta */}
-    <PanelGroup direction="horizontal" className="flex-grow">
-      {/* Panel de contenido */}
-      <Panel defaultSize={50} minSize={20} className="h-full">
-        <ContentPanel
-          selectedIdx={selectedIdx}
-          bodyJson={bodyJson}
-          contentType={contentType}
-          setContentType={setContentType}
-          params2={params2}
-          setParams2={setParams2}
-          scriptsValues={scriptsValues}
-          setScriptsValues={setScriptsValues}
-        />
-      </Panel>
-
-      <PanelResizeHandle className="w-1 bg-gray-300 dark:bg-zinc-700 cursor-col-resize" />
-
-      {/* Panel de respuesta */}
-      <Panel defaultSize={50} minSize={20} className="h-full">
-        <ResponsePanel
-          response={response}
+        {/* Formulario de solicitud (RequestForm) */}
+        <RequestForm
+          refForm={refForm}
+          onSubmit={handleRequest}
+          selectedMethod={selectedMethod}
+          handleClickShowMethod={handleClickShowMethod}
+          showMethods={showMethods}
+          setSelectedMethod={setSelectedMethod}
+          setShowMethods={setShowMethods}
+          entornoActual={entornoActual}
+          endpointUrl={endpointUrl}
+          handlerChangeInputRequest={handlerChangeInputRequest}
           isLoading={isLoading}
-          headersResponse={headersResponse}
-          statusCode={statusCode}
         />
-      </Panel>
-    </PanelGroup>
-  </div>
-</div>
+
+        {/* Panel de navegación (TabNavigation) */}
+        <TabNavigation
+          Opciones={Opciones}
+          selectedIdx={selectedIdx}
+          setMimeSelected={setMimeSelected}
+        />
+
+        {/* Panel principal de contenido y respuesta */}
+        <PanelGroup direction="horizontal" className="flex-grow">
+          {/* Panel de contenido */}
+          <Panel defaultSize={50} minSize={20} className="h-full">
+            <ContentPanel
+              selectedIdx={selectedIdx}
+              bodyJson={bodyJson}
+              contentType={contentType}
+              setContentType={setContentType}
+              params2={params2}
+              setParams2={setParams2}
+              scriptsValues={scriptsValues}
+              setScriptsValues={setScriptsValues}
+            />
+          </Panel>
+
+          <PanelResizeHandle className="w-1 bg-gray-300 dark:bg-zinc-700 cursor-col-resize" />
+
+          {/* Panel de respuesta */}
+          <Panel defaultSize={50} minSize={20} className="h-full">
+            <ResponsePanel
+              typeResponse={typeResponse}
+              response={response}
+              isLoading={isLoading}
+              headersResponse={headersResponse}
+              statusCode={statusCode}
+            />
+          </Panel>
+        </PanelGroup>
+      </div>
+    </div>
   );
 }

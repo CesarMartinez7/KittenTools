@@ -7,7 +7,9 @@ const replaceEnvVariables = (text, variables) => {
   if (typeof text !== 'string') return text; // evita romper números u objetos
 
   return text.replace(/{{(.*?)}}/g, (_, key) => {
-    const variable = variables.find((v) => v.key.trim() === key.trim() && v.enabled);
+    const variable = variables.find(
+      (v) => v.key.trim() === key.trim() && v.enabled,
+    );
     return variable?.value ?? `{{${key}}}`; // mantiene la variable si no existe
   });
 };
@@ -17,7 +19,11 @@ const detectResponseType = (headers) => {
   const contentType = headers?.['content-type'] || '';
   if (contentType.includes('application/json')) return 'json';
   if (contentType.includes('text/html')) return 'html';
-  if (contentType.includes('application/xml') || contentType.includes('text/xml')) return 'xml';
+  if (
+    contentType.includes('application/xml') ||
+    contentType.includes('text/xml')
+  )
+    return 'xml';
   if (contentType.includes('text/plain')) return 'text';
   return 'unknown';
 };
@@ -32,14 +38,18 @@ axiosInstance.interceptors.request.use(
     const { entornoActual } = useEnviromentStore.getState();
 
     // 🔹 Reemplazo en baseURL y url
-    if (config.baseURL) config.baseURL = replaceEnvVariables(config.baseURL, entornoActual);
+    if (config.baseURL)
+      config.baseURL = replaceEnvVariables(config.baseURL, entornoActual);
     if (config.url) config.url = replaceEnvVariables(config.url, entornoActual);
 
     // 🔹 Reemplazo en headers (solo strings)
     if (config.headers) {
       Object.keys(config.headers).forEach((header) => {
         if (typeof config.headers[header] === 'string') {
-          config.headers[header] = replaceEnvVariables(config.headers[header], entornoActual);
+          config.headers[header] = replaceEnvVariables(
+            config.headers[header],
+            entornoActual,
+          );
         }
       });
     }
@@ -48,29 +58,38 @@ axiosInstance.interceptors.request.use(
     if (config.params) {
       Object.keys(config.params).forEach((param) => {
         if (typeof config.params[param] === 'string') {
-          config.params[param] = replaceEnvVariables(config.params[param], entornoActual);
+          config.params[param] = replaceEnvVariables(
+            config.params[param],
+            entornoActual,
+          );
         }
       });
     }
 
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
 // 📌 Interceptor de response
 axiosInstance.interceptors.response.use(
   (response) => {
     const endTime = performance.now();
-    response.timeResponse = ((endTime - response.config.meta.startTime) / 1000).toFixed(3);
+    response.timeResponse = (
+      (endTime - response.config.meta.startTime) /
+      1000
+    ).toFixed(3);
     response.typeResponse = detectResponseType(response.headers);
-    console.log(response.typeResponse)
+    console.log(response.typeResponse);
     return response;
   },
   (error) => {
     const endTime = performance.now();
     if (error.config?.meta?.startTime) {
-      error.timeResponse = ((endTime - error.config.meta.startTime) / 1000).toFixed(3);
+      error.timeResponse = (
+        (endTime - error.config.meta.startTime) /
+        1000
+      ).toFixed(3);
     }
 
     return Promise.reject({
@@ -80,7 +99,7 @@ axiosInstance.interceptors.response.use(
       raw: error.toJSON ? error.toJSON() : error,
       timeResponse: error.timeResponse ?? null,
     });
-  }
+  },
 );
 
 export default axiosInstance;

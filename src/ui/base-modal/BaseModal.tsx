@@ -4,11 +4,15 @@ import type BaseModalProps from './types';
 import modalVariants from './variants';
 
 const BaseModal = ({ isOpen, onClose, children }: BaseModalProps) => {
-
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div autoFocus initial={{y: -20}} whileInView={{y: 0}}  className="fixed inset-0 z-[887] flex items-center justify-center p-4 dark:bg-black/40 backdrop-blur-sm">
+        <motion.div
+          autoFocus
+          initial={{ y: -20 }}
+          whileInView={{ y: 0 }}
+          className="fixed inset-0 z-[887] flex items-center justify-center p-4 dark:bg-black/40 backdrop-blur-sm"
+        >
           {/* Botón cerrar fuera del modal */}
           <button
             onClick={onClose}

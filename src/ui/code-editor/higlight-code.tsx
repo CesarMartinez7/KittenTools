@@ -18,6 +18,11 @@ const highlightCode = (
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#039;');
 
+
+  if(language === "text"){
+    return String(code)
+  }
+
   if (language === 'json') {
     highlightedCode = code
       .replace(/"([^"\\]|\\.)*"/g, (match) => {

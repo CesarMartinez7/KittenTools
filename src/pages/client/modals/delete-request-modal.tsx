@@ -1,18 +1,14 @@
-import { BaseModalLazy } from '../../../components/lazy-components';
+import { BaseModalLazy } from '../../../ui/lazy-components';
 import type BaseModalProps from '../../../ui/base-modal/types';
 
 interface ModalDeleteProps extends BaseModalProps {
-  handleDeleteRequest: (id: string) => void;
-  id: string;
-  name: string;
+  handleClickConfirm: (id: string) => void;
 }
 
 export default function ModalDeleteRequest({
   onClose,
   isOpen,
-  handleDeleteRequest,
-  id,
-  name,
+  handleClickConfirm,
 }: ModalDeleteProps) {
   return (
     <BaseModalLazy key={'ijum44'} onClose={onClose} isOpen={isOpen}>
@@ -27,7 +23,7 @@ export default function ModalDeleteRequest({
 
         <div className="flex gap-3">
           <button
-            onClick={() => handleDeleteRequest(id)}
+            onClick={() => handleClickConfirm}
             className="flex-1 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-medium transition-colors"
           >
             Sí, eliminar

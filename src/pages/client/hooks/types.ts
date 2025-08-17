@@ -63,5 +63,6 @@ export interface RequestHookProps {
   setErrorRequest: React.Dispatch<React.SetStateAction<boolean>>;
   setResponse: Dispatch<SetStateAction<string>>;
   setTimeResponse: Dispatch<SetStateAction<number>>;
+  setTypeResponse: Dispatch<SetStateAction<string | null>>;
   setStatusCode: Dispatch<React.SetStateAction<number | null | undefined>>;
 }

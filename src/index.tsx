@@ -6,7 +6,6 @@ import { Suspense } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { AppClientRouteLazy } from './pages/lazy-pages.tsx';
 
-
 const LoadingElement = () => (
   <div className="h-screen w-screen flex justify-center items-center backdrop-blur-xl flex-col">
     <p className="text-zinc-400 my-4">
@@ -36,7 +35,6 @@ ReactDOM.createRoot(root).render(
         className: 'dark:bg-zinc-700! dark:text-white! text-gray-500',
       }}
     />
-    
 
     <div className="z-[777] relative">
       <Router>
@@ -55,7 +53,7 @@ ReactDOM.createRoot(root).render(
           }
         >
           <Routes>
-          <Route index path="/loading" element={<LoadingElement/>} />
+            <Route index path="/loading" element={<LoadingElement />} />
             <Route index path="/" element={<AppClientRouteLazy />} />
             <Route
               path="*"

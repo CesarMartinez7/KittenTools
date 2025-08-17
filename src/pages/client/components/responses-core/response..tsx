@@ -4,10 +4,10 @@ import { useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { JsonNode } from '../../../../ui/formatter-JSON/Formatter';
 import TableData from '../../../../ui/Table';
+import XmlNode from '../json-node/jsonnode';
+import { CodeEditorLazy } from '../../../../ui/lazy-components'; // Importa el componente para mostrar código sin formato
 
 const tabs = ['Respuesta', 'Cabeceras', 'Cookies', 'Timeline'];
-
-const url = ""
 
 const SelectedType = ({
   label,
@@ -22,7 +22,7 @@ const SelectedType = ({
     <motion.button
       className={`p-2 ${
         isActive
-          ? 'border-b-2 text-green-primary  dark:border-green-primary dark:text-green-primary  font-semibold bg-gray-100 dark:bg-black'
+          ? 'border-b-2 text-green-primary dark:border-green-primary dark:text-green-primary font-semibold bg-gray-100 dark:bg-black'
           : 'text-zinc-500'
       } dark:hover:text-zinc-300 hover:text-zinc-900 transition-colors`}
       onClick={onClick}
@@ -39,7 +39,7 @@ interface ResponseTypes {
   data: any;
   statusCode: number;
   timeResponse: number | string;
-  contentTypeData: string;
+  typeResponse: string;
   headersResponse: any;
 }
 
@@ -48,47 +48,115 @@ export default function ResponsesTypesComponent({
   statusCode,
   timeResponse,
   data,
-  contentTypeData,
+  typeResponse,
 }: ResponseTypes) {
   const [activeTab, setActiveTab] = useState('Respuesta');
 
-  // Lógica principal invertida para parsear los datos
   const parsedData = useMemo(() => {
     try {
-      if (typeof data === 'string') {
+      if (typeof data === 'string' && typeResponse.toLowerCase() === 'json') {
         return JSON.parse(data);
       }
       return data;
     } catch (e) {
-      // Si falla, retornamos el dato original como un string
       return data;
+    }
+  }, [data, typeResponse]);
+
+  const size = useMemo(() => {
+    try {
+      const sizeInKB = new TextEncoder().encode(JSON.stringify(data)).length / 1024;
+      return sizeInKB.toFixed(2) + ' KB';
+    } catch (e) {
+      return '0.00 KB';
     }
   }, [data]);
 
-  // Calcular tamaño de la respuesta
-  const size = useMemo(() => {
-    const sizeInKB =
-      new TextEncoder().encode(JSON.stringify(data)).length / 1024;
-    return sizeInKB.toFixed(2) + 'KB';
-  }, [data]);
-
-  // Manejar copiado del contenido
   const handleCopy = () => {
+    const contentToCopy = typeof parsedData === 'object' ? JSON.stringify(parsedData, null, 2) : String(parsedData);
     navigator.clipboard
-      .writeText(JSON.stringify(parsedData))
+      .writeText(contentToCopy)
       .then(() => toast.success('Copiado con éxito'))
-      .catch(() => toast.error('Ocurrió un error'));
+      .catch(() => toast.error('Ocurrió un error al copiar'));
+  };
+
+  const getStatusCodeClass = (status: number) => {
+    if (status >= 200 && status < 300) return 'bg-green-600';
+    if (status >= 300 && status < 400) return 'bg-yellow-500';
+    if (status >= 400 && status < 500) return 'bg-red-500';
+    if (status >= 500 && status < 600) return 'bg-orange-500';
+    return 'bg-gray-500';
+  };
+
+  // Nueva función para renderizar el contenido de la respuesta
+  const renderResponseContent = () => {
+    if (typeResponse.toLowerCase() === 'json') {
+      return (
+        <JsonNode
+          open={true}
+          isChange={false}
+          isInterface={false}
+          INDENT={4}
+          data={parsedData}
+        />
+      );
+    }
+    
+    if (typeResponse.toLowerCase() === 'xml') {
+      try {
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(data, 'application/xml');
+        if (xmlDoc.getElementsByTagName('parsererror').length > 0) {
+          throw new Error('XML inválido');
+        }
+        return <XmlNode node={xmlDoc.documentElement} />;
+      } catch (e) {
+        return (
+          <div className="text-red-400 absolute inset-0 backdrop-blur-3xl text-center grid place-content-center gap-2 overflow-hidden rounded-xl">
+            <Icon
+              className="mx-auto text-zinc-500"
+              icon="tabler:alien"
+              width="54"
+              height="54"
+            />
+            <span className="block text-center text-zinc-400 font-medium mt-2">
+              XML inválido o no reconocido
+            </span>
+            <a
+              href="https://www.w3schools.com/xml/xml_syntax.asp"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block text-center text-zinc-300 text-xs underline mt-1 hover:text-zinc-200 transition"
+            >
+              Aprende sobre la sintaxis XML
+            </a>
+          </div>
+        );
+      }
+    }
+
+    // Fallback para otros tipos de datos (como texto plano o HTML)
+    return <CodeEditorLazy language="text" value={String(data)} />;
   };
 
   return (
     <div className="h-full flex flex-col max-h-[80vh] overflow-y-scroll">
       <div className="flex-1 flex flex-col">
         <nav
-          className="flex border-b border-zinc-400 dark:border-zinc-700"
+          className="flex border-b border-zinc-400 dark:border-zinc-700 items-center px-4"
           role="tablist"
           aria-label="Tipos de respuesta"
         >
-          <p>{timeResponse}</p>
+          <div className="flex items-center gap-2 mr-4">
+            <span
+              className={`text-white text-sm font-bold px-2 py-0.5 rounded ${getStatusCodeClass(statusCode)}`}
+            >
+              {statusCode}
+            </span>
+            <span className="text-zinc-500 dark:text-zinc-400 text-sm">
+              {timeResponse}
+            </span>
+          </div>
           {tabs.map((tab) => (
             <SelectedType
               key={tab}
@@ -100,11 +168,6 @@ export default function ResponsesTypesComponent({
         </nav>
 
         <AnimatePresence mode="wait">
-          {/* El contenedor principal del contenido (motion.div) ahora maneja el scroll.
-            La clase `flex-1` le permite ocupar todo el espacio vertical disponible,
-            y `overflow-y-auto` permite el scroll vertical.
-            Ya no es necesario el hack de `h-0` ni el `overflow-auto` en los divs hijos.
-          */}
           <motion.div
             key={activeTab}
             initial={{ y: 10, opacity: 0 }}
@@ -114,14 +177,8 @@ export default function ResponsesTypesComponent({
             className="flex-1 overflow-y-auto"
           >
             {activeTab.toLowerCase() === 'respuesta' && (
-              <div className="p-4">
-                <JsonNode
-                  open={true}
-                  isChange={false}
-                  isInterface={false}
-                  INDENT={4}
-                  data={parsedData} // Usa los datos ya procesados
-                />
+              <div className="p-4 h-full overflow-y-auto">
+                {renderResponseContent()}
               </div>
             )}
             
@@ -138,7 +195,7 @@ export default function ResponsesTypesComponent({
                     headersResponse['Set-Cookie']
                       ? headersResponse['Set-Cookie']
                           .split(';')
-                          .reduce((acc, current) => {
+                          .reduce((acc: any, current: string) => {
                             const [key, value] = current.split('=');
                             if (key && value) {
                               acc[key.trim()] = value.trim();
@@ -150,13 +207,17 @@ export default function ResponsesTypesComponent({
                 />
               </div>
             )}
+            {activeTab.toLowerCase() === 'timeline' && (
+              <div className="p-4">
+                <p className="text-zinc-500 dark:text-zinc-400">No hay datos de timeline disponibles.</p>
+              </div>
+            )}
           </motion.div>
         </AnimatePresence>
       </div>
 
       <div className="relative flex justify-between items-center text-[8px] text-gray-500 dark:text-zinc-400 bg-gray-200/70 dark:bg-zinc-950/50 border-t border-gray-300 dark:border-zinc-800 px-2 py-1.5 shadow-sm">
         <span className="text-sm text-zinc-400">{size}</span>
-
         <div className="flex gap-2">
           <button
             className="p-1.5 rounded-md hover:bg-zinc-800 transition-colors text-zinc-400 hover:text-zinc-200"
@@ -164,7 +225,6 @@ export default function ResponsesTypesComponent({
           >
             <Icon icon="tabler:search" width="16px" />
           </button>
-
           <button
             className="p-1.5 rounded-md hover:bg-zinc-800 transition-colors text-zinc-400 hover:text-zinc-200"
             aria-label="Copiar contenido"
@@ -172,7 +232,6 @@ export default function ResponsesTypesComponent({
           >
             <Icon icon="tabler:copy" width="16px" />
           </button>
-
           <button
             className="p-1.5 rounded-md hover:bg-zinc-800 transition-colors text-zinc-400 hover:text-zinc-200"
             aria-label="Limpiar"
