@@ -7,6 +7,8 @@ import TableData from '../../../../ui/Table';
 
 const tabs = ['Respuesta', 'Cabeceras', 'Cookies', 'Timeline'];
 
+const url = ""
+
 const SelectedType = ({
   label,
   isActive,
@@ -20,7 +22,7 @@ const SelectedType = ({
     <motion.button
       className={`p-2 ${
         isActive
-          ? 'border-b-2 text-green-primary  dark:border-green-primary dark:text-green-primary   font-semibold bg-gray-100 dark:bg-black'
+          ? 'border-b-2 text-green-primary  dark:border-green-primary dark:text-green-primary  font-semibold bg-gray-100 dark:bg-black'
           : 'text-zinc-500'
       } dark:hover:text-zinc-300 hover:text-zinc-900 transition-colors`}
       onClick={onClick}
@@ -45,7 +47,6 @@ export default function ResponsesTypesComponent({
   headersResponse,
   statusCode,
   timeResponse,
-  height,
   data,
   contentTypeData,
 }: ResponseTypes) {
@@ -79,12 +80,9 @@ export default function ResponsesTypesComponent({
       .catch(() => toast.error('Ocurrió un error'));
   };
 
-
-
-
   return (
-    <div className="h-full flex flex-col max-h-[700px] " style={{ height }}>
-      <div className="h-full flex flex-col ">
+    <div className="h-full flex flex-col max-h-[80vh] overflow-y-scroll">
+      <div className="flex-1 flex flex-col">
         <nav
           className="flex border-b border-zinc-400 dark:border-zinc-700"
           role="tablist"
@@ -102,13 +100,18 @@ export default function ResponsesTypesComponent({
         </nav>
 
         <AnimatePresence mode="wait">
+          {/* El contenedor principal del contenido (motion.div) ahora maneja el scroll.
+            La clase `flex-1` le permite ocupar todo el espacio vertical disponible,
+            y `overflow-y-auto` permite el scroll vertical.
+            Ya no es necesario el hack de `h-0` ni el `overflow-auto` en los divs hijos.
+          */}
           <motion.div
             key={activeTab}
             initial={{ y: 10, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -10, opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="flex-1 overflow-auto"
+            className="flex-1 overflow-y-auto"
           >
             {activeTab.toLowerCase() === 'respuesta' && (
               <div className="p-4">
@@ -121,16 +124,13 @@ export default function ResponsesTypesComponent({
                 />
               </div>
             )}
-
-
             
-
             {activeTab.toLowerCase() === 'cabeceras' && (
               <div className="p-4">
                 <TableData data={headersResponse} />
               </div>
             )}
-
+            
             {activeTab.toLowerCase() === 'cookies' && (
               <div className="p-4">
                 <TableData

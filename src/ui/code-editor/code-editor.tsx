@@ -1,16 +1,48 @@
+import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Icon } from '@iconify/react/dist/iconify.js';
-import bolt from '@iconify-icons/tabler/bolt';
-import { AnimatePresence, motion } from 'motion/react';
-import type React from 'react';
-import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
-import LazyListItem from '../LazyListPerform';
-import highlightCode from './higlight-code';
-import './Code.css';
 
-import { useJsonHook } from './methods-json/method';
-import { useXmlHook } from './methos-xml/method.xml';
-import type { CodeEditorProps } from './types';
+// --- Placeholder functions and components for a self-contained example ---
+// NOTE: These are mock implementations. You should use your actual files.
+const LazyListItem = memo(({ children }) => <div>{children}</div>);
+const highlightCode = (code, language, findResults, searchValue, currentMatchIndex) => {
+  if (!searchValue) return code;
+  const regex = new RegExp(searchValue, 'gi');
+  let highlightedCode = code.replace(regex, (match) => `<span style="background-color: yellow;">${match}</span>`);
+  if (findResults[currentMatchIndex] !== undefined) {
+    const start = findResults[currentMatchIndex];
+    const end = start + searchValue.length;
+    highlightedCode = highlightedCode.substring(0, start) + `<span style="background-color: orange;">${highlightedCode.substring(start, end)}</span>` + highlightedCode.substring(end);
+  }
+  return highlightedCode;
+};
+const bolt = "tabler:bolt";
+const useJsonHook = ({ code, setCode }) => ({
+  JsonSchema: () => {
+    try {
+      const formattedCode = JSON.stringify(JSON.parse(code), null, 2);
+      setCode(formattedCode);
+      toast.success('JSON identado!');
+    } catch (error) {
+      toast.error('JSON inválido');
+    }
+  },
+  minifyJson: () => {
+    try {
+      const minifiedCode = JSON.stringify(JSON.parse(code));
+      setCode(minifiedCode);
+      toast.success('JSON minificado!');
+    } catch (error) {
+      toast.error('JSON inválido');
+    }
+  },
+});
+const useXmlHook = ({ code, setCode }) => ({
+  XmlScheme: () => toast.success('XML identado! (Simulado)'),
+  minifyXml: () => toast.success('XML minificado! (Simulado)'),
+});
+// --------------------------------------------------------------------------
 
 const CodeEditor = ({
   value = '',
@@ -21,30 +53,28 @@ const CodeEditor = ({
   minHeight = '68vh',
   placeholder = '',
   classNameContainer = '',
-}: CodeEditorProps) => {
-  // Referencias al DOOM
-  const inputRefTextOld = useRef<HTMLInputElement>(null);
-  const inputRefTextNew = useRef<HTMLInputElement>(null);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const highlightRef = useRef<HTMLDivElement>(null);
-  const lineNumbersRef = useRef<HTMLDivElement>(null);
-  const searchInputRef = useRef<HTMLInputElement>(null); // Nueva referencia para el input de búsqueda
+}) => {
+  // Referencias al DOM
+  const inputRefTextOld = useRef(null);
+  const inputRefTextNew = useRef(null);
+  const textareaRef = useRef(null);
+  const highlightRef = useRef(null);
+  const lineNumbersRef = useRef(null);
+  const searchInputRef = useRef(null); // Nueva referencia para el input de busqueda
 
-  const [isOpenBar, setIsOpenBar] = useState<boolean>(false);
+  const [isOpenBar, setIsOpenBar] = useState(false);
   const [code, setCode] = useState(value);
 
   // Estados para la funcionalidad de búsqueda
   const [isOpenFindBar, setIsOpenFindBar] = useState(false);
   const [searchValue, setSearchValue] = useState('');
-  const [findResults, setFindResults] = useState<number[]>([]);
+  const [findResults, setFindResults] = useState([]);
   const [currentMatchIndex, setCurrentMatchIndex] = useState(-1);
 
 
   useEffect(() => {
-    setCode(value)
-  }, [value])
-
-
+    setCode(value);
+  }, [value]);
 
   // --------------------------------------- Custom Hooks -------------------------------------
   const { JsonSchema, minifyJson } = useJsonHook({
@@ -63,7 +93,7 @@ const CodeEditor = ({
 
   // Efectos y Lógica
   useEffect(() => {
-    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+    const handleGlobalKeyDown = (e) => {
       // Atajo para abrir/cerrar la barra de búsqueda (Ctrl + F)
       if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
         e.preventDefault();
@@ -111,11 +141,11 @@ const CodeEditor = ({
     return () => {
       window.removeEventListener('keydown', handleGlobalKeyDown);
     };
-  }, [isOpenFindBar, findResults.length]);
+  }, [isOpenFindBar, findResults.length, isOpenBar]);
 
   useEffect(() => {
     if (searchValue && code) {
-      const results: number[] = [];
+      const results = [];
       let index = code.indexOf(searchValue);
       while (index !== -1) {
         results.push(index);
@@ -168,7 +198,7 @@ const CodeEditor = ({
   };
 
   // Manejo de eventos
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleChange = (e) => {
     const newValue = e.target.value;
     setCode(newValue);
     onChange?.(newValue);
@@ -186,18 +216,18 @@ const CodeEditor = ({
     const scrollLeft = textareaRef.current.scrollLeft;
 
     requestAnimationFrame(() => {
-      lineNumbersRef.current!.scrollTop = scrollTop;
-      highlightRef.current!.scrollTop = scrollTop;
-      highlightRef.current!.scrollLeft = scrollLeft;
+      lineNumbersRef.current.scrollTop = scrollTop;
+      highlightRef.current.scrollTop = scrollTop;
+      highlightRef.current.scrollLeft = scrollLeft;
     });
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleKeyDown = (e) => {
     if (e.key === 'Tab') {
       e.preventDefault();
       const start = e.currentTarget.selectionStart;
       const end = e.currentTarget.selectionEnd;
-      const newValue = code.substring(0, start) + '  ' + code.substring(end);
+      const newValue = code.substring(0, start) + '  ' + code.substring(end);
       setCode(newValue);
       onChange?.(newValue);
 
@@ -258,253 +288,205 @@ const CodeEditor = ({
   };
 
   return (
-    <>
-      <main className="overflow-hidden relative">
-        <AnimatePresence mode="wait">
-          {/* {isOpenBar && (
-            <motion.div
-              initial={{ opacity: 0, y: -10, scale: 0.95 }}
-              animate={{
-                opacity: 1,
-                y: 0,
-                scale: 1,
-                filter: 'blur(0px)',
-                transition: { type: 'spring', stiffness: 200, damping: 20 },
-              }}
-              exit={{
-                opacity: 0,
-                y: -10,
-                scale: 0.95,
-                filter: 'blur(4px)',
-                transition: { duration: 0.2 },
-              }}
-              layout
-              className="backdrop-blur-3xl bg-white/40 dark:bg-zinc-900/35 border border-gray-200 dark:border-zinc-900 p-3 flex flex-col w-52 shadow-xl dark:shadow-zinc-800 shadow-gray-300 gap-1 rounded right-4 top-5 absolute z-[778]"
-            >
-              <input
-                ref={inputRefTextOld}
-                type="text"
-                autoFocus
-                className="input-base"
-                placeholder="Valor a buscar"
-              />
-              <input
-                ref={inputRefTextNew}
-                type="text"
-                className="input-base"
-                placeholder="Valor a Reemplazar"
-              />
-              <div className="flex h-6 gap-2">
-                <button
-                  className="bg-gradient-to-r flex-1 from-green-400 to-green-500 p-1 rounded-md text-xs truncate text-white"
-                  onClick={handleCLickReplaceTextFirst}
-                >
-                  Reemplazar primero
-                </button>
-                <button
-                  className="bg-gradient-to-r flex-1 from-sky-400 to-sky-700 p-1 rounded-md text-xs truncate text-white"
-                  onClick={handleCLickReplaceText}
-                >
-                  Reemplazar todo
-                </button>
-              </div>
-            </motion.div>
-          )} */}
-
-          {isOpenFindBar && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="absolute right-2  top-2 z-[778] p-2 bg-gray-100 border dark:border-zinc-800 border-gray-200 dark:bg-zinc-950/90 rounded-md shadow-lg flex items-center gap-2 flex-col"
-            >
-              <div className=" flex justify-center items-center gap-2">
-                <button
-                  onClick={() => setIsOpenBar((prev) => !prev)}
-                  className="p-1 rounded-md hover:bg-gray-300 dark:hover:bg-zinc-700 disabled:opacity-50 text-gray-800 dark:text-zinc-300 disabled:text-red-500"
-                >
-                  <Icon
-                    icon={`tabler:chevron-${isOpenBar ? 'down' : 'left'}`}
-                    width={16}
-                  />
-                </button>
-                <input
-                  ref={searchInputRef}
-                  type="text"
-                  className="input-base-editor text-xs w-40 px-2 py-1"
-                  placeholder="Buscar..."
-                  onChange={(e) => setSearchValue(e.target.value)}
-                />
-                <span className="text-xs text-gray-500 dark:text-zinc-400">
-                  {findResults.length > 0 ? `${currentMatchIndex + 1}` : 0} de{' '}
-                  {findResults.length}
-                </span>
-                <button
-                  onClick={handlePrevMatch}
-                  disabled={findResults.length === 0}
-                  className="p-1 rounded-md hover:bg-gray-300 dark:hover:bg-zinc-700 disabled:opacity-50 text-gray-800 dark:text-zinc-300 disabled:text-red-500"
-                >
-                  <Icon icon="tabler:chevron-up" width={16} />
-                </button>
-                <button
-                  onClick={handleNextMatch}
-                  disabled={findResults.length === 0}
-                  className="p-1 rounded-md hover:bg-gray-300 dark:hover:bg-zinc-700 disabled:opacity-50 text-gray-800 dark:text-zinc-300 disabled:text-red-500"
-                >
-                  <Icon icon="tabler:chevron-down" width={16} />
-                </button>
-                <button
-                  onClick={() => setIsOpenFindBar(false)}
-                  className="p-1 rounded-md hover:bg-gray-300 dark:hover:bg-zinc-700 text-gray-800 dark:text-zinc-300"
-                >
-                  <Icon icon="tabler:x" width={16} />
-                </button>
-              </div>
-
-              {isOpenBar && (
-                <motion.div>
-                  <div className="flex flex-col">
-                    <input
-                      ref={inputRefTextOld}
-                      type="text"
-                      autoFocus
-                      className="input-base-editor text-xs w-40 px-2 py-1"
-                      placeholder="Valor a buscar"
-                    />
-                    <input
-                      ref={inputRefTextNew}
-                      type="text"
-                      className="input-base-editor text-xs w-40 px-2 py-1"
-                      placeholder="Valor a Reemplazar"
-                    />
-                  </div>
-                  <div className="flex h-6 gap-2">
-                    <button
-                      className="bg-gradient-to-r flex-1 from-green-400 to-green-500 p-1  text-xs truncate text-white"
-                      onClick={handleCLickReplaceTextFirst}
-                    >
-                      Reemplazar primero
-                    </button>
-                    <button
-                      className="bg-gradient-to-r flex-1 from-sky-400 to-sky-700 p-1 rounded-md text-xs truncate text-white"
-                      onClick={handleCLickReplaceText}
-                    >
-                      Reemplazar todo
-                    </button>
-                  </div>
-                </motion.div>
-              )}
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        <div
-          className={`relative flex text-xs overflow-hidden bg-gray-100/50 dark:bg-zinc-900/50 ring-none backdrop-blur-3xl border dark:border-zinc-800 border-gray-200 ${classNameContainer}`}
-        >
-          {/* Line Numbers */}
-          <div
-            ref={lineNumbersRef}
-            className="px-3 py-2 text-sm overflow-hidd bg-gray-200/50 border-r-zinc-200 dark:bg-zinc-950/70 dark:border-zinc-800 text-sky-600 dark:text-teal-200"
-            style={{ height, minHeight, maxHeight }}
+    <main className="flex flex-col h-full relative">
+      <AnimatePresence mode="wait">
+        {isOpenFindBar && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="absolute top-2 right-2 z-[778] p-2 bg-gray-100 dark:bg-zinc-950/90 rounded-md shadow-xl border border-gray-200 dark:border-zinc-800 flex flex-col gap-2 backdrop-blur-3xl"
           >
-            {lineNumberElements}
-          </div>
-
-          {/* Editor Container */}
-          <div className="flex-1 relative">
-            <LazyListItem>
-              <div
-                ref={highlightRef}
-                className="absolute inset-0 p-2 text-sm font-mono leading-6 pointer-events-none overflow-hidden whitespace-pre-wrap break-words text-gray-800 dark:text-[#d4d4d4]"
-                dangerouslySetInnerHTML={{
-                  __html: highlightCode(
-                    code,
-                    language,
-                    findResults,
-                    searchValue,
-                    currentMatchIndex,
-                  ),
-                }}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setIsOpenBar((prev) => !prev)}
+                className="p-1 rounded-md transition-colors duration-200 hover:bg-gray-300 dark:hover:bg-zinc-700 disabled:opacity-50 text-gray-800 dark:text-zinc-300"
+              >
+                <Icon
+                  icon={`tabler:chevron-${isOpenBar ? 'down' : 'up'}`}
+                  width={16}
+                />
+              </button>
+              <input
+                ref={searchInputRef}
+                type="text"
+                className="input-base-editor text-xs w-40 px-2 py-1 rounded-md transition-colors duration-200 focus:ring-2 focus:ring-blue-500"
+                placeholder="Buscar..."
+                onChange={(e) => setSearchValue(e.target.value)}
               />
-            </LazyListItem>
+              <span className="text-xs text-gray-500 dark:text-zinc-400">
+                {findResults.length > 0 ? `${currentMatchIndex + 1}` : 0} de{' '}
+                {findResults.length}
+              </span>
+              <button
+                onClick={handlePrevMatch}
+                disabled={findResults.length === 0}
+                className="p-1 rounded-md transition-colors duration-200 hover:bg-gray-300 dark:hover:bg-zinc-700 disabled:opacity-50 text-gray-800 dark:text-zinc-300"
+              >
+                <Icon icon="tabler:chevron-up" width={16} />
+              </button>
+              <button
+                onClick={handleNextMatch}
+                disabled={findResults.length === 0}
+                className="p-1 rounded-md transition-colors duration-200 hover:bg-gray-300 dark:hover:bg-zinc-700 disabled:opacity-50 text-gray-800 dark:text-zinc-300"
+              >
+                <Icon icon="tabler:chevron-down" width={16} />
+              </button>
+              <button
+                onClick={() => setIsOpenFindBar(false)}
+                className="p-1 rounded-md transition-colors duration-200 hover:bg-gray-300 dark:hover:bg-zinc-700 text-gray-800 dark:text-zinc-300"
+              >
+                <Icon icon="tabler:x" width={16} />
+              </button>
+            </div>
 
-            <LazyListItem>
-              <textarea
-                autoFocus
-                ref={textareaRef}
-                value={code}
-                onChange={handleChange}
-                onScroll={handleScroll}
-                onKeyDown={handleKeyDown}
-                className="absolute inset-0 transition-colors p-2 text-sm font-mono leading-6 resize-none outline-none bg-transparent placeholder-lime-600 bg-amber-500 dark:placeholder-lime-200"
-                style={{
-                  color: 'transparent',
-                  caretColor: 'var(--caret-color, gray)',
-                }}
-                spellCheck={false}
-                placeholder={placeholder}
-              />
-            </LazyListItem>
-          </div>
+            {isOpenBar && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="flex flex-col gap-2"
+              >
+                <input
+                  ref={inputRefTextOld}
+                  type="text"
+                  autoFocus
+                  className="input-base-editor text-xs w-full px-2 py-1 rounded-md transition-colors duration-200 focus:ring-2 focus:ring-blue-500"
+                  placeholder="Valor a buscar"
+                />
+                <input
+                  ref={inputRefTextNew}
+                  type="text"
+                  className="input-base-editor text-xs w-full px-2 py-1 rounded-md transition-colors duration-200 focus:ring-2 focus:ring-blue-500"
+                  placeholder="Valor a Reemplazar"
+                />
+                <div className="flex gap-2">
+                  <button
+                    className="flex-1 p-2 rounded-md text-xs truncate text-white bg-blue-500 hover:bg-blue-600 transition-colors duration-200"
+                    onClick={handleCLickReplaceTextFirst}
+                  >
+                    Reemplazar
+                  </button>
+                  <button
+                    className="flex-1 p-2 rounded-md text-xs truncate text-white bg-green-500 hover:bg-green-600 transition-colors duration-200"
+                    onClick={handleCLickReplaceText}
+                  >
+                    Reemplazar Todo
+                  </button>
+                </div>
+              </motion.div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div
+        className={`relative flex flex-grow text-xs ring-none backdrop-blur-3xl border border-gray-200 dark:border-zinc-800 rounded-md ${classNameContainer}`}
+      >
+        {/* Line Numbers */}
+        <div
+          ref={lineNumbersRef}
+          className="px-3 py-2 text-sm overflow-y-auto bg-gray-200/50 border-r border-r-zinc-200 dark:bg-zinc-950/70 dark:border-zinc-800 text-sky-600 dark:text-teal-200"
+          style={{ height, minHeight, maxHeight }}
+        >
+          {lineNumberElements}
         </div>
 
-        {/* Footer */}
-        <div className="relative flex justify-between items-center text-[8px] text-gray-500 dark:text-zinc-400 bg-gray-200/70 dark:bg-zinc-950/50 border-t border-gray-300 dark:border-zinc-800 px-2 py-1.5 shadow-sm">
-          <div className="flex items-center gap-1">
-            <button
-              className="button-code-tools"
-              onClick={HandlersIdentarBody}
-            >
-              <Icon icon="tabler:braces" width={14} />
-              <span className="hidden sm:inline">Prettify</span>
-            </button>
+        {/* Editor Container */}
+        <div className="flex-1 relative">
+          <LazyListItem>
+            <div
+              ref={highlightRef}
+              className="absolute inset-0 p-2 text-sm font-mono leading-6 pointer-events-none overflow-y-auto whitespace-pre-wrap break-words text-gray-800 dark:text-[#d4d4d4]"
+              dangerouslySetInnerHTML={{
+                __html: highlightCode(
+                  code,
+                  language,
+                  findResults,
+                  searchValue,
+                  currentMatchIndex,
+                ),
+              }}
+            />
+          </LazyListItem>
 
-            <button
-              className="button-code-tools"
-              onClick={HandlersMinifyBody}
-            >
-              <Icon icon={bolt} width={14} />
-              <span className="hidden sm:inline">Minify</span>
-            </button>
-
-            <button
-              className="button-code-tools"
-              onClick={() => setIsOpenBar(!isOpenBar)}
-            >
-              <Icon icon="tabler:replace" width={14} />
-              <span className="hidden sm:inline">Reemplazar</span>
-            </button>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <button
-              className="button-code-tools"
-              onClick={() => setIsOpenFindBar(!isOpenFindBar)}
-              aria-label="Buscar"
-            >
-              <Icon icon="tabler:search" width={14} />
-            </button>
-            <span className="text-green-500 dark:text-green-400">
-              {(() => {
-                try {
-                  JSON.parse(value);
-                  return <Icon icon="tabler:check" width={15} height={15} />;
-                } catch {
-                  return (
-                    <Icon icon="tabler:x" width={13} height={13} color="red" />
-                  );
-                }
-              })()}
-            </span>
-
-            <span className="hidden sm:inline">
-              {language.toUpperCase()} | {code.length} caracteres | {lineCount}{' '}
-              líneas
-            </span>
-          </div>
+          <LazyListItem>
+            <textarea
+              autoFocus
+              ref={textareaRef}
+              value={code}
+              onChange={handleChange}
+              onScroll={handleScroll}
+              onKeyDown={handleKeyDown}
+              className="absolute inset-0 transition-colors p-2 text-sm font-mono leading-6 resize-none outline-none bg-transparent overflow-y-auto"
+              style={{
+                color: 'transparent',
+                caretColor: 'var(--caret-color, gray)',
+              }}
+              spellCheck={false}
+              placeholder={placeholder}
+            />
+          </LazyListItem>
         </div>
-      </main>
-    </>
+      </div>
+
+      {/* Footer */}
+      <div className="flex justify-between items-center text-[8px] text-gray-500 dark:text-zinc-400 bg-gray-200/70 dark:bg-zinc-950/50 border-t border-gray-300 dark:border-zinc-800 px-2 py-1.5 shadow-sm mt-auto">
+        <div className="flex items-center gap-1">
+          <button
+            className="flex items-center gap-1 px-2 py-1 rounded-md transition-colors duration-200 hover:bg-gray-300 dark:hover:bg-zinc-700"
+            onClick={HandlersIdentarBody}
+          >
+            <Icon icon="tabler:braces" width={14} />
+            <span className="hidden sm:inline">Prettify</span>
+          </button>
+
+          <button
+            className="flex items-center gap-1 px-2 py-1 rounded-md transition-colors duration-200 hover:bg-gray-300 dark:hover:bg-zinc-700"
+            onClick={HandlersMinifyBody}
+          >
+            <Icon icon={bolt} width={14} />
+            <span className="hidden sm:inline">Minify</span>
+          </button>
+
+          <button
+            className="flex items-center gap-1 px-2 py-1 rounded-md transition-colors duration-200 hover:bg-gray-300 dark:hover:bg-zinc-700"
+            onClick={() => setIsOpenBar(!isOpenBar)}
+          >
+            <Icon icon="tabler:replace" width={14} />
+            <span className="hidden sm:inline">Reemplazar</span>
+          </button>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <button
+            className="flex items-center gap-1 px-2 py-1 rounded-md transition-colors duration-200 hover:bg-gray-300 dark:hover:bg-zinc-700"
+            onClick={() => setIsOpenFindBar(!isOpenFindBar)}
+            aria-label="Buscar"
+          >
+            <Icon icon="tabler:search" width={14} />
+            <span className="hidden sm:inline">Buscar</span>
+          </button>
+          <span className="text-green-500 dark:text-green-400">
+            {(() => {
+              try {
+                JSON.parse(value);
+                return <Icon icon="tabler:check" width={15} height={15} />;
+              } catch {
+                return (
+                  <Icon icon="tabler:x" width={13} height={13} color="red" />
+                );
+              }
+            })()}
+          </span>
+
+          <span className="hidden sm:inline">
+            {language.toUpperCase()} | {code.length} caracteres | {lineCount}{' '}
+            líneas
+          </span>
+        </div>
+      </div>
+    </main>
   );
 };
 

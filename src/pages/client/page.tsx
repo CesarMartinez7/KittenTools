@@ -235,11 +235,17 @@ const ContentPanel = ({
               ))}
             </div>
             <div className="flex-1 overflow-auto">
-              <CodeEditorLazy
-                value={bodyJson}
-                language={contentType}
-                height="100%"
-              />
+            
+
+<CodeEditorLazy
+            value={bodyJson}
+            // onChange={handleChange}
+            language={contentType}
+            // Importante: le decimos al editor que se adapte al 100% de la altura de su contenedor padre
+            height="100%" 
+            minHeight="100%"
+          />
+              
             </div>
           </motion.div>
         );
@@ -501,95 +507,112 @@ export default function AppClient() {
   };
 
   return (
-    <div className="min-h-screen flex text-white overflow-hidden">
-      <SideBar
-        onLoadRequest={onLoadRequest}
-        currentUrl={endpointUrl}
-        currentBody={bodyJson}
-        currentMethod={selectedMethod}
-        isOpen={isOpenSiderBar}
-        onClose={() => setIsOpenSiderbar(false)}
-      />
+   <div className="min-h-screen flex text-white overflow-hidden">
+  {/* SideBar en escritorio y modal en móvil */}
+  <SideBar
+    onLoadRequest={onLoadRequest}
+    currentUrl={endpointUrl}
+    currentBody={bodyJson}
+    currentMethod={selectedMethod}
+    isOpen={isOpenSiderBar}
+    onClose={() => setIsOpenSiderbar(false)}
+  />
 
-      <div className="w-full flex flex-col">
-        <Header
-          isFullScreen={isFullScreen}
-          nombreEntorno={nombreEntorno}
-          toogleFullScreen={toogleFullScreen}
-        />
-        <div className="flex border-b border-zinc-300 dark:border-zinc-700 overflow-x-auto shrink-0 bg-gray-100 dark:bg-zinc-900 max-w-[78vw]">
-          {listTabs.length > 0 &&
-            listTabs.map((e, idx) => {
-              const isActive = idx === activeTab; // estado de tab activo
-              return (
-                <div
-                  key={idx}
-                  onClick={() => {
-                    handleLoadRequestTabs(e);
-                    setActiveTab(idx);
-                  }}
-                  className={`px-5 group hover:bg-gray-100 dark:hover:bg-zinc-800 relative py-2 cursor-pointer text-sm font-medium whitespace-nowrap transition-colors duration-200
-            ${
-              isActive
-                ? "text-blue-600 dark:text-blue-400 border-b-2 border-blue-500 bg-white dark:bg-zinc-800"
-                : "text-zinc-600 dark:text-zinc-300 border-b-2 border-transparent hover:text-zinc-900 dark:hover:text-white hover:border-blue-500"
-            }`}
-                >
-                  {e?.name}
-                  <div className="group-hover:flex group-hover:text-red-500 hidden absolute top-2 right-2">
-                  <button className="tabler--x" aria-label="Eliminar button"  title={`Eliminar ${e?.name} `}  onClick={() => removeTab(idx) } ></button>
-                  </div>
-                </div>
-              );
-            })}
-        </div>
+  {/* Contenido principal, ocupa el ancho completo */}
+  <div className="w-full flex flex-col">
+    <Header
+      isFullScreen={isFullScreen}
+      nombreEntorno={nombreEntorno}
+      toogleFullScreen={toogleFullScreen}
+    />
 
-        <RequestForm
-          refForm={refForm}
-          onSubmit={handleRequest}
-          selectedMethod={selectedMethod}
-          handleClickShowMethod={handleClickShowMethod}
-          showMethods={showMethods}
-          setSelectedMethod={setSelectedMethod}
-          setShowMethods={setShowMethods}
-          entornoActual={entornoActual}
-          endpointUrl={endpointUrl}
-          handlerChangeInputRequest={handlerChangeInputRequest}
-          isLoading={isLoading}
-        />
-
-        <TabNavigation
-          Opciones={Opciones}
-          selectedIdx={selectedIdx}
-          setMimeSelected={setMimeSelected}
-        />
-
-        <PanelGroup direction="horizontal">
-          <Panel defaultSize={50} minSize={20} className="h-full">
-            <ContentPanel
-              selectedIdx={selectedIdx}
-              bodyJson={bodyJson}
-              contentType={contentType}
-              setContentType={setContentType}
-              params2={params2}
-              setParams2={setParams2}
-              scriptsValues={scriptsValues}
-              setScriptsValues={setScriptsValues}
-            />
-          </Panel>
-
-          <PanelResizeHandle className="w-1 bg-gray-300 dark:bg-zinc-700 cursor-col-resize" />
-
-          <Panel defaultSize={50} minSize={20} className="h-full">
-            <ResponsePanel
-              response={response}
-              isLoading={isLoading}
-              headersResponse={headersResponse}
-              statusCode={statusCode}
-            />
-          </Panel>
-        </PanelGroup>
-      </div>
+    {/* Panel de pestañas: desplazable en móvil, se adapta en escritorio */}
+    <div className="flex border-b border-zinc-300 dark:border-zinc-700 overflow-x-auto bg-gray-100 dark:bg-zinc-900">
+      {listTabs.length > 0 &&
+        listTabs.map((e, idx) => {
+          const isActive = idx === activeTab;
+          return (
+            <motion.div
+              key={idx}
+              initial={{ y: 0 }}
+              animate={{ y: isActive ? -2 : 0 }}
+              transition={{ duration: 0.1 }}
+              onClick={() => {
+                handleLoadRequestTabs(e);
+                setActiveTab(idx);
+              }}
+              className={`px-5 group relative py-2 cursor-pointer text-sm font-medium whitespace-nowrap transition-colors duration-200 flex-shrink-0
+                ${
+                  isActive
+                    ? "text-blue-600 dark:text-blue-400 border-b-2 border-blue-500 bg-white dark:bg-zinc-800"
+                    : "text-zinc-600 dark:text-zinc-300 border-b-2 border-transparent hover:text-zinc-900 dark:hover:text-white hover:border-blue-500"
+                }`}
+            >
+              {e?.name}
+              <div className="group-hover:flex group-hover:text-red-500 hidden absolute top-2 right-2">
+                <button
+                  className="tabler--x"
+                  aria-label="Eliminar button"
+                  title={`Eliminar ${e?.name}`}
+                  onClick={() => removeTab(idx)}
+                ></button>
+              </div>
+            </motion.div>
+          );
+        })}
     </div>
+
+    {/* Formulario de solicitud (RequestForm) */}
+    <RequestForm
+      refForm={refForm}
+      onSubmit={handleRequest}
+      selectedMethod={selectedMethod}
+      handleClickShowMethod={handleClickShowMethod}
+      showMethods={showMethods}
+      setSelectedMethod={setSelectedMethod}
+      setShowMethods={setShowMethods}
+      entornoActual={entornoActual}
+      endpointUrl={endpointUrl}
+      handlerChangeInputRequest={handlerChangeInputRequest}
+      isLoading={isLoading}
+    />
+
+    {/* Panel de navegación (TabNavigation) */}
+    <TabNavigation
+      Opciones={Opciones}
+      selectedIdx={selectedIdx}
+      setMimeSelected={setMimeSelected}
+    />
+
+    {/* Panel principal de contenido y respuesta */}
+    <PanelGroup direction="horizontal" className="flex-grow">
+      {/* Panel de contenido */}
+      <Panel defaultSize={50} minSize={20} className="h-full">
+        <ContentPanel
+          selectedIdx={selectedIdx}
+          bodyJson={bodyJson}
+          contentType={contentType}
+          setContentType={setContentType}
+          params2={params2}
+          setParams2={setParams2}
+          scriptsValues={scriptsValues}
+          setScriptsValues={setScriptsValues}
+        />
+      </Panel>
+
+      <PanelResizeHandle className="w-1 bg-gray-300 dark:bg-zinc-700 cursor-col-resize" />
+
+      {/* Panel de respuesta */}
+      <Panel defaultSize={50} minSize={20} className="h-full">
+        <ResponsePanel
+          response={response}
+          isLoading={isLoading}
+          headersResponse={headersResponse}
+          statusCode={statusCode}
+        />
+      </Panel>
+    </PanelGroup>
+  </div>
+</div>
   );
 }
