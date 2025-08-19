@@ -21,7 +21,6 @@ import { type RequestData, useRequestStore } from './stores/request.store';
 import MethodFormater from './components/method-formatter/method-formatter';
 
 
-// --- Subcomponente: Header (Botón de pantalla completa) ---
 const Header = ({
   isFullScreen,
   toogleFullScreen,
@@ -47,7 +46,7 @@ const Header = ({
 
       <button
         onClick={toogleFullScreen}
-        className="flex items-center gap-2 px-3 py-1 text-xs rounded-md  text-zinc-600 dark:text-zinc-200 font-medium shadow-sm hover:bg-gray-300 dark:bg-zinc-800 bg-gray-200 dark:hover:bg-blue-500 transition-colors"
+        className="flex items-center gap-2 px-3 py-1 text-xs rounded-md  text-zinc-600 dark:text-zinc-200 font-medium shadow-sm hover:bg-gray-300 dark:bg-zinc-800 bg-gray-200 dark:hover:bg-blue-500 transition-colors"
       >
         <Icon
           icon={isFullScreen ? arrowsMinimize : arrowsMaximize}
@@ -147,7 +146,6 @@ const ContentPanel = ({
                   </p>
                 </div>
               ) : (
-                // <textarea className="w-full border border-zinc-700 h-full" onChange={onCodeChange}></textarea>
                 <CodeEditorLazy
                   value={bodyRequest}
                   maxHeight="85vh"
@@ -253,14 +251,23 @@ const TabDisplay = ({ currentTab }) => {
 
 // --- Componente Principal (Main App) ---
 export default function AppClient() {
-
-  const loadTabs = useRequestStore((state) => state.loadTabs)
+  // Correcta y única declaración de la tienda
+  const {
+    listTabs,
+    currentTabId,
+    removeTab,
+    setCurrentTab,
+    updateTab,
+    loadTabs,
+    loadCollections,
+    collections, // <-- Aquí está el estado de las colecciones
+  } = useRequestStore();
 
   useEffect(() => {
-    alert("cargando datos")
-    loadTabs()
-    console.log(loadTabs())
-  }, [loadTabs])
+    // Estas acciones asíncronas cargan los datos de Dexie en tu store de Zustand.
+    loadTabs();
+    loadCollections();
+  }, [loadTabs, loadCollections]);
 
   const { value, setter } = ClientCustomHook();
   const listEntornos = useEnviromentStore((state) => state.listEntorno);
@@ -295,9 +302,6 @@ export default function AppClient() {
   );
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [typeResponse, setTypeResponse] = useState<string | null>(null);
-
-  const { listTabs, currentTabId, removeTab, setCurrentTab, updateTab } =
-    useRequestStore();
 
   const currentTab = listTabs.find((tab) => tab.id === currentTabId);
 
@@ -433,6 +437,7 @@ export default function AppClient() {
         currentMethod={currentTab?.method}
         isOpen={isOpenSiderBar}
         onClose={() => setIsOpenSiderbar(false)}
+        collections={collections} // <-- Pasamos el estado de las colecciones
       />
 
       {/* Contenido principal, ocupa el ancho completo */}
@@ -444,7 +449,6 @@ export default function AppClient() {
         /> */}
 
         {/* Panel de pestañas: desplazable en móvil, se adapta en escritorio */}
-
         <div className="flex bg-zinc-900 relative border-zinc-700 border-b ">
           <AnimatePresence>
             {listTabs.length > 0 &&

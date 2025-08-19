@@ -1,20 +1,45 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
+import { nanoid } from 'nanoid';
 import ToolTipButton from '../../../../ui/tooltip/TooltipButton';
-import type { Item, SavedRequestsSidebarProps } from '../../types/types';
 import { useEnviromentStore } from '../enviroment/store.enviroment';
 import ItemNode, { ResizableSidebar } from '../itemnode/item-node';
-import SidebarHook from './hooks/sidebar-hook';
+// Importamos el store de Zustand y sus acciones
+import { useRequestStore } from '../../stores/request.store';
+import type { SavedRequestsSidebarProps } from '../../types/types';
+import { Collection, CollectionItem } from '../../db';
+
+// Helper function to find a specific item by its ID within a nested structure
+function findAndUpdate(
+  items: CollectionItem[],
+  targetId: string,
+  updateFn: (item: CollectionItem) => CollectionItem,
+): CollectionItem[] {
+  return items.map((item) => {
+    if (item.id === targetId) {
+      return updateFn(item);
+    }
+    if (item.item) {
+      return {
+        ...item,
+        item: findAndUpdate(item.item, targetId, updateFn),
+      };
+    }
+    return item;
+  });
+}
 
 export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
+  // Consumimos las colecciones y las acciones de la store
   const {
-    parsed,
-    handleClickCargueCollecion,
-    setParsed,
-    listColeccion,
-    handleExportarCollecion,
-  } = SidebarHook();
-
+    collections,
+    addCollection,
+    updateCollection,
+    removeCollection,
+    importCollections,
+    exportCollections,
+  } = useRequestStore();
+  
   const enviromentList = useEnviromentStore((state) => state.listEntorno);
   const setNameEntornoActual = useEnviromentStore(
     (state) => state.setNameEntornoActual,
@@ -25,50 +50,48 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
 
   const [currenIdx, setCurrentIdx] = useState<number>(1);
 
-  // Funciones para manejar la lógica de actualización y eliminación de la colección.
-  // Estas funciones deben estar definidas aquí para ser pasadas a ItemNode.
-  const handleActualizarNombre = (oldName: string, newName: string) => {
-    if (!parsed) return;
-    setParsed((prev) => {
-      if (!prev) return prev;
-      const updateItems = (items: Item[]): Item[] => {
-        return items.map((item) => {
-          if (item.name === oldName) {
-            return { ...item, name: newName };
-          }
-          if (item.item) {
-            return {
-              ...item,
-              item: updateItems(item.item),
-            };
-          }
-          return item;
-        });
-      };
-      return { ...prev, item: updateItems(prev.item) };
-    });
-  };
+  // Lógica para manejar la actualización y eliminación de la colección
+  // Ahora usan las acciones de la store para persistencia.
+  
+  const handleUpdateItem = (collectionId: string, itemId: string, changes: Partial<CollectionItem>) => {
+    const collectionToUpdate = collections.find(col => col.id === collectionId);
+    if (!collectionToUpdate) return;
+    
+    const newItems = findAndUpdate(
+      collectionToUpdate.item, 
+      itemId, 
+      (item) => ({ ...item, ...changes })
+    );
 
-  const handleEliminar = (name: string) => {
-    if (!parsed) return;
-    setParsed((prev) => {
-      if (!prev) return prev;
-      const filterItems = (items: Item[]): Item[] => {
-        return items
-          .filter((item) => item.name !== name)
-          .map((item) => {
-            if (item.item) {
-              return {
-                ...item,
-                item: filterItems(item.item),
-              };
-            }
-            return item;
-          });
-      };
-      return { ...prev, item: filterItems(prev.item) };
-    });
+    updateCollection(collectionId, { item: newItems });
   };
+  
+  const handleRemoveItem = (collectionId: string, itemId: string) => {
+    const collectionToUpdate = collections.find(col => col.id === collectionId);
+    if (!collectionToUpdate) return;
+    
+    // Función recursiva para eliminar el ítem
+    const filterAndRemove = (items: CollectionItem[], targetId: string): CollectionItem[] => {
+        return items.filter(item => item.id !== targetId)
+                    .map(item => ({ 
+                        ...item, 
+                        item: item.item ? filterAndRemove(item.item, targetId) : item.item 
+                    }));
+    };
+
+    const newItems = filterAndRemove(collectionToUpdate.item, itemId);
+    updateCollection(collectionId, { item: newItems });
+  };
+  
+  const handleAddCollection = () => {
+    const newCollection: Collection = {
+      id: nanoid(),
+      name: 'Nueva Colección',
+      item: [],
+    };
+    addCollection(newCollection);
+  };
+  
 
   return (
     <ResizableSidebar minWidth={100} maxWidth={800} initialWidth={470}>
@@ -87,12 +110,12 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
               <ToolTipButton
                 ariaText="Importar"
                 tooltipText="Importar coleccion"
-                onClick={handleClickCargueCollecion}
+                onClick={importCollections}
               />
               <ToolTipButton
                 ariaText="Exportar"
-                tooltipText="Exportar coleccion "
-                onClick={handleExportarCollecion}
+                tooltipText="Exportar coleccion"
+                onClick={exportCollections}
               />
             </div>
             {/* Header */}
@@ -112,14 +135,14 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
                 className={`p-2 cursor-pointer transition-colors flex-2 ${
                   currenIdx === 1
                     ? 'bg-green-500/10 dark:hover:bg-zinc-950 dark:text-green-primary dark:bg-green-primary '
-                    : '  dark:hover:bg-green-primary/30 text-gray-600 dark:text-zinc-300'
+                    : ' dark:hover:bg-green-primary/30 text-gray-600 dark:text-zinc-300'
                 }`}
                 onClick={() => setCurrentIdx(1)}
               >
                 <div className="flex items-center gap-2 text-xs">
                   <span className="tabler--server"></span>
                   <span className="text-xs">
-                    Colecciones ({listColeccion.length})
+                    Colecciones ({collections.length})
                   </span>
                 </div>
               </div>
@@ -159,7 +182,6 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
                         </span>
                       </div>
                     )}
-
                     {enviromentList.map((env, index) => (
                       <div
                         key={`env-${index}`}
@@ -179,10 +201,17 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
                     ))}
                   </div>
                 )}
-
                 {currenIdx === 1 && (
                   <div className="overflow-y-auto flex-1 pr-2 custom-scrollbar">
-                    {listColeccion.length === 0 && (
+                    <div className="flex justify-end mb-4">
+                      <button
+                        onClick={handleAddCollection}
+                        className="p-2 text-xs rounded-md font-semibold bg-green-500/10 text-green-primary hover:bg-green-500/20"
+                      >
+                        + Nueva Colección
+                      </button>
+                    </div>
+                    {collections.length === 0 && (
                       <div className="flex flex-col items-center justify-center h-full w-full text-center space-y-2">
                         <span className="tabler--bolt-off text-zinc-600"></span>
                         <p className="text-base text-gray-500 dark:text-zinc-400 font-medium">
@@ -193,23 +222,18 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
                         </span>
                       </div>
                     )}
-
-                    {listColeccion.map((e, index) => (
+                    {collections.map((collection) => (
                       <div
-                        key={`col-${index}`}
-                        className="
-                          p-1.5 rounded-md border shadow-xl transition-colors cursor-pointer
-                          bg-gray-50 border-gray-200 text-gray-800
-                          dark:bg-zinc-800/60 dark:border-zinc-800 dark:text-zinc-200
-                        "
+                        key={collection.id}
+                        className="p-1.5 rounded-md border shadow-xl transition-colors cursor-pointer bg-gray-50 border-gray-200 text-gray-800 dark:bg-zinc-800/60 dark:border-zinc-800 dark:text-zinc-200"
                       >
                         <ItemNode
-                          nameItem={e.name}
-                          eliminar={handleEliminar}
-                          actualizarNombre={handleActualizarNombre}
+                          data={collection}
                           level={0}
-                          data={e.item}
-                          setData={setParsed}
+                          // Pasamos las funciones de actualización al ItemNode para que este se comunique con la store
+                          onUpdate={handleUpdateItem}
+                          onRemove={handleRemoveItem}
+                          collectionId={collection.id}
                         />
                       </div>
                     ))}
