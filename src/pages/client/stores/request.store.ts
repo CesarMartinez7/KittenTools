@@ -46,6 +46,88 @@ export const useRequestStore = create<RequestState>((set, get) => ({
   currentTabId: null,
   collections: [],
 
+  // --- Acciones de pestañas (reincorporadas) ---
+  addFromNode: (nodeData) => {
+    const collectionId = nodeData.collectionId;
+    const newTab: RequestData = {
+      id: nanoid(),
+      name: nodeData.name || 'Nueva Request',
+      method: nodeData.request?.method || 'GET',
+      url: nodeData.request?.url?.raw || '',
+      headers: (nodeData.request?.header || []).reduce(
+        (acc: Record<string, string>, h: any) => {
+          acc[h.key] = h.value;
+          return acc;
+        },
+        {},
+      ),
+      body: nodeData.request?.body?.raw || {},
+      query: (nodeData.request?.url?.query || []).reduce(
+        (acc: Record<string, string>, q: any) => {
+          acc[q.key] = q.value;
+          return acc;
+        },
+        {},
+      ),
+    };
+    
+    set((state) => {
+        const newTabs = [...state.listTabs, newTab];
+        return {
+            listTabs: newTabs,
+            currentTabId: newTab.id,
+        };
+    });
+
+    const state = get();
+    const collectionToUpdate = state.collections.find(col => col.id === collectionId);
+    if (collectionToUpdate) {
+        const updatedItem = [...(collectionToUpdate.item || []), {
+            id: newTab.id,
+            name: newTab.name,
+            request: newTab,
+        }];
+        db.collections.update(collectionId, { item: updatedItem });
+        set({
+            collections: state.collections.map(col =>
+                col.id === collectionId ? { ...col, item: updatedItem } : col
+            )
+        });
+    }
+  },
+
+  removeTab: (id) => {
+    db.tabs.delete(id);
+    set((state) => {
+      const remainingTabs = state.listTabs.filter((t) => t.id !== id);
+      const newCurrentTabId = state.currentTabId === id ? remainingTabs[0]?.id || null : state.currentTabId;
+      return {
+        listTabs: remainingTabs,
+        currentTabId: newCurrentTabId,
+      };
+    });
+  },
+
+  setCurrentTab: (id) => set({ currentTabId: id }),
+
+  updateTab: (id, changes) => {
+    db.tabs.update(id, changes);
+    set((state) => ({
+      listTabs: state.listTabs.map((tab) =>
+        tab.id === id ? { ...tab, ...changes } : tab,
+      ),
+    }));
+  },
+
+  setResponse: (id, response) => {
+    db.tabs.update(id, { response });
+    set((state) => ({
+      listTabs: state.listTabs.map((tab) =>
+        tab.id === id ? { ...tab, response } : tab,
+      ),
+    }));
+  },
+
   loadTabs: async () => {
     try {
       const tabs = await db.tabs.toArray();
@@ -55,6 +137,7 @@ export const useRequestStore = create<RequestState>((set, get) => ({
     }
   },
 
+  // --- Acciones de colecciones (correctas) ---
   loadCollections: async () => {
     try {
       const collections = await db.collections.toArray();
@@ -105,7 +188,6 @@ export const useRequestStore = create<RequestState>((set, get) => ({
     }
   },
 
-  // --- Lógica de importación corregida ---
   importCollections: async () => {
     try {
       const input = document.createElement('input');
@@ -113,7 +195,6 @@ export const useRequestStore = create<RequestState>((set, get) => ({
       input.accept = '.json, .txt';
       input.style.display = 'none';
 
-      // Esperar a que el usuario seleccione un archivo
       const file = await new Promise<File | null>((resolve) => {
         input.onchange = () => {
           resolve(input.files?.[0] || null);
@@ -138,7 +219,6 @@ export const useRequestStore = create<RequestState>((set, get) => ({
         return;
       }
 
-      // Validación más estricta para asegurar que la estructura es la esperada
       if (!parsedData || !parsedData.info || !parsedData.info.name || !Array.isArray(parsedData.item)) {
         toast.error('La estructura del archivo no coincide con una colección válida');
         return;
