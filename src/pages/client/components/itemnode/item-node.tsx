@@ -3,9 +3,10 @@ import type React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import LazyListPerform from '../../../../ui/LazyListPerform';
-import { useStoreTabs } from '../../tabs';
 import useItemNodeLogic from './item.hook';
 import type { ItemNodeProps } from './types';
+import { useRequestStore } from '../../stores/request.store';
+import { nanoid } from 'nanoid';
 
 // Componente ResizableSidebar (sin modificaciones)
 interface ResizableSidebarProps {
@@ -119,9 +120,7 @@ const ItemNode: React.FC<ItemNodeProps> = (props) => {
     setShowBar,
   } = useItemNodeLogic(props);
 
-  const listTabs = useStoreTabs((state) => state.listTabs);
-  const removeTabs = useStoreTabs((state) => state.removeTab);
-  const addTabs = useStoreTabs((state) => state.addTabs);
+  const { addFromNode } = useRequestStore();
 
   if (!nodeData) {
     return null;
@@ -136,7 +135,30 @@ const ItemNode: React.FC<ItemNodeProps> = (props) => {
     >
       <div
         className="p-1.5 rounded-md border dark:border-zinc-800 shadow-xl flex justify-between items-center group dark:hover:bg-zinc-800 transition-colors bg-white/90 dark:bg-zinc-800/60 text-xs cursor-pointer text-zinc-200"
-        onClick={handleClick}
+        onClick={() => {
+          handleClick(); // lo que ya tienes para UI
+
+          if (!isFolder && nodeData.request) {
+            // 1. Agregar la request al request-store
+            addFromNode(nodeData);
+
+            // 2. (opcional) cargar la request al editor actual
+            try {
+              props.loadRequest?.(
+                nodeData.request.body?.raw,
+                nodeData.request.body?.options?.raw?.language,
+                nodeData.request?.url?.raw,
+                nodeData.request?.method,
+                nodeData.request?.header,
+                nodeData.request?.url?.query,
+                nodeData.event,
+                nodeData.response,
+              );
+            } catch (e) {
+              toast.error(String(e));
+            }
+          }
+        }}
       >
         <div className="flex items-center gap-2">
           {isFolder && (
@@ -227,9 +249,29 @@ const ItemNode: React.FC<ItemNodeProps> = (props) => {
                 <div
                   key={i}
                   onClick={() => {
-                    addTabs(nodeData);
-
                     try {
+                      // Se crea el objeto de request con la respuesta seleccionada
+                      const requestData = {
+                        id: nanoid(),
+                        name: `${nodeData.name} - Respuesta ${i + 1}`,
+                        method: nodeData.request.method,
+                        url: nodeData.request.url.raw,
+                        headers: (nodeData.request.header || []).reduce((acc, h) => {
+                          acc[h.key] = h.value;
+                          return acc;
+                        }, {}),
+                        body: nodeData.request.body.raw,
+                        query: (nodeData.request.url.query || []).reduce((acc, q) => {
+                          acc[q.key] = q.value;
+                          return acc;
+                        }, {}),
+                        response: resp,
+                      };
+
+                      // Se agrega la request completa al store
+                      addFromNode(requestData);
+
+                      // Se cargan los datos en el editor de la UI
                       props.loadRequest?.(
                         nodeData.request.body.raw,
                         nodeData.request.body.options?.raw?.language,

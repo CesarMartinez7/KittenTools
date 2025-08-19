@@ -94,53 +94,58 @@ export default function ResponsesTypesComponent({
 
   // Nueva función para renderizar el contenido de la respuesta
   const renderResponseContent = () => {
-    if (typeResponse.toLowerCase() === 'json') {
-      return (
-        <JsonNode
-          open={true}
-          isChange={false}
-          isInterface={false}
-          INDENT={4}
-          data={parsedData}
-        />
-      );
-    }
 
-    if (typeResponse.toLowerCase() === 'xml') {
-      try {
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(data, 'application/xml');
-        if (xmlDoc.getElementsByTagName('parsererror').length > 0) {
-          throw new Error('XML inválido');
-        }
-        return <XmlNode node={xmlDoc.documentElement} />;
-      } catch (e) {
+
+    if(typeResponse){
+      if (typeResponse.toLowerCase() === 'json') {
         return (
-          <div className="text-red-400 absolute inset-0 backdrop-blur-3xl text-center grid place-content-center gap-2 overflow-hidden rounded-xl">
-            <Icon
-              className="mx-auto text-zinc-500"
-              icon="tabler:alien"
-              width="54"
-              height="54"
-            />
-            <span className="block text-center text-zinc-400 font-medium mt-2">
-              XML inválido o no reconocido
-            </span>
-            <a
-              href="https://www.w3schools.com/xml/xml_syntax.asp"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block text-center text-zinc-300 text-xs underline mt-1 hover:text-zinc-200 transition"
-            >
-              Aprende sobre la sintaxis XML
-            </a>
-          </div>
+          <JsonNode
+            open={true}
+            isChange={false}
+            isInterface={false}
+            INDENT={4}
+            data={parsedData}
+          />
         );
       }
+  
+      if (typeResponse.toLowerCase() === 'xml') {
+        try {
+          const parser = new DOMParser();
+          const xmlDoc = parser.parseFromString(data, 'application/xml');
+          if (xmlDoc.getElementsByTagName('parsererror').length > 0) {
+            throw new Error('XML inválido');
+          }
+          return <XmlNode node={xmlDoc.documentElement} />;
+        } catch (e) {
+          return (
+            <div className="text-red-400 absolute inset-0 backdrop-blur-3xl text-center grid place-content-center gap-2 overflow-hidden rounded-xl">
+              <Icon
+                className="mx-auto text-zinc-500"
+                icon="tabler:alien"
+                width="54"
+                height="54"
+              />
+              <span className="block text-center text-zinc-400 font-medium mt-2">
+                XML inválido o no reconocido
+              </span>
+              <a
+                href="https://www.w3schools.com/xml/xml_syntax.asp"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block text-center text-zinc-300 text-xs underline mt-1 hover:text-zinc-200 transition"
+              >
+                Aprende sobre la sintaxis XML
+              </a>
+            </div>
+          );
+        }
+      }
+
     }
 
     // Fallback para otros tipos de datos (como texto plano o HTML)
-    return <CodeEditorLazy language="text" value={String(data)} />;
+    // return <CodeEditorLazy language="text" value={String(data)} />;
   };
 
   return (

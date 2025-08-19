@@ -1,6 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
-import toast from 'react-hot-toast';
 import ToolTipButton from '../../../../ui/tooltip/TooltipButton';
 import type {
   EventRequest,
@@ -142,7 +141,7 @@ export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
               <ToolTipButton
                 ariaText="Exportar"
                 tooltipText="Exportar coleccion "
-                onClick={handleClickCargueCollecion}
+                onClick={handleExportarCollecion}
               />
             </div>
             {/* Header */}
@@ -279,39 +278,31 @@ export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
   );
 }
 
-
-
 // Puedes guardar esto como `ElisaLogo.jsx` y usarlo en tu React app
 const ElisaLogo = ({ size = 40 }) => (
-  <svg 
-    width={size} 
-    height={size} 
-    viewBox="0 0 100 100"  // ViewBox más ajustado
-    fill="none" 
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 100 100" // ViewBox más ajustado
+    fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
     {/* Rayo principal - más compacto y centrado */}
-    <path 
-      d="M50 5L15 50H40L30 95L85 50H60L70 5H50Z" 
+    <path
+      d="M50 5L15 50H40L30 95L85 50H60L70 5H50Z"
       fill="url(#logoGradient)"
     />
-    
+
     {/* Efecto de brillo interno - ajustado al nuevo tamaño */}
-    <path 
-      d="M50 15L25 50H40L35 85L75 50H60L65 15H50Z" 
-      fill="white" 
+    <path
+      d="M50 15L25 50H40L35 85L75 50H60L65 15H50Z"
+      fill="white"
       opacity="0.3"
     />
-    
+
     {/* Gradiente */}
     <defs>
-      <linearGradient 
-        id="logoGradient" 
-        x1="0%" 
-        y1="0%" 
-        x2="100%" 
-        y2="100%"
-      >
+      <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stopColor="#5eead4" />
         <stop offset="100%" stopColor="#67e8f9" />
       </linearGradient>

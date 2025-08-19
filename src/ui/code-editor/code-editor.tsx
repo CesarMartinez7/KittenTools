@@ -55,7 +55,10 @@ const CodeEditor = ({
   });
 
   const lineCount = useMemo(() => {
-    return code.split('\n').length;
+    if(code.length > 0){
+      return code.split('\n').length;
+    }
+    return 0
   }, [code]);
 
   // Efectos y Lógica

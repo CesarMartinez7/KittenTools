@@ -2,23 +2,24 @@ import './App.css';
 import { Icon } from '@iconify/react';
 import arrowsMaximize from '@iconify-icons/tabler/arrows-maximize';
 import arrowsMinimize from '@iconify-icons/tabler/arrows-minimize';
-import sendIcon from '@iconify-icons/tabler/send';
+
 import { AnimatePresence, motion } from 'framer-motion';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useRef, useState, useEffect } from 'react';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import { CodeEditorLazy } from '../../ui/lazy-components';
 import AddQueryParam from './components/addqueryparams/addQueryParams';
 import EnviromentComponent from './components/enviroment/enviroment.component';
 import { useEnviromentStore } from './components/enviroment/store.enviroment';
 import { HeadersAddRequest } from './components/headers/Headers';
-import ResponsesTypesComponent from './components/responses-core/response.';
+import RequestForm from '../request.form';
 import ScriptComponent from './components/scripts/script-component';
 import { SideBar } from './components/sidebar/SideBar';
 import ClientCustomHook from './hooks/client-hook';
 import RequestHook from './hooks/request.client';
 import { Methodos, VariantsAnimation } from './mapper-ops';
-import { useStoreTabs } from './tabs';
+import ResponsePanel from './response-panel';
 import DarkModeToggle from './components/toogle-theme';
+import { useRequestStore, RequestData } from './stores/request.store';
 
 // --- Subcomponente: Header (Botón de pantalla completa) ---
 const Header = ({
@@ -29,149 +30,37 @@ const Header = ({
   isFullScreen: boolean;
   toogleFullScreen: () => void;
   nombreEntorno: string | null;
-}) => (
-  <div className="flex dark items-center text-xs gap-2 justify-end px-4 py-2 border- border-gray-200 dark:border-zinc-800   q backdrop-blur-sm">
-    {/* Botón pantalla completa */}
-
-    {/* Nombre entorno */}
-    <div
-      className={`font-medium text-zinc-800 dark:text-zinc-300 truncate max-w-[250px] px-3 py-1 rounded-full 
+}) => {
+  return (
+    <div className="flex dark items-center text-xs gap-2 justify-end px-4 py-2  border-gray-200 dark:border-zinc-800 backdrop-blur-sm py-2">
+      {/* Nombre entorno */}
+      <div
+        className={`font-medium text-zinc-800 dark:text-zinc-300 truncate max-w-[250px] px-3 py-1 rounded-full 
     ${
       nombreEntorno === null
         ? 'bg-red-200 dark:bg-red-900'
         : 'bg-green-200 dark:bg-green-700'
     }`}
-    >
-      {nombreEntorno ?? 'No hay entornos activos'}
-    </div>
-
-    <button
-      onClick={toogleFullScreen}
-      className="flex items-center gap-2 px-3 py-1 text-xs rounded-md  text-zinc-600 dark:text-zinc-200 font-medium shadow-sm hover:bg-gray-300 dark:bg-zinc-800 bg-gray-200 dark:hover:bg-blue-500 transition-colors"
-    >
-      <Icon icon={isFullScreen ? arrowsMinimize : arrowsMaximize} width={14} />
-    </button>
-
-    <DarkModeToggle/>
-  </div>
-);
-
-// --- Subcomponente: RequestForm (Formulario de URL y método) ---
-const RequestForm = ({
-  refForm,
-  onSubmit,
-  selectedMethod,
-  handleClickShowMethod,
-  showMethods,
-  setSelectedMethod,
-  setShowMethods,
-  entornoActual,
-  endpointUrl,
-  handlerChangeInputRequest,
-  isLoading,
-}) => {
-  const getMethodColor = (method) => {
-    switch (method) {
-      case 'GET':
-        return 'bg-green-800 text-green-100';
-      case 'POST':
-        return 'bg-blue-500 text-blue-100';
-      case 'PUT':
-        return 'bg-yellow-800 text-yellow-100';
-      case 'PATCH':
-        return 'bg-orange-800 text-orange-100';
-      case 'DELETE':
-        return 'bg-red-800 text-red-100';
-      default:
-        return 'bg-gray-700 text-gray-200 dark:bg-zinc-700 dark:text-zinc-200';
-    }
-  };
-
-  const formatterInputRequest = (listBusqueda, busquedaKey) => {
-    const regex = /{{(.*?)}}/g;
-    return busquedaKey.replace(regex, (match, grupo) => {
-      const existe = listBusqueda.some((item) => item.key === grupo);
-      return existe
-        ? `<span style="color: #7bb4ff;">{{${grupo}}}</span>`
-        : `<span style="color: #D2042D;">{{${grupo}}}</span>`;
-    });
-  };
-
-  return (
-    <form className="p-4 space-y-3" ref={refForm} onSubmit={onSubmit}>
-      <div className="flex flex-col md:flex-row gap-3 md:items-center">
-        <div className="relative">
-          <button
-            type="button"
-            onClick={handleClickShowMethod}
-            className={`py-1 px-4 font-semibold text-lg rounded-md ${getMethodColor(selectedMethod)}`}
-          >
-            {selectedMethod}
-          </button>
-          <AnimatePresence>
-            {showMethods && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="absolute top-full left-0 w-32 bg-white/90 text-gray-800 dark:bg-zinc-900/80 dark:text-slate-200 backdrop-blur-2xl z-50 shadow-2xl overflow-hidden rounded-md"
-              >
-                {Methodos.map((metodo, idx) => (
-                  <button
-                    type="button"
-                    key={idx}
-                    onClick={() => {
-                      setSelectedMethod(metodo.name.toUpperCase());
-                      setShowMethods(false);
-                    }}
-                    className={`w-full text-left px-4 py-2 hover:bg-gray-800 dark:hover:bg-zinc-700 transition-colors duration-200
-                      ${metodo.name.toUpperCase() === selectedMethod ? 'bg-sky-500 text-white' : ''}`}
-                  >
-                    {metodo.name}
-                  </button>
-                ))}
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-        <div className="bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 relative flex-1 p-2 rounded-md border border-gray-200 dark:border-zinc-800">
-          <div
-            className={String(endpointUrl).length === 0 ? 'p-2' : ''}
-            dangerouslySetInnerHTML={{
-              __html: formatterInputRequest(entornoActual, endpointUrl),
-            }}
-          ></div>
-          <input
-            type="text"
-            placeholder="https://api.example.com/endpoint"
-            value={endpointUrl}
-            onChange={handlerChangeInputRequest}
-            className="p-2 absolute inset-0 text-transparent transition-colors caret-gray-500 dark:caret-zinc-400 w-full outline-none"
-          />
-        </div>
-        <div className="flex divide-x divide-zinc-900 rounded-md overflow-hidden">
-          <button
-            type="submit"
-            className="px-6 py-2 bg-blue-500 text-white transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <span className="flex items-center gap-2">Enviando ...</span>
-            ) : (
-              'Enviar'
-            )}
-          </button>
-          <button
-            aria-label="options-envio"
-            className="px-2 py-2 bg-blue-500 text-white transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <span className="iconamoon--arrow-down-2"></span>
-          </button>
-        </div>
+      >
+        {nombreEntorno ?? 'No hay entornos activos'}
       </div>
-    </form>
+
+      <button
+        onClick={toogleFullScreen}
+        className="flex items-center gap-2 px-3 py-1 text-xs rounded-md  text-zinc-600 dark:text-zinc-200 font-medium shadow-sm hover:bg-gray-300 dark:bg-zinc-800 bg-gray-200 dark:hover:bg-blue-500 transition-colors"
+      >
+        <Icon
+          icon={isFullScreen ? arrowsMinimize : arrowsMaximize}
+          width={14}
+        />
+      </button>
+
+      {/* <DarkModeToggle /> */}
+    </div>
   );
 };
+
+// --- Subcomponente: RequestForm (Formulario de URL y método) ---
 
 // --- Subcomponente: TabNavigation (Pestañas de opciones) ---
 const TabNavigation = ({ Opciones, selectedIdx, setMimeSelected }) => (
@@ -203,6 +92,7 @@ const ContentPanel = ({
   setParams2,
   scriptsValues,
   setScriptsValues,
+  onCodeChange,
 }) => {
   const getContent = () => {
     switch (selectedIdx) {
@@ -236,7 +126,7 @@ const ContentPanel = ({
               <CodeEditorLazy
                 value={bodyJson}
                 maxHeight="65vh"
-                // onChange={handleChange}
+                onChange={onCodeChange}
                 language={contentType}
                 height="100%"
                 minHeight="65vh"
@@ -313,57 +203,7 @@ const ContentPanel = ({
 };
 
 // --- Subcomponente: ResponsePanel (Panel de respuesta) ---
-const ResponsePanel = ({
-  typeResponse,
-  response,
-  isLoading,
-  headersResponse,
-  statusCode,
-}) => (
-  <div className="h-full bg-white/90 dark:bg-zinc-900/80 p-4 border-gray-200 dark:border-zinc-800 flex flex-col overflow-hidden shadow-lg">
-    {response || isLoading ? (
-      <>
-        {isLoading ? (
-          <div className="flex justify-center items-center flex-col h-full">
-            <span className="svg-spinners--90-ring-with-bg block"></span>
-          </div>
-        ) : (
-          <div className="flex-1 overflow-hidden">
-            <ResponsesTypesComponent
-              typeResponse={typeResponse}
-              headersResponse={headersResponse}
-              data={response}
-              statusCode={statusCode}
-            />
-          </div>
-        )}
-      </>
-    ) : (
-      <div className="flex flex-col items-center justify-center h-full text-gray-500 dark:text-zinc-500 text-center">
-        <Icon
-          icon={sendIcon}
-          width="100"
-          height="100"
-          className="text-gray-400 dark:text-zinc-700 mb-4 animate-bounce-slow"
-        />
-        <p className="text-lg font-medium text-gray-700 dark:text-zinc-300">
-          ¡Todo listo para que hagas tu primera solicitud!
-        </p>
-        <p className="text-md text-gray-500 dark:text-zinc-400">
-          Puedes comenzar con tu primera solicitud.
-        </p>
-        <div className="my-6 flex flex-col space-y-3">
-          <div className="flex gap-2">
-            <p>Enviar solicitud</p> <kbd>Ctrl</kbd> + <kbd>Enter</kbd>
-          </div>
-          <div className="flex gap-2">
-            <p>Editar Entornos</p> <kbd>Ctrl</kbd> + <kbd>e</kbd>
-          </div>
-        </div>
-      </div>
-    )}
-  </div>
-);
+
 
 // --- Componente Principal (Main App) ---
 export default function AppClient() {
@@ -377,10 +217,6 @@ export default function AppClient() {
     isOpenSiderBar,
     selectedMethod,
     response,
-    params,
-    cabeceras,
-    errorAxios,
-    errorRequest,
     bodyJson,
     showMethods,
     endpointUrl,
@@ -402,49 +238,61 @@ export default function AppClient() {
     setHeadersResponse,
     setShowMethods,
     setIsOpenSiderbar,
-    setErrorAxios,
-    setErrorRequest,
     setSelectedMethod,
     setResponse,
     setScriptsValues,
   } = setter;
 
-  const [timeResponse, setTimeResponse] = useState(0);
   const [selectedIdx, setMimeSelected] = useState(
     Number(sessionStorage.getItem('selectedIdx')) || 0,
   );
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [typeResponse, setTypeResponse] = useState<string | null>(null);
 
-  const listTabs = useStoreTabs((e) => e.listTabs);
-  const removeTab = useStoreTabs((e) => e.removeTab);
+  // --- Integración con el nuevo store ---
+  const { listTabs, currentTabId, removeTab, setCurrentTab, updateTab } = useRequestStore();
 
   const { handleRequest } = RequestHook({
     selectedMethod,
-    params,
-    cabeceras,
+    params: value.params,
+    cabeceras: value.cabeceras,
     bodyJson,
     endpointUrl,
     contentType,
     setIsLoading,
-    setErrorAxios,
-    setErrorRequest,
+    setErrorAxios: setter.setErrorAxios,
+    setErrorRequest: setter.setErrorRequest,
     setResponse,
     headersResponse,
     setStatusCode,
-    setTimeResponse,
+    setTimeResponse: () => {}, // Ya no se usa
     setTypeResponse,
     setHeadersResponse,
   });
 
   const handlerChangeInputRequest = useCallback(
-    (e) => setEndpointUrl(e.target.value),
-    [setEndpointUrl],
+    (e) => {
+      const newUrl = e.target.value;
+      setEndpointUrl(newUrl);
+      if (currentTabId) {
+        updateTab(currentTabId, { url: newUrl });
+      }
+    },
+    [setEndpointUrl, currentTabId, updateTab],
   );
+
+  const handleCodeEditorChange = useCallback((value: string) => {
+    setBodyJson(value);
+    if (currentTabId) {
+      updateTab(currentTabId, { body: value });
+    }
+  }, [setBodyJson, currentTabId, updateTab]);
+
   const handleClickShowMethod = useCallback(
     () => setShowMethods((prev) => !prev),
     [setShowMethods],
   );
+
   const toogleFullScreen = () => {
     if (!document.fullscreenElement) {
       document.body.requestFullscreen();
@@ -485,6 +333,27 @@ export default function AppClient() {
     ],
   );
 
+  useEffect(() => {
+    if (currentTabId) {
+      const currentTab = listTabs.find(tab => tab.id === currentTabId);
+      if (currentTab) {
+        setEndpointUrl(currentTab.url);
+        setSelectedMethod(currentTab.method);
+        setBodyJson(currentTab.body);
+        setParams2(currentTab.query);
+      }
+    }
+  }, [currentTabId, listTabs, setEndpointUrl, setSelectedMethod, setBodyJson, setParams2]);
+
+  const handleTabClick = (tab: RequestData) => {
+    setCurrentTab(tab.id);
+  };
+
+  const handleRemoveTab = (e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
+    removeTab(id);
+  };
+
   const Opciones = [
     { name: 'Cuerpo de Peticion', icon: bodyJson },
     { name: 'Parametros', icon: params2 },
@@ -493,21 +362,6 @@ export default function AppClient() {
     { name: 'Scripts', icon: '' },
     { name: 'Entorno', icon: listEntornos },
   ];
-
-  const [activeTab, setActiveTab] = useState<number>(0);
-
-  const handleLoadRequestTabs = (e: any) => {
-    onLoadRequest(
-      e?.request.body.raw,
-      e?.request.body.options?.raw?.language,
-      e?.request?.url?.raw,
-      e?.request?.method,
-      e?.request.header,
-      e.request.url?.query,
-      e.event,
-      e.request.body,
-    );
-  };
 
   return (
     <div className="min-h-screen flex text-white overflow-hidden">
@@ -529,37 +383,32 @@ export default function AppClient() {
           toogleFullScreen={toogleFullScreen}
         />
 
-
-
         {/* Panel de pestañas: desplazable en móvil, se adapta en escritorio */}
-        <div className="flex border-b border-zinc-300 dark:border-zinc-700 overflow-x-auto bg-gray-100 dark:bg-zinc-900">
+        <div className="flex border-b border-zinc-300 dark:border-zinc-700  bg-gray-100 dark:bg-zinc-900 p">
           {listTabs.length > 0 &&
-            listTabs.map((e, idx) => {
-              const isActive = idx === activeTab;
+            listTabs.map((tab) => {
+              const isActive = tab.id === currentTabId;
               return (
                 <motion.div
-                  key={idx}
+                  key={tab.id}
                   initial={{ y: 0 }}
                   animate={{ y: isActive ? -2 : 0 }}
                   transition={{ duration: 0.1 }}
-                  onClick={() => {
-                    handleLoadRequestTabs(e);
-                    setActiveTab(idx);
-                  }}
-                  className={`px-5 group relative py-2 cursor-pointer text-sm font-medium whitespace-nowrap transition-colors duration-200 flex-shrink-0
-                ${
-                  isActive
-                    ? 'text-blue-600 dark:text-blue-400 border-b-2 border-blue-500 bg-white dark:bg-zinc-800'
-                    : 'text-zinc-600 dark:text-zinc-300 border-b-2 border-transparent hover:text-zinc-900 dark:hover:text-white hover:border-blue-500'
-                }`}
+                  onClick={() => handleTabClick(tab)}
+                  className={`px-5 group relative py-2 cursor-pointer  font-medium whitespace-nowrap transition-colors duration-200 flex-shrink-0
+                  ${
+                    isActive
+                      ? 'text-blue-600 dark:text-blue-400 border-b-2 border-blue-500 bg-white dark:bg-zinc-800'
+                      : 'text-zinc-600 dark:text-zinc-300 border-b-2 border-transparent hover:text-zinc-900 dark:hover:text-white hover:border-blue-500'
+                  }`}
                 >
-                  {e?.name}
+                  {tab.name}
                   <div className="group-hover:flex group-hover:text-red-500 hidden absolute top-2 right-2">
                     <button
                       className="tabler--x"
                       aria-label="Eliminar button"
-                      title={`Eliminar ${e?.name}`}
-                      onClick={() => removeTab(idx)}
+                      title={`Eliminar ${tab.name}`}
+                      onClick={(e) => handleRemoveTab(e, tab.id)}
                     ></button>
                   </div>
                 </motion.div>
@@ -602,6 +451,7 @@ export default function AppClient() {
               setParams2={setParams2}
               scriptsValues={scriptsValues}
               setScriptsValues={setScriptsValues}
+              onCodeChange={handleCodeEditorChange}
             />
           </Panel>
 

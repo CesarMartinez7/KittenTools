@@ -8,7 +8,10 @@ const highlightCode = (
   searchValue: string = '',
   currentMatchIndex: number = -1,
 ) => {
-  let highlightedCode = code;
+  // Solución: Asegúrate de que 'code' es una cadena de texto
+  const safeCode = String(code || '');
+
+  let highlightedCode = safeCode;
 
   const escapeHTML = (str: string) =>
     str
@@ -19,11 +22,11 @@ const highlightCode = (
       .replace(/'/g, '&#039;');
 
   if (language === 'text') {
-    return String(code);
+    return safeCode;
   }
 
   if (language === 'json') {
-    highlightedCode = code
+    highlightedCode = safeCode
       .replace(/"([^"\\]|\\.)*"/g, (match) => {
         if (match.endsWith('":') || match.endsWith('": ')) {
           return `<span style="color: ${colors.comment}">${match}</span>`;
@@ -39,7 +42,7 @@ const highlightCode = (
         `<span style="color: ${colors.number}">$1</span>`,
       );
   } else if (language === 'xml') {
-    highlightedCode = escapeHTML(code)
+    highlightedCode = escapeHTML(safeCode)
       .replace(
         /&lt;!--[\s\S]*?--&gt;/g,
         `<span style="color: ${colors.comment}">$&</span>`,
@@ -56,7 +59,7 @@ const highlightCode = (
   } else {
     const langKeywords = keywords[language] || keywords.javascript;
 
-    highlightedCode = code
+    highlightedCode = safeCode
       .replace(
         /(\/\/.*$|\/\*[\s\S]*?\*\/)/gm,
         `<span style="color: ${colors.comment}">$1</span>`,
@@ -100,20 +103,16 @@ const highlightCode = (
         ? 'highlight-match highlight-match-active'
         : 'highlight-match';
 
-      // Convertimos el texto original escapado para no romper HTML
-      const before = escapeHTML(code.substring(lastIndex, startIndex));
-      const match = escapeHTML(code.substring(startIndex, endIndex));
+      const before = escapeHTML(safeCode.substring(lastIndex, startIndex));
+      const match = escapeHTML(safeCode.substring(startIndex, endIndex));
 
-      // Reaplicamos el resaltado de sintaxis sobre la parte antes del match
       resultHTML += highlightPart(before, language);
-      // Insertamos el match con su clase
       resultHTML += `<span class="${matchClass}">${match}</span>`;
 
       lastIndex = endIndex;
     });
 
-    // Resto del texto
-    const after = escapeHTML(code.substring(lastIndex));
+    const after = escapeHTML(safeCode.substring(lastIndex));
     resultHTML += highlightPart(after, language);
 
     highlightedCode = resultHTML;
@@ -124,8 +123,7 @@ const highlightCode = (
 
 // Resalta un fragmento según el lenguaje
 function highlightPart(fragment: string, language: string) {
-  // Aquí podrías reutilizar parte de la lógica de arriba para aplicar solo a fragmentos.
-  // Por simplicidad lo devuelvo sin re-resaltar para que no se duplique el trabajo.
+  // Por simplicidad, se devuelve sin re-resaltar para evitar bucles.
   return fragment;
 }
 
