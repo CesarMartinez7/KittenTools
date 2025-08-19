@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import toast from 'react-hot-toast';
 import { useParamsStore } from '../components/addqueryparams/queryparams-store';
 import { useStoreHeaders } from '../stores/headers-store';
 import type { RetornoClient } from './types';
@@ -27,7 +26,7 @@ const useClientStore = (): RetornoClient => {
   const [errorRequest, setErrorRequest] = useState(false);
   const [timeResponse, setTimeResponse] = useState<number>(0);
 
-  const [bodyJson, setBodyJson] = useState('');
+  const [bodyRequest, setBodyRequest] = useState('');
   const [showMethods, setShowMethods] = useState(false);
   const [endpointUrl, setEndpointUrl] = useState(
     'https://jsonplaceholder.typicode.com/comments',
@@ -63,7 +62,7 @@ const useClientStore = (): RetornoClient => {
       response,
       errorAxios,
       errorRequest,
-      bodyJson,
+      bodyRequest,
       showMethods,
       endpointUrl,
       isLoading,
@@ -83,7 +82,7 @@ const useClientStore = (): RetornoClient => {
       setStatusCode,
       setErrorAxios,
       setErrorRequest,
-      setBodyJson,
+      setBodyRequest,
       setShowMethods,
       setEndpointUrl,
       setIsLoading,

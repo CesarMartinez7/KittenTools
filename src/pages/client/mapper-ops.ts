@@ -16,9 +16,7 @@ export const Opciones = [
   {
     name: 'Cabeceras',
   },
-  {
-    name: 'Autenticacion',
-  },
+
   {
     name: 'Scripts',
   },

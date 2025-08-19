@@ -5,6 +5,7 @@ import { Methodos } from './client/mapper-ops';
 import { useRequestStore } from './client/stores/request.store';
 import { useEnviromentStore } from './client/components/enviroment/store.enviroment';
 
+
 const RequestForm = ({
   refForm,
   onSubmit,
@@ -17,7 +18,6 @@ const RequestForm = ({
   isLoading,
 }) => {
   const { currentTabId, updateTab } = useRequestStore();
-  const enviromentList = useEnviromentStore((state) => state.listEntorno);
   const entornoActual = useEnviromentStore((state) => state.entornoActual);
 
   const getMethodColor = (method) => {
@@ -39,14 +39,16 @@ const RequestForm = ({
 
   const formatterInputRequest = useCallback((listBusqueda: any[], busquedaKey: string) => {
     const regex = /{{(.*?)}}/g;
-    // Asegurarse de que listBusqueda es un array antes de usar .some
     const safeListBusqueda = Array.isArray(listBusqueda) ? listBusqueda : [];
     
     return busquedaKey.replace(regex, (match, grupo) => {
-      const existe = safeListBusqueda.some((item) => item.key === grupo);
-      return existe
-        ? `<span style="color: #7bb4ff;">{{${grupo}}}</span>`
-        : `<span style="color: #D2042D;">{{${grupo}}}</span>`;
+      const variable = safeListBusqueda.find(
+        (item) => item.key.trim() === grupo.trim()
+      );
+      const isDefinedAndEnabled = variable && variable.enabled === true;
+      const color = isDefinedAndEnabled ? '#7bb4ff' : '#D2042D';
+      
+      return `<span style="color: ${color};">{{${grupo}}}</span>`;
     });
   }, []);
 

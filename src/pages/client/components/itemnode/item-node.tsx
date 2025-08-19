@@ -99,6 +99,19 @@ const ResizableSidebar: React.FC<ResizableSidebarProps> = ({
 };
 
 // --- Lógica del componente ItemNode ---
+import { Icon } from '@iconify/react/dist/iconify.js';
+import { AnimatePresence, motion } from 'framer-motion';
+import { nanoid } from 'nanoid';
+import type React from 'react';
+import toast from 'react-hot-toast';
+import LazyListPerform from '../../../../ui/LazyListPerform';
+import { useRequestStore } from '../../stores/request.store';
+import useItemNodeLogic from './item.hook';
+import type { ItemNodeProps } from './types';
+
+// Código del ResizableSidebar (no modificado)
+
+// --- Lógica del componente ItemNode ---
 const ItemNode: React.FC<ItemNodeProps> = (props) => {
   const {
     nodeData,
@@ -124,41 +137,69 @@ const ItemNode: React.FC<ItemNodeProps> = (props) => {
     return null;
   }
 
+  // Definir las variantes de animación para la lista de hijos
+  const childrenVariants = {
+    hidden: { opacity: 0, height: 0 },
+    visible: {
+      opacity: 1,
+      height: 'auto',
+      transition: {
+        staggerChildren: 0.05, // Retrasa la aparición de cada hijo
+      },
+    },
+    exit: { opacity: 0, height: 0 },
+  };
+
+  // Definir las variantes de animación para cada ItemNode hijo
+  const itemVariants = {
+    hidden: { y: -10, opacity: 0 },
+    visible: { y: 0, opacity: 1 },
+    exit: { opacity: 0 },
+  };
+
   return (
-    <div
+    <motion.div
+      // Animación al hacer hover en el contenedor principal
+      whileHover={{ scale: 1.01 }}
       className="flex flex-col gap-2 relative"
       onContextMenu={handleClickContextMenu}
       onClick={() => setShowBar(false)}
       style={{ marginLeft: `${indent}px` }}
     >
-      <div
+      <motion.div
         className="p-1.5 rounded-md border dark:border-zinc-800 shadow-xl flex justify-between items-center group dark:hover:bg-zinc-800 transition-colors bg-white/90 dark:bg-zinc-800/60 text-xs cursor-pointer text-zinc-200"
         onClick={() => {
-          handleClick(); // lo que ya tienes para UI
-
+          handleClick();
           if (!isFolder && nodeData.request) {
-            // Se agrega la request directamente al store, sin pasar por una prop
             addFromNode(nodeData);
           }
         }}
       >
         <div className="flex items-center gap-2">
           {isFolder && (
-            <Icon
-              icon={collapsed ? 'tabler:folder' : 'tabler:folder-open'}
-              width="15"
-              height="15"
-              className={`${props.level === 0 ? 'text-green-primary/85' : props.level === 1 ? 'text-green-primary' : props.level === 2 ? 'text-green-300' : props.level === 3 ? 'text-green-200' : 'text-green-100'}`}
-            />
+            <motion.div
+              // Gira el icono de la carpeta al expandirse
+              animate={{ rotate: collapsed ? 0 : 90 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Icon
+                icon={collapsed ? 'tabler:folder' : 'tabler:folder-open'}
+                width="15"
+                height="15"
+                className={`${props.level === 0 ? 'text-green-primary/85' : props.level === 1 ? 'text-green-primary' : props.level === 2 ? 'text-green-300' : props.level === 3 ? 'text-green-200' : 'text-green-100'}`}
+              />
+            </motion.div>
           )}
 
           {/* ------------------------------------------ Si es un request ---------------------------------------- */}
           {nodeData.request?.method && !isFolder && (
-            <span
+            <motion.span
               className={`font-mono font-bold px-1 py-1 rounded-md ${getMethodColor(nodeData.request.method)}`}
+              whileHover={{ scale: 1.1 }}
+              transition={{ type: 'spring', stiffness: 500 }}
             >
               {nodeData.request.method}
-            </span>
+            </motion.span>
           )}
           <p
             className={`truncate ${!nodeData.name || nodeData.name.trim() === '' ? 'italic text-zinc-500' : ' text-zinc-700 dark:text-zinc-200'}`}
@@ -178,43 +219,61 @@ const ItemNode: React.FC<ItemNodeProps> = (props) => {
             </span>
           )}
         </div>
-      </div>
+      </motion.div>
 
-      {showBar && (
-        <div
-          className="absolute text-xs text-gray-700 bg-white dark:bg-zinc-900 dark:text-white rounded-md shadow-lg z-50 p-2 w-50"
-          style={{ top: '100%', left: 0 }}
-        >
-          <ul className="text-sm space-y-1 divide-y divide-gray-200 dark:divide-zinc-800">
-            {(isFolder ? mapperFolder : mapperRequest).map((res) => (
-              <li
-                key={res.name}
-                className="dark:hover:bg-zinc-700 hover:bg-zinc-200 px-2 py-1 text-xs  cursor-pointer flex gap-2"
-                onClick={res.action}
-              >
-                {res.name}
-              </li>
+      {/* Menú contextual animado con AnimatePresence */}
+      <AnimatePresence>
+        {showBar && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+            className="absolute text-xs text-gray-700 bg-white dark:bg-zinc-900 dark:text-white rounded-md shadow-lg z-50 p-2 w-50"
+            style={{ top: '100%', left: 0 }}
+          >
+            <ul className="text-sm space-y-1 divide-y divide-gray-200 dark:divide-zinc-800">
+              {(isFolder ? mapperFolder : mapperRequest).map((res) => (
+                <motion.li
+                  key={res.name}
+                  whileHover={{ scale: 1.05 }}
+                  className="dark:hover:bg-zinc-700 hover:bg-zinc-200 px-2 py-1 text-xs cursor-pointer flex gap-2"
+                  onClick={res.action}
+                >
+                  {res.name}
+                </motion.li>
+              ))}
+            </ul>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Animación de la lista de elementos hijos al expandir la carpeta */}
+      <AnimatePresence>
+        {!collapsed && isFolder && nodeData.item && (
+          <motion.div
+            className="ml-2 flex flex-col gap-2"
+            variants={childrenVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+          >
+            {nodeData.item.map((child) => (
+              <motion.div key={child.id || nanoid()} variants={itemVariants}>
+                <LazyListPerform>
+                  <ItemNode
+                    data={child}
+                    level={(props.level || 0) + 1}
+                    nameItem={props.nameItem}
+                  />
+                </LazyListPerform>
+              </motion.div>
             ))}
-          </ul>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {!collapsed && isFolder && nodeData.item && (
-        <div className="ml-2 flex flex-col gap-2">
-          {nodeData.item.map((child, index) => (
-            <LazyListPerform key={index}>
-              <ItemNode
-                key={index}
-                data={child}
-                level={(props.level || 0) + 1}
-                // Ya no se pasa `loadRequest`
-                nameItem={props.nameItem}
-              />
-            </LazyListPerform>
-          ))}
-        </div>
-      )}
-
+      {/* Sección de respuestas animada */}
       {haveResponses && (
         <div className="ml-4 mt-1">
           <button
@@ -225,56 +284,59 @@ const ItemNode: React.FC<ItemNodeProps> = (props) => {
               ? `Ocultar respuestas (${nodeData.response.length})`
               : `Mostrar respuestas (${nodeData.response.length})`}
           </button>
-          {showResponses && (
-            <div className="mt-2 space-y-1 text-[11px]">
-              {nodeData.response.map((resp, i) => (
-                <div
-                  key={i}
-                  onClick={() => {
-                    try {
-                      // Se crea el objeto de request con la respuesta seleccionada
-                      const requestData = {
-                        id: nanoid(),
-                        name: `${nodeData.name} - Respuesta ${i + 1}`,
-                        method: nodeData.request.method,
-                        url: nodeData.request.url.raw,
-                        headers: (nodeData.request.header || []).reduce(
-                          (acc, h) => {
+          <AnimatePresence>
+            {showResponses && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2 }}
+                className="mt-2 space-y-1 text-[11px]"
+              >
+                {nodeData.response.map((resp, i) => (
+                  <motion.div
+                    key={i}
+                    whileHover={{ scale: 1.03 }}
+                    className="py-1 px-2 border bg-white shadow border-gray-300 dark:border-zinc-700 rounded dark:bg-zinc-900"
+                    onClick={() => {
+                      try {
+                        const requestData = {
+                          id: nanoid(),
+                          name: `${nodeData.name} - Respuesta ${i + 1}`,
+                          method: nodeData.request.method,
+                          url: nodeData.request.url.raw,
+                          headers: (nodeData.request.header || []).reduce((acc, h) => {
                             acc[h.key] = h.value;
                             return acc;
-                          },
-                          {},
-                        ),
-                        body: nodeData.request.body.raw,
-                        query: (nodeData.request.url.query || []).reduce(
-                          (acc, q) => {
+                          }, {}),
+                          body: nodeData.request.body.raw,
+                          query: (nodeData.request.url.query || []).reduce((acc, q) => {
                             acc[q.key] = q.value;
                             return acc;
-                          },
-                          {},
-                        ),
-                        response: resp,
-                      };
-                      // Se agrega la request completa al store
-                      addFromNode(requestData);
-                    } catch (e) {
-                      toast.error(String(e));
-                    }
-                  }}
-                  className="py-1 px-2 border bg-white shadow border-gray-300 dark:border-zinc-700 rounded dark:bg-zinc-900"
-                >
-                  <p className="font-bold text-teal-500 dark:text-teal-300">
-                    {resp.name}
-                  </p>
-                </div>
-              ))}
-            </div>
-          )}
+                          }, {}),
+                          response: resp,
+                        };
+                        addFromNode(requestData);
+                      } catch (e) {
+                        toast.error(String(e));
+                      }
+                    }}
+                  >
+                    <p className="font-bold text-teal-500 dark:text-teal-300">
+                      {resp.name}
+                    </p>
+                  </motion.div>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 };
+
+
 
 export default ItemNode;
 export { ResizableSidebar };

@@ -13,7 +13,7 @@ export interface ValuesRetornoClient {
   response: string;
   errorAxios: string;
   errorRequest: boolean;
-  bodyJson: string;
+  bodyRequest: string;
   showMethods: boolean;
   endpointUrl: string;
   isLoading: boolean;
@@ -31,7 +31,7 @@ export interface SetterRetornoClient {
   setResponse: Dispatch<SetStateAction<string>>;
   setErrorAxios: Dispatch<SetStateAction<string>>;
   setErrorRequest: Dispatch<SetStateAction<boolean>>;
-  setBodyJson: Dispatch<SetStateAction<string>>;
+  setBodyRequest: Dispatch<SetStateAction<string>>;
   setShowMethods: Dispatch<SetStateAction<boolean>>;
   setHeadersResponse: any;
   setEndpointUrl: Dispatch<SetStateAction<string>>;
@@ -53,7 +53,7 @@ export interface RequestHookProps {
   params: string;
   headersResponse: any;
   cabeceras: string;
-  bodyJson: string;
+  bodyRequest: string;
   endpointUrl: string;
   contentType: string;
   timeResponse: number;

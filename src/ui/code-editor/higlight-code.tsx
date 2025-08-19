@@ -1,5 +1,6 @@
 import colors from './colors';
 import keywords from './keyword';
+import { Value } from '../../pages/client/components/enviroment/types';
 
 const highlightCode = (
   code: string,
@@ -7,11 +8,11 @@ const highlightCode = (
   findResults: number[] = [],
   searchValue: string = '',
   currentMatchIndex: number = -1,
+  entornoVariables: Value[] = []
 ) => {
-  // Solución: Asegúrate de que 'code' es una cadena de texto
   const safeCode = String(code || '');
 
-  let highlightedCode = safeCode;
+  let highlightedCode = '';
 
   const escapeHTML = (str: string) =>
     str
@@ -22,16 +23,14 @@ const highlightCode = (
       .replace(/'/g, '&#039;');
 
   if (language === 'text') {
-    return safeCode;
-  }
-
-  if (language === 'json') {
+    highlightedCode = escapeHTML(safeCode);
+  } else if (language === 'json') {
     highlightedCode = safeCode
       .replace(/"([^"\\]|\\.)*"/g, (match) => {
         if (match.endsWith('":') || match.endsWith('": ')) {
-          return `<span style="color: ${colors.comment}">${match}</span>`;
+          return `<span style="color: ${colors.comment}">${escapeHTML(match)}</span>`;
         }
-        return `<span style="color: ${colors.tag}">${match}</span>`;
+        return `<span style="color: ${colors.tag}">${escapeHTML(match)}</span>`;
       })
       .replace(
         /\b(true|false|null)\b/g,
@@ -86,15 +85,24 @@ const highlightCode = (
     });
   }
 
+  // Resaltado de variables de entorno
   highlightedCode = highlightedCode.replace(
     /{{(.*?)}}/g,
-    `<span style="color: #7bb4ff;">{{$1}}</span>`,
+    (match, grupo) => {
+      const variable = entornoVariables.find(
+        (item) => item.key.trim() === grupo.trim()
+      );
+      const isDefinedAndEnabled = variable && variable.enabled === true;
+      const color = isDefinedAndEnabled ? '#7bb4ff' : '#D2042D';
+      return `<span style="color: ${color};">${escapeHTML(match)}</span>`;
+    }
   );
 
-  // --- 🔍 Resaltado de búsqueda ---
+  // Resaltado de búsqueda final, aplicado sobre el HTML ya generado
   if (findResults.length > 0 && searchValue) {
-    let resultHTML = '';
+    let tempHighlighted = '';
     let lastIndex = 0;
+    const escapedSearchValue = escapeHTML(searchValue);
 
     findResults.forEach((startIndex, i) => {
       const endIndex = startIndex + searchValue.length;
@@ -103,19 +111,13 @@ const highlightCode = (
         ? 'highlight-match highlight-match-active'
         : 'highlight-match';
 
-      const before = escapeHTML(safeCode.substring(lastIndex, startIndex));
-      const match = escapeHTML(safeCode.substring(startIndex, endIndex));
-
-      resultHTML += highlightPart(before, language);
-      resultHTML += `<span class="${matchClass}">${match}</span>`;
-
+      tempHighlighted += highlightedCode.substring(lastIndex, startIndex);
+      tempHighlighted += `<span class="${matchClass}">${highlightedCode.substring(startIndex, endIndex)}</span>`;
       lastIndex = endIndex;
     });
 
-    const after = escapeHTML(safeCode.substring(lastIndex));
-    resultHTML += highlightPart(after, language);
-
-    highlightedCode = resultHTML;
+    tempHighlighted += highlightedCode.substring(lastIndex);
+    highlightedCode = tempHighlighted;
   }
 
   return highlightedCode;

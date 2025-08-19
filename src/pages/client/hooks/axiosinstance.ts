@@ -54,16 +54,13 @@ axiosInstance.interceptors.request.use(
       });
     }
 
-    // 🔹 Reemplazo en params si son strings
-    if (config.params) {
-      Object.keys(config.params).forEach((param) => {
-        if (typeof config.params[param] === 'string') {
-          config.params[param] = replaceEnvVariables(
-            config.params[param],
-            entornoActual,
-          );
-        }
-      });
+    // ✅ CORRECCIÓN: Serializar los parámetros de la URL
+    if (config.params && typeof config.params === 'object') {
+      const queryString = new URLSearchParams(config.params).toString();
+      if (config.url && queryString) {
+        config.url += `?${queryString}`;
+      }
+      config.params = null; // Eliminar el objeto de parámetros para evitar duplicación
     }
 
     return config;
@@ -80,7 +77,6 @@ axiosInstance.interceptors.response.use(
       1000
     ).toFixed(3);
     response.typeResponse = detectResponseType(response.headers);
-    console.log(response.typeResponse);
     return response;
   },
   (error) => {
@@ -91,7 +87,7 @@ axiosInstance.interceptors.response.use(
         1000
       ).toFixed(3);
     }
-
+    // ✅ CORRECCIÓN: Devolver el error de forma coherente
     return Promise.reject({
       status: error.response?.status ?? 'N/A',
       data: error.response?.data ?? { message: error.message },

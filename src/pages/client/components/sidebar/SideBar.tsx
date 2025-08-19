@@ -111,8 +111,8 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
               <div
                 className={`p-2 cursor-pointer transition-colors flex-2 ${
                   currenIdx === 1
-                    ? 'bg-green-500/10 dark:hover:bg-zinc-950 dark:text-green-primary dark:bg-green-primary'
-                    : 'hover:bg-gray-200 dark:hover:bg-green-primary/30 text-gray-600 dark:text-zinc-300'
+                    ? 'bg-green-500/10 dark:hover:bg-zinc-950 dark:text-green-primary dark:bg-green-primary '
+                    : '  dark:hover:bg-green-primary/30 text-gray-600 dark:text-zinc-300'
                 }`}
                 onClick={() => setCurrentIdx(1)}
               >
@@ -127,7 +127,7 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
                 className={`p-2 flex-1 cursor-pointer transition-colors ${
                   currenIdx === 2
                     ? 'bg-green-500/10 dark:text-green-primary dark:bg-green-primary/10'
-                    : 'hover:bg-gray-200 dark:hover:bg-green-primary/90 text-gray-600 dark:text-zinc-300'
+                    : 'hover:bg dark:hover:bg-green-primary/90 text-gray-600 dark:text-zinc-300'
                 }`}
                 onClick={() => setCurrentIdx(2)}
               >

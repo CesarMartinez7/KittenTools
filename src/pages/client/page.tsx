@@ -10,7 +10,7 @@ import { CodeEditorLazy } from '../../ui/lazy-components';
 import AddQueryParam from './components/addqueryparams/addQueryParams';
 import EnviromentComponent from './components/enviroment/enviroment.component';
 import { useEnviromentStore } from './components/enviroment/store.enviroment';
-import { HeadersAddRequest } from './components/headers/Headers';
+import { Headers, HeadersAddRequest } from './components/headers/Headers';
 import RequestForm from '../request.form';
 import ScriptComponent from './components/scripts/script-component';
 import { SideBar } from './components/sidebar/SideBar';
@@ -39,8 +39,8 @@ const Header = ({
         className={`font-medium text-zinc-800 dark:text-zinc-300 truncate max-w-[250px] px-3 py-1 rounded-full 
     ${
       nombreEntorno === null
-        ? 'bg-red-200 dark:bg-red-900'
-        : 'bg-green-200 dark:bg-green-700'
+        ? 'bg-red-200 dark:bg-red-950 text-red-500'
+        : 'bg-green-200 dark:bg-green-700 text-green-600'
     }`}
       >
         {nombreEntorno ?? 'No hay entornos activos'}
@@ -56,7 +56,7 @@ const Header = ({
         />
       </button>
 
-      <DarkModeToggle />
+      {/* <DarkModeToggle /> */}
     </div>
   );
 };
@@ -84,7 +84,7 @@ const TabNavigation = ({ Opciones, selectedIdx, setMimeSelected }) => (
 // --- Subcomponente: ContentPanel (Contenido de las pestañas) ---
 const ContentPanel = ({
   selectedIdx,
-  bodyJson,
+  bodyRequest,
   contentType,
   setContentType,
   scriptsValues,
@@ -120,14 +120,20 @@ const ContentPanel = ({
               ))}
             </div>
             <div className="flex-1 overflow-auto">
-              <CodeEditorLazy
-                value={bodyJson}
-                maxHeight="65vh"
-                onChange={onCodeChange}
-                language={contentType}
-                height="100%"
-                minHeight="65vh"
-              />
+              {contentType === 'none' ? (
+                <div className="h-full flex items-center justify-center text-gray-500 dark:text-zinc-500">
+                  <p className="text-lg font-medium">No body for this request.</p>
+                </div>
+              ) : (
+                <CodeEditorLazy
+                  value={bodyRequest}
+                  maxHeight="85vh"
+                  onChange={onCodeChange}
+                  language={contentType}
+                  height="73vh"
+                  minHeight="65vh"
+                />
+              )}
             </div>
           </motion.div>
         );
@@ -151,7 +157,7 @@ const ContentPanel = ({
             <HeadersAddRequest />
           </motion.div>
         );
-      case 3:
+      case 5:
         return (
           <motion.div
             key="auth-section"
@@ -174,7 +180,7 @@ const ContentPanel = ({
             />
           </motion.div>
         );
-      case 5:
+      case 3:
         return (
           <motion.div
             key="env-section"
@@ -205,7 +211,7 @@ export default function AppClient() {
 
   const {
     isOpenSiderBar,
-    bodyJson,
+    bodyRequest,
     showMethods,
     isLoading,
     contentType,
@@ -215,7 +221,7 @@ export default function AppClient() {
   } = value;
 
   const {
-    setBodyJson,
+    setBodyRequest,
     setStatusCode,
     setContentType,
     setIsLoading,
@@ -240,7 +246,7 @@ export default function AppClient() {
     selectedMethod: currentTab?.method,
     params: currentTab?.query,
     cabeceras: currentTab?.headers,
-    bodyJson: currentTab?.body,
+    bodyRequest: currentTab?.body,
     endpointUrl: currentTab?.url,
     contentType: currentTab?.headers?.['Content-Type'],
   });
@@ -287,14 +293,14 @@ export default function AppClient() {
 
   useEffect(() => {
     if (currentTab) {
-      setBodyJson(currentTab.body);
+      setBodyRequest(currentTab.body);
       setContentType(currentTab.headers['Content-Type']);
       setHeadersResponse(currentTab.headers);
       setTypeResponse(currentTab.response?.type || null);
       setStatusCode(currentTab.response?.status || 0);
       setResponse(currentTab.response?.data || null);
     }
-  }, [currentTab, setBodyJson, setContentType, setHeadersResponse, setTypeResponse, setStatusCode, setResponse]);
+  }, [currentTab, setBodyRequest, setContentType, setHeadersResponse, setTypeResponse, setStatusCode, setResponse]);
 
   const handleTabClick = (tab: RequestData) => {
     setCurrentTab(tab.id);
@@ -306,11 +312,9 @@ export default function AppClient() {
   };
 
   const Opciones = [
-    { name: 'Cuerpo de Peticion', icon: bodyJson },
+    { name: 'Cuerpo de Peticion', icon: bodyRequest },
     { name: 'Parametros', icon: currentTab?.query },
     { name: 'Cabeceras', icon: currentTab?.headers },
-    { name: 'Autenticacion', icon: '' },
-    { name: 'Scripts', icon: '' },
     { name: 'Entorno', icon: listEntornos },
   ];
 
@@ -318,25 +322,34 @@ export default function AppClient() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await handleRequest(); // <--- Aquí ya no necesitas pasar 'e'
-      // Actualizar el store de Zustand con la respuesta
-      updateTab(currentTabId, {
-        response: {
-          data: response.data,
-          headers: response.headers,
-          status: response.status,
-          time: response.timeResponse,
-          type: response.typeResponse,
-        },
-      });
-
-    } catch (error) {
-       // El error ya viene en el objeto de 'response'
-       // Tu hook ya maneja el error y lo retorna
+      const response = await handleRequest();
+      if (response.error) {
+        // Manejar error
+        updateTab(currentTabId, {
+          response: {
+            data: response.data,
+            headers: response.headers,
+            status: response.status,
+            time: response.timeResponse,
+            type: response.typeResponse,
+          },
+        });
+      } else {
+        // Manejar respuesta exitosa
+        updateTab(currentTabId, {
+          response: {
+            data: response.data,
+            headers: response.headers,
+            status: response.status,
+            time: response.timeResponse,
+            type: response.typeResponse,
+          },
+        });
+      }
     } finally {
       setIsLoading(false);
     }
-  }, [handleRequest, currentTabId, updateTab, setIsLoading, setter]);
+  }, [handleRequest, currentTabId, updateTab, setIsLoading]);
 
   return (
     <div className="min-h-screen flex text-white overflow-hidden">
@@ -358,7 +371,7 @@ export default function AppClient() {
         />
 
         {/* Panel de pestañas: desplazable en móvil, se adapta en escritorio */}
-        <div className="flex border-b border-zinc-300 dark:border-zinc-700  bg-gray-100 dark:bg-zinc-900">
+        <div className="flex bg-zinc-800">
           {listTabs.length > 0 &&
             listTabs.map((tab) => {
               const isActive = tab.id === currentTabId;
@@ -369,10 +382,10 @@ export default function AppClient() {
                   animate={{ y: isActive ? -2 : 0 }}
                   transition={{ duration: 0.1 }}
                   onClick={() => handleTabClick(tab)}
-                  className={`px-5 group relative py-2 cursor-pointer text-sm font-medium whitespace-nowrap transition-colors duration-200 flex-shrink-0
+                  className={`px-5 relative py-2 cursor-pointer text-sm font-medium whitespace-nowrap transition-colors duration-200 flex-shrink-0
                   ${
                     isActive
-                      ? 'text-blue-600 dark:text-blue-400 border-b-2 border-blue-500 bg-white dark:bg-zinc-800'
+                      ? 'text-blue-600  dark:text-blue-400 border-b-2 border-blue-500 bg-white dark:bg-zinc-800'
                       : 'text-zinc-600 dark:text-zinc-300 border-b-2 border-transparent hover:text-zinc-900 dark:hover:text-white hover:border-blue-500'
                   }`}
                 >
@@ -418,7 +431,7 @@ export default function AppClient() {
           <Panel defaultSize={50} minSize={20} className="h-full">
             <ContentPanel
               selectedIdx={selectedIdx}
-              bodyJson={currentTab?.body}
+              bodyRequest={currentTab?.body}
               contentType={contentType}
               setContentType={setContentType}
               scriptsValues={scriptsValues}

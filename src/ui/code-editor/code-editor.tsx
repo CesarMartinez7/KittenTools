@@ -1,6 +1,6 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
 import bolt from '@iconify-icons/tabler/bolt';
-import { AnimatePresence, motion } from 'motion/react';
+import { AnimatePresence, motion } from 'framer-motion';
 import type React from 'react';
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
@@ -8,6 +8,7 @@ import LazyListItem from '../LazyListPerform';
 import highlightCode from './higlight-code';
 import './Code.css';
 
+import { useEnviromentStore } from '../../pages/client/components/enviroment/store.enviroment';
 import { useJsonHook } from './methods-json/method';
 import { useXmlHook } from './methos-xml/method.xml';
 import type { CodeEditorProps } from './types';
@@ -22,28 +23,31 @@ const CodeEditor = ({
   placeholder = '',
   classNameContainer = '',
 }: CodeEditorProps) => {
-  // Referencias al DOOM
   const inputRefTextOld = useRef<HTMLInputElement>(null);
   const inputRefTextNew = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const highlightRef = useRef<HTMLDivElement>(null);
   const lineNumbersRef = useRef<HTMLDivElement>(null);
-  const searchInputRef = useRef<HTMLInputElement>(null); // Nueva referencia para el input de búsqueda
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const [isOpenBar, setIsOpenBar] = useState<boolean>(false);
   const [code, setCode] = useState(value);
 
-  // Estados para la funcionalidad de búsqueda
   const [isOpenFindBar, setIsOpenFindBar] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [findResults, setFindResults] = useState<number[]>([]);
   const [currentMatchIndex, setCurrentMatchIndex] = useState(-1);
+  const [autocompleteSuggestions, setAutocompleteSuggestions] = useState<string[]>([]);
+  const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(0);
+  
+  // ✅ Conectamos al store de entornos para obtener los valores
+  const entornoActual = useEnviromentStore((state) => state.entornoActual);
+  const currentEntornoList = useMemo(() => Array.isArray(entornoActual) ? entornoActual : [], [entornoActual]);
 
   useEffect(() => {
     setCode(value);
   }, [value]);
 
-  // --------------------------------------- Custom Hooks -------------------------------------
   const { JsonSchema, minifyJson } = useJsonHook({
     code: code,
     setCode: setCode,
@@ -61,43 +65,35 @@ const CodeEditor = ({
     return 0;
   }, [code]);
 
-  // Efectos y Lógica
   useEffect(() => {
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
-      // Atajo para abrir/cerrar la barra de búsqueda (Ctrl + F)
       if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
         e.preventDefault();
         setIsOpenFindBar((prev) => !prev);
         if (!isOpenFindBar) {
-          // Si se va a abrir, enfoca el input
           setTimeout(() => searchInputRef.current?.focus(), 100);
         }
       }
 
-      // Atajo para abrir/cerrar la barra de reemplazo (Ctrl + B)
       if ((e.ctrlKey || e.metaKey) && (e.key === 'b' || e.key === 'B')) {
         e.preventDefault();
         setIsOpenBar((prev) => !prev);
       }
 
-      // Atajo para identar (Ctrl + S)
       if ((e.ctrlKey || e.metaKey) && e.key === 's') {
         e.preventDefault();
         HandlersIdentarBody();
       }
 
-      // Navegación con Enter y Shift + Enter
       if (isOpenFindBar && e.key === 'Enter') {
         e.preventDefault();
         if (findResults.length > 0) {
           if (e.shiftKey) {
-            // Shift + Enter: anterior
             setCurrentMatchIndex(
               (prevIndex) =>
                 (prevIndex - 1 + findResults.length) % findResults.length,
             );
           } else {
-            // Enter: siguiente
             setCurrentMatchIndex(
               (prevIndex) => (prevIndex + 1) % findResults.length,
             );
@@ -167,11 +163,25 @@ const CodeEditor = ({
     if (language === 'xml') return XmlScheme();
   };
 
-  // Manejo de eventos
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value;
     setCode(newValue);
     onChange?.(newValue);
+
+    const cursorPosition = e.target.selectionStart;
+    const textBeforeCursor = newValue.substring(0, cursorPosition);
+    const lastBracesIndex = textBeforeCursor.lastIndexOf('{{');
+
+    if (lastBracesIndex !== -1 && textBeforeCursor.lastIndexOf('}}') < lastBracesIndex) {
+      const searchText = textBeforeCursor.substring(lastBracesIndex + 2);
+      const suggestions = currentEntornoList
+        .map(env => env.key)
+        .filter(key => key.toLowerCase().startsWith(searchText.toLowerCase()));
+      setAutocompleteSuggestions(suggestions);
+      setActiveSuggestionIndex(0);
+    } else {
+      setAutocompleteSuggestions([]);
+    }
   };
 
   const handleScroll = () => {
@@ -193,6 +203,28 @@ const CodeEditor = ({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (autocompleteSuggestions.length > 0) {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        setActiveSuggestionIndex((prevIndex) => (prevIndex + 1) % autocompleteSuggestions.length);
+        return;
+      }
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        setActiveSuggestionIndex((prevIndex) => (prevIndex - 1 + autocompleteSuggestions.length) % autocompleteSuggestions.length);
+        return;
+      }
+      if (e.key === 'Enter' || e.key === 'Tab') {
+        e.preventDefault();
+        const suggestion = autocompleteSuggestions[activeSuggestionIndex];
+        const newCode = code.substring(0, code.lastIndexOf('{{')) + `{{${suggestion}}}`;
+        setCode(newCode);
+        onChange?.(newCode);
+        setAutocompleteSuggestions([]);
+        return;
+      }
+    }
+
     if (e.key === 'Tab') {
       e.preventDefault();
       const start = e.currentTarget.selectionStart;
@@ -261,62 +293,12 @@ const CodeEditor = ({
     <>
       <main className="overflow-hidden relative">
         <AnimatePresence mode="wait">
-          {/* {isOpenBar && (
-            <motion.div
-              initial={{ opacity: 0, y: -10, scale: 0.95 }}
-              animate={{
-                opacity: 1,
-                y: 0,
-                scale: 1,
-                filter: 'blur(0px)',
-                transition: { type: 'spring', stiffness: 200, damping: 20 },
-              }}
-              exit={{
-                opacity: 0,
-                y: -10,
-                scale: 0.95,
-                filter: 'blur(4px)',
-                transition: { duration: 0.2 },
-              }}
-              layout
-              className="backdrop-blur-3xl bg-white/40 dark:bg-zinc-900/35 border border-gray-200 dark:border-zinc-900 p-3 flex flex-col w-52 shadow-xl dark:shadow-zinc-800 shadow-gray-300 gap-1 rounded right-4 top-5 absolute z-[778]"
-            >
-              <input
-                ref={inputRefTextOld}
-                type="text"
-                autoFocus
-                className="input-base"
-                placeholder="Valor a buscar"
-              />
-              <input
-                ref={inputRefTextNew}
-                type="text"
-                className="input-base"
-                placeholder="Valor a Reemplazar"
-              />
-              <div className="flex h-6 gap-2">
-                <button
-                  className="bg-gradient-to-r flex-1 from-green-400 to-green-500 p-1 rounded-md text-xs truncate text-white"
-                  onClick={handleCLickReplaceTextFirst}
-                >
-                  Reemplazar primero
-                </button>
-                <button
-                  className="bg-gradient-to-r flex-1 from-sky-400 to-sky-700 p-1 rounded-md text-xs truncate text-white"
-                  onClick={handleCLickReplaceText}
-                >
-                  Reemplazar todo
-                </button>
-              </div>
-            </motion.div>
-          )} */}
-
           {isOpenFindBar && (
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="absolute right-2  top-2 z-[778] p-2 bg-gray-100 border dark:border-zinc-800 border-gray-200 dark:bg-zinc-950/90 rounded-md shadow-lg flex items-center gap-2 flex-col"
+              className="absolute right-2 top-2 z-[778] p-2 bg-gray-100 border dark:border-zinc-800 border-gray-200 dark:bg-zinc-950/90 rounded-md shadow-lg flex items-center gap-2 flex-col"
             >
               <div className=" flex justify-center items-center gap-2">
                 <button
@@ -380,7 +362,7 @@ const CodeEditor = ({
                   </div>
                   <div className="flex h-6 gap-2">
                     <button
-                      className="bg-gradient-to-r flex-1 from-green-400 to-green-500 p-1  text-xs truncate text-white"
+                      className="bg-gradient-to-r flex-1 from-green-400 to-green-500 p-1  text-xs truncate text-white"
                       onClick={handleCLickReplaceTextFirst}
                     >
                       Reemplazar primero
@@ -412,6 +394,24 @@ const CodeEditor = ({
 
           {/* Editor Container */}
           <div className="flex-1 relative">
+            {autocompleteSuggestions.length > 0 && (
+              <ul className="absolute top-0 left-0 bg-white dark:bg-zinc-800 shadow-lg z-10 w-full max-h-40 overflow-y-auto">
+                {autocompleteSuggestions.map((suggestion, index) => (
+                  <li 
+                    key={suggestion}
+                    onClick={() => {
+                        const newCode = code.substring(0, code.lastIndexOf('{{')) + `{{${suggestion}}}`;
+                        setCode(newCode);
+                        onChange?.(newCode);
+                        setAutocompleteSuggestions([]);
+                    }}
+                    className={`cursor-pointer px-4 py-2 hover:bg-gray-200 dark:hover:bg-zinc-700 ${index === activeSuggestionIndex ? 'bg-gray-300 dark:bg-zinc-700' : ''}`}
+                  >
+                    {suggestion}
+                  </li>
+                ))}
+              </ul>
+            )}
             <LazyListItem>
               <div
                 ref={highlightRef}
@@ -423,6 +423,7 @@ const CodeEditor = ({
                     findResults,
                     searchValue,
                     currentMatchIndex,
+                    currentEntornoList
                   ),
                 }}
               />
