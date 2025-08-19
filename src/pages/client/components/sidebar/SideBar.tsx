@@ -1,19 +1,14 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
 import ToolTipButton from '../../../../ui/tooltip/TooltipButton';
-import type {
-  EventRequest,
-  Item,
-  SavedRequestsSidebarProps,
-} from '../../types/types';
+import type { SavedRequestsSidebarProps, Item } from '../../types/types';
 import { useEnviromentStore } from '../enviroment/store.enviroment';
 import ItemNode, { ResizableSidebar } from '../itemnode/item-node';
 import SidebarHook from './hooks/sidebar-hook';
 
-export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
+export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
   const {
     parsed,
-    setColeccion,
     handleClickCargueCollecion,
     setParsed,
     listColeccion,
@@ -30,46 +25,27 @@ export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
 
   const [currenIdx, setCurrentIdx] = useState<number>(1);
 
-  function actualizarNombreEnItems(
-    items: Item[],
-    oldName: string,
-    newName: string,
-  ): Item[] {
-    return items.map((item) => {
-      if (item.name === oldName) {
-        return { ...item, name: newName };
-      }
-      if (item.item) {
-        return {
-          ...item,
-          item: actualizarNombreEnItems(item.item, oldName, newName),
-        };
-      }
-      return item;
-    });
-  }
-
-  function eliminarItemPorNombre(items: Item[], nameToDelete: string): Item[] {
-    return items
-      .filter((item) => item.name !== nameToDelete)
-      .map((item) => {
-        if (item.item) {
-          return {
-            ...item,
-            item: eliminarItemPorNombre(item.item, nameToDelete),
-          };
-        }
-        return item;
-      });
-  }
-
-  // --- Handlers que pasas como props a ItemNode ---
+  // Funciones para manejar la lógica de actualización y eliminación de la colección.
+  // Estas funciones deben estar definidas aquí para ser pasadas a ItemNode.
   const handleActualizarNombre = (oldName: string, newName: string) => {
     if (!parsed) return;
     setParsed((prev) => {
       if (!prev) return prev;
-      const updatedItems = actualizarNombreEnItems(prev.item, oldName, newName);
-      return { ...prev, item: updatedItems };
+      const updateItems = (items: Item[]): Item[] => {
+        return items.map((item) => {
+          if (item.name === oldName) {
+            return { ...item, name: newName };
+          }
+          if (item.item) {
+            return {
+              ...item,
+              item: updateItems(item.item),
+            };
+          }
+          return item;
+        });
+      };
+      return { ...prev, item: updateItems(prev.item) };
     });
   };
 
@@ -77,47 +53,22 @@ export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
     if (!parsed) return;
     setParsed((prev) => {
       if (!prev) return prev;
-      const updatedItems = eliminarItemPorNombre(prev.item, name);
-      return { ...prev, item: updatedItems };
+      const filterItems = (items: Item[]): Item[] => {
+        return items
+          .filter((item) => item.name !== name)
+          .map((item) => {
+            if (item.item) {
+              return {
+                ...item,
+                item: filterItems(item.item),
+              };
+            }
+            return item;
+          });
+      };
+      return { ...prev, item: filterItems(prev.item) };
     });
   };
-
-  const parsedLoadRequest = (
-    reqBody: string,
-    reqContentType: string,
-    reqUrl: string,
-    reqMethod: string,
-    reqHeaders: Record<string, string>,
-    reqParams: string,
-    reqEvent: EventRequest | null,
-    reqResponse: string,
-  ) => {
-    const requestScriptEvents = reqEvent ? reqEvent : null;
-
-    onLoadRequest(
-      reqBody,
-      reqContentType,
-      reqUrl,
-      reqMethod,
-      reqHeaders,
-      reqParams,
-      //@ts-ignore
-      requestScriptEvents,
-      reqResponse,
-    );
-  };
-
-  // useEffect(() => {
-  //   const requests = localStorage.getItem("requests")
-  //   if(requests){
-  //     setColeccion(requests)
-  //   }
-  // }, [] )
-
-  // useEffect(() => {
-  //   localStorage.setItem( "requests", JSON.stringify(listColeccion))
-  //   toast.success("Cambiando colecciones")
-  // }, [listColeccion])
 
   return (
     <ResizableSidebar minWidth={100} maxWidth={800} initialWidth={470}>
@@ -125,7 +76,7 @@ export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
         {isOpen && (
           <motion.div
             className="
-             h-svh max-h-svh 
+              h-svh max-h-svh 
             bg-white/90 text-gray-800
             dark:bg-zinc-900/80 dark:text-slate-200
             backdrop-blur-3xl p-4 z-50 md:flex flex-col hidden shadow-xl
@@ -147,7 +98,7 @@ export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
             {/* Header */}
             <div className="flex justify-start items-center my-4 space-x-3 relative">
               <span className="tabler--bolt-off text-zinc-400"></span>
-              <h3 className="text-4xl font-bold bg-gradient-to-tr text-gray-700  dark:text-lime-50">
+              <h3 className="text-4xl font-bold bg-gradient-to-tr text-gray-700 dark:text-lime-50">
                 Elisa
               </h3>
             </div>
@@ -160,8 +111,8 @@ export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
               <div
                 className={`p-2 cursor-pointer transition-colors flex-2 ${
                   currenIdx === 1
-                    ? 'bg-green-500/10  dark:hover:bg-zinc-950 dark:text-green-primary dark:bg-green-primary'
-                    : 'hover:bg-gray-200  dark:hover:bg-green-primary/30 text-gray-600 dark:text-zinc-300'
+                    ? 'bg-green-500/10 dark:hover:bg-zinc-950 dark:text-green-primary dark:bg-green-primary'
+                    : 'hover:bg-gray-200 dark:hover:bg-green-primary/30 text-gray-600 dark:text-zinc-300'
                 }`}
                 onClick={() => setCurrentIdx(1)}
               >
@@ -175,7 +126,7 @@ export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
               <div
                 className={`p-2 flex-1 cursor-pointer transition-colors ${
                   currenIdx === 2
-                    ? 'bg-green-500/10  dark:text-green-primary dark:bg-green-primary/10'
+                    ? 'bg-green-500/10 dark:text-green-primary dark:bg-green-primary/10'
                     : 'hover:bg-gray-200 dark:hover:bg-green-primary/90 text-gray-600 dark:text-zinc-300'
                 }`}
                 onClick={() => setCurrentIdx(2)}
@@ -247,15 +198,11 @@ export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
                       <div
                         key={`col-${index}`}
                         className="
-                        p-1.5 rounded-md border shadow-xl transition-colors cursor-pointer
-                        bg-gray-50 border-gray-200 text-gray-800
-                        dark:bg-zinc-800/60 dark:border-zinc-800 dark:text-zinc-200
-                      "
+                          p-1.5 rounded-md border shadow-xl transition-colors cursor-pointer
+                          bg-gray-50 border-gray-200 text-gray-800
+                          dark:bg-zinc-800/60 dark:border-zinc-800 dark:text-zinc-200
+                        "
                       >
-                        {/* <div className="text-xs font-medium mb-2 flex items-center gap-2">
-                          <span className="tabler--folder-filled text-amber-500"></span>
-                          {e.name}
-                        </div> */}
                         <ItemNode
                           nameItem={e.name}
                           eliminar={handleEliminar}
@@ -263,7 +210,6 @@ export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
                           level={0}
                           data={e.item}
                           setData={setParsed}
-                          loadRequest={parsedLoadRequest}
                         />
                       </div>
                     ))}
@@ -277,35 +223,3 @@ export function SideBar({ isOpen, onLoadRequest }: SavedRequestsSidebarProps) {
     </ResizableSidebar>
   );
 }
-
-// Puedes guardar esto como `ElisaLogo.jsx` y usarlo en tu React app
-const ElisaLogo = ({ size = 40 }) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 100 100" // ViewBox más ajustado
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    {/* Rayo principal - más compacto y centrado */}
-    <path
-      d="M50 5L15 50H40L30 95L85 50H60L70 5H50Z"
-      fill="url(#logoGradient)"
-    />
-
-    {/* Efecto de brillo interno - ajustado al nuevo tamaño */}
-    <path
-      d="M50 15L25 50H40L35 85L75 50H60L65 15H50Z"
-      fill="white"
-      opacity="0.3"
-    />
-
-    {/* Gradiente */}
-    <defs>
-      <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#5eead4" />
-        <stop offset="100%" stopColor="#67e8f9" />
-      </linearGradient>
-    </defs>
-  </svg>
-);

@@ -1,12 +1,12 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
+import { nanoid } from 'nanoid';
 import type React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import LazyListPerform from '../../../../ui/LazyListPerform';
+import { useRequestStore } from '../../stores/request.store';
 import useItemNodeLogic from './item.hook';
 import type { ItemNodeProps } from './types';
-import { useRequestStore } from '../../stores/request.store';
-import { nanoid } from 'nanoid';
 
 // Componente ResizableSidebar (sin modificaciones)
 interface ResizableSidebarProps {
@@ -99,8 +99,6 @@ const ResizableSidebar: React.FC<ResizableSidebarProps> = ({
 };
 
 // --- Lógica del componente ItemNode ---
-
-// --- Componente ItemNode (Template) ---
 const ItemNode: React.FC<ItemNodeProps> = (props) => {
   const {
     nodeData,
@@ -139,24 +137,8 @@ const ItemNode: React.FC<ItemNodeProps> = (props) => {
           handleClick(); // lo que ya tienes para UI
 
           if (!isFolder && nodeData.request) {
-            // 1. Agregar la request al request-store
+            // Se agrega la request directamente al store, sin pasar por una prop
             addFromNode(nodeData);
-
-            // 2. (opcional) cargar la request al editor actual
-            try {
-              props.loadRequest?.(
-                nodeData.request.body?.raw,
-                nodeData.request.body?.options?.raw?.language,
-                nodeData.request?.url?.raw,
-                nodeData.request?.method,
-                nodeData.request?.header,
-                nodeData.request?.url?.query,
-                nodeData.event,
-                nodeData.response,
-              );
-            } catch (e) {
-              toast.error(String(e));
-            }
           }
         }}
       >
@@ -225,7 +207,7 @@ const ItemNode: React.FC<ItemNodeProps> = (props) => {
                 key={index}
                 data={child}
                 level={(props.level || 0) + 1}
-                loadRequest={props.loadRequest}
+                // Ya no se pasa `loadRequest`
                 nameItem={props.nameItem}
               />
             </LazyListPerform>
@@ -256,32 +238,25 @@ const ItemNode: React.FC<ItemNodeProps> = (props) => {
                         name: `${nodeData.name} - Respuesta ${i + 1}`,
                         method: nodeData.request.method,
                         url: nodeData.request.url.raw,
-                        headers: (nodeData.request.header || []).reduce((acc, h) => {
-                          acc[h.key] = h.value;
-                          return acc;
-                        }, {}),
+                        headers: (nodeData.request.header || []).reduce(
+                          (acc, h) => {
+                            acc[h.key] = h.value;
+                            return acc;
+                          },
+                          {},
+                        ),
                         body: nodeData.request.body.raw,
-                        query: (nodeData.request.url.query || []).reduce((acc, q) => {
-                          acc[q.key] = q.value;
-                          return acc;
-                        }, {}),
+                        query: (nodeData.request.url.query || []).reduce(
+                          (acc, q) => {
+                            acc[q.key] = q.value;
+                            return acc;
+                          },
+                          {},
+                        ),
                         response: resp,
                       };
-
                       // Se agrega la request completa al store
                       addFromNode(requestData);
-
-                      // Se cargan los datos en el editor de la UI
-                      props.loadRequest?.(
-                        nodeData.request.body.raw,
-                        nodeData.request.body.options?.raw?.language,
-                        nodeData.request?.url?.raw,
-                        nodeData.request?.method,
-                        nodeData.request?.header,
-                        nodeData.request.url?.query,
-                        nodeData.event,
-                        resp.body,
-                      );
                     } catch (e) {
                       toast.error(String(e));
                     }

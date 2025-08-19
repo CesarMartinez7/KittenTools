@@ -5,8 +5,7 @@ import axiosInstance from './axiosinstance';
 import type { RequestHookProps } from './types';
 
 interface ReturnHookRequest {
-  handleRequest: (e: any) => Promise<void>;
-  prepareHeaders: (headers: any) => void;
+  handleRequest: () => Promise<any>;
 }
 
 export default function RequestHook({
@@ -16,62 +15,36 @@ export default function RequestHook({
   bodyJson,
   endpointUrl,
   contentType,
-  setIsLoading,
-  setErrorAxios,
-  setErrorRequest,
-  setResponse,
-  headersResponse,
-  setStatusCode,
-  setTimeResponse,
-  setTypeResponse,
-  setHeadersResponse,
 }: RequestHookProps): ReturnHookRequest {
-  // Convierte JSON string de headers en objeto
-  const prepareHeaders = useCallback((headers: any) => {
-    try {
-      const parsedHeaders = JSON.parse(headers);
-      return parsedHeaders.reduce((acc, header) => {
-        if (header.key.trim() && header.value.trim()) {
-          acc[header.key] = header.value;
-        }
-        return acc;
-      }, {});
-    } catch (e) {
-      console.error('Error al parsear headers:', e);
-      return {};
-    }
-  }, []);
 
   const handleRequest = useCallback(
-    async (e) => {
-      e.preventDefault();
+    async () => {
+      // ✅ Solución: el componente principal ahora maneja el evento
+      // y la carga, por lo que no se necesitan los 'e.preventDefault()'
+      // ni los 'setIsLoading', etc. en este hook.
 
-      // ✅ Obtener entorno y baseUrl del store
-      const { entornoActual, baseUrl } = useEnviromentStore.getState();
+      const { baseUrl } = useEnviromentStore.getState();
 
       if (!baseUrl && !endpointUrl) {
         toast.error('No se encontró el endpoint');
-        return;
+        // Devolver una promesa rechazada para que el catch en AppClient la maneje.
+        return Promise.reject({ raw: 'No se encontró el endpoint' });
       }
 
-      // Evitar ?undefined
+      // Evitar ?undefined en la URL final.
       const finalParams = params ? `?${params}` : '';
       const finalUrl = endpointUrl || '';
-
-      setIsLoading(true);
-      setErrorAxios(null);
-      setErrorRequest(false);
 
       try {
         const axiosConfig: any = {
           method: selectedMethod,
-          baseURL: baseUrl || undefined, // axiosInstance hará el replace {{var}}
+          baseURL: baseUrl || undefined,
           url: `${finalUrl}${finalParams}`,
-          headers: cabeceras ? prepareHeaders(cabeceras) : {},
+          headers: cabeceras,
           contentType,
         };
 
-        // 🔹 Solo agregar data si no está vacío y si el método soporta body
+        // Solo agregar data si el método lo requiere y el cuerpo no está vacío.
         const methodSupportsBody = !['GET', 'HEAD', 'DELETE'].includes(
           selectedMethod.toUpperCase(),
         );
@@ -85,40 +58,39 @@ export default function RequestHook({
         }
 
         const response = await axiosInstance(axiosConfig);
-
-        setHeadersResponse(response.headers);
-        setResponse(response.data);
-        setStatusCode(response.status);
-        setTimeResponse(response?.timeResponse);
-        setTypeResponse(response?.typeResponse);
-        console.log(response.config);
+        
+        // Retornar la respuesta completa para que el componente que llama la maneje.
+        return {
+          status: response.status,
+          data: response.data,
+          headers: response.headers,
+          timeResponse: response?.timeResponse,
+          typeResponse: response?.typeResponse,
+          error: null,
+          raw: null
+        };
       } catch (error) {
-        setErrorRequest(true);
-        setStatusCode(error.status || 'N/A');
-        setResponse(error.data);
-        setErrorAxios(error.raw);
-        setTimeResponse(error.timeResponse);
-        setTypeResponse(error?.typeResponse);
-      } finally {
-        setIsLoading(false);
+        // Devolver el error completo.
+        return {
+          status: error.status || 'N/A',
+          data: error.data,
+          headers: error.headers || {},
+          timeResponse: error.timeResponse,
+          typeResponse: error?.typeResponse,
+          error: error.raw,
+          raw: error.raw
+        };
       }
     },
     [
-      headersResponse,
       selectedMethod,
       contentType,
       bodyJson,
       endpointUrl,
       params,
       cabeceras,
-      setIsLoading,
-      setErrorAxios,
-      setErrorRequest,
-      setResponse,
-      setTypeResponse,
-      setStatusCode,
     ],
   );
 
-  return { prepareHeaders, handleRequest };
+  return { handleRequest };
 }

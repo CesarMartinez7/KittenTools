@@ -2,7 +2,7 @@ import './App.css';
 import { Icon } from '@iconify/react';
 import arrowsMaximize from '@iconify-icons/tabler/arrows-maximize';
 import arrowsMinimize from '@iconify-icons/tabler/arrows-minimize';
-
+import sendIcon from '@iconify-icons/tabler/send';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useRef, useState, useEffect } from 'react';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
@@ -20,6 +20,7 @@ import { Methodos, VariantsAnimation } from './mapper-ops';
 import ResponsePanel from './response-panel';
 import DarkModeToggle from './components/toogle-theme';
 import { useRequestStore, RequestData } from './stores/request.store';
+import { nanoid } from 'nanoid';
 
 // --- Subcomponente: Header (Botón de pantalla completa) ---
 const Header = ({
@@ -32,7 +33,7 @@ const Header = ({
   nombreEntorno: string | null;
 }) => {
   return (
-    <div className="flex dark items-center text-xs gap-2 justify-end px-4 py-2  border-gray-200 dark:border-zinc-800 backdrop-blur-sm py-2">
+    <div className="flex dark items-center text-xs gap-2 justify-end px-4 py-2 border-gray-200 dark:border-zinc-800 backdrop-blur-sm py-2">
       {/* Nombre entorno */}
       <div
         className={`font-medium text-zinc-800 dark:text-zinc-300 truncate max-w-[250px] px-3 py-1 rounded-full 
@@ -55,16 +56,14 @@ const Header = ({
         />
       </button>
 
-      {/* <DarkModeToggle /> */}
+      <DarkModeToggle />
     </div>
   );
 };
 
-// --- Subcomponente: RequestForm (Formulario de URL y método) ---
-
 // --- Subcomponente: TabNavigation (Pestañas de opciones) ---
 const TabNavigation = ({ Opciones, selectedIdx, setMimeSelected }) => (
-  <div className="flex text-gray-800 dark:text-white border border-gray-200 dark:border-zinc-800 truncate bg-white dark:bg-zinc-900/80 ">
+  <div className="flex text-gray-800 dark:text-white border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/80 ">
     {Opciones.map((opcion, index) => (
       <button
         key={index}
@@ -72,7 +71,7 @@ const TabNavigation = ({ Opciones, selectedIdx, setMimeSelected }) => (
         className={`relative btn btn-sm text-sm py-2 px-4 transition-colors duration-200 flex
         ${index === selectedIdx ? 'border-b-2 border-green-primary dark:text-green-primary font-semibold bg-gray-200 dark:bg-zinc-950' : 'text-gray-500 dark:text-zinc-400 hover:text-gray-800 dakr:hover:bg-gray-800 dark:hover:text-white dark:hover:bg-zinc-800'}`}
         onClick={() => setMimeSelected(index)}
-      >
+      > 
         <span>{opcion.name}</span>
         {String(opcion.icon).length > 0 && (
           <div className="absolute right-1 bg-green-primary h-[7px] w-[7px] rounded-full animate-pulse"></div>
@@ -88,8 +87,6 @@ const ContentPanel = ({
   bodyJson,
   contentType,
   setContentType,
-  params2,
-  setParams2,
   scriptsValues,
   setScriptsValues,
   onCodeChange,
@@ -141,10 +138,7 @@ const ContentPanel = ({
             variants={VariantsAnimation}
             className="flex-1 overflow-auto"
           >
-            <AddQueryParam
-              currentParams={params2}
-              setCurrentParams={setParams2}
-            />
+            <AddQueryParam />
           </motion.div>
         );
       case 2:
@@ -202,43 +196,32 @@ const ContentPanel = ({
   );
 };
 
-// --- Subcomponente: ResponsePanel (Panel de respuesta) ---
-
-
 // --- Componente Principal (Main App) ---
 export default function AppClient() {
   const { value, setter } = ClientCustomHook();
   const listEntornos = useEnviromentStore((state) => state.listEntorno);
-  const entornoActual = useEnviromentStore((state) => state.entornoActual);
-  const refForm = useRef(null);
   const nombreEntorno = useEnviromentStore((state) => state.nameEntornoActual);
+  const refForm = useRef(null);
 
   const {
     isOpenSiderBar,
-    selectedMethod,
-    response,
     bodyJson,
     showMethods,
-    endpointUrl,
     isLoading,
     contentType,
     statusCode,
     headersResponse,
     scriptsValues,
-    params2,
   } = value;
 
   const {
-    setParams2,
     setBodyJson,
     setStatusCode,
     setContentType,
     setIsLoading,
-    setEndpointUrl,
     setHeadersResponse,
     setShowMethods,
     setIsOpenSiderbar,
-    setSelectedMethod,
     setResponse,
     setScriptsValues,
   } = setter;
@@ -249,44 +232,42 @@ export default function AppClient() {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [typeResponse, setTypeResponse] = useState<string | null>(null);
 
-  // --- Integración con el nuevo store ---
   const { listTabs, currentTabId, removeTab, setCurrentTab, updateTab } = useRequestStore();
 
+  const currentTab = listTabs.find(tab => tab.id === currentTabId);
+
   const { handleRequest } = RequestHook({
-    selectedMethod,
-    params: value.params,
-    cabeceras: value.cabeceras,
-    bodyJson,
-    endpointUrl,
-    contentType,
-    setIsLoading,
-    setErrorAxios: setter.setErrorAxios,
-    setErrorRequest: setter.setErrorRequest,
-    setResponse,
-    headersResponse,
-    setStatusCode,
-    setTimeResponse: () => {}, // Ya no se usa
-    setTypeResponse,
-    setHeadersResponse,
+    selectedMethod: currentTab?.method,
+    params: currentTab?.query,
+    cabeceras: currentTab?.headers,
+    bodyJson: currentTab?.body,
+    endpointUrl: currentTab?.url,
+    contentType: currentTab?.headers?.['Content-Type'],
   });
 
-  const handlerChangeInputRequest = useCallback(
+  const handleUrlChange = useCallback(
     (e) => {
-      const newUrl = e.target.value;
-      setEndpointUrl(newUrl);
       if (currentTabId) {
-        updateTab(currentTabId, { url: newUrl });
+        updateTab(currentTabId, { url: e.target.value });
       }
     },
-    [setEndpointUrl, currentTabId, updateTab],
+    [currentTabId, updateTab],
   );
 
   const handleCodeEditorChange = useCallback((value: string) => {
-    setBodyJson(value);
     if (currentTabId) {
       updateTab(currentTabId, { body: value });
     }
-  }, [setBodyJson, currentTabId, updateTab]);
+  }, [currentTabId, updateTab]);
+
+  const handleMethodChange = useCallback(
+    (newMethod) => {
+      if (currentTabId) {
+        updateTab(currentTabId, { method: newMethod });
+      }
+    },
+    [currentTabId, updateTab],
+  );
 
   const handleClickShowMethod = useCallback(
     () => setShowMethods((prev) => !prev),
@@ -299,51 +280,21 @@ export default function AppClient() {
       setIsFullScreen(true);
     } else {
       document.exitFullscreen();
+      document.body.style.userSelect = '';
       setIsFullScreen(false);
     }
   };
 
-  const onLoadRequest = useCallback(
-    (
-      reqBody,
-      reqContentType,
-      reqUrl,
-      reqMethod,
-      reqHeaders,
-      reqParams,
-      reqEvent,
-      reqReponse,
-    ) => {
-      setBodyJson(reqBody);
-      setContentType(reqContentType);
-      setEndpointUrl(reqUrl);
-      setSelectedMethod(reqMethod);
-      setScriptsValues(reqEvent);
-      setParams2(reqParams);
-      setResponse(reqReponse);
-    },
-    [
-      setBodyJson,
-      setContentType,
-      setEndpointUrl,
-      setSelectedMethod,
-      setScriptsValues,
-      setParams2,
-      setResponse,
-    ],
-  );
-
   useEffect(() => {
-    if (currentTabId) {
-      const currentTab = listTabs.find(tab => tab.id === currentTabId);
-      if (currentTab) {
-        setEndpointUrl(currentTab.url);
-        setSelectedMethod(currentTab.method);
-        setBodyJson(currentTab.body);
-        setParams2(currentTab.query);
-      }
+    if (currentTab) {
+      setBodyJson(currentTab.body);
+      setContentType(currentTab.headers['Content-Type']);
+      setHeadersResponse(currentTab.headers);
+      setTypeResponse(currentTab.response?.type || null);
+      setStatusCode(currentTab.response?.status || 0);
+      setResponse(currentTab.response?.data || null);
     }
-  }, [currentTabId, listTabs, setEndpointUrl, setSelectedMethod, setBodyJson, setParams2]);
+  }, [currentTab, setBodyJson, setContentType, setHeadersResponse, setTypeResponse, setStatusCode, setResponse]);
 
   const handleTabClick = (tab: RequestData) => {
     setCurrentTab(tab.id);
@@ -356,21 +307,44 @@ export default function AppClient() {
 
   const Opciones = [
     { name: 'Cuerpo de Peticion', icon: bodyJson },
-    { name: 'Parametros', icon: params2 },
-    { name: 'Cabeceras', icon: headersResponse },
+    { name: 'Parametros', icon: currentTab?.query },
+    { name: 'Cabeceras', icon: currentTab?.headers },
     { name: 'Autenticacion', icon: '' },
     { name: 'Scripts', icon: '' },
     { name: 'Entorno', icon: listEntornos },
   ];
 
+  const handleRequestSubmit = useCallback(async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      const response = await handleRequest(); // <--- Aquí ya no necesitas pasar 'e'
+      // Actualizar el store de Zustand con la respuesta
+      updateTab(currentTabId, {
+        response: {
+          data: response.data,
+          headers: response.headers,
+          status: response.status,
+          time: response.timeResponse,
+          type: response.typeResponse,
+        },
+      });
+
+    } catch (error) {
+       // El error ya viene en el objeto de 'response'
+       // Tu hook ya maneja el error y lo retorna
+    } finally {
+      setIsLoading(false);
+    }
+  }, [handleRequest, currentTabId, updateTab, setIsLoading, setter]);
+
   return (
     <div className="min-h-screen flex text-white overflow-hidden">
       {/* SideBar en escritorio y modal en móvil */}
       <SideBar
-        onLoadRequest={onLoadRequest}
-        currentUrl={endpointUrl}
-        currentBody={bodyJson}
-        currentMethod={selectedMethod}
+        currentUrl={currentTab?.url}
+        currentBody={currentTab?.body}
+        currentMethod={currentTab?.method}
         isOpen={isOpenSiderBar}
         onClose={() => setIsOpenSiderbar(false)}
       />
@@ -384,7 +358,7 @@ export default function AppClient() {
         />
 
         {/* Panel de pestañas: desplazable en móvil, se adapta en escritorio */}
-        <div className="flex border-b border-zinc-300 dark:border-zinc-700  bg-gray-100 dark:bg-zinc-900 p">
+        <div className="flex border-b border-zinc-300 dark:border-zinc-700  bg-gray-100 dark:bg-zinc-900">
           {listTabs.length > 0 &&
             listTabs.map((tab) => {
               const isActive = tab.id === currentTabId;
@@ -395,7 +369,7 @@ export default function AppClient() {
                   animate={{ y: isActive ? -2 : 0 }}
                   transition={{ duration: 0.1 }}
                   onClick={() => handleTabClick(tab)}
-                  className={`px-5 group relative py-2 cursor-pointer  font-medium whitespace-nowrap transition-colors duration-200 flex-shrink-0
+                  className={`px-5 group relative py-2 cursor-pointer text-sm font-medium whitespace-nowrap transition-colors duration-200 flex-shrink-0
                   ${
                     isActive
                       ? 'text-blue-600 dark:text-blue-400 border-b-2 border-blue-500 bg-white dark:bg-zinc-800'
@@ -419,15 +393,15 @@ export default function AppClient() {
         {/* Formulario de solicitud (RequestForm) */}
         <RequestForm
           refForm={refForm}
-          onSubmit={handleRequest}
-          selectedMethod={selectedMethod}
+          onSubmit={handleRequestSubmit}
+          selectedMethod={currentTab?.method || 'GET'}
           handleClickShowMethod={handleClickShowMethod}
           showMethods={showMethods}
-          setSelectedMethod={setSelectedMethod}
+          setSelectedMethod={handleMethodChange}
           setShowMethods={setShowMethods}
-          entornoActual={entornoActual}
-          endpointUrl={endpointUrl}
-          handlerChangeInputRequest={handlerChangeInputRequest}
+          entornoActual={currentTab?.url}
+          endpointUrl={currentTab?.url || ''}
+          handlerChangeInputRequest={handleUrlChange}
           isLoading={isLoading}
         />
 
@@ -444,14 +418,12 @@ export default function AppClient() {
           <Panel defaultSize={50} minSize={20} className="h-full">
             <ContentPanel
               selectedIdx={selectedIdx}
-              bodyJson={bodyJson}
+              bodyJson={currentTab?.body}
               contentType={contentType}
               setContentType={setContentType}
-              params2={params2}
-              setParams2={setParams2}
               scriptsValues={scriptsValues}
               setScriptsValues={setScriptsValues}
-              onCodeChange={handleCodeEditorChange}
+              onCodeEditorChange={handleCodeEditorChange}
             />
           </Panel>
 
@@ -461,10 +433,10 @@ export default function AppClient() {
           <Panel defaultSize={50} minSize={20} className="h-full">
             <ResponsePanel
               typeResponse={typeResponse}
-              response={response}
+              response={currentTab?.response?.data || null}
               isLoading={isLoading}
-              headersResponse={headersResponse}
-              statusCode={statusCode}
+              headersResponse={currentTab?.response?.headers || {}}
+              statusCode={currentTab?.response?.status || statusCode}
             />
           </Panel>
         </PanelGroup>

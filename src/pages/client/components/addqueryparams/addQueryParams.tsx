@@ -1,107 +1,106 @@
+import type React from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useRequestStore } from '../../stores/request.store';
 import { Icon } from '@iconify/react/dist/iconify.js';
-import { useEffect, useState } from 'react';
-import { useParamsStore } from './queryparams-store';
 
-type Param = { key: string; value: string };
+interface AddQueryParamProps {
+  // Ya no se necesitan props locales como currentParams y setCurrentParams
+}
 
-const AddQueryParam = ({
-  currentParams,
-  setCurrentParams,
-}: {
-  currentParams?: Param[] | null;
-  setCurrentParams: React.Dispatch<
-    React.SetStateAction<Record<string, string>>
-  >;
-}) => {
-  const [params, setParams] = useState<Param[]>([]);
-  const [paramsFinal, setParamsFinal] = useState<string>('');
+const AddQueryParam: React.FC<AddQueryParamProps> = () => {
+  const { currentTabId, listTabs, updateTab } = useRequestStore();
+  const [queryArray, setQueryArray] = useState<{ key: string; value: string }[]>([]);
 
-  const setValor = useParamsStore((e) => e.setValor);
+  useEffect(() => {
+    const currentTab = listTabs.find((tab) => tab.id === currentTabId);
+    if (currentTab?.query) {
+      setQueryArray(
+        Object.entries(currentTab.query).map(([key, value]) => ({ key, value }))
+      );
+    } else {
+      setQueryArray([]);
+    }
+  }, [currentTabId, listTabs]);
 
-  useEffect(() => {
-    const final = buildQueryParams();
-    setParamsFinal(final);
-    setValor(final);
-  }, [params]);
+  const updateStore = useCallback(
+    (newQueryArray: { key: string; value: string }[]) => {
+      const newQuery = newQueryArray.reduce((acc, param) => {
+        if (param.key) {
+          acc[param.key] = param.value;
+        }
+        return acc;
+      }, {});
+      if (currentTabId) {
+        updateTab(currentTabId, { query: newQuery });
+      }
+    },
+    [currentTabId, updateTab]
+  );
 
-  const handleParamChange = (
-    index: number,
-    field: 'key' | 'value',
-    value: string,
-  ) => {
-    const updatedParams = [...params];
-    updatedParams[index][field] = value;
-    setParams(updatedParams);
-  };
+  const handleInputChange = useCallback(
+    (index: number, field: 'key' | 'value', value: string) => {
+      const newQueryArray = [...queryArray];
+      newQueryArray[index][field] = value;
+      setQueryArray(newQueryArray);
+      updateStore(newQueryArray);
+    },
+    [queryArray, updateStore]
+  );
 
-  const handleClickDelete = (index: number) => {
-    const updatedParams = [...params];
-    updatedParams.splice(index, 1);
-    setParams(updatedParams);
+  const handleAddParam = useCallback(() => {
+    const newQueryArray = [...queryArray, { key: '', value: '' }];
+    setQueryArray(newQueryArray);
+    updateStore(newQueryArray);
+  }, [queryArray, updateStore]);
 
-    const final = buildQueryParams();
-    setParamsFinal(final);
-    setValor(final);
-  };
+  const handleRemoveParam = useCallback(
+    (index: number) => {
+      const newQueryArray = queryArray.filter((_, i) => i !== index);
+      setQueryArray(newQueryArray);
+      updateStore(newQueryArray);
+    },
+    [queryArray, updateStore]
+  );
 
-  const buildQueryParams = () =>
-    params
-      .filter((param) => param.key.trim() && param.value.trim())
-      .map(
-        (param) =>
-          `${encodeURIComponent(param.key)}=${encodeURIComponent(param.value)}`,
-      )
-      .join('&');
-
-  const noParams = !Array.isArray(currentParams) || currentParams.length === 0;
-
-  return (
-    <div className="h-full w-full flex flex-col gap-2 my-6">
-      {!noParams ? (
-        <table className="border-collapse border border-zinc-800 text-gray-700 dark:text-zinc-300">
-          <thead>
-            <tr>
-              <th className="border border-zinc-800 px-2 py-1">Llave</th>
-              <th className="border border-zinc-800 px-2 py-1">Valor</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentParams!.map((e, idx) => (
-              <tr key={idx}>
-                <td className="border border-zinc-800 px-2 py-1">
-                  <input type="text" value={e.key} className="w-full" />
-                </td>
-                <td className="border border-zinc-800 px-2 py-1">
-                  <input type="text" value={e.value} className="w-full" />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      ) : (
-        <div className="h-full flex flex-col justify-center items-center gap-4 p-6 text-center transition-colors duration-300">
-          <Icon
-            icon="tabler:file-alert"
-            width="48"
-            height="48"
-            className="text-zinc-500 dark:text-zinc-400/80"
-          />
-          <div className="space-y-2">
-            <h3 className="text-xl font-medium text-zinc-700 dark:text-zinc-300">
-              No hay parámetros configurados
-            </h3>
-            <p className="text-zinc-500 dark:text-zinc-400 max-w-md">
-              Aún no has agregado ningún parámetro. Comienza importando un
-              archivo o creando uno nuevo.
-            </p>
-          </div>
-          <button className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-500 dark:bg-blue-500 dark:hover:bg-blue-400 rounded-md text-white transition-colors duration-300">
-            Agregar parámetros
-          </button>
-        </div>
-      )}
-    </div>
-  );
+  return (
+    <div className="p-4 space-y-4">
+      <div className="flex justify-between items-center text-gray-400 font-medium">
+        <span className="flex-1">Parámetro</span>
+        <span className="flex-1">Valor</span>
+        <span className="w-8"></span>
+      </div>
+      {queryArray.map((param, index) => (
+        <div key={index} className="flex items-center gap-2">
+          <input
+            type="text"
+            placeholder="key"
+            value={param.key}
+            onChange={(e) => handleInputChange(index, 'key', e.target.value)}
+            className="flex-1 p-2 rounded bg-zinc-700 text-zinc-200 outline-none"
+          />
+          <input
+            type="text"
+            placeholder="value"
+            value={param.value}
+            onChange={(e) => handleInputChange(index, 'value', e.target.value)}
+            className="flex-1 p-2 rounded bg-zinc-700 text-zinc-200 outline-none"
+          />
+          <button
+            onClick={() => handleRemoveParam(index)}
+            className="w-8 h-8 flex items-center justify-center text-red-500 hover:bg-zinc-800 rounded"
+          >
+            <Icon icon="tabler:trash" />
+          </button>
+        </div>
+      ))}
+      <button
+        onClick={handleAddParam}
+        className="text-sm text-green-500 hover:text-green-300 transition-colors"
+      >
+        + Añadir Parámetro
+      </button>
+    </div>
+  );
 };
 
 export default AddQueryParam;

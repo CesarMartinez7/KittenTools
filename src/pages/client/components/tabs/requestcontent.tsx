@@ -1,5 +1,5 @@
 // components/RequestContent.tsx
-import { useRequestStore } from "../../stores/request.store";
+import { useRequestStore } from '../../stores/request.store';
 
 export function RequestContent() {
   const { listTabs, currentTabId, updateTab } = useRequestStore();

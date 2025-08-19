@@ -55,10 +55,10 @@ const CodeEditor = ({
   });
 
   const lineCount = useMemo(() => {
-    if(code.length > 0){
+    if (code.length > 0) {
       return code.split('\n').length;
     }
-    return 0
+    return 0;
   }, [code]);
 
   // Efectos y Lógica

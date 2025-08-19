@@ -1,7 +1,6 @@
-
+import { nanoid } from 'nanoid';
 // stores/request-store.ts
-import { create } from "zustand";
-import { nanoid } from "nanoid";
+import { create } from 'zustand';
 
 export interface RequestData {
   id: string;
@@ -29,10 +28,7 @@ interface RequestState {
   removeTab: (id: string) => void;
   setCurrentTab: (id: string) => void;
   updateTab: (id: string, changes: Partial<RequestData>) => void;
-  setResponse: (
-    id: string,
-    response: RequestData["response"]
-  ) => void;
+  setResponse: (id: string, response: RequestData['response']) => void;
 }
 
 export const useRequestStore = create<RequestState>((set) => ({
@@ -43,15 +39,15 @@ export const useRequestStore = create<RequestState>((set) => ({
     set((state) => {
       const newTab: RequestData = {
         id: nanoid(),
-        name: nodeData.name || "Nueva Request",
-        method: nodeData.request?.method || "GET",
-        url: nodeData.request?.url?.raw || "",
+        name: nodeData.name || 'Nueva Request',
+        method: nodeData.request?.method || 'GET',
+        url: nodeData.request?.url?.raw || '',
         headers: (nodeData.request?.header || []).reduce(
           (acc: Record<string, string>, h: any) => {
             acc[h.key] = h.value;
             return acc;
           },
-          {}
+          {},
         ),
         body: nodeData.request?.body?.raw || {},
         query: (nodeData.request?.url?.query || []).reduce(
@@ -59,7 +55,7 @@ export const useRequestStore = create<RequestState>((set) => ({
             acc[q.key] = q.value;
             return acc;
           },
-          {}
+          {},
         ),
       };
 
@@ -80,14 +76,14 @@ export const useRequestStore = create<RequestState>((set) => ({
   updateTab: (id, changes) =>
     set((state) => ({
       listTabs: state.listTabs.map((tab) =>
-        tab.id === id ? { ...tab, ...changes } : tab
+        tab.id === id ? { ...tab, ...changes } : tab,
       ),
     })),
 
   setResponse: (id, response) =>
     set((state) => ({
       listTabs: state.listTabs.map((tab) =>
-        tab.id === id ? { ...tab, response } : tab
+        tab.id === id ? { ...tab, response } : tab,
       ),
     })),
 }));

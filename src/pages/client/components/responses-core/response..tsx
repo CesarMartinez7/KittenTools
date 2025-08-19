@@ -94,9 +94,7 @@ export default function ResponsesTypesComponent({
 
   // Nueva función para renderizar el contenido de la respuesta
   const renderResponseContent = () => {
-
-
-    if(typeResponse){
+    if (typeResponse) {
       if (typeResponse.toLowerCase() === 'json') {
         return (
           <JsonNode
@@ -108,7 +106,7 @@ export default function ResponsesTypesComponent({
           />
         );
       }
-  
+
       if (typeResponse.toLowerCase() === 'xml') {
         try {
           const parser = new DOMParser();
@@ -141,7 +139,6 @@ export default function ResponsesTypesComponent({
           );
         }
       }
-
     }
 
     // Fallback para otros tipos de datos (como texto plano o HTML)
