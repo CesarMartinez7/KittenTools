@@ -112,7 +112,7 @@ const RequestForm = ({
             placeholder="https://api.example.com/endpoint"
             value={endpointUrl}
             onChange={handlerChangeInputRequest}
-            className="p-2 absolute inset-0 text-transparent transition-colors caret-gray-500 dark:caret-zinc-400 w-full outline-none"
+            className="p-2 absolute inset-0 text-transparent transition-colors caret-gray-500 dark:caret-zinc-400 w-full outline-none select-all  :"
           />
         </div>
         <div className="flex divide-x divide-zinc-900 rounded-md overflow-hidden">
