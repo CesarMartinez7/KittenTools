@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { JsonNode } from '../../../../ui/formatter-JSON/jsonnode.';
-import { CodeEditorLazy } from '../../../../ui/lazy-components'; // Importa el componente para mostrar código sin formato
+import { CodeEditorLazy } from '../../../../ui/lazy-components';
 import TableData from '../../../../ui/Table';
 import XmlNode from '../../../../ui/xml-node/xmlnode';
 

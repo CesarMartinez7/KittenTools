@@ -30,7 +30,7 @@ const Header = ({
   toogleFullScreen: () => void;
   nombreEntorno: string | null;
 }) => (
-  <div className="flex dark items-center text-xs gap-2 justify-end px-4 py-2 border- border-gray-200 dark:border-zinc-800  dark:bg-red-900 bg-white backdrop-blur-sm">
+  <div className="flex dark items-center text-xs gap-2 justify-end px-4 py-2 border- border-gray-200 dark:border-zinc-800   q backdrop-blur-sm">
     {/* Botón pantalla completa */}
 
     {/* Nombre entorno */}
