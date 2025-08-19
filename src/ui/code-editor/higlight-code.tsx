@@ -7,8 +7,11 @@ const highlightCode = (
   findResults = [],
   searchValue = '',
   currentMatchIndex = -1,
+  currentListEntornos
 ) => {
   let highlightedCode = String(code);
+
+  console.log(currentListEntornos)
 
   const escapeHTML = (str) =>
     str

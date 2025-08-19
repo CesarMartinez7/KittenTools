@@ -456,7 +456,7 @@ const CodeEditor = ({
                 onChange={handleChange}
                 onScroll={handleScroll}
                 onKeyDown={handleKeyDown}
-                className="absolute inset-0 transition-colors p-2 text-sm font-mono leading-6 resize-none outline-none bg-transparent placeholder-lime-600  dark:placeholder-lime-200"
+                className="absolute inset-0 transition-colors p-2 text-sm font-mono leading-6 resize-none outline-none bg-transparent placeholder-lime-600 bg-amber-500 dark:placeholder-lime-200"
                 style={{
                   color: 'transparent',
                   caretColor: 'var(--caret-color, gray)',

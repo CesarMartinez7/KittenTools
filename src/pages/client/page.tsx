@@ -150,6 +150,7 @@ const ContentPanel = ({
                   </p>
                 </div>
               ) : (
+                // <textarea className="w-full border border-zinc-700 h-full" onChange={onCodeChange}></textarea>
                 <CodeEditorLazy
                   value={bodyRequest}
                   maxHeight="85vh"
@@ -313,6 +314,7 @@ export default function AppClient() {
   );
 
   const handleCodeEditorChange = useCallback(
+
     (value: string) => {
       if (currentTabId) {
         updateTab(currentTabId, { body: value });
@@ -534,7 +536,7 @@ export default function AppClient() {
               setContentType={setContentType}
               scriptsValues={scriptsValues}
               setScriptsValues={setScriptsValues}
-              onCodeEditorChange={handleCodeEditorChange}
+              onCodeChange={handleCodeEditorChange}
             />
           </Panel>
 
