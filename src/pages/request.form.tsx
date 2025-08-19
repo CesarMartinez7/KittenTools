@@ -1,10 +1,9 @@
 import { Icon } from '@iconify/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback } from 'react';
+import { useEnviromentStore } from './client/components/enviroment/store.enviroment';
 import { Methodos } from './client/mapper-ops';
 import { useRequestStore } from './client/stores/request.store';
-import { useEnviromentStore } from './client/components/enviroment/store.enviroment';
-
 
 const RequestForm = ({
   refForm,
@@ -37,27 +36,33 @@ const RequestForm = ({
     }
   };
 
-  const formatterInputRequest = useCallback((listBusqueda: any[], busquedaKey: string) => {
-    const regex = /{{(.*?)}}/g;
-    const safeListBusqueda = Array.isArray(listBusqueda) ? listBusqueda : [];
-    
-    return busquedaKey.replace(regex, (match, grupo) => {
-      const variable = safeListBusqueda.find(
-        (item) => item.key.trim() === grupo.trim()
-      );
-      const isDefinedAndEnabled = variable && variable.enabled === true;
-      const color = isDefinedAndEnabled ? '#7bb4ff' : '#D2042D';
-      
-      return `<span style="color: ${color};">{{${grupo}}}</span>`;
-    });
-  }, []);
+  const formatterInputRequest = useCallback(
+    (listBusqueda: any[], busquedaKey: string) => {
+      const regex = /{{(.*?)}}/g;
+      const safeListBusqueda = Array.isArray(listBusqueda) ? listBusqueda : [];
 
-  const handleMethodChange = useCallback((newMethod) => {
-    if (currentTabId) {
-      updateTab(currentTabId, { method: newMethod });
-    }
-    setShowMethods(false);
-  }, [currentTabId, updateTab, setShowMethods]);
+      return busquedaKey.replace(regex, (match, grupo) => {
+        const variable = safeListBusqueda.find(
+          (item) => item.key.trim() === grupo.trim(),
+        );
+        const isDefinedAndEnabled = variable && variable.enabled === true;
+        const color = isDefinedAndEnabled ? '#7bb4ff' : '#D2042D';
+
+        return `<span style="color: ${color};">{{${grupo}}}</span>`;
+      });
+    },
+    [],
+  );
+
+  const handleMethodChange = useCallback(
+    (newMethod) => {
+      if (currentTabId) {
+        updateTab(currentTabId, { method: newMethod });
+      }
+      setShowMethods(false);
+    },
+    [currentTabId, updateTab, setShowMethods],
+  );
 
   return (
     <form className="p-4 space-y-3" ref={refForm} onSubmit={onSubmit}>
@@ -82,7 +87,9 @@ const RequestForm = ({
                   <button
                     type="button"
                     key={idx}
-                    onClick={() => handleMethodChange(metodo.name.toUpperCase())}
+                    onClick={() =>
+                      handleMethodChange(metodo.name.toUpperCase())
+                    }
                     className={`w-full text-left px-4 py-2 hover:bg-gray-800 dark:hover:bg-zinc-700 transition-colors duration-200
                       ${metodo.name.toUpperCase() === selectedMethod ? 'bg-sky-500 text-white' : ''}`}
                   >

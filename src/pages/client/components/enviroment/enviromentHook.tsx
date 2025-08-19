@@ -9,9 +9,7 @@ export default function useEnviromentHook() {
     (state) => state.setEntornoActual,
   );
   const listEntorno = useEnviromentStore((state) => state.listEntorno);
-  const setListEntorno = useEnviromentStore(
-    (state) => state.setListEntorno,
-  );
+  const setListEntorno = useEnviromentStore((state) => state.setListEntorno);
   const addEntorno = useEnviromentStore((state) => state.addEntorno);
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -32,7 +30,7 @@ export default function useEnviromentHook() {
   // Guardar en localStorage cada vez que entornoActual cambie
   useEffect(() => {
     if (listEntorno.length > 0) {
-        localStorage.setItem('environments', JSON.stringify(listEntorno));
+      localStorage.setItem('environments', JSON.stringify(listEntorno));
     }
   }, [listEntorno]);
 

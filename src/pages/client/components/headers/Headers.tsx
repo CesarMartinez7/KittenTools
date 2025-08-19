@@ -1,9 +1,9 @@
+import { Icon } from '@iconify/react/dist/iconify.js';
 import type React from 'react';
 import { useCallback, useMemo } from 'react';
 import { useRequestStore } from '../../stores/request.store';
-import { Icon } from '@iconify/react/dist/iconify.js';
 
-interface HeadersAddRequestProps {}
+type HeadersAddRequestProps = {};
 
 export const HeadersAddRequest: React.FC<HeadersAddRequestProps> = () => {
   const { currentTabId, listTabs, updateTab } = useRequestStore();
@@ -13,7 +13,10 @@ export const HeadersAddRequest: React.FC<HeadersAddRequestProps> = () => {
   // Usa useMemo para memoizar el array de headers y solo recalcularlo cuando cambie el currentTab
   const headersArray = useMemo(() => {
     return currentTab?.headers
-      ? Object.entries(currentTab.headers).map(([key, value]) => ({ key, value }))
+      ? Object.entries(currentTab.headers).map(([key, value]) => ({
+          key,
+          value,
+        }))
       : [];
   }, [currentTab]);
 

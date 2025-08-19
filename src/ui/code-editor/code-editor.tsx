@@ -37,12 +37,17 @@ const CodeEditor = ({
   const [searchValue, setSearchValue] = useState('');
   const [findResults, setFindResults] = useState<number[]>([]);
   const [currentMatchIndex, setCurrentMatchIndex] = useState(-1);
-  const [autocompleteSuggestions, setAutocompleteSuggestions] = useState<string[]>([]);
+  const [autocompleteSuggestions, setAutocompleteSuggestions] = useState<
+    string[]
+  >([]);
   const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(0);
-  
+
   // ✅ Conectamos al store de entornos para obtener los valores
   const entornoActual = useEnviromentStore((state) => state.entornoActual);
-  const currentEntornoList = useMemo(() => Array.isArray(entornoActual) ? entornoActual : [], [entornoActual]);
+  const currentEntornoList = useMemo(
+    () => (Array.isArray(entornoActual) ? entornoActual : []),
+    [entornoActual],
+  );
 
   useEffect(() => {
     setCode(value);
@@ -172,11 +177,16 @@ const CodeEditor = ({
     const textBeforeCursor = newValue.substring(0, cursorPosition);
     const lastBracesIndex = textBeforeCursor.lastIndexOf('{{');
 
-    if (lastBracesIndex !== -1 && textBeforeCursor.lastIndexOf('}}') < lastBracesIndex) {
+    if (
+      lastBracesIndex !== -1 &&
+      textBeforeCursor.lastIndexOf('}}') < lastBracesIndex
+    ) {
       const searchText = textBeforeCursor.substring(lastBracesIndex + 2);
       const suggestions = currentEntornoList
-        .map(env => env.key)
-        .filter(key => key.toLowerCase().startsWith(searchText.toLowerCase()));
+        .map((env) => env.key)
+        .filter((key) =>
+          key.toLowerCase().startsWith(searchText.toLowerCase()),
+        );
       setAutocompleteSuggestions(suggestions);
       setActiveSuggestionIndex(0);
     } else {
@@ -206,18 +216,25 @@ const CodeEditor = ({
     if (autocompleteSuggestions.length > 0) {
       if (e.key === 'ArrowDown') {
         e.preventDefault();
-        setActiveSuggestionIndex((prevIndex) => (prevIndex + 1) % autocompleteSuggestions.length);
+        setActiveSuggestionIndex(
+          (prevIndex) => (prevIndex + 1) % autocompleteSuggestions.length,
+        );
         return;
       }
       if (e.key === 'ArrowUp') {
         e.preventDefault();
-        setActiveSuggestionIndex((prevIndex) => (prevIndex - 1 + autocompleteSuggestions.length) % autocompleteSuggestions.length);
+        setActiveSuggestionIndex(
+          (prevIndex) =>
+            (prevIndex - 1 + autocompleteSuggestions.length) %
+            autocompleteSuggestions.length,
+        );
         return;
       }
       if (e.key === 'Enter' || e.key === 'Tab') {
         e.preventDefault();
         const suggestion = autocompleteSuggestions[activeSuggestionIndex];
-        const newCode = code.substring(0, code.lastIndexOf('{{')) + `{{${suggestion}}}`;
+        const newCode =
+          code.substring(0, code.lastIndexOf('{{')) + `{{${suggestion}}}`;
         setCode(newCode);
         onChange?.(newCode);
         setAutocompleteSuggestions([]);
@@ -397,13 +414,15 @@ const CodeEditor = ({
             {autocompleteSuggestions.length > 0 && (
               <ul className="absolute top-0 left-0 bg-white dark:bg-zinc-800 shadow-lg z-10 w-full max-h-40 overflow-y-auto">
                 {autocompleteSuggestions.map((suggestion, index) => (
-                  <li 
+                  <li
                     key={suggestion}
                     onClick={() => {
-                        const newCode = code.substring(0, code.lastIndexOf('{{')) + `{{${suggestion}}}`;
-                        setCode(newCode);
-                        onChange?.(newCode);
-                        setAutocompleteSuggestions([]);
+                      const newCode =
+                        code.substring(0, code.lastIndexOf('{{')) +
+                        `{{${suggestion}}}`;
+                      setCode(newCode);
+                      onChange?.(newCode);
+                      setAutocompleteSuggestions([]);
                     }}
                     className={`cursor-pointer px-4 py-2 hover:bg-gray-200 dark:hover:bg-zinc-700 ${index === activeSuggestionIndex ? 'bg-gray-300 dark:bg-zinc-700' : ''}`}
                   >
@@ -423,7 +442,7 @@ const CodeEditor = ({
                     findResults,
                     searchValue,
                     currentMatchIndex,
-                    currentEntornoList
+                    currentEntornoList,
                   ),
                 }}
               />

@@ -1,12 +1,10 @@
+import { Icon } from '@iconify/react/dist/iconify.js';
+import { motion } from 'framer-motion';
 import type React from 'react';
 import { useCallback, useMemo } from 'react';
 import { useRequestStore } from '../../stores/request.store';
-import { Icon } from '@iconify/react/dist/iconify.js';
-import { motion } from 'framer-motion';
 
-interface AddQueryParamProps {
-  // Ya no se necesitan props locales como currentParams y setCurrentParams
-}
+type AddQueryParamProps = {};
 
 const AddQueryParam: React.FC<AddQueryParamProps> = () => {
   const { currentTabId, listTabs, updateTab } = useRequestStore();

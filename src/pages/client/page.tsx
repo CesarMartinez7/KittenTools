@@ -4,23 +4,23 @@ import arrowsMaximize from '@iconify-icons/tabler/arrows-maximize';
 import arrowsMinimize from '@iconify-icons/tabler/arrows-minimize';
 import sendIcon from '@iconify-icons/tabler/send';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useCallback, useRef, useState, useEffect } from 'react';
+import { nanoid } from 'nanoid';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import { CodeEditorLazy } from '../../ui/lazy-components';
+import RequestForm from '../request.form';
 import AddQueryParam from './components/addqueryparams/addQueryParams';
 import EnviromentComponent from './components/enviroment/enviroment.component';
 import { useEnviromentStore } from './components/enviroment/store.enviroment';
 import { Headers, HeadersAddRequest } from './components/headers/Headers';
-import RequestForm from '../request.form';
 import ScriptComponent from './components/scripts/script-component';
 import { SideBar } from './components/sidebar/SideBar';
+import DarkModeToggle from './components/toogle-theme';
 import ClientCustomHook from './hooks/client-hook';
 import RequestHook from './hooks/request.client';
 import { Methodos, VariantsAnimation } from './mapper-ops';
 import ResponsePanel from './response-panel';
-import DarkModeToggle from './components/toogle-theme';
-import { useRequestStore, RequestData } from './stores/request.store';
-import { nanoid } from 'nanoid';
+import { type RequestData, useRequestStore } from './stores/request.store';
 
 // --- Subcomponente: Header (Botón de pantalla completa) ---
 const Header = ({
@@ -71,7 +71,7 @@ const TabNavigation = ({ Opciones, selectedIdx, setMimeSelected }) => (
         className={`relative btn btn-sm text-sm py-2 px-4 transition-colors duration-200 flex
         ${index === selectedIdx ? 'border-b-2 border-green-primary dark:text-green-primary font-semibold bg-gray-200 dark:bg-zinc-950' : 'text-gray-500 dark:text-zinc-400 hover:text-gray-800 dakr:hover:bg-gray-800 dark:hover:text-white dark:hover:bg-zinc-800'}`}
         onClick={() => setMimeSelected(index)}
-      > 
+      >
         <span>{opcion.name}</span>
         {String(opcion.icon).length > 0 && (
           <div className="absolute right-1 bg-green-primary h-[7px] w-[7px] rounded-full animate-pulse"></div>
@@ -122,7 +122,9 @@ const ContentPanel = ({
             <div className="flex-1 overflow-auto">
               {contentType === 'none' ? (
                 <div className="h-full flex items-center justify-center text-gray-500 dark:text-zinc-500">
-                  <p className="text-lg font-medium">No body for this request.</p>
+                  <p className="text-lg font-medium">
+                    No body for this request.
+                  </p>
                 </div>
               ) : (
                 <CodeEditorLazy
@@ -238,9 +240,10 @@ export default function AppClient() {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [typeResponse, setTypeResponse] = useState<string | null>(null);
 
-  const { listTabs, currentTabId, removeTab, setCurrentTab, updateTab } = useRequestStore();
+  const { listTabs, currentTabId, removeTab, setCurrentTab, updateTab } =
+    useRequestStore();
 
-  const currentTab = listTabs.find(tab => tab.id === currentTabId);
+  const currentTab = listTabs.find((tab) => tab.id === currentTabId);
 
   const { handleRequest } = RequestHook({
     selectedMethod: currentTab?.method,
@@ -260,11 +263,14 @@ export default function AppClient() {
     [currentTabId, updateTab],
   );
 
-  const handleCodeEditorChange = useCallback((value: string) => {
-    if (currentTabId) {
-      updateTab(currentTabId, { body: value });
-    }
-  }, [currentTabId, updateTab]);
+  const handleCodeEditorChange = useCallback(
+    (value: string) => {
+      if (currentTabId) {
+        updateTab(currentTabId, { body: value });
+      }
+    },
+    [currentTabId, updateTab],
+  );
 
   const handleMethodChange = useCallback(
     (newMethod) => {
@@ -300,7 +306,15 @@ export default function AppClient() {
       setStatusCode(currentTab.response?.status || 0);
       setResponse(currentTab.response?.data || null);
     }
-  }, [currentTab, setBodyRequest, setContentType, setHeadersResponse, setTypeResponse, setStatusCode, setResponse]);
+  }, [
+    currentTab,
+    setBodyRequest,
+    setContentType,
+    setHeadersResponse,
+    setTypeResponse,
+    setStatusCode,
+    setResponse,
+  ]);
 
   const handleTabClick = (tab: RequestData) => {
     setCurrentTab(tab.id);
@@ -318,38 +332,41 @@ export default function AppClient() {
     { name: 'Entorno', icon: listEntornos },
   ];
 
-  const handleRequestSubmit = useCallback(async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    try {
-      const response = await handleRequest();
-      if (response.error) {
-        // Manejar error
-        updateTab(currentTabId, {
-          response: {
-            data: response.data,
-            headers: response.headers,
-            status: response.status,
-            time: response.timeResponse,
-            type: response.typeResponse,
-          },
-        });
-      } else {
-        // Manejar respuesta exitosa
-        updateTab(currentTabId, {
-          response: {
-            data: response.data,
-            headers: response.headers,
-            status: response.status,
-            time: response.timeResponse,
-            type: response.typeResponse,
-          },
-        });
+  const handleRequestSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
+      setIsLoading(true);
+      try {
+        const response = await handleRequest();
+        if (response.error) {
+          // Manejar error
+          updateTab(currentTabId, {
+            response: {
+              data: response.data,
+              headers: response.headers,
+              status: response.status,
+              time: response.timeResponse,
+              type: response.typeResponse,
+            },
+          });
+        } else {
+          // Manejar respuesta exitosa
+          updateTab(currentTabId, {
+            response: {
+              data: response.data,
+              headers: response.headers,
+              status: response.status,
+              time: response.timeResponse,
+              type: response.typeResponse,
+            },
+          });
+        }
+      } finally {
+        setIsLoading(false);
       }
-    } finally {
-      setIsLoading(false);
-    }
-  }, [handleRequest, currentTabId, updateTab, setIsLoading]);
+    },
+    [handleRequest, currentTabId, updateTab, setIsLoading],
+  );
 
   return (
     <div className="min-h-screen flex text-white overflow-hidden">
@@ -371,36 +388,62 @@ export default function AppClient() {
         />
 
         {/* Panel de pestañas: desplazable en móvil, se adapta en escritorio */}
-        <div className="flex bg-zinc-800">
-          {listTabs.length > 0 &&
-            listTabs.map((tab) => {
-              const isActive = tab.id === currentTabId;
-              return (
-                <motion.div
-                  key={tab.id}
-                  initial={{ y: 0 }}
-                  animate={{ y: isActive ? -2 : 0 }}
-                  transition={{ duration: 0.1 }}
-                  onClick={() => handleTabClick(tab)}
-                  className={`px-5 relative py-2 cursor-pointer text-sm font-medium whitespace-nowrap transition-colors duration-200 flex-shrink-0
-                  ${
-                    isActive
-                      ? 'text-blue-600  dark:text-blue-400 border-b-2 border-blue-500 bg-white dark:bg-zinc-800'
-                      : 'text-zinc-600 dark:text-zinc-300 border-b-2 border-transparent hover:text-zinc-900 dark:hover:text-white hover:border-blue-500'
-                  }`}
-                >
-                  {tab.name}
-                  <div className="group-hover:flex group-hover:text-red-500 hidden absolute top-2 right-2">
-                    <button
-                      className="tabler--x"
-                      aria-label="Eliminar button"
-                      title={`Eliminar ${tab.name}`}
-                      onClick={(e) => handleRemoveTab(e, tab.id)}
-                    ></button>
-                  </div>
-                </motion.div>
-              );
-            })}
+
+        <div className="flex bg-zinc-800 relative">
+          <AnimatePresence>
+            {listTabs.length > 0 &&
+              listTabs.map((tab) => {
+                const isActive = tab.id === currentTabId;
+                return (
+                  <motion.div
+                    key={tab.id}
+                    onClick={() => handleTabClick(tab)}
+                    className={`relative px-5 py-2 cursor-pointer text-sm font-medium whitespace-nowrap transition-colors duration-200 flex-shrink-0
+              ${
+                isActive
+                  ? ' bg-green-500/10  text-green-primary'
+                  : 'text-zinc-400 dark:text-zinc-400 hover:text-zinc-100 dark:hover:text-white'
+              }`}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                  >
+                    <div className="relative z-10 flex items-center gap-2">
+                      {tab.name}
+                      <motion.div
+                        className="flex"
+                        initial={{ opacity: 0, width: 0 }}
+                        whileHover={{ opacity: 1, width: 14 }}
+                        transition={{ duration: 0.1 }}
+                      >
+                        <button
+                          className="p-1 rounded-full hover:bg-zinc-700 text-zinc-400 hover:text-red-500"
+                          aria-label="Eliminar button"
+                          title={`Eliminar ${tab.name}`}
+                          onClick={(e) => handleRemoveTab(e, tab.id)}
+                        >
+                          <Icon icon="tabler:x" width="12" height="12" />
+                        </button>
+                      </motion.div>
+                    </div>
+
+                    {isActive && (
+                      <motion.div
+                        layoutId="tab-underline"
+                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-500 z-0"
+                        initial={false}
+                        transition={{
+                          type: 'spring',
+                          stiffness: 350,
+                          damping: 30,
+                        }}
+                      />
+                    )}
+                  </motion.div>
+                );
+              })}
+          </AnimatePresence>
         </div>
 
         {/* Formulario de solicitud (RequestForm) */}

@@ -1,7 +1,7 @@
+import { AnimatePresence, motion } from 'framer-motion';
 import type React from 'react';
 import { BaseModalLazy } from '../../../../ui/lazy-components';
 import useEnviromentHook from './enviromentHook';
-import { motion, AnimatePresence } from 'framer-motion';
 
 export default function EnviromentComponent() {
   const {
@@ -29,7 +29,7 @@ export default function EnviromentComponent() {
   return (
     <div className="rounded-lg h-full p-4">
       <BaseModalLazy isOpen={isOpen} onClose={toggleModal}>
-        <motion.div 
+        <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.9, opacity: 0 }}
@@ -141,7 +141,9 @@ export default function EnviromentComponent() {
                         <input
                           type="text"
                           value={v.key}
-                          onChange={(e) => handleChange(i, 'key', e.target.value)}
+                          onChange={(e) =>
+                            handleChange(i, 'key', e.target.value)
+                          }
                           className="w-full bg-transparent outline-none border-0 focus:ring-1 focus:ring-zinc-600 rounded"
                         />
                       </td>
