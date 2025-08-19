@@ -20,7 +20,6 @@ import ResponsePanel from './response-panel';
 import { type RequestData, useRequestStore } from './stores/request.store';
 import MethodFormater from './components/method-formatter/method-formatter';
 
-
 const Header = ({
   isFullScreen,
   toogleFullScreen,
@@ -229,7 +228,7 @@ const TabDisplay = ({ currentTab }) => {
       {currentTab && (
         <motion.div
           key={currentTab.id || 'tab-display'} // Usa una key para AnimatePresence
-          initial={{ opacity: 0, x: 200 }} // Empieza invisible y fuera de la pantalla
+          initial={{ opacity: 0, x: 200, height: 40 }} // Empieza invisible y fuera de la pantalla
           animate={{ opacity: 1, x: 0 }} // Se desvanece y desliza hacia la vista
           exit={{ opacity: 0, x: 200 }} // Se desvanece y desliza fuera de la vista al cerrarse
           transition={{
@@ -237,10 +236,10 @@ const TabDisplay = ({ currentTab }) => {
             stiffness: 260,
             damping: 20,
           }}
-          className="fixed right-2.5 p-4 bg-black/50 top-2 z-4 h-2/4 w-[400px] overflow-scroll"
-          whileHover={{ scale: 1.02 }} // Un pequeño efecto de escala al pasar el mouse
+          className="fixed right-0 p-4 bottom-0 bg-black/70 z-4 h-2/4 w-[400px] overflow-scroll"
+          whileHover={{ scale: 1.02, height: '600px' }} // Un pequeño efecto de escala al pasar el mouse
         >
-          <pre className="text-xs h-full">
+          <pre className="text-xs h-full text-green-primary">
             {JSON.stringify(currentTab, null, 2)}
           </pre>
         </motion.div>
@@ -428,6 +427,18 @@ export default function AppClient() {
     [handleRequest, currentTabId, updateTab, setIsLoading],
   );
 
+  const tabsContainerRef = useRef(null);
+
+  const scrollTabs = (direction) => {
+    if (tabsContainerRef.current) {
+      const scrollAmount = 200; // Ajusta el valor de desplazamiento
+      tabsContainerRef.current.scrollTo({
+        left: tabsContainerRef.current.scrollLeft + (direction === 'left' ? -scrollAmount : scrollAmount),
+        behavior: 'smooth',
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen flex text-white overflow-hidden h-screen">
       {/* SideBar en escritorio y modal en móvil */}
@@ -449,62 +460,79 @@ export default function AppClient() {
         /> */}
 
         {/* Panel de pestañas: desplazable en móvil, se adapta en escritorio */}
-        <div className="flex bg-zinc-900 relative border-zinc-700 border-b ">
-          <AnimatePresence>
-            {listTabs.length > 0 &&
-              listTabs.map((tab) => {
-                const isActive = tab.id === currentTabId;
-                return (
-                  <motion.div
-                    key={tab.id}
-                    onClick={() => handleTabClick(tab)}
-                    className={`relative px-4 py-2 cursor-pointer text-xs font-medium whitespace-nowrap transition-colors duration-200 flex-shrink-0 border-r border-zinc-700 last:border-r-0 ${
-                      isActive
-                        ? ' text-green-primary'
-                        : 'text-zinc-400 dark:text-zinc-400 hover:text-zinc-100 dark:hover:text-white'
-                    }
-            `}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-                  >
-                    <div className="relative z-10 flex items-center gap-2">
-                      <MethodFormater nameMethod={tab.method} /> {tab.name}
-                      <motion.div
-                        className="flex"
-                        initial={{ opacity: 0, width: 0 }}
-                        whileHover={{ opacity: 1, width: 14 }}
-                        transition={{ duration: 0.1 }}
+        <div className="flex relative bg-zinc-900 border-b border-zinc-700">
+      {/* Botón de desplazamiento a la izquierda */}
+      <button
+        onClick={() => scrollTabs('left')}
+        className="z-20 p-2 text-zinc-400 hover:text-white bg-gradient-to-r from-zinc-950 via-zinc-900 to-transparent absolute left-0 h-full flex items-center"
+      >
+        <Icon icon="tabler:chevron-left" width="20" height="20" />
+      </button>
+      
+      {/* Contenedor de pestañas desplazable */}
+      <div 
+        ref={tabsContainerRef} 
+        className="flex overflow-scroll max-w-[80vw] no-scrollbar scroll-smooth" // no-scrollbar oculta la barra de desplazamiento
+        style={{ scrollbarWidth: 'none' }} // Para Firefox
+      >
+        <AnimatePresence>
+          {listTabs.length > 0 &&
+            listTabs.map((tab) => {
+              const isActive = tab.id === currentTabId;
+              return (
+                <motion.div
+                  key={tab.id}
+                  onClick={() => handleTabClick(tab)}
+                  className={`
+                    relative px-4 py-2 cursor-pointer text-xs font-medium whitespace-nowrap transition-colors duration-200 flex-shrink-0
+                    border-r border-zinc-700 last:border-r-0
+                    ${isActive ? 'text-green-primary' : 'text-zinc-400 hover:text-zinc-100'}
+                  `}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                >
+                  <div className="relative z-10 flex items-center gap-2">
+                    <MethodFormater nameMethod={tab.method} /> {tab.name}
+                    <motion.div
+                      className="flex"
+                      initial={{ opacity: 0, width: 0 }}
+                      whileHover={{ opacity: 1, width: 14 }}
+                      transition={{ duration: 0.1 }}
+                    >
+                      <button
+                        className="p-1 rounded-full hover:bg-green-700/10 text-zinc-400 "
+                        aria-label="Eliminar button"
+                        title={`Eliminar ${tab.name}`}
+                        onClick={(e) => handleRemoveTab(e, tab.id)}
                       >
-                        <button
-                          className="p-1 rounded-full hover:bg-green-700/10 text-zinc-400 "
-                          aria-label="Eliminar button"
-                          title={`Eliminar ${tab.name}`}
-                          onClick={(e) => handleRemoveTab(e, tab.id)}
-                        >
-                          <Icon icon="tabler:x" width="12" height="12" />
-                        </button>
-                      </motion.div>
-                    </div>
+                        <Icon icon="tabler:x" width="12" height="12" />
+                      </button>
+                    </motion.div>
+                  </div>
+                  {isActive && (
+                    <motion.div
+                      layoutId="tab-underline"
+                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-green-primary z-0"
+                      initial={false}
+                      transition={{ type: 'spring', stiffness: 350, damping: 30 }}
+                    />
+                  )}
+                </motion.div>
+              );
+            })}
+        </AnimatePresence>
+      </div>
 
-                    {isActive && (
-                      <motion.div
-                        layoutId="tab-underline"
-                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-green-primary z-0"
-                        initial={false}
-                        transition={{
-                          type: 'spring',
-                          stiffness: 350,
-                          damping: 30,
-                        }}
-                      />
-                    )}
-                  </motion.div>
-                );
-              })}
-          </AnimatePresence>
-        </div>
+      {/* Botón de desplazamiento a la derecha */}
+      <button
+        onClick={() => scrollTabs('right')}
+        className="z-20 p-2 text-zinc-400 hover:text-white bg-gradient-to-l from-zinc-900 via-zinc-900/80 to-transparent absolute right-0 h-full flex items-center"
+      >
+        <Icon icon="tabler:chevron-right" width="20" height="20" />
+      </button>
+    </div>
 
         <TabDisplay currentTab={currentTab} />
 

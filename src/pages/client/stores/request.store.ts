@@ -46,9 +46,10 @@ export const useRequestStore = create<RequestState>((set, get) => ({
   currentTabId: null,
   collections: [],
 
-  // --- Acciones de pestañas (reincorporadas) ---
   addFromNode: (nodeData) => {
-    const collectionId = nodeData.collectionId;
+    // Si no tiene una request, no es una petición, no se crea una tab.
+    if (!nodeData.request) return;
+
     const newTab: RequestData = {
       id: nanoid(),
       name: nodeData.name || 'Nueva Request',
@@ -70,37 +71,26 @@ export const useRequestStore = create<RequestState>((set, get) => ({
         {},
       ),
     };
-    
-    set((state) => {
-        const newTabs = [...state.listTabs, newTab];
-        return {
-            listTabs: newTabs,
-            currentTabId: newTab.id,
-        };
-    });
 
-    const state = get();
-    const collectionToUpdate = state.collections.find(col => col.id === collectionId);
-    if (collectionToUpdate) {
-        const updatedItem = [...(collectionToUpdate.item || []), {
-            id: newTab.id,
-            name: newTab.name,
-            request: newTab,
-        }];
-        db.collections.update(collectionId, { item: updatedItem });
-        set({
-            collections: state.collections.map(col =>
-                col.id === collectionId ? { ...col, item: updatedItem } : col
-            )
-        });
-    }
+    // --- LÍNEA CORREGIDA ---
+    // Ahora guardamos la nueva pestaña en Dexie.
+    db.tabs.add(newTab);
+
+    // Luego, actualizamos el estado de Zustand.
+    set((state) => ({
+      listTabs: [...state.listTabs, newTab],
+      currentTabId: newTab.id,
+    }));
   },
 
   removeTab: (id) => {
     db.tabs.delete(id);
     set((state) => {
       const remainingTabs = state.listTabs.filter((t) => t.id !== id);
-      const newCurrentTabId = state.currentTabId === id ? remainingTabs[0]?.id || null : state.currentTabId;
+      const newCurrentTabId =
+        state.currentTabId === id
+          ? remainingTabs[0]?.id || null
+          : state.currentTabId;
       return {
         listTabs: remainingTabs,
         currentTabId: newCurrentTabId,
@@ -137,7 +127,6 @@ export const useRequestStore = create<RequestState>((set, get) => ({
     }
   },
 
-  // --- Acciones de colecciones (correctas) ---
   loadCollections: async () => {
     try {
       const collections = await db.collections.toArray();
@@ -182,7 +171,9 @@ export const useRequestStore = create<RequestState>((set, get) => ({
   removeCollection: async (id) => {
     try {
       await db.collections.delete(id);
-      set((state) => ({ collections: state.collections.filter((col) => col.id !== id) }));
+      set((state) => ({
+        collections: state.collections.filter((col) => col.id !== id),
+      }));
     } catch (error) {
       console.error('Failed to remove collection:', error);
     }
@@ -219,8 +210,15 @@ export const useRequestStore = create<RequestState>((set, get) => ({
         return;
       }
 
-      if (!parsedData || !parsedData.info || !parsedData.info.name || !Array.isArray(parsedData.item)) {
-        toast.error('La estructura del archivo no coincide con una colección válida');
+      if (
+        !parsedData ||
+        !parsedData.info ||
+        !parsedData.info.name ||
+        !Array.isArray(parsedData.item)
+      ) {
+        toast.error(
+          'La estructura del archivo no coincide con una colección válida',
+        );
         return;
       }
 
@@ -235,12 +233,13 @@ export const useRequestStore = create<RequestState>((set, get) => ({
         collections: [...state.collections, newCollection],
       }));
       toast.success(`"${parsedData.info.name}" cargado exitosamente`);
-
     } catch (error) {
       toast.error('Error inesperado al cargar el archivo');
       console.error('Error general:', error);
     }
   },
 
-  exportCollections: async () => { /* ... (se mantiene igual) ... */ },
+  exportCollections: async () => {
+    /* ... (se mantiene igual) ... */
+  },
 }));

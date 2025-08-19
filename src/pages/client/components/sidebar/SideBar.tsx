@@ -39,7 +39,7 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
     importCollections,
     exportCollections,
   } = useRequestStore();
-  
+
   const enviromentList = useEnviromentStore((state) => state.listEntorno);
   const setNameEntornoActual = useEnviromentStore(
     (state) => state.setNameEntornoActual,
@@ -52,37 +52,48 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
 
   // Lógica para manejar la actualización y eliminación de la colección
   // Ahora usan las acciones de la store para persistencia.
-  
-  const handleUpdateItem = (collectionId: string, itemId: string, changes: Partial<CollectionItem>) => {
-    const collectionToUpdate = collections.find(col => col.id === collectionId);
-    if (!collectionToUpdate) return;
-    
-    const newItems = findAndUpdate(
-      collectionToUpdate.item, 
-      itemId, 
-      (item) => ({ ...item, ...changes })
+
+  const handleUpdateItem = (
+    collectionId: string,
+    itemId: string,
+    changes: Partial<CollectionItem>,
+  ) => {
+    const collectionToUpdate = collections.find(
+      (col) => col.id === collectionId,
     );
+    if (!collectionToUpdate) return;
+
+    const newItems = findAndUpdate(collectionToUpdate.item, itemId, (item) => ({
+      ...item,
+      ...changes,
+    }));
 
     updateCollection(collectionId, { item: newItems });
   };
-  
+
   const handleRemoveItem = (collectionId: string, itemId: string) => {
-    const collectionToUpdate = collections.find(col => col.id === collectionId);
+    const collectionToUpdate = collections.find(
+      (col) => col.id === collectionId,
+    );
     if (!collectionToUpdate) return;
-    
+
     // Función recursiva para eliminar el ítem
-    const filterAndRemove = (items: CollectionItem[], targetId: string): CollectionItem[] => {
-        return items.filter(item => item.id !== targetId)
-                    .map(item => ({ 
-                        ...item, 
-                        item: item.item ? filterAndRemove(item.item, targetId) : item.item 
-                    }));
+    const filterAndRemove = (
+      items: CollectionItem[],
+      targetId: string,
+    ): CollectionItem[] => {
+      return items
+        .filter((item) => item.id !== targetId)
+        .map((item) => ({
+          ...item,
+          item: item.item ? filterAndRemove(item.item, targetId) : item.item,
+        }));
     };
 
     const newItems = filterAndRemove(collectionToUpdate.item, itemId);
     updateCollection(collectionId, { item: newItems });
   };
-  
+
   const handleAddCollection = () => {
     const newCollection: Collection = {
       id: nanoid(),
@@ -91,7 +102,6 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
     };
     addCollection(newCollection);
   };
-  
 
   return (
     <ResizableSidebar minWidth={100} maxWidth={800} initialWidth={470}>
