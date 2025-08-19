@@ -1,12 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { useParamsStore } from '../components/addqueryparams/queryparams-store';
-import { useStoreHeaders } from '../stores/headers-store';
+
 import type { RetornoClient } from './types';
 
 const useClientStore = (): RetornoClient => {
   // -------------- Esto actualment no esta en uso , proximamente deprecado  ---------------------------
   const params = useParamsStore((state) => state.valor);
-  const cabeceras = useStoreHeaders((state) => state.valor);
 
   // ------------------------------ Proximamente deprecado arriba  ---------------------------
   // Estados Globales
@@ -56,7 +55,7 @@ const useClientStore = (): RetornoClient => {
     value: {
       timeResponse,
       params,
-      cabeceras,
+
       isOpenSiderBar,
       selectedMethod,
       response,

@@ -1,9 +1,8 @@
-import { Icon } from '@iconify/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback } from 'react';
-import { useEnviromentStore } from './client/components/enviroment/store.enviroment';
-import { Methodos } from './client/mapper-ops';
-import { useRequestStore } from './client/stores/request.store';
+import { Methodos } from './mapper-ops';
+import { useEnviromentStore } from './components/enviroment/store.enviroment';
+import { useRequestStore } from './stores/request.store';
 
 const RequestForm = ({
   refForm,

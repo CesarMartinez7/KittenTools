@@ -109,7 +109,7 @@ export default function EnviromentComponent() {
               </motion.button>
             </div>
 
-            <div className="overflow-x-auto dark:border-zinc-800 overflow-y-scroll h-[700px] custom-scrollbar">
+            <div className="overflow-x-auto dark:border-zinc-800 overflow-y-scroll h-[70vh] custom-scrollbar">
               <table className="min-w-full divide-y dark:divide-zinc-800">
                 <thead className="dark:bg-zinc-900 dark:text-zinc-200 text-zinc-700 bg-zinc-200 sticky top-0 z-10">
                   <tr>

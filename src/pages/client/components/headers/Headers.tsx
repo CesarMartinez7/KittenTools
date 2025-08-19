@@ -26,7 +26,7 @@ export const HeadersAddRequest: React.FC<HeadersAddRequestProps> = () => {
       if (!currentTabId) return;
       const newHeadersArray = [...headersArray];
       newHeadersArray[index] = { ...newHeadersArray[index], [field]: value };
-      
+
       // Ahora pasas el array completo a la store
       const newHeadersObject = newHeadersArray.reduce((acc, header) => {
         if (header.key) {
@@ -34,7 +34,7 @@ export const HeadersAddRequest: React.FC<HeadersAddRequestProps> = () => {
         }
         return acc;
       }, {});
-      
+
       updateTab(currentTabId, { headers: newHeadersObject });
     },
     [headersArray, currentTabId, updateTab],
@@ -42,9 +42,9 @@ export const HeadersAddRequest: React.FC<HeadersAddRequestProps> = () => {
 
   const handleAddHeader = useCallback(() => {
     if (!currentTabId) return;
-    const newHeadersArray = [...headersArray, { key: '', value: ''}];
-    
-    console.log(newHeadersArray)
+    const newHeadersArray = [...headersArray, { key: '', value: '' }];
+
+    console.log(newHeadersArray);
     // Al añadir, pasas el array y la store lo convierte
     const newHeadersObject = newHeadersArray.reduce((acc, header) => {
       if (header.key || header.value) {
@@ -53,8 +53,8 @@ export const HeadersAddRequest: React.FC<HeadersAddRequestProps> = () => {
       return acc;
     }, {});
 
-    console.log(newHeadersObject)
-    
+    console.log(newHeadersObject);
+
     updateTab(currentTabId, { headers: newHeadersObject });
   }, [headersArray, currentTabId, updateTab]);
 
@@ -70,7 +70,7 @@ export const HeadersAddRequest: React.FC<HeadersAddRequestProps> = () => {
         }
         return acc;
       }, {});
-      
+
       updateTab(currentTabId, { headers: newHeadersObject });
     },
     [headersArray, currentTabId, updateTab],
@@ -78,7 +78,10 @@ export const HeadersAddRequest: React.FC<HeadersAddRequestProps> = () => {
 
   // Es buena práctica añadir una fila vacía al final si no hay ninguna
   const displayedHeaders = useMemo(() => {
-    if (headersArray.length > 0 && headersArray[headersArray.length - 1].key !== '') {
+    if (
+      headersArray.length > 0 &&
+      headersArray[headersArray.length - 1].key !== ''
+    ) {
       return [...headersArray, { key: '', value: '' }];
     }
     return headersArray;

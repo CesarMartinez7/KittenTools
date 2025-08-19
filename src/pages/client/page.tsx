@@ -1,28 +1,25 @@
-import "./App.css";
-import { Icon } from "@iconify/react";
-import arrowsMaximize from "@iconify-icons/tabler/arrows-maximize";
-import arrowsMinimize from "@iconify-icons/tabler/arrows-minimize";
-import sendIcon from "@iconify-icons/tabler/send";
-import { AnimatePresence, motion } from "framer-motion";
-import { nanoid } from "nanoid";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
-import { CodeEditorLazy } from "../../ui/lazy-components";
-import RequestForm from "../request.form";
-import AddQueryParam from "./components/addqueryparams/addQueryParams";
-import EnviromentComponent from "./components/enviroment/enviroment.component";
-import { useEnviromentStore } from "./components/enviroment/store.enviroment";
-import { Headers, HeadersAddRequest } from "./components/headers/Headers";
-import ScriptComponent from "./components/scripts/script-component";
-import { SideBar } from "./components/sidebar/SideBar";
-import DarkModeToggle from "./components/toogle-theme";
-import ClientCustomHook from "./hooks/client-hook";
-import RequestHook from "./hooks/request.client";
-import { Methodos, VariantsAnimation } from "./mapper-ops";
-import ResponsePanel from "./response-panel";
-import { type RequestData, useRequestStore } from "./stores/request.store";
-import FormatDataTypeLabel from "../../ui/formatter-JSON/formatlabel";
-import MethodFormater from "./components/method-formatter/method-formatter";
+import './App.css';
+import { Icon } from '@iconify/react';
+import arrowsMaximize from '@iconify-icons/tabler/arrows-maximize';
+import arrowsMinimize from '@iconify-icons/tabler/arrows-minimize';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
+import { CodeEditorLazy } from '../../ui/lazy-components';
+import RequestForm from './request.form';
+import AddQueryParam from './components/addqueryparams/addQueryParams';
+import EnviromentComponent from './components/enviroment/enviroment.component';
+import { useEnviromentStore } from './components/enviroment/store.enviroment';
+import { Headers, HeadersAddRequest } from './components/headers/Headers';
+import ScriptComponent from './components/scripts/script-component';
+import { SideBar } from './components/sidebar/SideBar';
+import ClientCustomHook from './hooks/client-hook';
+import RequestHook from './hooks/request.client';
+import { VariantsAnimation } from './mapper-ops';
+import ResponsePanel from './response-panel';
+import { type RequestData, useRequestStore } from './stores/request.store';
+import MethodFormater from './components/method-formatter/method-formatter';
+
 
 // --- Subcomponente: Header (Botón de pantalla completa) ---
 const Header = ({
@@ -41,11 +38,11 @@ const Header = ({
         className={`font-medium text-zinc-800 dark:text-zinc-300 truncate max-w-[250px] px-3 py-1 rounded-full 
     ${
       nombreEntorno === null
-        ? "bg-red-200 dark:bg-red-950 text-red-500"
-        : "bg-green-200 dark:bg-green-700 text-green-600"
+        ? 'bg-red-200 dark:bg-red-950 text-red-500'
+        : 'bg-green-200 dark:bg-green-700 text-green-600'
     }`}
       >
-        {nombreEntorno ?? "No hay entornos activos"}
+        {nombreEntorno ?? 'No hay entornos activos'}
       </div>
 
       <button
@@ -74,7 +71,7 @@ const TabNavigation = ({ Opciones, selectedIdx, setMimeSelected }) => {
             onClick={() => setMimeSelected(index)}
             className={`
               relative btn btn-sm text-sm py-2 px-4 z-10
-              ${isSelected ? "font-semibold text-gray-800 dark:text-white" : "text-gray-500 dark:text-zinc-400 hover:text-gray-800 dark:hover:text-white"}
+              ${isSelected ? 'font-semibold text-gray-800 dark:text-white' : 'text-gray-500 dark:text-zinc-400 hover:text-gray-800 dark:hover:text-white'}
             `}
           >
             <span>{opcion.name}</span>
@@ -85,7 +82,7 @@ const TabNavigation = ({ Opciones, selectedIdx, setMimeSelected }) => {
               <motion.div
                 layoutId="tab-underline"
                 className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-500"
-                transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                transition={{ type: 'spring', stiffness: 350, damping: 30 }}
               />
             )}
           </button>
@@ -97,7 +94,7 @@ const TabNavigation = ({ Opciones, selectedIdx, setMimeSelected }) => {
           layoutId="tab-background"
           className="absolute inset-0 bg-gray-200 dark:bg-zinc-900"
           initial={false}
-          transition={{ type: "spring", stiffness: 350, damping: 30 }}
+          transition={{ type: 'spring', stiffness: 350, damping: 30 }}
         />
       )}
     </div>
@@ -124,7 +121,7 @@ const ContentPanel = ({
             className="flex flex-col flex-1 min-h-0"
           >
             <div className="flex gap-4 mb-3">
-              {["json", "form", "xml", "none"].map((type, idx) => (
+              {['json', 'form', 'xml', 'none'].map((type, idx) => (
                 <label
                   key={idx}
                   className="text-sm text-gray-800 dark:text-gray-300 flex items-center gap-2 cursor-pointer"
@@ -143,7 +140,7 @@ const ContentPanel = ({
               ))}
             </div>
             <div className="flex-1 overflow-auto">
-              {contentType === "none" ? (
+              {contentType === 'none' ? (
                 <div className="h-full flex items-center justify-center text-gray-500 dark:text-zinc-500">
                   <p className="text-lg font-medium">
                     No body for this request.
@@ -228,8 +225,6 @@ const ContentPanel = ({
   );
 };
 
-
-
 const TabDisplay = ({ currentTab }) => {
   return (
     <AnimatePresence>
@@ -247,7 +242,9 @@ const TabDisplay = ({ currentTab }) => {
           className="fixed right-2.5 p-4 bg-black/50 top-2 z-4 h-2/4 w-[400px] overflow-scroll"
           whileHover={{ scale: 1.02 }} // Un pequeño efecto de escala al pasar el mouse
         >
-          <pre className="text-xs h-full">{JSON.stringify(currentTab, null, 2)}</pre>
+          <pre className="text-xs h-full">
+            {JSON.stringify(currentTab, null, 2)}
+          </pre>
         </motion.div>
       )}
     </AnimatePresence>
@@ -256,6 +253,15 @@ const TabDisplay = ({ currentTab }) => {
 
 // --- Componente Principal (Main App) ---
 export default function AppClient() {
+
+  const loadTabs = useRequestStore((state) => state.loadTabs)
+
+  useEffect(() => {
+    alert("cargando datos")
+    loadTabs()
+    console.log(loadTabs())
+  }, [loadTabs])
+
   const { value, setter } = ClientCustomHook();
   const listEntornos = useEnviromentStore((state) => state.listEntorno);
   const nombreEntorno = useEnviromentStore((state) => state.nameEntornoActual);
@@ -285,7 +291,7 @@ export default function AppClient() {
   } = setter;
 
   const [selectedIdx, setMimeSelected] = useState(
-    Number(sessionStorage.getItem("selectedIdx")) || 0,
+    Number(sessionStorage.getItem('selectedIdx')) || 0,
   );
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [typeResponse, setTypeResponse] = useState<string | null>(null);
@@ -301,7 +307,7 @@ export default function AppClient() {
     cabeceras: currentTab?.headers,
     bodyRequest: currentTab?.body,
     endpointUrl: currentTab?.url,
-    contentType: currentTab?.headers?.["Content-Type"],
+    contentType: currentTab?.headers?.['Content-Type'],
   });
 
   const handleUrlChange = useCallback(
@@ -314,7 +320,6 @@ export default function AppClient() {
   );
 
   const handleCodeEditorChange = useCallback(
-
     (value: string) => {
       if (currentTabId) {
         updateTab(currentTabId, { body: value });
@@ -343,7 +348,7 @@ export default function AppClient() {
       setIsFullScreen(true);
     } else {
       document.exitFullscreen();
-      document.body.style.userSelect = "";
+      document.body.style.userSelect = '';
       setIsFullScreen(false);
     }
   };
@@ -351,7 +356,7 @@ export default function AppClient() {
   useEffect(() => {
     if (currentTab) {
       setBodyRequest(currentTab.body);
-      setContentType(currentTab.headers["Content-Type"]);
+      setContentType(currentTab.headers['Content-Type']);
       setHeadersResponse(currentTab.headers);
       setTypeResponse(currentTab.response?.type || null);
       setStatusCode(currentTab.response?.status || 0);
@@ -377,10 +382,10 @@ export default function AppClient() {
   };
 
   const Opciones = [
-    { name: "Cuerpo de Peticion", icon: bodyRequest },
-    { name: "Parametros", icon: currentTab?.query },
-    { name: "Cabeceras", icon: currentTab?.headers },
-    { name: "Entorno", icon: listEntornos },
+    { name: 'Cuerpo de Peticion', icon: bodyRequest },
+    { name: 'Parametros', icon: currentTab?.query },
+    { name: 'Cabeceras', icon: currentTab?.headers },
+    { name: 'Entorno', icon: listEntornos },
   ];
 
   const handleRequestSubmit = useCallback(
@@ -421,9 +426,6 @@ export default function AppClient() {
 
   return (
     <div className="min-h-screen flex text-white overflow-hidden h-screen">
-
-
-      
       {/* SideBar en escritorio y modal en móvil */}
       <SideBar
         currentUrl={currentTab?.url}
@@ -452,16 +454,16 @@ export default function AppClient() {
                   <motion.div
                     key={tab.id}
                     onClick={() => handleTabClick(tab)}
-                    className={`relative px-5 py-2 cursor-pointer text-sm font-medium whitespace-nowrap transition-colors duration-200 flex-shrink-0 border-r border-zinc-700 last:border-r-0 ${
-                isActive
-                  ? " text-green-primary"
-                  : "text-zinc-400 dark:text-zinc-400 hover:text-zinc-100 dark:hover:text-white"
-              }
+                    className={`relative px-4 py-2 cursor-pointer text-xs font-medium whitespace-nowrap transition-colors duration-200 flex-shrink-0 border-r border-zinc-700 last:border-r-0 ${
+                      isActive
+                        ? ' text-green-primary'
+                        : 'text-zinc-400 dark:text-zinc-400 hover:text-zinc-100 dark:hover:text-white'
+                    }
             `}
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.8 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 25 }}
                   >
                     <div className="relative z-10 flex items-center gap-2">
                       <MethodFormater nameMethod={tab.method} /> {tab.name}
@@ -488,7 +490,7 @@ export default function AppClient() {
                         className="absolute bottom-0 left-0 right-0 h-0.5 bg-green-primary z-0"
                         initial={false}
                         transition={{
-                          type: "spring",
+                          type: 'spring',
                           stiffness: 350,
                           damping: 30,
                         }}
@@ -500,20 +502,18 @@ export default function AppClient() {
           </AnimatePresence>
         </div>
 
+        <TabDisplay currentTab={currentTab} />
 
-        <TabDisplay currentTab={currentTab}/>
-
-        
         <RequestForm
           refForm={refForm}
           onSubmit={handleRequestSubmit}
-          selectedMethod={currentTab?.method || "GET"}
+          selectedMethod={currentTab?.method || 'GET'}
           handleClickShowMethod={handleClickShowMethod}
           showMethods={showMethods}
           setSelectedMethod={handleMethodChange}
           setShowMethods={setShowMethods}
           entornoActual={currentTab?.url}
-          endpointUrl={currentTab?.url || ""}
+          endpointUrl={currentTab?.url || ''}
           handlerChangeInputRequest={handleUrlChange}
           isLoading={isLoading}
         />
