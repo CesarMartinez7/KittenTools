@@ -130,7 +130,7 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
             </div>
             {/* Header */}
             <div className="flex justify-start items-center my-4 space-x-3 relative">
-              <span className="tabler--bolt-off text-gray-300"></span>
+              <span className="tabler--bolt dark:text-gray-300 text-gray-700 "></span>
               <h3 className="text-4xl font-bold bg-gradient-to-tr text-gray-700 dark:text-lime-50">
                 Elisa
               </h3>
@@ -175,9 +175,10 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
             <div className="flex w-full gap-4 flex-1 overflow-hidden">
               <div
                 className="
-              flex-1 rounded-lg p-4 overflow-hidden h-full flex flex-col
+              flex-1 rounded-lg p-4 overflow-hidden h-full flex flex-col no-scrollbar scroll-smooth
               bg-gray-100 dark:bg-zinc-900
             "
+            style={{scrollbarWidth: "none"}}
               >
                 {currenIdx === 2 && (
                   <div className="flex flex-col gap-2 h-full">
@@ -212,7 +213,7 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
                   </div>
                 )}
                 {currenIdx === 1 && (
-                  <div className="overflow-y-auto flex-1 pr-2 custom-scrollbar">
+                  <div className="overflow-y-auto flex-1 pr-2 custom-scrollbar no-scrollbar" style={{scrollbarWidth: "none"}}>
                     <div className="flex justify-end mb-4">
                       <button
                         onClick={handleAddCollection}

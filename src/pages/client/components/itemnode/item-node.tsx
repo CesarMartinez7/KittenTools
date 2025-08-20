@@ -5,10 +5,45 @@ import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import LazyListPerform from '../../../../ui/LazyListPerform';
 import { useRequestStore } from '../../stores/request.store';
-import useItemNodeLogic from './item.hook';
 import type { ItemNodeProps } from './types';
+import { AnimatePresence, motion } from 'framer-motion';
 
-// Componente ResizableSidebar (sin modificaciones)
+// --- Funciones auxiliares para manipulación de colecciones ---
+// Estas funciones ahora están fuera del componente para no recrearlas en cada render.
+const findAndUpdateItem = (
+  items: any[],
+  targetId: string,
+  updateFn: (item: any) => any | null,
+): any[] => {
+  return items.flatMap((item) => {
+    if (item.id === targetId) {
+      const updatedItem = updateFn(item);
+      return updatedItem ? [updatedItem] : [];
+    }
+    if (item.item) {
+      const updatedSubItems = findAndUpdateItem(item.item, targetId, updateFn);
+      return [{ ...item, item: updatedSubItems }];
+    }
+    return [item];
+  });
+};
+
+const findAndRemoveItem = (items: any[], targetId: string): any[] => {
+  return items
+    .filter(item => item.id !== targetId)
+    .map(item => {
+      if (item.item) {
+        return {
+          ...item,
+          item: findAndRemoveItem(item.item, targetId),
+        };
+      }
+      return item;
+    });
+};
+// --- Fin de las funciones auxiliares ---
+
+// Componente ResizableSidebar (sin cambios)
 interface ResizableSidebarProps {
   children: React.ReactNode;
   initialWidth?: number;
@@ -17,7 +52,7 @@ interface ResizableSidebarProps {
   className?: string;
 }
 
-const ResizableSidebar: React.FC<ResizableSidebarProps> = ({
+export const ResizableSidebar: React.FC<ResizableSidebarProps> = ({
   children,
   initialWidth = 300,
   minWidth = 200,
@@ -71,10 +106,7 @@ const ResizableSidebar: React.FC<ResizableSidebarProps> = ({
       className={`relative transition-all ${className}`}
       style={{ width: `${width}px` }}
     >
-      {/* Contenido del sidebar */}
       <div className="h-full overflow-auto">{children}</div>
-
-      {/* Handle de resize */}
       <div
         className={`
           absolute top-0 right-0 w-1 h-full cursor-col-resize group z-10
@@ -82,7 +114,6 @@ const ResizableSidebar: React.FC<ResizableSidebarProps> = ({
         `}
         onMouseDown={handleMouseDown}
       >
-        {/* Indicador visual del handle */}
         <div className="absolute right-0 top-1/2 transform translate-x-full -translate-y-1/2">
           <div className="bg-zinc-800 border border-zinc-600 rounded-md p-1 opacity-0 group-hover:opacity-100 transition-opacity">
             <Icon
@@ -98,31 +129,168 @@ const ResizableSidebar: React.FC<ResizableSidebarProps> = ({
   );
 };
 
-// --- Lógica del componente ItemNode ---
-const ItemNode: React.FC<ItemNodeProps> = (props) => {
-  const {
-    nodeData,
-    collapsed,
-    showResponses,
-    showBar,
-    indent,
-    isFolder,
-    haveResponses,
-    getDisplayName,
-    getMethodColor,
-    mapperFolder,
-    mapperRequest,
-    setShowResponses,
-    handleClickContextMenu,
-    handleClick,
-    setShowBar,
-  } = useItemNodeLogic(props);
 
-  const { addFromNode } = useRequestStore();
+// --- Componente ItemNode refactorizado para usar el store ---
+const ItemNode: React.FC<ItemNodeProps> = ({ data, level, parentCollectionId }) => {
+  const { collections, updateCollection, removeCollection, addFromNode } = useRequestStore();
+  const [collapsed, setCollapsed] = useState(true);
+  const [showResponses, setShowResponses] = useState(false);
+  const [showBar, setShowBar] = useState(false);
+  
+  const nodeData = data;
+  const isFolder = !!nodeData?.item;
+  const haveResponses = !!nodeData?.response && nodeData.response.length > 0;
+  const indent = 1 * (level || 0);
 
-  if (!nodeData) {
-    return null;
-  }
+  const getDisplayName = () => {
+    if (!nodeData?.name || nodeData.name.trim() === '') {
+      return isFolder ? 'Carpeta sin nombre' : 'Request sin nombre';
+    }
+    return nodeData.name;
+  };
+  
+  const getMethodColor = (method: string) => {
+    switch (method?.toUpperCase()) {
+      case 'GET': return 'text-teal-500';
+      case 'POST': return 'text-sky-400';
+      case 'PUT': return 'text-orange-400';
+      case 'DELETE': return 'text-red-400';
+      case 'PATCH': return 'text-purple-400';
+      default: return 'text-gray-400';
+    }
+  };
+
+  const handleNuevaPeticion = () => {
+    const nameNewRequest = window.prompt('Nombre de tu nueva petición');
+    if (!nameNewRequest || !nodeData) return;
+
+    const collectionToUpdate = collections.find(col => col.id === parentCollectionId);
+    if (!collectionToUpdate) return;
+    
+    // Asumimos que data.id es el ID del folder al que se agregará la petición
+    const updatedItems = findAndUpdateItem(collectionToUpdate.item, nodeData.id, (item) => {
+        const newRequest = {
+            id: nanoid(),
+            name: nameNewRequest,
+            request: {
+                id: nanoid(),
+                name: nameNewRequest,
+                method: 'GET',
+                headers: {},
+                body: { mode: 'raw', raw: '', options: { raw: { language: 'json' } } },
+                url: '',
+                query: {},
+            },
+        };
+        const newItems = item.item ? [...item.item, newRequest] : [newRequest];
+        return { ...item, item: newItems };
+    });
+    
+    updateCollection(parentCollectionId, { item: updatedItems });
+    toast.success('Nueva petición creada.');
+  };
+
+  const handleChangeName = () => {
+    const oldName = nodeData?.name || '';
+    const newName = prompt('Nuevo nombre:', oldName || getDisplayName());
+    if (!newName || !newName.trim() || !nodeData) return;
+    
+    const collectionToUpdate = collections.find(col => col.id === parentCollectionId);
+    if (!collectionToUpdate) return;
+    
+    const updatedItems = findAndUpdateItem(collectionToUpdate.item, nodeData.id, (item) => ({ ...item, name: newName.trim() }));
+    updateCollection(parentCollectionId, { item: updatedItems });
+    toast.success(`"${oldName}" renombrado a "${newName.trim()}"`);
+  };
+
+  const handleClickDelete = () => {
+    const displayName = getDisplayName();
+    if (confirm(`¿Eliminar "${displayName}"?`) && nodeData) {
+      if (nodeData.id === parentCollectionId) {
+          // Si es la colección principal, la eliminamos
+          removeCollection(parentCollectionId);
+      } else {
+          // Si es un ítem dentro de la colección, lo eliminamos
+          const collectionToUpdate = collections.find(col => col.id === parentCollectionId);
+          if (collectionToUpdate) {
+              const newItems = findAndRemoveItem(collectionToUpdate.item, nodeData.id);
+              updateCollection(parentCollectionId, { item: newItems });
+          }
+      }
+      toast.success(`"${displayName}" eliminado`);
+    }
+  };
+
+  const handleClickDuplicar = () => {
+    if (!nodeData) return;
+    
+    const collectionToUpdate = collections.find(col => col.id === parentCollectionId);
+    if (!collectionToUpdate) return;
+    
+    const updatedItems = findAndUpdateItem(collectionToUpdate.item, nodeData.id, (item) => {
+        const duplicatedItem = { ...item, id: nanoid(), name: `${item.name} (Copia)` };
+        return [item, duplicatedItem];
+    }).flat();
+
+    updateCollection(parentCollectionId, { item: updatedItems });
+    toast.success(`"${nodeData.name}" duplicado`);
+  };
+  
+  const handleNuevaCarpeta = () => {
+    const nameNewFolder = window.prompt('Nombre de tu nueva carpeta');
+    if (!nameNewFolder || !nodeData) return;
+    
+    const collectionToUpdate = collections.find(col => col.id === parentCollectionId);
+    if (!collectionToUpdate) return;
+    
+    // Si el nodo actual es una carpeta, se añade dentro de ella
+    const updatedItems = findAndUpdateItem(collectionToUpdate.item, nodeData.id, (item) => {
+        const newFolder = {
+            id: nanoid(),
+            name: nameNewFolder,
+            item: [],
+        };
+        const newItems = item.item ? [...item.item, newFolder] : [newFolder];
+        return { ...item, item: newItems };
+    });
+    
+    updateCollection(parentCollectionId, { item: updatedItems });
+    toast.success('Nueva carpeta creada.');
+  };
+
+  const handleClickContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setShowBar(!showBar);
+  };
+
+  const handleClick = () => {
+    setShowBar(false);
+    if (!nodeData) return;
+
+    if (isFolder) {
+      setCollapsed(!collapsed);
+    } else {
+      if (nodeData.request) {
+        addFromNode({ ...nodeData, collectionId: parentCollectionId });
+      }
+    }
+  };
+  
+  const mapperFolder = [
+    { name: 'Renombrar', action: handleChangeName },
+    { name: 'Duplicar', action: handleClickDuplicar },
+    { name: 'Eliminar', action: handleClickDelete },
+    { name: 'Nueva petición', action: handleNuevaPeticion },
+    { name: 'Nueva carpeta', action: handleNuevaCarpeta },
+    { name: 'Info' },
+  ];
+
+  const mapperRequest = [
+    { name: 'Renombrar', action: handleChangeName },
+    { name: 'Duplicar', action: handleClickDuplicar },
+    { name: 'Eliminar', action: handleClickDelete },
+  ];
 
   return (
     <div
@@ -132,15 +300,8 @@ const ItemNode: React.FC<ItemNodeProps> = (props) => {
       style={{ marginLeft: `${indent}px` }}
     >
       <div
-        className="p-1.5 rounded-md border dark:border-zinc-800 shadow-xl flex justify-between items-center group dark:hover:bg-zinc-800 transition-colors bg-white/90 dark:bg-zinc-800/60 text-xs cursor-pointer text-zinc-200"
-        onClick={() => {
-          handleClick(); // lo que ya tienes para UI
-
-          if (!isFolder && nodeData.request) {
-            // Se agrega la request directamente al store, sin pasar por una prop
-            addFromNode(nodeData);
-          }
-        }}
+        className="p-1.5 rounded-md border border-gray-300 dark:border-zinc-800 shadow-xl flex justify-between items-center group hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors bg-white/90 dark:bg-zinc-800/60 text-xs cursor-pointer text-zinc-200"
+        onClick={handleClick}
       >
         <div className="flex items-center gap-2">
           {isFolder && (
@@ -148,11 +309,9 @@ const ItemNode: React.FC<ItemNodeProps> = (props) => {
               icon={collapsed ? 'tabler:folder' : 'tabler:folder-open'}
               width="15"
               height="15"
-              className={`${props.level === 0 ? 'text-green-primary/85' : props.level === 1 ? 'text-green-primary' : props.level === 2 ? 'text-green-300' : props.level === 3 ? 'text-green-200' : 'text-green-100'}`}
+              className={`${level === 0 ? 'text-green-primary/85' : level === 1 ? 'text-green-primary' : level === 2 ? 'text-green-300' : level === 3 ? 'text-green-200' : 'text-green-100'}`}
             />
           )}
-
-          {/* ------------------------------------------ Si es un request ---------------------------------------- */}
           {nodeData.request?.method && !isFolder && (
             <span
               className={`font-mono font-bold px-1 py-1 rounded-md ${getMethodColor(nodeData.request.method)}`}
@@ -179,7 +338,6 @@ const ItemNode: React.FC<ItemNodeProps> = (props) => {
           )}
         </div>
       </div>
-
       {showBar && (
         <div
           className="absolute text-xs text-gray-700 bg-white dark:bg-zinc-900 dark:text-white rounded-md shadow-lg z-50 p-2 w-50"
@@ -189,7 +347,7 @@ const ItemNode: React.FC<ItemNodeProps> = (props) => {
             {(isFolder ? mapperFolder : mapperRequest).map((res) => (
               <li
                 key={res.name}
-                className="dark:hover:bg-zinc-700 hover:bg-zinc-200 px-2 py-1 text-xs  cursor-pointer flex gap-2"
+                className="dark:hover:bg-zinc-700 hover:bg-zinc-200 px-2 py-1 text-xs cursor-pointer flex gap-2"
                 onClick={res.action}
               >
                 {res.name}
@@ -198,23 +356,19 @@ const ItemNode: React.FC<ItemNodeProps> = (props) => {
           </ul>
         </div>
       )}
-
       {!collapsed && isFolder && nodeData.item && (
         <div className="ml-2 flex flex-col gap-2">
           {nodeData.item.map((child, index) => (
-            <LazyListPerform key={index}>
+            <LazyListPerform key={child.id || index}>
               <ItemNode
-                key={index}
                 data={child}
-                level={(props.level || 0) + 1}
-                // Ya no se pasa `loadRequest`
-                nameItem={props.nameItem}
+                level={(level || 0) + 1}
+                parentCollectionId={parentCollectionId}
               />
             </LazyListPerform>
           ))}
         </div>
       )}
-
       {haveResponses && (
         <div className="ml-4 mt-1">
           <button
@@ -232,7 +386,6 @@ const ItemNode: React.FC<ItemNodeProps> = (props) => {
                   key={i}
                   onClick={() => {
                     try {
-                      // Se crea el objeto de request con la respuesta seleccionada
                       const requestData = {
                         id: nanoid(),
                         name: `${nodeData.name} - Respuesta ${i + 1}`,
@@ -255,8 +408,7 @@ const ItemNode: React.FC<ItemNodeProps> = (props) => {
                         ),
                         response: resp,
                       };
-                      // Se agrega la request completa al store
-                      addFromNode(requestData);
+                      addFromNode({ ...requestData, collectionId: parentCollectionId });
                     } catch (e) {
                       toast.error(String(e));
                     }
@@ -277,4 +429,3 @@ const ItemNode: React.FC<ItemNodeProps> = (props) => {
 };
 
 export default ItemNode;
-export { ResizableSidebar };

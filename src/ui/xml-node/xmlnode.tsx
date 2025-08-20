@@ -14,49 +14,61 @@ const XmlNode: React.FC<XmlNodeProps> = ({ node, depth = 0 }) => {
     setIsCollapsed(!isCollapsed);
   };
 
-  const hasChildren =
-    node.hasChildNodes() &&
-    Array.from(node.childNodes).some((child) => child.nodeType === 1);
-
-  const renderAttributes = (element: Element) => {
-    return Array.from(element.attributes).map((attr) => (
-      <span key={attr.name} className="text-yellow-400">
-        {' '}
-        {attr.name}=<span className="text-orange-400">"{attr.value}"</span>
-      </span>
-    ));
-  };
-
-  const renderContent = (node: Node) => {
-    if (node.nodeType === Node.TEXT_NODE && node.textContent.trim() !== '') {
-      return <span className="text-gray-300 ml-2">{node.textContent}</span>;
+  if (node.nodeType === Node.TEXT_NODE) {
+    const textContent = node.textContent?.trim();
+    if (textContent) {
+      return (
+        <span className="text-gray-700 dark:text-green-300">
+          {textContent}
+        </span>
+      );
     }
     return null;
-  };
+  }
 
   if (node.nodeType === Node.ELEMENT_NODE) {
     const element = node as Element;
+    const childNodes = Array.from(element.childNodes);
+    
+    // Verificamos si hay nodos de ELEMENTO o TEXTO con contenido
+    const hasChildrenToRender = childNodes.some(
+      (child) =>
+        child.nodeType === Node.ELEMENT_NODE ||
+        (child.nodeType === Node.TEXT_NODE && child.textContent?.trim() !== '')
+    );
+
+    const renderAttributes = (element: Element) => {
+      return Array.from(element.attributes).map((attr) => (
+        <span key={attr.name} className="text-blue-500 dark:text-yellow-400">
+          {' '}
+          {attr.name}=<span className="text-orange-600 dark:text-orange-400">"{attr.value}"</span>
+        </span>
+      ));
+    };
+
     return (
       <div style={{ marginLeft: depth * 16 }} className="text-sm">
         <span className="text-gray-400">{'<'}</span>
         <span
-          className="text-purple-400 cursor-pointer"
-          onClick={hasChildren ? toggleCollapse : undefined}
+          className="text-purple-600 dark:text-purple-400 cursor-pointer"
+          onClick={hasChildrenToRender ? toggleCollapse : undefined}
         >
           {element.nodeName}
         </span>
         {renderAttributes(element)}
-        {hasChildren ? (
+        
+        {/* Lógica para manejar si el nodo tiene contenido */}
+        {hasChildrenToRender ? (
           <>
             <span className="text-gray-400">{'>'}</span>
             {!isCollapsed && (
               <>
-                {Array.from(element.childNodes).map((child, index) => (
+                {childNodes.map((child, index) => (
                   <XmlNode key={index} node={child} depth={depth + 1} />
                 ))}
                 <div style={{ marginLeft: depth * 16 }} className="text-sm">
                   <span className="text-gray-400">{'</'}</span>
-                  <span className="text-purple-400">{element.nodeName}</span>
+                  <span className="text-purple-600 dark:text-purple-400">{element.nodeName}</span>
                   <span className="text-gray-400">{'>'}</span>
                 </div>
               </>
@@ -74,9 +86,9 @@ const XmlNode: React.FC<XmlNodeProps> = ({ node, depth = 0 }) => {
         )}
       </div>
     );
-  } else {
-    return renderContent(node);
   }
+  
+  return null;
 };
 
 export default XmlNode;

@@ -2,7 +2,7 @@ import './App.css';
 import { Icon } from '@iconify/react';
 import arrowsMaximize from '@iconify-icons/tabler/arrows-maximize';
 import arrowsMinimize from '@iconify-icons/tabler/arrows-minimize';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, time } from 'framer-motion';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import { CodeEditorLazy } from '../../ui/lazy-components';
@@ -17,8 +17,11 @@ import ClientCustomHook from './hooks/client-hook';
 import RequestHook from './hooks/request.client';
 import { VariantsAnimation } from './mapper-ops';
 import ResponsePanel from './response-panel';
+import chevronRight from "@iconify-icons/tabler/chevron-right"
 import { type RequestData, useRequestStore } from './stores/request.store';
 import MethodFormater from './components/method-formatter/method-formatter';
+import toast from 'react-hot-toast';
+import ResponsesTypesComponent from './components/responses-core/response.';
 
 const Header = ({
   isFullScreen,
@@ -30,7 +33,7 @@ const Header = ({
   nombreEntorno: string | null;
 }) => {
   return (
-    <div className="flex dark items-center text-xs gap-2 justify-end px-4 py-2 border-gray-200 dark:border-zinc-800 backdrop-blur-sm py-2">
+    <div className="flex dark items-center text-xs gap-2 justify-end px-4 border-gray-200 dark:border-zinc-800 backdrop-blur-sm py-2">
       {/* Nombre entorno */}
       <div
         className={`font-medium text-zinc-800 dark:text-zinc-300 truncate max-w-[250px] px-3 py-1 rounded-full 
@@ -78,28 +81,19 @@ const TabNavigation = ({ Opciones, selectedIdx, setMimeSelected }) => {
             )}
             {isSelected && (
               <motion.div
-                layoutId="tab-underline"
-                className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-500"
+                layoutId="tab-background"
+                className="absolute inset-0 "
+                initial={false}
                 transition={{ type: 'spring', stiffness: 350, damping: 30 }}
               />
             )}
           </button>
         );
       })}
-      {/* Indicador de fondo animado */}
-      {Opciones.length > 0 && selectedIdx !== -1 && (
-        <motion.div
-          layoutId="tab-background"
-          className="absolute inset-0 bg-gray-200 dark:bg-zinc-900"
-          initial={false}
-          transition={{ type: 'spring', stiffness: 350, damping: 30 }}
-        />
-      )}
     </div>
   );
 };
 
-// --- Subcomponente: ContentPanel (Contenido de las pestañas) ---
 const ContentPanel = ({
   selectedIdx,
   bodyRequest,
@@ -227,17 +221,17 @@ const TabDisplay = ({ currentTab }) => {
     <AnimatePresence>
       {currentTab && (
         <motion.div
-          key={currentTab.id || 'tab-display'} // Usa una key para AnimatePresence
-          initial={{ opacity: 0, x: 200, height: 40 }} // Empieza invisible y fuera de la pantalla
-          animate={{ opacity: 1, x: 0 }} // Se desvanece y desliza hacia la vista
-          exit={{ opacity: 0, x: 200 }} // Se desvanece y desliza fuera de la vista al cerrarse
+          key={currentTab.id || 'tab-display'}
+          initial={{ opacity: 0, x: 200, height: 40 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: 200 }}
           transition={{
             type: 'spring',
             stiffness: 260,
             damping: 20,
           }}
           className="fixed right-0 p-4 bottom-0 bg-black/70 z-4 h-2/4 w-[400px] overflow-scroll"
-          whileHover={{ scale: 1.02, height: '600px' }} // Un pequeño efecto de escala al pasar el mouse
+          whileHover={{ scale: 1.02, height: '600px' }}
         >
           <pre className="text-xs h-full text-green-primary">
             {JSON.stringify(currentTab, null, 2)}
@@ -248,9 +242,7 @@ const TabDisplay = ({ currentTab }) => {
   );
 };
 
-// --- Componente Principal (Main App) ---
 export default function AppClient() {
-  // Correcta y única declaración de la tienda
   const {
     listTabs,
     currentTabId,
@@ -259,14 +251,8 @@ export default function AppClient() {
     updateTab,
     loadTabs,
     loadCollections,
-    collections, // <-- Aquí está el estado de las colecciones
+    collections,
   } = useRequestStore();
-
-  useEffect(() => {
-    // Estas acciones asíncronas cargan los datos de Dexie en tu store de Zustand.
-    loadTabs();
-    loadCollections();
-  }, [loadTabs, loadCollections]);
 
   const { value, setter } = ClientCustomHook();
   const listEntornos = useEnviromentStore((state) => state.listEntorno);
@@ -300,7 +286,7 @@ export default function AppClient() {
     Number(sessionStorage.getItem('selectedIdx')) || 0,
   );
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const [typeResponse, setTypeResponse] = useState<string | null>(null);
+  // const [typeResponse, setTypeResponse] = useState<string | null>(null);
 
   const currentTab = listTabs.find((tab) => tab.id === currentTabId);
 
@@ -355,13 +341,14 @@ export default function AppClient() {
       setIsFullScreen(false);
     }
   };
-
+  
+  // Limpiamos los efectos para evitar la duplicación de estado
   useEffect(() => {
     if (currentTab) {
       setBodyRequest(currentTab.body);
       setContentType(currentTab.headers['Content-Type']);
       setHeadersResponse(currentTab.headers);
-      setTypeResponse(currentTab.response?.type || null);
+      // setTypeResponse(currentTab.response?.type || null);
       setStatusCode(currentTab.response?.status || 0);
       setResponse(currentTab.response?.data || null);
     }
@@ -370,10 +357,16 @@ export default function AppClient() {
     setBodyRequest,
     setContentType,
     setHeadersResponse,
-    setTypeResponse,
+    // setTypeResponse,
     setStatusCode,
     setResponse,
   ]);
+  
+  useEffect(() => {
+    loadTabs();
+    loadCollections();
+  }, [loadTabs, loadCollections]);
+
 
   const handleTabClick = (tab: RequestData) => {
     setCurrentTab(tab.id);
@@ -383,7 +376,7 @@ export default function AppClient() {
     e.stopPropagation();
     removeTab(id);
   };
-
+  
   const Opciones = [
     { name: 'Cuerpo de Peticion', icon: bodyRequest },
     { name: 'Parametros', icon: currentTab?.query },
@@ -391,12 +384,27 @@ export default function AppClient() {
     { name: 'Entorno', icon: listEntornos },
   ];
 
+
+  const [responseRequest, setResponseRequest] = useState<any>(null)
+   const [typeResponse, setTypeResponse] = useState<unknown>(null)
+   const [timeResponse, setTimeResponse] = useState<number>(null)
+
   const handleRequestSubmit = useCallback(
     async (e) => {
       e.preventDefault();
       setIsLoading(true);
       try {
         const response = await handleRequest();
+
+        toast.success(JSON.stringify(response))
+
+        setResponseRequest(response.data)
+        setStatusCode(response.status)
+        setTypeResponse(response.typeResponse)
+        setTimeResponse(response.timeResponse)
+
+
+        toast.success(JSON.stringify(response))
         if (response.error) {
           // Manejar error
           updateTab(currentTabId, {
@@ -408,6 +416,7 @@ export default function AppClient() {
               type: response.typeResponse,
             },
           });
+          setResponseRequest(response.data)
         } else {
           // Manejar respuesta exitosa
           updateTab(currentTabId, {
@@ -419,6 +428,9 @@ export default function AppClient() {
               type: response.typeResponse,
             },
           });
+
+
+
         }
       } finally {
         setIsLoading(false);
@@ -460,79 +472,87 @@ export default function AppClient() {
         /> */}
 
         {/* Panel de pestañas: desplazable en móvil, se adapta en escritorio */}
-        <div className="flex relative bg-zinc-900 border-b border-zinc-700">
-      {/* Botón de desplazamiento a la izquierda */}
-      <button
-        onClick={() => scrollTabs('left')}
-        className="z-20 p-2 text-zinc-400 hover:text-white bg-gradient-to-r from-zinc-950 via-zinc-900 to-transparent absolute left-0 h-full flex items-center"
-      >
-        <Icon icon="tabler:chevron-left" width="20" height="20" />
-      </button>
-      
-      {/* Contenedor de pestañas desplazable */}
-      <div 
-        ref={tabsContainerRef} 
-        className="flex overflow-scroll max-w-[80vw] no-scrollbar scroll-smooth" // no-scrollbar oculta la barra de desplazamiento
-        style={{ scrollbarWidth: 'none' }} // Para Firefox
-      >
-        <AnimatePresence>
-          {listTabs.length > 0 &&
-            listTabs.map((tab) => {
-              const isActive = tab.id === currentTabId;
-              return (
-                <motion.div
-                  key={tab.id}
-                  onClick={() => handleTabClick(tab)}
-                  className={`
-                    relative px-4 py-2 cursor-pointer text-xs font-medium whitespace-nowrap transition-colors duration-200 flex-shrink-0
-                    border-r border-zinc-700 last:border-r-0
-                    ${isActive ? 'text-green-primary' : 'text-zinc-400 hover:text-zinc-100'}
-                  `}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-                >
-                  <div className="relative z-10 flex items-center gap-2">
-                    <MethodFormater nameMethod={tab.method} /> {tab.name}
-                    <motion.div
-                      className="flex"
-                      initial={{ opacity: 0, width: 0 }}
-                      whileHover={{ opacity: 1, width: 14 }}
-                      transition={{ duration: 0.1 }}
-                    >
-                      <button
-                        className="p-1 rounded-full hover:bg-green-700/10 text-zinc-400 "
-                        aria-label="Eliminar button"
-                        title={`Eliminar ${tab.name}`}
-                        onClick={(e) => handleRemoveTab(e, tab.id)}
+        <div className="flex relative bg-zinc-900 border-b border-gray-200 dark:border-zinc-700 min-h-[37px]">
+        {/* Botón de desplazamiento a la izquierda */}
+        <button
+          onClick={() => scrollTabs('left')}
+          className="z-20 p-2 text-zinc-400 hover:text-white bg-gradient-to-r bg-white dark:bg-zinc-900 border-r border-gray-200 dark:border-zinc-800
+            absolute left-0 h-full flex items-center shadow-[28px_6px_29px_11px_rgba(0,_0,_0,_0.1)]"
+        >
+          <Icon icon="tabler:chevron-left" width="20" height="20" />
+        </button>
+        
+        {/* Contenedor de pestañas desplazable */}
+        <div 
+          ref={tabsContainerRef} 
+          className="flex overflow-scroll max-w-[75vw] no-scrollbar scroll-smooth w-full"  // no-scrollbar oculta la barra de desplazamiento
+          style={{ scrollbarWidth: 'none' }} // Para Firefox
+        >
+          <AnimatePresence>
+            {listTabs.length > 0 &&
+              listTabs.map((tab) => {
+                const isActive = tab.id === currentTabId;
+                return (
+                  <motion.div
+                    key={tab.id}
+                    onClick={() => handleTabClick(tab)}
+                    className={`
+                      relative px-4 py-2 cursor-pointer text-xs font-medium whitespace-nowrap transition-colors duration-200 flex-shrink-0 bg-white dark:bg-transparent border-gray-200
+                      border-r dark:border-zinc-700 last:border-r-0
+                      ${isActive ? 'dark:text-green-primary text-blue-500' : 'dark:text-zinc-400 text-gray-600 dark:hover:text-zinc-100 text-gray-900'}
+                    `}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                  >
+                    <div className="relative z-10 flex items-center gap-2">
+                      <MethodFormater nameMethod={tab.method} /> {tab.name}
+                      <motion.div
+                        className="flex"
+                        initial={{ opacity: 0, width: 0 }}
+                        whileHover={{ opacity: 1, width: 14 }}
+                        transition={{ duration: 0.1 }}
                       >
-                        <Icon icon="tabler:x" width="12" height="12" />
-                      </button>
-                    </motion.div>
-                  </div>
-                  {isActive && (
-                    <motion.div
-                      layoutId="tab-underline"
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-green-primary z-0"
-                      initial={false}
-                      transition={{ type: 'spring', stiffness: 350, damping: 30 }}
-                    />
-                  )}
-                </motion.div>
-              );
-            })}
-        </AnimatePresence>
-      </div>
+                        <button
+                          className="p-1 rounded-full hover:bg-green-700/10 text-zinc-400 "
+                          aria-label="Eliminar button"
+                          title={`Eliminar ${tab.name}`}
+                          onClick={(e) => handleRemoveTab(e, tab.id)}
+                        >
+                          <Icon icon="tabler:x" width="12" height="12" />
+                        </button>
+                      </motion.div>
+                    </div>
+                    {isActive && (
+                      <motion.div
+                        layoutId="tab-underline"
+                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-green-primary z-0"
+                        initial={false}
+                        transition={{ type: 'spring', stiffness: 350, damping: 30 }}
+                      />
+                    )}
+                  </motion.div>
+                );
+              })}
+          </AnimatePresence>
+          <AnimatePresence>
+            {listTabs.length === 0 && (
+              <motion.div className='w-full justify-center items-center flex text-zinc-300 '>
+                No hay tabs disponibles ⚛️
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
 
-      {/* Botón de desplazamiento a la derecha */}
-      <button
-        onClick={() => scrollTabs('right')}
-        className="z-20 p-2 text-zinc-400 hover:text-white bg-gradient-to-l from-zinc-900 via-zinc-900/80 to-transparent absolute right-0 h-full flex items-center"
-      >
-        <Icon icon="tabler:chevron-right" width="20" height="20" />
-      </button>
-    </div>
+        {/* Botón de desplazamiento a la derecha */}
+        <button
+          onClick={() => scrollTabs('right')}
+          className="z-20 p-2 text-zinc-400 hover:text-white bg-white dark:bg-zinc-900 border-l border-gray-200 dark:border-zinc-800 absolute right-0 h-full flex items-center shadow-[-31px_-1px_23px_0px_rgba(0,_0,_0,_0.1)]"
+        >
+          <Icon icon={chevronRight} width="20" height="20" />
+        </button>
+      </div>
 
         <TabDisplay currentTab={currentTab} />
 
@@ -576,13 +596,8 @@ export default function AppClient() {
 
           {/* Panel de respuesta */}
           <Panel defaultSize={50} minSize={20} className="h-full">
-            <ResponsePanel
-              typeResponse={typeResponse}
-              response={currentTab?.response?.data || null}
-              isLoading={isLoading}
-              headersResponse={currentTab?.response?.headers || {}}
-              statusCode={currentTab?.response?.status || statusCode}
-            />
+            
+            <ResponsesTypesComponent typeResponse={typeResponse} data={responseRequest} height='500px' statusCode={statusCode}  timeResponse={timeResponse}/>
           </Panel>
         </PanelGroup>
       </div>
