@@ -445,7 +445,7 @@ export default function AppClient() {
   };
 
   return (
-    <div className="min-h-screen flex text-white overflow-hidden h-screen share-tech-mono-regular  text-xs">
+    <div className="min-h-screen flex text-white overflow-hidden h-screen text-xs">
       {/* SideBar en escritorio y modal en móvil */}
       <SideBar
         currentUrl={currentTab?.url}
