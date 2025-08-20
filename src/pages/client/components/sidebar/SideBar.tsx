@@ -116,7 +116,19 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
             border-r border-gray-200 dark:border-zinc-800
           "
           >
-            <div className="flex flex-row gap-2 mb-6 justify-end">
+            <div className="flex flex-row gap-2 mb-6 justify-between">
+
+            <div>
+            <button
+                        onClick={handleAddCollection}
+                        className="p-2 text-xs rounded-md font-semibold bg-green-500/10 text-green-primary hover:bg-green-500/20"
+                      >
+                        + Nueva Colección
+                      </button>
+
+            </div>
+
+            <div className="space-x-1.5">
               <ToolTipButton
                 ariaText="Importar"
                 tooltipText="Importar coleccion"
@@ -127,11 +139,14 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
                 tooltipText="Exportar coleccion"
                 onClick={exportCollections}
               />
+
+            </div>
+
             </div>
             {/* Header */}
             <div className="flex justify-start items-center my-4 space-x-3 relative">
             <span className="pixel--bolt-solid text-gray-900 dark:text-zinc-200"></span>
-              <h3 className="text-4xl font-bold bg-gradient-to-tr text-gray-700 dark:text-lime-50">
+              <h3 className="text-4xl font-bold bg-gradient-to-tr text-gray-700 dark:text-lime-50 share-tech-mono-regular font-black">
                 Elisa
               </h3>
             </div>
@@ -215,12 +230,7 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
                 {currenIdx === 1 && (
                   <div className="overflow-y-auto flex-1 pr-2 custom-scrollbar no-scrollbar" style={{scrollbarWidth: "none"}}>
                     <div className="flex justify-end mb-4">
-                      <button
-                        onClick={handleAddCollection}
-                        className="p-2 text-xs rounded-md font-semibold bg-green-500/10 text-green-primary hover:bg-green-500/20"
-                      >
-                        + Nueva Colección
-                      </button>
+                      
                     </div>
                     {collections.length === 0 && (
                       <div className="flex flex-col items-center justify-center h-full w-full text-center space-y-2">

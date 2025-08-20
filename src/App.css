@@ -29,6 +29,13 @@
 }
 
 
+.share-tech-mono-regular {
+  font-family: "Share Tech Mono", monospace;
+  font-weight: 400;
+  font-style: normal;
+}
+
+
 .pixel--bolt-solid {
   display: inline-block;
   width: 55px;
