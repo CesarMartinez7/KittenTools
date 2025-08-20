@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { JsonNode } from '../../../../ui/formatter-JSON/jsonnode.';
+import { CodeEditorLazy } from '../../../../ui/lazy-components';
 import TableData from '../../../../ui/Table';
 import XmlNode from '../../../../ui/xml-node/xmlnode';
 import { useRequestStore } from '../../stores/request.store';
@@ -150,7 +151,11 @@ export default function ResponsesTypesComponent({
     }
 
     // Fallback para otros tipos de datos (como texto plano o HTML)
-    // return <CodeEditorLazy language="text" value={String(data)} />;
+    return (
+      <pre className="text-xs text-green-primary">
+        {JSON.stringify(data, null, 2)}
+      </pre>
+    );
   };
 
   return (

@@ -347,7 +347,7 @@ const ItemNode: React.FC<ItemNodeProps> = ({
       style={{ marginLeft: `${indent}px` }}
     >
       <div
-        className="p-1.5 rounded-md border border-gray-300 dark:border-zinc-800 shadow-xl flex justify-between items-center group hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors bg-white/90 dark:bg-zinc-800/60 text-xs cursor-pointer text-zinc-200"
+        className="p-1.5 rounded-md border border-gray-300 dark:border-zinc-800 shadow-xl flex justify-between items-center group hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors bg-white/90 dark:bg-zinc-800/20 text-xs cursor-pointer  text-zinc-200"
         onClick={handleClick}
       >
         <div className="flex items-center gap-2">

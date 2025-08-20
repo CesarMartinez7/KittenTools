@@ -473,7 +473,7 @@ const CodeEditor = ({
           <div className="flex items-center gap-1">
             <button className="button-code-tools" onClick={HandlersIdentarBody}>
               <Icon icon="tabler:braces" width={14} />
-              <span className="hidden sm:inline">Prettify</span>
+              <span className="hidden sm:inline font-black">Beuttify</span>
             </button>
 
             <button className="button-code-tools" onClick={HandlersMinifyBody}>

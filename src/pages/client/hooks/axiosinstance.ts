@@ -88,9 +88,10 @@ axiosInstance.interceptors.response.use(
       ).toFixed(3);
     }
     // ✅ CORRECCIÓN: Devolver el error de forma coherente
+    console.warn("pornito desde axios instancia")
     return Promise.reject({
       status: error.response?.status ?? 'N/A',
-      data: error.response?.data ?? { message: error.message },
+      data: error ,
       typeResponse: detectResponseType(error.response?.headers),
       raw: error.toJSON ? error.toJSON() : error,
       timeResponse: error.timeResponse ?? null,

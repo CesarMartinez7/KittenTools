@@ -18,7 +18,7 @@ const RequestForm = ({
   const { currentTabId, updateTab } = useRequestStore();
   const entornoActual = useEnviromentStore((state) => state.entornoActual);
 
-  const getMethodColor = (method) => {
+  const getMethodColor = (method: string) => {
     switch (method) {
       case 'GET':
         return 'bg-green-800 text-green-100';
@@ -54,7 +54,7 @@ const RequestForm = ({
   );
 
   const handleMethodChange = useCallback(
-    (newMethod) => {
+    (newMethod: unknown) => {
       if (currentTabId) {
         updateTab(currentTabId, { method: newMethod });
       }
@@ -111,7 +111,7 @@ const RequestForm = ({
             placeholder="https://api.example.com/endpoint"
             value={endpointUrl}
             onChange={handlerChangeInputRequest}
-            className="p-2 absolute inset-0 text-transparent transition-colors caret-gray-500 dark:caret-zinc-400 w-full outline-none select-all  :"
+            className="p-2 absolute inset-0 text-transparent transition-colors caret-gray-500 dark:caret-zinc-400 w-full outline-none select-all placeholder-zinc-200  :"
           />
         </div>
         <div className="flex divide-x divide-zinc-900 rounded-md overflow-hidden">

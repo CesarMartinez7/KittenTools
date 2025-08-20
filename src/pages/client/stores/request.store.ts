@@ -21,11 +21,14 @@ export interface RequestData {
 }
 
 interface RequestState {
+  // REQUEST TABS
   listTabs: RequestData[];
+  // Id actual del tb
   currentTabId: string | null;
+  // Lista de colecciones
   collections: Collection[];
 
-  addFromNode: (nodeData: any) => void;
+  addFromNode: (nodeData: any) => void; // añadir al node
   removeTab: (id: string) => void;
   setCurrentTab: (id: string) => void;
   updateTab: (id: string, changes: Partial<RequestData>) => void;

@@ -20,7 +20,6 @@ import ClientCustomHook from './hooks/client-hook';
 import RequestHook from './hooks/request.client';
 import { VariantsAnimation } from './mapper-ops';
 import RequestForm from './request.form';
-import ResponsePanel from './response-panel';
 import { type RequestData, useRequestStore } from './stores/request.store';
 
 const Header = ({
@@ -166,7 +165,7 @@ const ContentPanel = ({
           <motion.div
             key="headers-section"
             variants={VariantsAnimation}
-            className="flex-1 overflow-auto"
+            className="flex-1  overflow-auto"
           >
             <HeadersAddRequest />
           </motion.div>
@@ -296,7 +295,9 @@ export default function AppClient() {
     cabeceras: currentTab?.headers,
     bodyRequest: currentTab?.body,
     endpointUrl: currentTab?.url,
-    contentType: currentTab?.headers?.['Content-Type'],
+    contentType:
+      currentTab?.headers?.['Content-Type'] ||
+      currentTab?.headers?.['content-type'],
   });
 
   const handleUrlChange = useCallback(
@@ -311,7 +312,7 @@ export default function AppClient() {
   const handleCodeEditorChange = useCallback(
     (value: string) => {
       if (currentTabId) {
-        updateTab(currentTabId, { body: value });
+        updateTab(currentTabId, { body: JSON.parse(value) });
       }
     },
     [currentTabId, updateTab],
@@ -367,14 +368,21 @@ export default function AppClient() {
     loadCollections();
   }, [loadTabs, loadCollections]);
 
-  const handleTabClick = (tab: RequestData) => {
+  const handleTabClick = (tab: RequestData, currentIdx: number) => {
     setCurrentTab(tab.id);
+    toast.success(currentIdx);
+    localStorage.setItem('currentIdx', String(currentIdx));
   };
 
   const handleRemoveTab = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
     removeTab(id);
   };
+
+  // cargar idx current tab
+  // useEffect(() => {
+  //   setCurrentIndice(Number(localStorage.getItem("currentIdx")))
+  // }, [])
 
   const Opciones = [
     { name: 'Cuerpo de Peticion', icon: bodyRequest },
@@ -383,6 +391,7 @@ export default function AppClient() {
     { name: 'Entorno', icon: listEntornos },
   ];
 
+  // const [currentIndice, setCurrentIndice] = useState<number | string>(null)
   const [responseRequest, setResponseRequest] = useState<any>(null);
   const [typeResponse, setTypeResponse] = useState<unknown>(null);
   const [timeResponse, setTimeResponse] = useState<number>(null);
@@ -391,53 +400,41 @@ export default function AppClient() {
     async (e) => {
       e.preventDefault();
       setIsLoading(true);
+      let finalResponse; // Variable para almacenar la respuesta
+  
       try {
-        const response = await handleRequest();
-
-        toast.success(JSON.stringify(response));
-
-        setResponseRequest(response.data);
-        setStatusCode(response.status);
-        setTypeResponse(response.typeResponse);
-        setTimeResponse(response.timeResponse);
-
-        toast.success(JSON.stringify(response));
-        if (response.error) {
-          // Manejar error
+        finalResponse = await handleRequest();
+      } catch (error: any) {
+        finalResponse = error;
+      } finally {
+        if (finalResponse) {
+          setResponseRequest(finalResponse);
+          setTypeResponse(finalResponse.typeResponse);
+          setStatusCode(finalResponse.status);
+  
+          // Actualiza la pestaña con la respuesta completa
           updateTab(currentTabId, {
             response: {
-              data: response.data,
-              headers: response.headers,
-              status: response.status,
-              time: response.timeResponse,
-              type: response.typeResponse,
-            },
-          });
-          setResponseRequest(response.data);
-        } else {
-          // Manejar respuesta exitosa
-          updateTab(currentTabId, {
-            response: {
-              data: response.data,
-              headers: response.headers,
-              status: response.status,
-              time: response.timeResponse,
-              type: response.typeResponse,
+              data: finalResponse.data,
+              headers: finalResponse.headers,
+              status: finalResponse.status,
+              time: finalResponse.timeResponse,
+              type: finalResponse.typeResponse,
             },
           });
         }
-      } finally {
         setIsLoading(false);
       }
     },
-    [handleRequest, currentTabId, updateTab, setIsLoading],
+    [handleRequest, currentTabId, updateTab, setIsLoading, responseRequest],
   );
+  
 
   const tabsContainerRef = useRef(null);
 
   const scrollTabs = (direction) => {
     if (tabsContainerRef.current) {
-      const scrollAmount = 200; // Ajusta el valor de desplazamiento
+      const scrollAmount = 300; // Ajusta el valor de desplazamiento
       tabsContainerRef.current.scrollTo({
         left:
           tabsContainerRef.current.scrollLeft +
@@ -486,16 +483,16 @@ export default function AppClient() {
           >
             <AnimatePresence>
               {listTabs.length > 0 &&
-                listTabs.map((tab) => {
+                listTabs.map((tab, idx) => {
                   const isActive = tab.id === currentTabId;
                   return (
                     <motion.div
                       key={tab.id}
-                      onClick={() => handleTabClick(tab)}
+                      onClick={() => handleTabClick(tab, tab.id)}
                       className={`
                       relative px-4 py-2 cursor-pointer text-xs font-medium whitespace-nowrap transition-colors duration-200 flex-shrink-0 bg-white dark:bg-transparent border-gray-200
                       border-r dark:border-zinc-700 last:border-r-0
-                      ${isActive ? 'dark:text-green-primary text-blue-500' : 'dark:text-zinc-400  dark:hover:text-zinc-100 text-gray-900'}
+                      ${isActive ? 'dark:text-green-primary text-blue-500' : 'dark:text-zinc-400 s dark:hover:text-zinc-100 text-gray-900'}
                     `}
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}

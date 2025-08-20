@@ -19,9 +19,29 @@ export default function RequestHook({
   const handleRequest = useCallback(async () => {
     const { baseUrl, entornoActual } = useEnviromentStore.getState();
 
-    if (!baseUrl && !endpointUrl) {
+    // ❌ CORRECCIÓN: La validación ahora solo verifica si la URL final está vacía
+    const finalUrl = typeof endpointUrl === 'string'
+      ? endpointUrl.replace(/{{(.*?)}}/g, (match, key) => {
+          const trimmedKey = key.trim();
+          const envVar = entornoActual.find(
+            (env) => env.key === trimmedKey && env.enabled,
+          );
+          return envVar ? envVar.value : match;
+        })
+      : '';
+
+    if (!finalUrl && !baseUrl) {
       toast.error('No se encontró el endpoint');
-      return Promise.reject({ error: 'No se encontró el endpoint' });
+      // Devolvemos una promesa rechazada con un objeto de error completo
+      return Promise.reject({
+        status: 'N/A',
+        data: 'No se encontró el endpoint',
+        headers: {},
+        timeResponse: 0,
+        typeResponse: 'text/plain',
+        error: true,
+        raw: 'No se encontró el endpoint',
+      });
     }
 
     const replaceEnvVariables = (
@@ -33,7 +53,7 @@ export default function RequestHook({
           const envVar = entornoActual.find(
             (env) => env.key === trimmedKey && env.enabled,
           );
-          return envVar ? envVar.value : match;
+          return envVar ? env.value : match;
         });
       }
       if (typeof text === 'object') {
@@ -47,7 +67,7 @@ export default function RequestHook({
                 const envVar = entornoActual.find(
                   (env) => env.key === trimmedKey && env.enabled,
                 );
-                return envVar ? envVar.value : match;
+                return envVar ? env.value : match;
               },
             );
           }
@@ -57,7 +77,6 @@ export default function RequestHook({
       return text;
     };
 
-    const finalUrl = (replaceEnvVariables(endpointUrl) as string) || '';
     const finalHeaders = replaceEnvVariables(cabeceras) as Record<
       string,
       string
@@ -88,32 +107,32 @@ export default function RequestHook({
       }
 
       // Medir el tiempo de la petición
-      const startTime = Date.now();
       const response = await axiosInstance(axiosConfig);
-
-      const endTime = Date.now();
-      const timeResponse = endTime - startTime;
-
+      
       return {
         status: response.status,
         data: response.data,
         headers: response.headers,
-        timeResponse,
-        typeResponse: response.headers['content-type'] || 'text/plain',
+        timeResponse: response.timeResponse,
+        typeResponse: response.typeResponse,
         error: false,
         raw: null,
       };
     } catch (error: any) {
-      const endTime = Date.now();
-      return {
+      // ✅ CORRECCIÓN: Devolvemos un objeto de error coherente desde el hook
+      // para que el componente padre pueda manejarlo.
+
+      toast.error("dslkfdjklfa")
+      
+      return Promise.reject({
         status: error.response?.status ?? 'N/A',
-        data: error.response?.data,
+        data: error,
         headers: error.response?.headers || {},
-        timeResponse: error.timeResponse || endTime - Date.now(), // Un fallback
+        timeResponse: error.timeResponse ?? 0,
         typeResponse: error.response?.headers?.['content-type'] || 'text/plain',
         error: true,
-        raw: error.message,
-      };
+        raw: error,
+      });
     }
   }, [
     selectedMethod,

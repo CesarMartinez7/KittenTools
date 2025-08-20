@@ -243,7 +243,7 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
                     {collections.map((collection) => (
                       <div
                         key={collection.id}
-                        className="p-1.5 rounded-md border shadow-xl transition-colors cursor-pointer bg-gray-50 border-gray-200 text-gray-800 dark:bg-zinc-800/60 dark:border-zinc-800 dark:text-zinc-200"
+                        className="p-1.5 rounded-md border shadow-xl transition-colors cursor-pointer bg-gray-50 border-gray-200 text-gray-800 dark:bg-transparent dark:border-zinc-800 dark:text-zinc-200"
                       >
                         <ItemNode
                           data={collection}
