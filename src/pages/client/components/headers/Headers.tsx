@@ -1,6 +1,5 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
-import type React from 'react';
-import { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useRequestStore } from '../../stores/request.store';
 
 type HeadersAddRequestProps = {};
@@ -9,123 +8,101 @@ export const HeadersAddRequest: React.FC<HeadersAddRequestProps> = () => {
   const { currentTabId, listTabs, updateTab } = useRequestStore();
   const currentTab = listTabs.find((tab) => tab.id === currentTabId);
 
-  // Asegúrate de que el estado en la store sea un array de objetos {key: string, value: string}
-  // para que sea más fácil de manejar. Si es un objeto, conviértelo aquí.
+  // Asegura que siempre haya una fila vacía para añadir nuevos headers.
   const headersArray = useMemo(() => {
-    if (!currentTab?.headers) {
-      return [{ key: '', value: '' }];
-    }
-    return Object.entries(currentTab.headers).map(([key, value]) => ({
-      key,
-      value,
-    }));
+    const headers = currentTab?.headers ? Object.entries(currentTab.headers).map(([key, value]) => ({ key, value })) : [];
+    return headers.length === 0 ? [{ key: '', value: '' }] : headers;
   }, [currentTab]);
+
+  const handleUpdateHeaders = useCallback(
+    (newHeadersArray: { key: string; value: string }[]) => {
+      if (!currentTabId) return;
+      const newHeadersObject = newHeadersArray.reduce((acc, header) => {
+        if (header.key.trim() !== '') {
+          acc[header.key.trim()] = header.value;
+        }
+        return acc;
+      }, {});
+      updateTab(currentTabId, { headers: newHeadersObject });
+    },
+    [currentTabId, updateTab],
+  );
 
   const handleInputChange = useCallback(
     (index: number, field: 'key' | 'value', value: string) => {
-      if (!currentTabId) return;
       const newHeadersArray = [...headersArray];
       newHeadersArray[index] = { ...newHeadersArray[index], [field]: value };
-
-      // Ahora pasas el array completo a la store
-      const newHeadersObject = newHeadersArray.reduce((acc, header) => {
-        if (header.key) {
-          acc[header.key] = header.value;
-        }
-        return acc;
-      }, {});
-
-      updateTab(currentTabId, { headers: newHeadersObject });
+      handleUpdateHeaders(newHeadersArray);
     },
-    [headersArray, currentTabId, updateTab],
+    [headersArray, handleUpdateHeaders],
   );
-
-  const handleAddHeader = useCallback(() => {
-    if (!currentTabId) return;
-    const newHeadersArray = [...headersArray, { key: '', value: '' }];
-
-    console.log(newHeadersArray);
-    // Al añadir, pasas el array y la store lo convierte
-    const newHeadersObject = newHeadersArray.reduce((acc, header) => {
-      if (header.key || header.value) {
-        acc[header.key] = header.value;
-      }
-      return acc;
-    }, {});
-
-    console.log(newHeadersObject);
-
-    updateTab(currentTabId, { headers: newHeadersObject });
-  }, [headersArray, currentTabId, updateTab]);
 
   const handleRemoveHeader = useCallback(
     (index: number) => {
-      if (!currentTabId) return;
       const newHeadersArray = headersArray.filter((_, i) => i !== index);
-
-      // Eliminas el elemento y pasas el array actualizado
-      const newHeadersObject = newHeadersArray.reduce((acc, header) => {
-        if (header.key) {
-          acc[header.key] = header.value;
-        }
-        return acc;
-      }, {});
-
-      updateTab(currentTabId, { headers: newHeadersObject });
+      handleUpdateHeaders(newHeadersArray);
     },
-    [headersArray, currentTabId, updateTab],
+    [headersArray, handleUpdateHeaders],
   );
-
-  // Es buena práctica añadir una fila vacía al final si no hay ninguna
+  
+  // Agrega una nueva fila si la última fila tiene contenido
   const displayedHeaders = useMemo(() => {
-    if (
-      headersArray.length > 0 &&
-      headersArray[headersArray.length - 1].key !== ''
-    ) {
+    const lastHeader = headersArray[headersArray.length - 1];
+    if (lastHeader?.key.trim() !== '' || lastHeader?.value.trim() !== '') {
       return [...headersArray, { key: '', value: '' }];
     }
     return headersArray;
   }, [headersArray]);
 
   return (
-    <div className="p-4 space-y-4">
-      <div className="flex justify-between items-center text-gray-400 font-medium">
-        <span className="flex-1">Cabecera</span>
-        <span className="flex-1">Valor</span>
-        <span className="w-8"></span>
+    <div className="p-4 overflow-auto">
+      <div className="grid grid-cols-[1fr_1fr_40px] gap-2 mb-2 text-gray-400 font-medium">
+        <span>Cabecera</span>
+        <span>Valor</span>
+        <span />
       </div>
       {displayedHeaders.map((header, index) => (
-        <div key={index} className="flex items-center gap-2">
+        <div key={index} className="grid grid-cols-[1fr_1fr_40px] gap-2 mb-2 items-center">
           <input
             type="text"
-            placeholder="key"
+            placeholder="Key"
             value={header.key}
             onChange={(e) => handleInputChange(index, 'key', e.target.value)}
-            className="flex-1 p-2 rounded bg-zinc-800 text-zinc-200 outline-none"
+            className="p-2 rounded bg-zinc-800 text-zinc-200 outline-none placeholder:text-zinc-500"
           />
           <input
             type="text"
-            placeholder="value"
+            placeholder="Value"
             value={header.value}
             onChange={(e) => handleInputChange(index, 'value', e.target.value)}
-            className="flex-1 p-2 rounded bg-zinc-800 text-zinc-200 outline-none"
+            className="p-2 rounded bg-zinc-800 text-zinc-200 outline-none placeholder:text-zinc-500"
           />
-          {headersArray.length > 0 && (
-            <button
-              onClick={() => handleRemoveHeader(index)}
-              className="w-8 h-8 flex items-center justify-center text-red-500 hover:bg-zinc-800 rounded"
-            >
-              <Icon icon="tabler:trash" />
-            </button>
-          )}
+          <button
+            onClick={() => handleRemoveHeader(index)}
+            className="w-10 h-10 flex items-center justify-center text-red-500 hover:bg-zinc-800 rounded"
+            aria-label="Eliminar cabecera"
+          >
+            <Icon icon="tabler:trash" />
+          </button>
         </div>
       ))}
-      <button
-        onClick={handleAddHeader}
-        className="text-sm font-black  bg-zinc-800 p-2 rounded-lg hover:text-green-300 transition-colors"
-      >
-        + Añadir Cabecera
-      </button>
+      <div className="mt-4">
+        <button
+          onClick={() => handleAddHeader()}
+          className="text-sm font-black bg-zinc-800 p-2 rounded-lg hover:text-green-300 transition-colors"
+        >
+          + Añadir Cabecera
+        </button>
+      </div>
     </div>
   );
+};
+
+// La función handleAddHeader ahora se puede simplificar o eliminar
+// ya que el useMemo de displayedHeaders maneja automáticamente la adición de una nueva fila
+const handleAddHeader = () => {
+  // El botón 'Añadir Cabecera' ahora no es estrictamente necesario,
+  // ya que la nueva fila aparece automáticamente.
+  // Sin embargo, si quieres mantenerlo, puedes agregar la lógica
+  // para actualizar la store aquí si es necesario.
 };

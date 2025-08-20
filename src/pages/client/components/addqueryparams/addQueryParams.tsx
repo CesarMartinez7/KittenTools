@@ -8,14 +8,16 @@ type AddQueryParamProps = {};
 
 const AddQueryParam: React.FC<AddQueryParamProps> = () => {
   const { currentTabId, listTabs, updateTab } = useRequestStore();
-
   const currentTab = listTabs.find((tab) => tab.id === currentTabId);
 
-  // Usa useMemo para memoizar el array de query params y solo recalcularlo cuando cambie el currentTab
+  // Asegura que siempre haya una fila vacía para añadir nuevos parámetros
   const queryArray = useMemo(() => {
-    return currentTab?.query
-      ? Object.entries(currentTab.query).map(([key, value]) => ({ key, value }))
-      : [];
+    const query = currentTab?.query ? Object.entries(currentTab.query).map(([key, value]) => ({ key, value })) : [];
+    // Si la lista está vacía, devuelve un array con una fila vacía
+    if (query.length === 0) {
+      return [{ key: '', value: '' }];
+    }
+    return query;
   }, [currentTab]);
 
   const handleInputChange = useCallback(
@@ -25,8 +27,8 @@ const AddQueryParam: React.FC<AddQueryParamProps> = () => {
       newQueryArray[index] = { ...newQueryArray[index], [field]: value };
 
       const newQuery = newQueryArray.reduce((acc, param) => {
-        if (param.key) {
-          acc[param.key] = param.value;
+        if (param.key.trim() !== '') {
+          acc[param.key.trim()] = param.value;
         }
         return acc;
       }, {});
@@ -35,34 +37,36 @@ const AddQueryParam: React.FC<AddQueryParamProps> = () => {
     },
     [queryArray, currentTabId, updateTab],
   );
-
-  const handleAddParam = useCallback(() => {
-    if (!currentTabId) return;
-    const newQueryArray = [...queryArray, { key: '', value: '' }];
-    const newQuery = newQueryArray.reduce((acc, param) => {
-      if (param.key) {
-        acc[param.key] = param.value;
-      }
-      return acc;
-    }, {});
-
-    updateTab(currentTabId, { query: newQuery });
-  }, [queryArray, currentTabId, updateTab]);
 
   const handleRemoveParam = useCallback(
     (index: number) => {
       if (!currentTabId) return;
       const newQueryArray = queryArray.filter((_, i) => i !== index);
+
       const newQuery = newQueryArray.reduce((acc, param) => {
-        if (param.key) {
-          acc[param.key] = param.value;
+        if (param.key.trim() !== '') {
+          acc[param.key.trim()] = param.value;
         }
         return acc;
       }, {});
-      updateTab(currentTabId, { query: newQuery });
+      // Si la lista queda vacía, se añade un campo vacío.
+      if (Object.keys(newQuery).length === 0) {
+        updateTab(currentTabId, { query: { '': '' } });
+      } else {
+        updateTab(currentTabId, { query: newQuery });
+      }
     },
     [queryArray, currentTabId, updateTab],
   );
+
+  // Agrega una nueva fila si la última fila tiene contenido
+  const displayedQueryArray = useMemo(() => {
+    const lastParam = queryArray[queryArray.length - 1];
+    if (lastParam?.key.trim() !== '' || lastParam?.value.trim() !== '') {
+      return [...queryArray, { key: '', value: '' }];
+    }
+    return queryArray;
+  }, [queryArray]);
 
   return (
     <div className="p-4 space-y-4">
@@ -71,21 +75,21 @@ const AddQueryParam: React.FC<AddQueryParamProps> = () => {
         <span className="flex-1">Valor</span>
         <span className="w-8"></span>
       </div>
-      {queryArray.map((param, index) => (
+      {displayedQueryArray.map((param, index) => (
         <div key={index} className="flex items-center gap-2">
           <input
             type="text"
             placeholder="key"
             value={param.key}
             onChange={(e) => handleInputChange(index, 'key', e.target.value)}
-            className="flex-1 p-2 rounded bg-zinc-700 text-zinc-200 outline-none"
+            className="flex-1 p-2 rounded bg-zinc-700 text-zinc-200 outline-none placeholder:text-zinc-500"
           />
           <input
             type="text"
             placeholder="value"
             value={param.value}
             onChange={(e) => handleInputChange(index, 'value', e.target.value)}
-            className="flex-1 p-2 rounded bg-zinc-700 text-zinc-200 outline-none"
+            className="flex-1 p-2 rounded bg-zinc-700 text-zinc-200 outline-none placeholder:text-zinc-500"
           />
           <motion.button
             whileHover={{ scale: 1.1 }}
@@ -97,14 +101,6 @@ const AddQueryParam: React.FC<AddQueryParamProps> = () => {
           </motion.button>
         </div>
       ))}
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={handleAddParam}
-        className="text-sm text-green-500 hover:text-green-300 transition-colors font-semibold"
-      >
-        + Añadir Parámetro
-      </motion.button>
     </div>
   );
 };
