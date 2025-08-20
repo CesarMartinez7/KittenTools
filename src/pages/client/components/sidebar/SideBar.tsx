@@ -130,7 +130,7 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
             </div>
             {/* Header */}
             <div className="flex justify-start items-center my-4 space-x-3 relative">
-              <span className="tabler--bolt dark:text-gray-300 text-gray-700 "></span>
+            <span className="pixel--bolt-solid text-gray-900 dark:text-zinc-200"></span>
               <h3 className="text-4xl font-bold bg-gradient-to-tr text-gray-700 dark:text-lime-50">
                 Elisa
               </h3>
