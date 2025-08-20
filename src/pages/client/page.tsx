@@ -47,7 +47,7 @@ const Header = ({
 
       <button
         onClick={toogleFullScreen}
-        className="flex items-center gap-2 px-3 py-1 text-xs rounded-md  text-zinc-600 dark:text-zinc-200 font-medium shadow-sm hover:bg-gray-300 dark:bg-zinc-800 bg-gray-200 dark:hover:bg-blue-500 transition-colors"
+        className="flex items-center gap-2 px-3 py-1 text-xs rounded-md  text-zinc-600 dark:text-zinc-200 font-medium shadow-sm hover:bg-gray-300 dark:bg-zinc-800 bg-gray-200 dark:hover:bg-blue-500 transition-colors"
       >
         <Icon
           icon={isFullScreen ? arrowsMinimize : arrowsMaximize}
@@ -165,7 +165,7 @@ const ContentPanel = ({
           <motion.div
             key="headers-section"
             variants={VariantsAnimation}
-            className="flex-1  overflow-auto"
+            className="flex-1  overflow-auto"
           >
             <HeadersAddRequest />
           </motion.div>
@@ -381,7 +381,7 @@ export default function AppClient() {
 
   // cargar idx current tab
   // useEffect(() => {
-  //   setCurrentIndice(Number(localStorage.getItem("currentIdx")))
+  //   setCurrentIndice(Number(localStorage.getItem("currentIdx")))
   // }, [])
 
   const Opciones = [

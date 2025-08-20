@@ -183,7 +183,7 @@ export default function ResponsesTypesComponent({
             >
               {statusCode || currentTab?.response?.status}
             </span>
-            <span className="text-xs">
+            <span className="text-xs bg-zinc-200">
               {currentTab?.response?.time || timeResponse} ms
             </span>
             <span>{size}</span>
