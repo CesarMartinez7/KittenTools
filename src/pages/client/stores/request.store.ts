@@ -1,7 +1,7 @@
 import { nanoid } from 'nanoid';
-import { create } from 'zustand';
-import { db, type Collection, type RequestTab } from '../db';
 import toast from 'react-hot-toast';
+import { create } from 'zustand';
+import { type Collection, db, type RequestTab } from '../db';
 
 export interface RequestData {
   id: string;

@@ -67,7 +67,7 @@ const CodeEditor = ({
     if (code.length > 0) {
       return code.split('\n').length;
     }
-    return 0;
+    return 1;
   }, [code]);
 
   useEffect(() => {
@@ -432,9 +432,9 @@ const CodeEditor = ({
               </ul>
             )}
             <LazyListItem>
-              <code
+              <div
                 ref={highlightRef}
-                className="absolute inset-0 p-2 text-sm font-mono leading-6 pointer-events-none overflow-hidden whitespace-pre-wrap break-words text-gray-800 dark:text-[#d4d4d4]"
+                className="absolute inset-0 p-2 text-sm font-mono leading-6 pointer-events-no overflow-hidden whitespace-pre-wrap break-words"
                 dangerouslySetInnerHTML={{
                   __html: highlightCode(
                     code,

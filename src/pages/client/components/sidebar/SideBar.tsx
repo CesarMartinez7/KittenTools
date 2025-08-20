@@ -1,13 +1,13 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { useState } from 'react';
 import { nanoid } from 'nanoid';
+import { useState } from 'react';
 import ToolTipButton from '../../../../ui/tooltip/TooltipButton';
-import { useEnviromentStore } from '../enviroment/store.enviroment';
-import ItemNode, { ResizableSidebar } from '../itemnode/item-node';
+import type { Collection, CollectionItem } from '../../db';
 // Importamos el store de Zustand y sus acciones
 import { useRequestStore } from '../../stores/request.store';
 import type { SavedRequestsSidebarProps } from '../../types/types';
-import { Collection, CollectionItem } from '../../db';
+import { useEnviromentStore } from '../enviroment/store.enviroment';
+import ItemNode, { ResizableSidebar } from '../itemnode/item-node';
 
 // Helper function to find a specific item by its ID within a nested structure
 function findAndUpdate(
@@ -117,35 +117,31 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
           "
           >
             <div className="flex flex-row gap-2 mb-6 justify-between">
+              <div>
+                <button
+                  onClick={handleAddCollection}
+                  className="p-2 text-xs rounded-md font-semibold bg-green-500/10 text-green-primary hover:bg-green-500/20"
+                >
+                  + Nueva Colección
+                </button>
+              </div>
 
-            <div>
-            <button
-                        onClick={handleAddCollection}
-                        className="p-2 text-xs rounded-md font-semibold bg-green-500/10 text-green-primary hover:bg-green-500/20"
-                      >
-                        + Nueva Colección
-                      </button>
-
-            </div>
-
-            <div className="space-x-1.5">
-              <ToolTipButton
-                ariaText="Importar"
-                tooltipText="Importar coleccion"
-                onClick={importCollections}
-              />
-              <ToolTipButton
-                ariaText="Exportar"
-                tooltipText="Exportar coleccion"
-                onClick={exportCollections}
-              />
-
-            </div>
-
+              <div className="space-x-1.5">
+                <ToolTipButton
+                  ariaText="Importar"
+                  tooltipText="Importar coleccion"
+                  onClick={importCollections}
+                />
+                <ToolTipButton
+                  ariaText="Exportar"
+                  tooltipText="Exportar coleccion"
+                  onClick={exportCollections}
+                />
+              </div>
             </div>
             {/* Header */}
             <div className="flex justify-start items-center my-4 space-x-3 relative">
-            <span className="pixel--bolt-solid text-gray-900 dark:text-zinc-200"></span>
+              <span className="pixel--bolt-solid text-gray-900 dark:text-zinc-200"></span>
               <h3 className="text-4xl font-bold bg-gradient-to-tr text-gray-700 dark:text-lime-50 share-tech-mono-regular font-black">
                 Elisa
               </h3>
@@ -193,7 +189,7 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
               flex-1 rounded-lg p-4 overflow-hidden h-full flex flex-col no-scrollbar scroll-smooth
               bg-gray-100 dark:bg-zinc-900
             "
-            style={{scrollbarWidth: "none"}}
+                style={{ scrollbarWidth: 'none' }}
               >
                 {currenIdx === 2 && (
                   <div className="flex flex-col gap-2 h-full">
@@ -228,10 +224,11 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
                   </div>
                 )}
                 {currenIdx === 1 && (
-                  <div className="overflow-y-auto flex-1 pr-2 custom-scrollbar no-scrollbar" style={{scrollbarWidth: "none"}}>
-                    <div className="flex justify-end mb-4">
-                      
-                    </div>
+                  <div
+                    className="overflow-y-auto flex-1 pr-2 custom-scrollbar no-scrollbar"
+                    style={{ scrollbarWidth: 'none' }}
+                  >
+                    <div className="flex justify-end mb-4"></div>
                     {collections.length === 0 && (
                       <div className="flex flex-col items-center justify-center h-full w-full text-center space-y-2">
                         <span className="tabler--bolt-off text-zinc-600"></span>

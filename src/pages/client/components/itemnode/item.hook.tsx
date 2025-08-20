@@ -1,9 +1,10 @@
 // item.hook.tsx
+
+import { nanoid } from 'nanoid';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-import { nanoid } from 'nanoid';
-import { useRequestStore } from '../../stores/request.store';
 import { CollectionItem } from '../../db';
+import { useRequestStore } from '../../stores/request.store';
 
 // --- Funciones auxiliares (se mantienen) ---
 const findAndUpdateItem = (
@@ -26,8 +27,8 @@ const findAndUpdateItem = (
 
 const findAndRemoveItem = (items: any[], targetId: string): any[] => {
   return items
-    .filter(item => item.id !== targetId)
-    .map(item => {
+    .filter((item) => item.id !== targetId)
+    .map((item) => {
       if (item.item) {
         return {
           ...item,
@@ -38,17 +39,22 @@ const findAndRemoveItem = (items: any[], targetId: string): any[] => {
     });
 };
 
-const useItemNodeLogic = ({ data, level, parentCollectionId }: ItemNodeProps) => {
-  const { collections, updateCollection, removeCollection, addFromNode } = useRequestStore();
+const useItemNodeLogic = ({
+  data,
+  level,
+  parentCollectionId,
+}: ItemNodeProps) => {
+  const { collections, updateCollection, removeCollection, addFromNode } =
+    useRequestStore();
 
   const [collapsed, setCollapsed] = useState(true);
   const [showResponses, setShowResponses] = useState(false);
   const [showBar, setShowBar] = useState(false);
-  
+
   const nodeData = data;
   const isFolder = !!nodeData?.item;
   const haveResponses = !!nodeData?.response && nodeData.response.length > 0;
-  
+
   // Aquí obtenemos el ID de la colección padre de la forma correcta
   const currentCollectionId = parentCollectionId || data.id;
 
@@ -61,12 +67,18 @@ const useItemNodeLogic = ({ data, level, parentCollectionId }: ItemNodeProps) =>
 
   const getMethodColor = (method: string) => {
     switch (method?.toUpperCase()) {
-      case 'GET': return 'text-teal-500';
-      case 'POST': return 'text-sky-400';
-      case 'PUT': return 'text-orange-400';
-      case 'DELETE': return 'text-red-400';
-      case 'PATCH': return 'text-purple-400';
-      default: return 'text-gray-400';
+      case 'GET':
+        return 'text-teal-500';
+      case 'POST':
+        return 'text-sky-400';
+      case 'PUT':
+        return 'text-orange-400';
+      case 'DELETE':
+        return 'text-red-400';
+      case 'PATCH':
+        return 'text-purple-400';
+      default:
+        return 'text-gray-400';
     }
   };
 
@@ -75,41 +87,55 @@ const useItemNodeLogic = ({ data, level, parentCollectionId }: ItemNodeProps) =>
     const nameNewRequest = window.prompt('Nombre de tu nueva petición');
     if (!nameNewRequest || !nodeData) return;
 
-    const collectionToUpdate = collections.find(col => col.id === currentCollectionId);
+    const collectionToUpdate = collections.find(
+      (col) => col.id === currentCollectionId,
+    );
     if (!collectionToUpdate) return;
-    
+
     // Si el nodo actual es una carpeta, se añade dentro de ella
-    const updatedItems = findAndUpdateItem(collectionToUpdate.item, nodeData.id, (item) => {
+    const updatedItems = findAndUpdateItem(
+      collectionToUpdate.item,
+      nodeData.id,
+      (item) => {
         const newRequest = {
-            id: nanoid(),
-            name: nameNewRequest,
-            request: { /* ... (datos de la request) ... */ },
+          id: nanoid(),
+          name: nameNewRequest,
+          request: {
+            /* ... (datos de la request) ... */
+          },
         };
         const newItems = item.item ? [...item.item, newRequest] : [newRequest];
         return { ...item, item: newItems };
-    });
-    
+      },
+    );
+
     updateCollection(currentCollectionId, { item: updatedItems });
     toast.success('Nueva petición creada.');
   };
-  
+
   const handleNuevaCarpeta = () => {
     const nameNewFolder = window.prompt('Nombre de tu nueva carpeta');
     if (!nameNewFolder || !nodeData) return;
-    
-    const collectionToUpdate = collections.find(col => col.id === currentCollectionId);
+
+    const collectionToUpdate = collections.find(
+      (col) => col.id === currentCollectionId,
+    );
     if (!collectionToUpdate) return;
-    
-    const updatedItems = findAndUpdateItem(collectionToUpdate.item, nodeData.id, (item) => {
+
+    const updatedItems = findAndUpdateItem(
+      collectionToUpdate.item,
+      nodeData.id,
+      (item) => {
         const newFolder = {
-            id: nanoid(),
-            name: nameNewFolder,
-            item: [],
+          id: nanoid(),
+          name: nameNewFolder,
+          item: [],
         };
         const newItems = item.item ? [...item.item, newFolder] : [newFolder];
         return { ...item, item: newItems };
-    });
-    
+      },
+    );
+
     updateCollection(currentCollectionId, { item: updatedItems });
     toast.success('Nueva carpeta creada.');
   };
@@ -118,11 +144,17 @@ const useItemNodeLogic = ({ data, level, parentCollectionId }: ItemNodeProps) =>
     const oldName = nodeData?.name || '';
     const newName = prompt('Nuevo nombre:', oldName || getDisplayName());
     if (!newName || !newName.trim() || !nodeData) return;
-    
-    const collectionToUpdate = collections.find(col => col.id === currentCollectionId);
+
+    const collectionToUpdate = collections.find(
+      (col) => col.id === currentCollectionId,
+    );
     if (!collectionToUpdate) return;
-    
-    const updatedItems = findAndUpdateItem(collectionToUpdate.item, nodeData.id, (item) => ({ ...item, name: newName.trim() }));
+
+    const updatedItems = findAndUpdateItem(
+      collectionToUpdate.item,
+      nodeData.id,
+      (item) => ({ ...item, name: newName.trim() }),
+    );
     updateCollection(currentCollectionId, { item: updatedItems });
     toast.success(`"${oldName}" renombrado a "${newName.trim()}"`);
   };
@@ -131,15 +163,20 @@ const useItemNodeLogic = ({ data, level, parentCollectionId }: ItemNodeProps) =>
     const displayName = getDisplayName();
     if (confirm(`¿Eliminar "${displayName}"?`) && nodeData) {
       if (nodeData.id === currentCollectionId) {
-          // Si es la colección principal, la eliminamos
-          removeCollection(currentCollectionId);
+        // Si es la colección principal, la eliminamos
+        removeCollection(currentCollectionId);
       } else {
-          // Si es un ítem dentro de la colección, lo eliminamos
-          const collectionToUpdate = collections.find(col => col.id === currentCollectionId);
-          if (collectionToUpdate) {
-              const newItems = findAndRemoveItem(collectionToUpdate.item, nodeData.id);
-              updateCollection(currentCollectionId, { item: newItems });
-          }
+        // Si es un ítem dentro de la colección, lo eliminamos
+        const collectionToUpdate = collections.find(
+          (col) => col.id === currentCollectionId,
+        );
+        if (collectionToUpdate) {
+          const newItems = findAndRemoveItem(
+            collectionToUpdate.item,
+            nodeData.id,
+          );
+          updateCollection(currentCollectionId, { item: newItems });
+        }
       }
       toast.success(`"${displayName}" eliminado`);
     }
@@ -147,14 +184,24 @@ const useItemNodeLogic = ({ data, level, parentCollectionId }: ItemNodeProps) =>
 
   const handleClickDuplicar = () => {
     if (!nodeData) return;
-    
-    const collectionToUpdate = collections.find(col => col.id === currentCollectionId);
+
+    const collectionToUpdate = collections.find(
+      (col) => col.id === currentCollectionId,
+    );
     if (!collectionToUpdate) return;
-    
-    const updatedItems = findAndUpdateItem(collectionToUpdate.item, nodeData.id, (item) => {
-        const duplicatedItem = { ...item, id: nanoid(), name: `${item.name} (Copia)` };
+
+    const updatedItems = findAndUpdateItem(
+      collectionToUpdate.item,
+      nodeData.id,
+      (item) => {
+        const duplicatedItem = {
+          ...item,
+          id: nanoid(),
+          name: `${item.name} (Copia)`,
+        };
         return [item, duplicatedItem];
-    }).flat();
+      },
+    ).flat();
 
     updateCollection(currentCollectionId, { item: updatedItems });
     toast.success(`"${nodeData.name}" duplicado`);
@@ -178,7 +225,7 @@ const useItemNodeLogic = ({ data, level, parentCollectionId }: ItemNodeProps) =>
       }
     }
   };
-  
+
   const indent = 1 * (level || 0);
 
   const mapperFolder = [

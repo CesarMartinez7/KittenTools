@@ -1,4 +1,5 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
+import { AnimatePresence, motion } from 'framer-motion';
 import { nanoid } from 'nanoid';
 import type React from 'react';
 import { useEffect, useRef, useState } from 'react';
@@ -6,7 +7,6 @@ import toast from 'react-hot-toast';
 import LazyListPerform from '../../../../ui/LazyListPerform';
 import { useRequestStore } from '../../stores/request.store';
 import type { ItemNodeProps } from './types';
-import { AnimatePresence, motion } from 'framer-motion';
 
 // --- Funciones auxiliares para manipulación de colecciones ---
 // Estas funciones ahora están fuera del componente para no recrearlas en cada render.
@@ -30,8 +30,8 @@ const findAndUpdateItem = (
 
 const findAndRemoveItem = (items: any[], targetId: string): any[] => {
   return items
-    .filter(item => item.id !== targetId)
-    .map(item => {
+    .filter((item) => item.id !== targetId)
+    .map((item) => {
       if (item.item) {
         return {
           ...item,
@@ -129,14 +129,18 @@ export const ResizableSidebar: React.FC<ResizableSidebarProps> = ({
   );
 };
 
-
 // --- Componente ItemNode refactorizado para usar el store ---
-const ItemNode: React.FC<ItemNodeProps> = ({ data, level, parentCollectionId }) => {
-  const { collections, updateCollection, removeCollection, addFromNode } = useRequestStore();
+const ItemNode: React.FC<ItemNodeProps> = ({
+  data,
+  level,
+  parentCollectionId,
+}) => {
+  const { collections, updateCollection, removeCollection, addFromNode } =
+    useRequestStore();
   const [collapsed, setCollapsed] = useState(true);
   const [showResponses, setShowResponses] = useState(false);
   const [showBar, setShowBar] = useState(false);
-  
+
   const nodeData = data;
   const isFolder = !!nodeData?.item;
   const haveResponses = !!nodeData?.response && nodeData.response.length > 0;
@@ -148,15 +152,21 @@ const ItemNode: React.FC<ItemNodeProps> = ({ data, level, parentCollectionId }) 
     }
     return nodeData.name;
   };
-  
+
   const getMethodColor = (method: string) => {
     switch (method?.toUpperCase()) {
-      case 'GET': return 'text-teal-500';
-      case 'POST': return 'text-sky-400';
-      case 'PUT': return 'text-orange-400';
-      case 'DELETE': return 'text-red-400';
-      case 'PATCH': return 'text-purple-400';
-      default: return 'text-gray-400';
+      case 'GET':
+        return 'text-teal-500';
+      case 'POST':
+        return 'text-sky-400';
+      case 'PUT':
+        return 'text-orange-400';
+      case 'DELETE':
+        return 'text-red-400';
+      case 'PATCH':
+        return 'text-purple-400';
+      default:
+        return 'text-gray-400';
     }
   };
 
@@ -164,28 +174,38 @@ const ItemNode: React.FC<ItemNodeProps> = ({ data, level, parentCollectionId }) 
     const nameNewRequest = window.prompt('Nombre de tu nueva petición');
     if (!nameNewRequest || !nodeData) return;
 
-    const collectionToUpdate = collections.find(col => col.id === parentCollectionId);
+    const collectionToUpdate = collections.find(
+      (col) => col.id === parentCollectionId,
+    );
     if (!collectionToUpdate) return;
-    
+
     // Asumimos que data.id es el ID del folder al que se agregará la petición
-    const updatedItems = findAndUpdateItem(collectionToUpdate.item, nodeData.id, (item) => {
+    const updatedItems = findAndUpdateItem(
+      collectionToUpdate.item,
+      nodeData.id,
+      (item) => {
         const newRequest = {
+          id: nanoid(),
+          name: nameNewRequest,
+          request: {
             id: nanoid(),
             name: nameNewRequest,
-            request: {
-                id: nanoid(),
-                name: nameNewRequest,
-                method: 'GET',
-                headers: {},
-                body: { mode: 'raw', raw: '', options: { raw: { language: 'json' } } },
-                url: '',
-                query: {},
+            method: 'GET',
+            headers: {},
+            body: {
+              mode: 'raw',
+              raw: '',
+              options: { raw: { language: 'json' } },
             },
+            url: '',
+            query: {},
+          },
         };
         const newItems = item.item ? [...item.item, newRequest] : [newRequest];
         return { ...item, item: newItems };
-    });
-    
+      },
+    );
+
     updateCollection(parentCollectionId, { item: updatedItems });
     toast.success('Nueva petición creada.');
   };
@@ -194,11 +214,17 @@ const ItemNode: React.FC<ItemNodeProps> = ({ data, level, parentCollectionId }) 
     const oldName = nodeData?.name || '';
     const newName = prompt('Nuevo nombre:', oldName || getDisplayName());
     if (!newName || !newName.trim() || !nodeData) return;
-    
-    const collectionToUpdate = collections.find(col => col.id === parentCollectionId);
+
+    const collectionToUpdate = collections.find(
+      (col) => col.id === parentCollectionId,
+    );
     if (!collectionToUpdate) return;
-    
-    const updatedItems = findAndUpdateItem(collectionToUpdate.item, nodeData.id, (item) => ({ ...item, name: newName.trim() }));
+
+    const updatedItems = findAndUpdateItem(
+      collectionToUpdate.item,
+      nodeData.id,
+      (item) => ({ ...item, name: newName.trim() }),
+    );
     updateCollection(parentCollectionId, { item: updatedItems });
     toast.success(`"${oldName}" renombrado a "${newName.trim()}"`);
   };
@@ -207,15 +233,20 @@ const ItemNode: React.FC<ItemNodeProps> = ({ data, level, parentCollectionId }) 
     const displayName = getDisplayName();
     if (confirm(`¿Eliminar "${displayName}"?`) && nodeData) {
       if (nodeData.id === parentCollectionId) {
-          // Si es la colección principal, la eliminamos
-          removeCollection(parentCollectionId);
+        // Si es la colección principal, la eliminamos
+        removeCollection(parentCollectionId);
       } else {
-          // Si es un ítem dentro de la colección, lo eliminamos
-          const collectionToUpdate = collections.find(col => col.id === parentCollectionId);
-          if (collectionToUpdate) {
-              const newItems = findAndRemoveItem(collectionToUpdate.item, nodeData.id);
-              updateCollection(parentCollectionId, { item: newItems });
-          }
+        // Si es un ítem dentro de la colección, lo eliminamos
+        const collectionToUpdate = collections.find(
+          (col) => col.id === parentCollectionId,
+        );
+        if (collectionToUpdate) {
+          const newItems = findAndRemoveItem(
+            collectionToUpdate.item,
+            nodeData.id,
+          );
+          updateCollection(parentCollectionId, { item: newItems });
+        }
       }
       toast.success(`"${displayName}" eliminado`);
     }
@@ -223,37 +254,53 @@ const ItemNode: React.FC<ItemNodeProps> = ({ data, level, parentCollectionId }) 
 
   const handleClickDuplicar = () => {
     if (!nodeData) return;
-    
-    const collectionToUpdate = collections.find(col => col.id === parentCollectionId);
+
+    const collectionToUpdate = collections.find(
+      (col) => col.id === parentCollectionId,
+    );
     if (!collectionToUpdate) return;
-    
-    const updatedItems = findAndUpdateItem(collectionToUpdate.item, nodeData.id, (item) => {
-        const duplicatedItem = { ...item, id: nanoid(), name: `${item.name} (Copia)` };
+
+    const updatedItems = findAndUpdateItem(
+      collectionToUpdate.item,
+      nodeData.id,
+      (item) => {
+        const duplicatedItem = {
+          ...item,
+          id: nanoid(),
+          name: `${item.name} (Copia)`,
+        };
         return [item, duplicatedItem];
-    }).flat();
+      },
+    ).flat();
 
     updateCollection(parentCollectionId, { item: updatedItems });
     toast.success(`"${nodeData.name}" duplicado`);
   };
-  
+
   const handleNuevaCarpeta = () => {
     const nameNewFolder = window.prompt('Nombre de tu nueva carpeta');
     if (!nameNewFolder || !nodeData) return;
-    
-    const collectionToUpdate = collections.find(col => col.id === parentCollectionId);
+
+    const collectionToUpdate = collections.find(
+      (col) => col.id === parentCollectionId,
+    );
     if (!collectionToUpdate) return;
-    
+
     // Si el nodo actual es una carpeta, se añade dentro de ella
-    const updatedItems = findAndUpdateItem(collectionToUpdate.item, nodeData.id, (item) => {
+    const updatedItems = findAndUpdateItem(
+      collectionToUpdate.item,
+      nodeData.id,
+      (item) => {
         const newFolder = {
-            id: nanoid(),
-            name: nameNewFolder,
-            item: [],
+          id: nanoid(),
+          name: nameNewFolder,
+          item: [],
         };
         const newItems = item.item ? [...item.item, newFolder] : [newFolder];
         return { ...item, item: newItems };
-    });
-    
+      },
+    );
+
     updateCollection(parentCollectionId, { item: updatedItems });
     toast.success('Nueva carpeta creada.');
   };
@@ -276,7 +323,7 @@ const ItemNode: React.FC<ItemNodeProps> = ({ data, level, parentCollectionId }) 
       }
     }
   };
-  
+
   const mapperFolder = [
     { name: 'Renombrar', action: handleChangeName },
     { name: 'Duplicar', action: handleClickDuplicar },
@@ -408,7 +455,10 @@ const ItemNode: React.FC<ItemNodeProps> = ({ data, level, parentCollectionId }) 
                         ),
                         response: resp,
                       };
-                      addFromNode({ ...requestData, collectionId: parentCollectionId });
+                      addFromNode({
+                        ...requestData,
+                        collectionId: parentCollectionId,
+                      });
                     } catch (e) {
                       toast.error(String(e));
                     }

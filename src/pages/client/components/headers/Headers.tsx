@@ -1,5 +1,6 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
-import React, { useCallback, useMemo } from 'react';
+import type React from 'react';
+import { useCallback, useMemo } from 'react';
 import { useRequestStore } from '../../stores/request.store';
 
 type HeadersAddRequestProps = {};
@@ -10,7 +11,12 @@ export const HeadersAddRequest: React.FC<HeadersAddRequestProps> = () => {
 
   // Asegura que siempre haya una fila vacía para añadir nuevos headers.
   const headersArray = useMemo(() => {
-    const headers = currentTab?.headers ? Object.entries(currentTab.headers).map(([key, value]) => ({ key, value })) : [];
+    const headers = currentTab?.headers
+      ? Object.entries(currentTab.headers).map(([key, value]) => ({
+          key,
+          value,
+        }))
+      : [];
     return headers.length === 0 ? [{ key: '', value: '' }] : headers;
   }, [currentTab]);
 
@@ -44,7 +50,7 @@ export const HeadersAddRequest: React.FC<HeadersAddRequestProps> = () => {
     },
     [headersArray, handleUpdateHeaders],
   );
-  
+
   // Agrega una nueva fila si la última fila tiene contenido
   const displayedHeaders = useMemo(() => {
     const lastHeader = headersArray[headersArray.length - 1];
@@ -62,7 +68,10 @@ export const HeadersAddRequest: React.FC<HeadersAddRequestProps> = () => {
         <span />
       </div>
       {displayedHeaders.map((header, index) => (
-        <div key={index} className="grid grid-cols-[1fr_1fr_40px] gap-2 mb-2 items-center">
+        <div
+          key={index}
+          className="grid grid-cols-[1fr_1fr_40px] gap-2 mb-2 items-center"
+        >
           <input
             type="text"
             placeholder="Key"

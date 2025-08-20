@@ -3,9 +3,9 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { JsonNode } from '../../../../ui/formatter-JSON/jsonnode.';
-import { useRequestStore } from '../../stores/request.store';
 import TableData from '../../../../ui/Table';
 import XmlNode from '../../../../ui/xml-node/xmlnode';
+import { useRequestStore } from '../../stores/request.store';
 
 const tabs = ['Respuesta', 'Cabeceras', 'Cookies', 'Timeline'];
 
@@ -50,15 +50,9 @@ export default function ResponsesTypesComponent({
   data,
   typeResponse,
 }: ResponseTypes) {
+  const { listTabs, currentTabId } = useRequestStore();
 
-  const {
-    listTabs,
-    currentTabId,
-    
-  } = useRequestStore();
-
-  
-  const [activeTab, setActiveTab] = useState('Respuesta');  
+  const [activeTab, setActiveTab] = useState('Respuesta');
   const currentTab = listTabs.find((tab) => tab.id === currentTabId);
 
   const parsedData = useMemo(() => {
@@ -95,16 +89,18 @@ export default function ResponsesTypesComponent({
 
   const getStatusCodeClass = (status: number) => {
     if (status >= 200 && status < 300) return 'bg-green-500/40 text-green-200';
-    if (status >= 300 && status < 400) return 'bg-yellow-500/40 text-yellow-200';
+    if (status >= 300 && status < 400)
+      return 'bg-yellow-500/40 text-yellow-200';
     if (status >= 400 && status < 500) return 'bg-red-500/40 text-red-200';
-    if (status >= 500 && status < 600) return 'bg-orange-500/40 text-orange-200';
+    if (status >= 500 && status < 600)
+      return 'bg-orange-500/40 text-orange-200';
     return 'bg-gray-500';
   };
 
   // Nueva función para renderizar el contenido de la respuesta
   const renderResponseContent = () => {
     if (typeResponse) {
-      if (typeResponse.includes("json")) {
+      if (typeResponse.includes('json')) {
         return (
           <JsonNode
             open={true}
@@ -116,10 +112,13 @@ export default function ResponsesTypesComponent({
         );
       }
 
-      if (typeResponse.includes("xml") || typeResponse.includes("html")) {
+      if (typeResponse.includes('xml') || typeResponse.includes('html')) {
         try {
           const parser = new DOMParser();
-          const xmlDoc = parser.parseFromString(data || currentTab?.response?.data, 'application/xml');
+          const xmlDoc = parser.parseFromString(
+            data || currentTab?.response?.data,
+            'application/xml',
+          );
           if (xmlDoc.getElementsByTagName('parsererror').length > 0) {
             throw new Error('XML inválido');
           }
@@ -162,17 +161,15 @@ export default function ResponsesTypesComponent({
           role="tablist"
           aria-label="Tipos de respuesta"
         >
-          
           <div>
-          {tabs.map((tab) => (
-            <SelectedType
-              key={tab}
-              label={tab}
-              isActive={activeTab === tab}
-              onClick={() => setActiveTab(tab)}
-            />
-          ))}
-
+            {tabs.map((tab) => (
+              <SelectedType
+                key={tab}
+                label={tab}
+                isActive={activeTab === tab}
+                onClick={() => setActiveTab(tab)}
+              />
+            ))}
           </div>
 
           <div className="flex items-center gap-2 mr-4 text-zinc-300 text-xs">
@@ -180,14 +177,11 @@ export default function ResponsesTypesComponent({
               className={`text-xs font-bold px-1 rounded ${getStatusCodeClass(statusCode)}`}
             >
               {statusCode || currentTab?.response?.status}
-              
             </span>
             <span className="text-xs">
               {currentTab?.response?.time || timeResponse} ms
             </span>
-            <span>
-            {size}
-            </span>
+            <span>{size}</span>
           </div>
         </nav>
 

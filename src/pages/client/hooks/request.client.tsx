@@ -91,7 +91,6 @@ export default function RequestHook({
       const startTime = Date.now();
       const response = await axiosInstance(axiosConfig);
 
-      
       const endTime = Date.now();
       const timeResponse = endTime - startTime;
 
@@ -110,13 +109,20 @@ export default function RequestHook({
         status: error.response?.status ?? 'N/A',
         data: error.response?.data,
         headers: error.response?.headers || {},
-        timeResponse: error.timeResponse || (endTime - Date.now()), // Un fallback
+        timeResponse: error.timeResponse || endTime - Date.now(), // Un fallback
         typeResponse: error.response?.headers?.['content-type'] || 'text/plain',
         error: true,
         raw: error.message,
       };
     }
-  }, [selectedMethod, contentType, bodyRequest, endpointUrl, params, cabeceras]);
+  }, [
+    selectedMethod,
+    contentType,
+    bodyRequest,
+    endpointUrl,
+    params,
+    cabeceras,
+  ]);
 
   return { handleRequest };
 }

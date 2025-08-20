@@ -11,8 +11,6 @@ const highlightCode = (
 ) => {
   let highlightedCode = String(code);
 
-  console.log(currentListEntornos);
-
   const escapeHTML = (str) =>
     str
       .replace(/&/g, '&amp;')
@@ -21,30 +19,33 @@ const highlightCode = (
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#039;');
 
+  // Texto plano
   if (language === 'text') {
     return escapeHTML(highlightedCode);
   }
 
-  highlightedCode = escapeHTML(highlightedCode);
-
   if (language === 'json') {
-    highlightedCode = highlightedCode
-      .replace(/"([^"\\]|\\.)*"/g, (match) => {
-        if (match.endsWith('":') || match.endsWith('": ')) {
-          return `<span style="color: ${colors.comment}">${match}</span>`;
-        }
-        return `<span style="color: ${colors.tag}">${match}</span>`;
+    highlightedCode = String(code)
+      // 🔑 claves
+      .replace(/"([^"\\]|\\.)*?"(?=\s*:)/g, (match) => {
+        return `<span style="color: ${colors.comment}">${escapeHTML(match)}</span>`;
       })
+      // 📦 valores string
+      .replace(/"([^"\\]|\\.)*"/g, (match) => {
+        return `<span style="color: ${colors.tag}">${escapeHTML(match)}</span>`;
+      })
+      // 🔠 boolean/null
       .replace(
         /\b(true|false|null)\b/g,
         `<span style="color: ${colors.keyword}">$1</span>`,
       )
+      // 🔢 números
       .replace(
         /\b(-?\d+\.?\d*)\b/g,
         `<span style="color: ${colors.number}">$1</span>`,
       );
   } else if (language === 'xml') {
-    highlightedCode = highlightedCode
+    highlightedCode = escapeHTML(highlightedCode)
       .replace(
         /&lt;!--[\s\S]*?--&gt;/g,
         `<span style="color: ${colors.comment}">$&</span>`,
@@ -61,20 +62,23 @@ const highlightCode = (
   } else {
     const langKeywords = keywords[language] || keywords.javascript;
 
-    highlightedCode = highlightedCode
+    highlightedCode = escapeHTML(highlightedCode)
+      // Comentarios
       .replace(
         /(\/\/.*$|\/\*[\s\S]*?\*\/)/gm,
-        // Aquí se usa un color gris en hexadecimal para los comentarios
         `<span style="color: #888888;">$1</span>`,
       )
+      // Strings
       .replace(
         /(['"`])((?:(?!\1)[^\\]|\\.)*)(\1)/g,
         `<span style="color: ${colors.string}">$1$2$3</span>`,
       )
+      // Números
       .replace(
         /\b(\d+\.?\d*)\b/g,
         `<span style="color: ${colors.number}">$1</span>`,
       )
+      // Funciones
       .replace(
         /\b(\w+)(?=\s*\()/g,
         `<span style="color: ${colors.function}">$1</span>`,
@@ -89,6 +93,7 @@ const highlightCode = (
     });
   }
 
+  // {{ expresiones }}
   highlightedCode = highlightedCode.replace(
     /{{(.*?)}}/g,
     `<span style="color: #7bb4ff;">{{$1}}</span>`,
@@ -110,7 +115,7 @@ const highlightCode = (
       const match = String(code).substring(startIndex, endIndex);
 
       resultHTML += before;
-      resultHTML += `<span class="${matchClass}">${match}</span>`;
+      resultHTML += `<span class="${matchClass}">${escapeHTML(match)}</span>`;
 
       lastIndex = endIndex;
     });

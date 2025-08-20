@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [pluginReact()],
   html: {
     template: './src/public/index.html',
-    favicon : "./src-tauri/icons/bolt-32x32.png"
+    favicon: './src-tauri/icons/bolt-32x32.png',
   },
   output: {
     assetPrefix: './', // 👈 rutas relativas

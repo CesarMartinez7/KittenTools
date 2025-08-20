@@ -2,26 +2,26 @@ import './App.css';
 import { Icon } from '@iconify/react';
 import arrowsMaximize from '@iconify-icons/tabler/arrows-maximize';
 import arrowsMinimize from '@iconify-icons/tabler/arrows-minimize';
+import chevronRight from '@iconify-icons/tabler/chevron-right';
 import { AnimatePresence, motion, time } from 'framer-motion';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import toast from 'react-hot-toast';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import { CodeEditorLazy } from '../../ui/lazy-components';
-import RequestForm from './request.form';
 import AddQueryParam from './components/addqueryparams/addQueryParams';
 import EnviromentComponent from './components/enviroment/enviroment.component';
 import { useEnviromentStore } from './components/enviroment/store.enviroment';
 import { Headers, HeadersAddRequest } from './components/headers/Headers';
+import MethodFormater from './components/method-formatter/method-formatter';
+import ResponsesTypesComponent from './components/responses-core/response.';
 import ScriptComponent from './components/scripts/script-component';
 import { SideBar } from './components/sidebar/SideBar';
 import ClientCustomHook from './hooks/client-hook';
 import RequestHook from './hooks/request.client';
 import { VariantsAnimation } from './mapper-ops';
+import RequestForm from './request.form';
 import ResponsePanel from './response-panel';
-import chevronRight from "@iconify-icons/tabler/chevron-right"
 import { type RequestData, useRequestStore } from './stores/request.store';
-import MethodFormater from './components/method-formatter/method-formatter';
-import toast from 'react-hot-toast';
-import ResponsesTypesComponent from './components/responses-core/response.';
 
 const Header = ({
   isFullScreen,
@@ -341,7 +341,7 @@ export default function AppClient() {
       setIsFullScreen(false);
     }
   };
-  
+
   // Limpiamos los efectos para evitar la duplicación de estado
   useEffect(() => {
     if (currentTab) {
@@ -361,12 +361,11 @@ export default function AppClient() {
     setStatusCode,
     setResponse,
   ]);
-  
+
   useEffect(() => {
     loadTabs();
     loadCollections();
   }, [loadTabs, loadCollections]);
-
 
   const handleTabClick = (tab: RequestData) => {
     setCurrentTab(tab.id);
@@ -376,7 +375,7 @@ export default function AppClient() {
     e.stopPropagation();
     removeTab(id);
   };
-  
+
   const Opciones = [
     { name: 'Cuerpo de Peticion', icon: bodyRequest },
     { name: 'Parametros', icon: currentTab?.query },
@@ -384,10 +383,9 @@ export default function AppClient() {
     { name: 'Entorno', icon: listEntornos },
   ];
 
-
-  const [responseRequest, setResponseRequest] = useState<any>(null)
-   const [typeResponse, setTypeResponse] = useState<unknown>(null)
-   const [timeResponse, setTimeResponse] = useState<number>(null)
+  const [responseRequest, setResponseRequest] = useState<any>(null);
+  const [typeResponse, setTypeResponse] = useState<unknown>(null);
+  const [timeResponse, setTimeResponse] = useState<number>(null);
 
   const handleRequestSubmit = useCallback(
     async (e) => {
@@ -396,15 +394,14 @@ export default function AppClient() {
       try {
         const response = await handleRequest();
 
-        toast.success(JSON.stringify(response))
+        toast.success(JSON.stringify(response));
 
-        setResponseRequest(response.data)
-        setStatusCode(response.status)
-        setTypeResponse(response.typeResponse)
-        setTimeResponse(response.timeResponse)
+        setResponseRequest(response.data);
+        setStatusCode(response.status);
+        setTypeResponse(response.typeResponse);
+        setTimeResponse(response.timeResponse);
 
-
-        toast.success(JSON.stringify(response))
+        toast.success(JSON.stringify(response));
         if (response.error) {
           // Manejar error
           updateTab(currentTabId, {
@@ -416,7 +413,7 @@ export default function AppClient() {
               type: response.typeResponse,
             },
           });
-          setResponseRequest(response.data)
+          setResponseRequest(response.data);
         } else {
           // Manejar respuesta exitosa
           updateTab(currentTabId, {
@@ -428,9 +425,6 @@ export default function AppClient() {
               type: response.typeResponse,
             },
           });
-
-
-
         }
       } finally {
         setIsLoading(false);
@@ -445,7 +439,9 @@ export default function AppClient() {
     if (tabsContainerRef.current) {
       const scrollAmount = 200; // Ajusta el valor de desplazamiento
       tabsContainerRef.current.scrollTo({
-        left: tabsContainerRef.current.scrollLeft + (direction === 'left' ? -scrollAmount : scrollAmount),
+        left:
+          tabsContainerRef.current.scrollLeft +
+          (direction === 'left' ? -scrollAmount : scrollAmount),
         behavior: 'smooth',
       });
     }
@@ -473,86 +469,94 @@ export default function AppClient() {
 
         {/* Panel de pestañas: desplazable en móvil, se adapta en escritorio */}
         <div className="flex relative bg-zinc-900 border-b border-gray-200 dark:border-zinc-700 min-h-[37px]">
-        {/* Botón de desplazamiento a la izquierda */}
-        <button
-          onClick={() => scrollTabs('left')}
-          className="z-20 p-2 text-zinc-400 hover:text-white bg-gradient-to-r bg-white dark:bg-zinc-900 border-r border-gray-200 dark:border-zinc-800
+          {/* Botón de desplazamiento a la izquierda */}
+          <button
+            onClick={() => scrollTabs('left')}
+            className="z-20 p-2 text-zinc-400 hover:text-white bg-gradient-to-r bg-white dark:bg-zinc-900 border-r border-gray-200 dark:border-zinc-800
             absolute left-0 h-full flex items-center shadow-[28px_6px_29px_11px_rgba(0,_0,_0,_0.1)]"
-        >
-          <Icon icon="tabler:chevron-left" width="20" height="20" />
-        </button>
-        
-        {/* Contenedor de pestañas desplazable */}
-        <div 
-          ref={tabsContainerRef} 
-          className="flex overflow-scroll max-w-[75vw] no-scrollbar scroll-smooth w-full"  // no-scrollbar oculta la barra de desplazamiento
-          style={{ scrollbarWidth: 'none' }} // Para Firefox
-        >
-          <AnimatePresence>
-            {listTabs.length > 0 &&
-              listTabs.map((tab) => {
-                const isActive = tab.id === currentTabId;
-                return (
-                  <motion.div
-                    key={tab.id}
-                    onClick={() => handleTabClick(tab)}
-                    className={`
+          >
+            <Icon icon="tabler:chevron-left" width="20" height="20" />
+          </button>
+
+          {/* Contenedor de pestañas desplazable */}
+          <div
+            ref={tabsContainerRef}
+            className="flex overflow-scroll max-w-[75vw] no-scrollbar scroll-smooth w-full" // no-scrollbar oculta la barra de desplazamiento
+            style={{ scrollbarWidth: 'none' }} // Para Firefox
+          >
+            <AnimatePresence>
+              {listTabs.length > 0 &&
+                listTabs.map((tab) => {
+                  const isActive = tab.id === currentTabId;
+                  return (
+                    <motion.div
+                      key={tab.id}
+                      onClick={() => handleTabClick(tab)}
+                      className={`
                       relative px-4 py-2 cursor-pointer text-xs font-medium whitespace-nowrap transition-colors duration-200 flex-shrink-0 bg-white dark:bg-transparent border-gray-200
                       border-r dark:border-zinc-700 last:border-r-0
-                      ${isActive ? 'dark:text-green-primary text-blue-500' : 'dark:text-zinc-400 text-gray-600 dark:hover:text-zinc-100 text-gray-900'}
+                      ${isActive ? 'dark:text-green-primary text-blue-500' : 'dark:text-zinc-400  dark:hover:text-zinc-100 text-gray-900'}
                     `}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-                  >
-                    <div className="relative z-10 flex items-center gap-2">
-                      <MethodFormater nameMethod={tab.method} /> {tab.name}
-                      <motion.div
-                        className="flex"
-                        initial={{ opacity: 0, width: 0 }}
-                        whileHover={{ opacity: 1, width: 14 }}
-                        transition={{ duration: 0.1 }}
-                      >
-                        <button
-                          className="p-1 rounded-full hover:bg-green-700/10 text-zinc-400 "
-                          aria-label="Eliminar button"
-                          title={`Eliminar ${tab.name}`}
-                          onClick={(e) => handleRemoveTab(e, tab.id)}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      transition={{
+                        type: 'spring',
+                        stiffness: 400,
+                        damping: 25,
+                      }}
+                    >
+                      <div className="relative z-10 flex items-center gap-2">
+                        <MethodFormater nameMethod={tab.method} /> {tab.name}
+                        <motion.div
+                          className="flex"
+                          initial={{ opacity: 0, width: 0 }}
+                          whileHover={{ opacity: 1, width: 14 }}
+                          transition={{ duration: 0.1 }}
                         >
-                          <Icon icon="tabler:x" width="12" height="12" />
-                        </button>
-                      </motion.div>
-                    </div>
-                    {isActive && (
-                      <motion.div
-                        layoutId="tab-underline"
-                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-green-primary z-0"
-                        initial={false}
-                        transition={{ type: 'spring', stiffness: 350, damping: 30 }}
-                      />
-                    )}
-                  </motion.div>
-                );
-              })}
-          </AnimatePresence>
-          <AnimatePresence>
-            {listTabs.length === 0 && (
-              <motion.div className='w-full justify-center items-center flex text-zinc-300 '>
-                No hay tabs disponibles ⚛️
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+                          <button
+                            className="p-1 rounded-full hover:bg-green-700/10 text-zinc-400 "
+                            aria-label="Eliminar button"
+                            title={`Eliminar ${tab.name}`}
+                            onClick={(e) => handleRemoveTab(e, tab.id)}
+                          >
+                            <Icon icon="tabler:x" width="12" height="12" />
+                          </button>
+                        </motion.div>
+                      </div>
+                      {isActive && (
+                        <motion.div
+                          layoutId="tab-underline"
+                          className="absolute bottom-0 left-0 right-0 h-0.5 bg-green-primary z-0"
+                          initial={false}
+                          transition={{
+                            type: 'spring',
+                            stiffness: 350,
+                            damping: 30,
+                          }}
+                        />
+                      )}
+                    </motion.div>
+                  );
+                })}
+            </AnimatePresence>
+            <AnimatePresence>
+              {listTabs.length === 0 && (
+                <motion.div className="w-full justify-center items-center flex text-zinc-300 ">
+                  No hay tabs disponibles ⚛️
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
 
-        {/* Botón de desplazamiento a la derecha */}
-        <button
-          onClick={() => scrollTabs('right')}
-          className="z-20 p-2 text-zinc-400 hover:text-white bg-white dark:bg-zinc-900 border-l border-gray-200 dark:border-zinc-800 absolute right-0 h-full flex items-center shadow-[-31px_-1px_23px_0px_rgba(0,_0,_0,_0.1)]"
-        >
-          <Icon icon={chevronRight} width="20" height="20" />
-        </button>
-      </div>
+          {/* Botón de desplazamiento a la derecha */}
+          <button
+            onClick={() => scrollTabs('right')}
+            className="z-20 p-2 text-zinc-400 hover:text-white bg-white dark:bg-zinc-900 border-l border-gray-200 dark:border-zinc-800 absolute right-0 h-full flex items-center shadow-[-31px_-1px_23px_0px_rgba(0,_0,_0,_0.1)]"
+          >
+            <Icon icon={chevronRight} width="20" height="20" />
+          </button>
+        </div>
 
         <TabDisplay currentTab={currentTab} />
 
@@ -596,8 +600,13 @@ export default function AppClient() {
 
           {/* Panel de respuesta */}
           <Panel defaultSize={50} minSize={20} className="h-full">
-            
-            <ResponsesTypesComponent typeResponse={typeResponse} data={responseRequest} height='500px' statusCode={statusCode}  timeResponse={timeResponse}/>
+            <ResponsesTypesComponent
+              typeResponse={typeResponse}
+              data={responseRequest}
+              height="500px"
+              statusCode={statusCode}
+              timeResponse={timeResponse}
+            />
           </Panel>
         </PanelGroup>
       </div>

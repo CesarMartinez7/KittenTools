@@ -12,7 +12,9 @@ const AddQueryParam: React.FC<AddQueryParamProps> = () => {
 
   // Asegura que siempre haya una fila vacía para añadir nuevos parámetros
   const queryArray = useMemo(() => {
-    const query = currentTab?.query ? Object.entries(currentTab.query).map(([key, value]) => ({ key, value })) : [];
+    const query = currentTab?.query
+      ? Object.entries(currentTab.query).map(([key, value]) => ({ key, value }))
+      : [];
     if (query.length === 0) {
       return [{ key: '', value: '' }];
     }
@@ -50,7 +52,6 @@ const AddQueryParam: React.FC<AddQueryParamProps> = () => {
     [queryArray, handleUpdateQuery],
   );
 
-  // Agrega una nueva fila si la última fila tiene contenido
   const displayedQueryArray = useMemo(() => {
     const lastParam = queryArray[queryArray.length - 1];
     if (lastParam?.key.trim() !== '' || lastParam?.value.trim() !== '') {
@@ -67,7 +68,10 @@ const AddQueryParam: React.FC<AddQueryParamProps> = () => {
         <span />
       </div>
       {displayedQueryArray.map((param, index) => (
-        <div key={index} className="grid grid-cols-[1fr_1fr_40px] gap-2 mb-2 items-center">
+        <div
+          key={index}
+          className="grid grid-cols-[1fr_1fr_40px] gap-2 mb-2 items-center"
+        >
           <input
             type="text"
             placeholder="Key"

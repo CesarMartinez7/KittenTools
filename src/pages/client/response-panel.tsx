@@ -24,8 +24,6 @@ const ResponsePanel = ({
               data={response}
               statusCode={statusCode}
             />
-            
-
           </div>
         )}
       </>
