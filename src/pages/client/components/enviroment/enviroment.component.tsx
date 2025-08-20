@@ -109,7 +109,7 @@ export default function EnviromentComponent() {
               </motion.button>
             </div>
 
-            <div className="overflow-x-auto dark:border-zinc-800 overflow-y-scroll h-[70vh] custom-scrollbar">
+            <div className="overflow-x-auto dark:border-zinc-800 border-gray-400 overflow-y-scroll h-[70vh] custom-scrollbar">
               <table className="min-w-full divide-y dark:divide-zinc-800">
                 <thead className="dark:bg-zinc-900 dark:text-zinc-200 text-zinc-700 bg-zinc-200 sticky top-0 z-10">
                   <tr>
@@ -128,14 +128,14 @@ export default function EnviromentComponent() {
                   </tr>
                 </thead>
                 <motion.tbody
-                  className="dark:bg-zinc-900/60 text-zinc-800 divide-y dark:divide-zinc-900"
+                  className="dark:bg-zinc-900/60 text-zinc-800 divide-y divide-amber-600 dark:divide-zinc-900  "
                   variants={tableVariants}
                 >
                   {entornoActual.map((v, i) => (
                     <motion.tr
                       key={i}
                       variants={rowVariants}
-                      className={`dark:hover:bg-zinc-900 hover:bg-zinc-300 text-gray-600 dark:text-zinc-300 transition-colors border-zinc-700 ${i % 2 === 0 ? 'dark:bg-zinc-950/30' : ''} `}
+                      className={`dark:hover:bg-zinc-900 hover:bg-gray-200  text-gray-600 dark:text-zinc-300 transition-colors border-gray-200 dark:border-zinc-700 bg-white ${i % 2 === 0 ? 'dark:bg-zinc-950/30 bg-gray-200' : ''} `}
                     >
                       <td className="px-2 py-1 whitespace-nowrap">
                         <input

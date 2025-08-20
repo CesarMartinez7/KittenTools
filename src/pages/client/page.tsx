@@ -229,10 +229,10 @@ const TabDisplay = ({ currentTab }) => {
             stiffness: 260,
             damping: 20,
           }}
-          className="fixed right-0 p-4 bottom-0 bg-black/70 z-4 h-2/4 w-[400px] overflow-scroll"
+          className="fixed right-0 p-4 bottom-0 bg-white/50 dark:bg-black/70 z-4 h-2/4 w-[400px] overflow-scroll"
           whileHover={{ scale: 1.02, height: '600px' }}
         >
-          <pre className="text-xs h-full text-green-primary">
+          <pre className="text-xs h-full text-blue-500 dark:text-green-primary">
             {JSON.stringify(currentTab, null, 2)}
           </pre>
         </motion.div>
@@ -445,7 +445,7 @@ export default function AppClient() {
   };
 
   return (
-    <div className="min-h-screen flex text-white overflow-hidden h-screen">
+    <div className="min-h-screen flex text-white overflow-hidden h-screen share-tech-mono-regular  text-xs">
       {/* SideBar en escritorio y modal en móvil */}
       <SideBar
         currentUrl={currentTab?.url}
@@ -465,7 +465,7 @@ export default function AppClient() {
         /> */}
 
         {/* Panel de pestañas: desplazable en móvil, se adapta en escritorio */}
-        <div className="flex relative bg-zinc-900 border-b border-gray-200 dark:border-zinc-700 min-h-[37px]">
+        <div className="flex relative  border-b border-gray-200 dark:border-zinc-700 min-h-[37px]">
           {/* Botón de desplazamiento a la izquierda */}
           <button
             onClick={() => scrollTabs('left')}
@@ -492,7 +492,7 @@ export default function AppClient() {
                       className={`
                       relative px-4 py-2 cursor-pointer text-xs font-medium whitespace-nowrap transition-colors duration-200 flex-shrink-0 bg-white dark:bg-transparent border-gray-200
                       border-r dark:border-zinc-700 last:border-r-0
-                      ${isActive ? 'dark:text-green-primary text-blue-500' : 'dark:text-zinc-400 s dark:hover:text-zinc-100 text-gray-900'}
+                      ${isActive ? 'dark:text-green-primary text-blue-500' : 'dark:text-zinc-400 s dark:hover:text-zinc-900 text-gray-900'}
                     `}
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
