@@ -1,4 +1,3 @@
-// axiosInstance.js
 import axios from 'axios';
 import { useEnviromentStore } from '../components/enviroment/store.enviroment';
 
@@ -25,9 +24,7 @@ const detectResponseType = (headers) => {
   return 'unknown';
 };
 
-// ✅ CORRECCIÓN: Configuramos validateStatus en el momento de crear la instancia.
 const axiosInstance = axios.create({
-  // Axios considerará exitosas todas las respuestas, sin importar su código de estado.
   validateStatus: () => true,
 });
 
@@ -35,10 +32,13 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   (config) => {
     config.meta = { startTime: performance.now() };
-    const { entornoActual } = useEnviromentStore.getState();
-    if (config.baseURL)
-      config.baseURL = replaceEnvVariables(config.baseURL, entornoActual);
-    if (config.url) config.url = replaceEnvVariables(config.url, entornoActual);
+    const { entornoActual } = useEnviromentStore.getState(); // Acceso seguro al estado
+
+    // Solo se reemplazan las variables de entorno, no se construyen los parámetros de URL aquí.
+    if (config.url) {
+      config.url = replaceEnvVariables(config.url, entornoActual);
+    }
+    
     if (config.headers) {
       Object.keys(config.headers).forEach((header) => {
         if (typeof config.headers[header] === 'string') {
@@ -49,22 +49,17 @@ axiosInstance.interceptors.request.use(
         }
       });
     }
-    if (config.params && typeof config.params === 'object') {
-      const queryString = new URLSearchParams(config.params).toString();
-      
-      if (config.url && queryString) {
-        config.url += `?${queryString}`;
-      }
-      config.params = null;
-    }
+
+    // Nota: Se ha eliminado la lógica de `config.params` aquí.
+    // La URL completa (con parámetros) debe ser construida en el componente
+    // antes de llamar a axios.
+
     return config;
   },
   (error) => Promise.reject(error),
 );
 
-// ✅ CORRECCIÓN: Simplificamos el interceptor de respuesta.
-// Al usar validateStatus: () => true, todas las respuestas (2xx, 4xx, 5xx)
-// se manejan aquí. El bloque 'error' ya no es necesario para errores HTTP.
+// Interceptor de respuesta (sin cambios)
 axiosInstance.interceptors.response.use(
   (response) => {
     const endTime = performance.now();
@@ -73,11 +68,9 @@ axiosInstance.interceptors.response.use(
       1000
     ).toFixed(3);
     response.typeResponse = detectResponseType(response.headers);
-    // Agregamos un indicador de error para usar en el componente principal
     response.isError = response.status >= 400;
     return response;
   },
-  // Este 'catch' solo se ejecutará en errores de red, no de HTTP.
   (error) => {
     return Promise.reject({
       ...error,
