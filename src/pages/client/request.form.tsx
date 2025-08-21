@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useEnviromentStore } from './components/enviroment/store.enviroment';
+import { useFormattedUrlStore } from './components/addqueryparams/addQueryParams';
 import { Methodos } from './mapper-ops';
 import { useRequestStore } from './stores/request.store';
 
@@ -17,6 +18,9 @@ const RequestForm = ({
 }) => {
   const { currentTabId, updateTab } = useRequestStore();
   const entornoActual = useEnviromentStore((state) => state.entornoActual);
+  
+  // Accede al valor del store de URL formateada
+  const { formattedUrl } = useFormattedUrlStore();
 
   const getMethodColor = (method: string) => {
     switch (method) {
@@ -35,20 +39,48 @@ const RequestForm = ({
     }
   };
 
+  // Se ha modificado esta función para aceptar un string de URL completa
   const formatterInputRequest = useCallback(
-    (listBusqueda: any[], busquedaKey: string) => {
+    (listBusqueda: any[], fullUrl: string) => {
       const regex = /{{(.*?)}}/g;
       const safeListBusqueda = Array.isArray(listBusqueda) ? listBusqueda : [];
 
-      return busquedaKey.replace(regex, (match, grupo) => {
+      // Divide la URL en la parte base y la parte de query
+      const [baseUrl, queryPart] = fullUrl.split('?');
+      let finalHtml = '';
+
+      // Formatea la URL base para resaltar variables de entorno si las hay
+      let baseUrlHtml = baseUrl.replace(regex, (match, grupo) => {
         const variable = safeListBusqueda.find(
           (item) => item.key.trim() === grupo.trim(),
         );
         const isDefinedAndEnabled = variable && variable.enabled === true;
         const color = isDefinedAndEnabled ? '#00a6f4' : '#D2042D';
-
         return `<span title="${grupo}" style="color: ${color};">{{${grupo}}}</span>`;
       });
+      
+      finalHtml += `<span style="color: #666666; dark:text-zinc-400">${baseUrlHtml}</span>`;
+
+      // Si hay una parte de query, la formatea y la añade
+      if (queryPart) {
+        finalHtml += `<span style="color: #666666; dark:text-zinc-400">?</span>`;
+        
+        // Separa los parámetros para estilizarlos individualmente
+        const paramsArray = queryPart.split('&');
+        paramsArray.forEach((param, index) => {
+          const [key, value] = param.split('=');
+          
+          finalHtml += `<span style="color: #a673d4;">${key}</span>`; // Estilo para la clave
+          finalHtml += `<span style="color: #666666; dark:text-zinc-400">=</span>`;
+          finalHtml += `<span style="color: #e5b567;">${value}</span>`; // Estilo para el valor
+          
+          if (index < paramsArray.length - 1) {
+            finalHtml += `<span style="color: #666666; dark:text-zinc-400">&</span>`;
+          }
+        });
+      }
+
+      return finalHtml;
     },
     [],
   );
@@ -62,6 +94,11 @@ const RequestForm = ({
     },
     [currentTabId, updateTab, setShowMethods],
   );
+
+  // Combina la URL del endpoint con los parámetros formateados
+  const fullUrl = useMemo(() => {
+    return formattedUrl ? `${endpointUrl}?${formattedUrl}` : endpointUrl;
+  }, [endpointUrl, formattedUrl]);
 
   return (
     <form className="p-4 space-y-3" ref={refForm} onSubmit={onSubmit}>
@@ -99,13 +136,17 @@ const RequestForm = ({
             )}
           </AnimatePresence>
         </div>
+        
+        {/* Contenedor de la URL con estilos originales */}
         <div className="bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 relative flex-1 p-2 rounded-md border border-gray-200 dark:border-zinc-800">
+          {/* DIV para mostrar el texto formateado */}
           <div
             className={String(endpointUrl).length === 0 ? 'p-2' : ''}
             dangerouslySetInnerHTML={{
-              __html: formatterInputRequest(entornoActual, endpointUrl),
+              __html: formatterInputRequest(entornoActual, fullUrl),
             }}
           ></div>
+          {/* El input transparente se mantiene para la entrada de texto */}
           <input
             type="text"
             placeholder="https://api.example.com/endpoint"
@@ -114,6 +155,7 @@ const RequestForm = ({
             className="p-2 absolute inset-0 text-transparent transition-colors caret-gray-500 dark:caret-zinc-400 w-full outline-none select-all placeholder-zinc-500 dark:placeholder:text-zinc-600 select"
           />
         </div>
+        
         <div className="flex divide-x divide-zinc-900 rounded-md overflow-hidden">
           <button
             type="submit"

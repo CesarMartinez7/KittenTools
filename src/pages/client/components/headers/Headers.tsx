@@ -186,6 +186,8 @@ export const HeadersAddRequest: React.FC<HeadersAddRequestProps> = () => {
         <span>Valor</span>
         <span />
       </div>
+
+      <pre>{JSON.stringify(headersArray)}</pre>
       {displayedHeaders.map((header, index) => (
         <div
           key={index}

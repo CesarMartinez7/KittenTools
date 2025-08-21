@@ -51,6 +51,7 @@ axiosInstance.interceptors.request.use(
     }
     if (config.params && typeof config.params === 'object') {
       const queryString = new URLSearchParams(config.params).toString();
+      
       if (config.url && queryString) {
         config.url += `?${queryString}`;
       }
