@@ -135,7 +135,7 @@ export default function EnviromentComponent() {
                     <motion.tr
                       key={i}
                       variants={rowVariants}
-                      className={`dark:hover:bg-zinc-900 hover:bg-gray-200  text-gray-600 dark:text-zinc-300 transition-colors border-gray-200 dark:border-zinc-700 bg-white ${i % 2 === 0 ? 'dark:bg-zinc-950/30 bg-gray-200' : ''} `}
+                      className={`dark:hover:bg-zinc-900 dark:bg-zinc-900 hover:bg-gray-200  text-gray-600 dark:text-zinc-300 transition-colors border-gray-200 dark:border-zinc-700 bg-white ${i % 2 === 0 ? 'dark:bg-zinc-950/30  bg-gray-200' : ''} `}
                     >
                       <td className="px-2 py-1 whitespace-nowrap">
                         <input

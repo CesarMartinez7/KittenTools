@@ -21,6 +21,7 @@ import RequestHook from './hooks/request.client';
 import { VariantsAnimation } from './mapper-ops';
 import RequestForm from './request.form';
 import { type RequestData, useRequestStore } from './stores/request.store';
+import ResponsePanel from './response-panel';
 
 const Header = ({
   isFullScreen,
@@ -597,13 +598,14 @@ export default function AppClient() {
 
           {/* Panel de respuesta */}
           <Panel defaultSize={50} minSize={20} className="h-full">
-            <ResponsesTypesComponent
+            <ResponsePanel typeResponse={typeResponse} response={responseRequest} statusCode={statusCode} />
+            {/* <ResponsesTypesComponent
               typeResponse={typeResponse}
               data={responseRequest}
               height="500px"
               statusCode={statusCode}
               timeResponse={timeResponse}
-            />
+            /> */}
           </Panel>
         </PanelGroup>
       </div>
