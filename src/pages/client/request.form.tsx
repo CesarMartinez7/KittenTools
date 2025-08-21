@@ -46,7 +46,7 @@ const RequestForm = ({
           (item) => item.key.trim() === grupo.trim(),
         );
         const isDefinedAndEnabled = variable && variable.enabled === true;
-        const color = isDefinedAndEnabled ? '#7bb4ff' : '#D2042D';
+        const color = isDefinedAndEnabled ? '#00a6f4' : '#D2042D';
 
         return `<span style="color: ${color};">{{${grupo}}}</span>`;
       });
@@ -112,13 +112,13 @@ const RequestForm = ({
             placeholder="https://api.example.com/endpoint"
             value={endpointUrl}
             onChange={handlerChangeInputRequest}
-            className="p-2 absolute inset-0 text-transparent transition-colors caret-gray-500 dark:caret-zinc-400 w-full outline-none select-all placeholder-zinc-200  :"
+            className="p-2 absolute inset-0 text-transparent transition-colors caret-gray-500 dark:caret-zinc-400 w-full outline-none select-all placeholder-zinc-200 dark:placeholder:text-zinc-600 select"
           />
         </div>
         <div className="flex divide-x divide-zinc-900 rounded-md overflow-hidden">
           <button
             type="submit"
-            className="px-6 py-2 bg-blue-500 text-white transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-2 bg-sky-500 text-white transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isLoading}
           >
             {isLoading ? (
@@ -129,7 +129,7 @@ const RequestForm = ({
           </button>
           <button
             aria-label="options-envio"
-            className="px-2 py-2 bg-blue-500 text-white transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-2 py-2 bg-sky-500 text-white transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span className="iconamoon--arrow-down-2"></span>
           </button>

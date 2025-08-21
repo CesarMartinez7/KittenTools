@@ -11,7 +11,7 @@ export const formatterInputRequest = (
     const existe = listBusqueda.some((item) => item.key === grupo);
 
     if (existe) {
-      return `<span style="color: #7bb4ff;">{{${grupo}}}</span>`;
+      return `<span style="color: #00a6f4;">{{${grupo}}}</span>`;
     } else {
       return `<span style="color: #D2042D;">{{${grupo}}}</span>`;
     }

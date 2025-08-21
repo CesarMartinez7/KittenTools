@@ -13,7 +13,6 @@ import EnviromentComponent from './components/enviroment/enviroment.component';
 import { useEnviromentStore } from './components/enviroment/store.enviroment';
 import { Headers, HeadersAddRequest } from './components/headers/Headers';
 import MethodFormater from './components/method-formatter/method-formatter';
-import ResponsesTypesComponent from './components/responses-core/response.';
 import ScriptComponent from './components/scripts/script-component';
 import { SideBar } from './components/sidebar/SideBar';
 import ClientCustomHook from './hooks/client-hook';
@@ -257,6 +256,7 @@ export default function AppClient() {
   const { value, setter } = ClientCustomHook();
   const listEntornos = useEnviromentStore((state) => state.listEntorno);
   const nombreEntorno = useEnviromentStore((state) => state.nameEntornoActual);
+  const entornoActual = useEnviromentStore((state) => state.entornoActual)
   const refForm = useRef<HTMLFormElement>(null);
 
 
@@ -344,7 +344,7 @@ export default function AppClient() {
   );
 
   const handleMethodChange = useCallback(
-    (newMethod) => {
+    (newMethod : string) => {
       if (currentTabId) {
         updateTab(currentTabId, { method: newMethod });
       }
@@ -423,19 +423,29 @@ export default function AppClient() {
 
   const handleRequestSubmit = useCallback(
     async (e) => {
+
+      toast.success("start")
+      
+
       e.preventDefault();
       setIsLoading(true);
       let finalResponse; // Variable para almacenar la respuesta
   
       try {
         finalResponse = await handleRequest();
+        console.warn("abajo")
+        console.log(finalResponse)
       } catch (error: any) {
+        toast.error("ocurrio un error")
         finalResponse = error;
       } finally {
+        toast.success("en el hanlde request submit padre")
         if (finalResponse) {
           setResponseRequest(finalResponse);
           setTypeResponse(finalResponse.typeResponse);
           setStatusCode(finalResponse.status);
+
+          toast.success(JSON.stringify(finalResponse))
   
           // Actualiza la pestaña con la respuesta completa
           updateTab(currentTabId, {
@@ -451,7 +461,7 @@ export default function AppClient() {
         setIsLoading(false);
       }
     },
-    [handleRequest, currentTabId, updateTab, setIsLoading, responseRequest],
+    [handleRequest, currentTabId, updateTab, setIsLoading, responseRequest, listEntornos],
   );
   
 
@@ -553,8 +563,8 @@ export default function AppClient() {
                           initial={false}
                           transition={{
                             type: 'spring',
-                            stiffness: 350,
-                            damping: 30,
+                            stiffness: 200,
+                            damping: 10,
                           }}
                         />
                       )}
@@ -580,7 +590,8 @@ export default function AppClient() {
           </button>
         </div>
 
-        <TabDisplay currentTab={currentTab} />
+         <TabDisplay currentTab={currentTab} />
+        {/* <TabDisplay currentTab={entornoActual} /> */}
 
         <RequestForm
           refForm={refForm}
