@@ -89,10 +89,12 @@ export default function ResponsesTypesComponent({
   };
 
   const getStatusCodeClass = (status: number) => {
-    if (status >= 200 && status < 300) return 'dark:bg-green-500/40 dark:text-green-200 bg-emerald-400 text-white';
+    if (status >= 200 && status < 300)
+      return 'dark:bg-green-500/40 dark:text-green-200 bg-emerald-400 text-white';
     if (status >= 300 && status < 400)
       return 'bg-yellow-500/40 text-yellow-200';
-    if (status >= 400 && status < 500) return 'dark:bg-red-500/40 dark:text-red-200';
+    if (status >= 400 && status < 500)
+      return 'dark:bg-red-500/40 dark:text-red-200';
     if (status >= 500 && status < 600)
       return 'bg-orange-500/40 text-orange-200';
     return 'bg-gray-500';
@@ -186,7 +188,7 @@ export default function ResponsesTypesComponent({
             <span className="text-xs dark:bg-zinc-800/90 bg-gray-200 text-gray-600 dark:text-zinc-200 py-0.5 px-2 rounded text-r">
               {currentTab?.response?.time || timeResponse} ms
             </span>
-            <span className='text-gray-600 dark:text-zinc-200'>{size}</span>
+            <span className="text-gray-600 dark:text-zinc-200">{size}</span>
           </div>
         </nav>
 

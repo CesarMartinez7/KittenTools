@@ -46,7 +46,7 @@ const ResponsePanel = ({
             <p>Enviar solicitud</p> <kbd>Ctrl</kbd> + <kbd>Enter</kbd>
           </div>
           <div className="flex gap-2">
-            <p>Editar Entornos</p> <kbd>Ctrl</kbd> + <kbd>e</kbd>
+            <p>Editar Entornos / abrir</p> <kbd>Ctrl</kbd> + <kbd>e</kbd>
           </div>
         </div>
       </div>

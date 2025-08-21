@@ -100,7 +100,7 @@ export default function RequestHook({
     }
 
     const response = await axiosInstance(axiosConfig);
-    
+
     // ✅ CORRECCIÓN: Devolvemos un objeto de respuesta coherente
     // sin importar si fue éxito (2xx) o error (4xx, 5xx).
     const isError = response.status >= 400;

@@ -1,11 +1,11 @@
+import { Icon } from '@iconify/react';
+import chevronDown from '@iconify-icons/tabler/chevron-down';
+import chevronRight from '@iconify-icons/tabler/chevron-right';
+import { motion } from 'framer-motion';
 import type React from 'react';
 import { useState } from 'react';
 import LazyListItem from '../LazyListPerform.tsx';
 import FormatDataTypeLabel from './formatlabel.tsx';
-import { motion } from 'framer-motion';
-import { Icon } from '@iconify/react';
-import chevronRight from '@iconify-icons/tabler/chevron-right';
-import chevronDown from '@iconify-icons/tabler/chevron-down';
 
 type JsonValue =
   | string
@@ -49,10 +49,10 @@ export const JsonNode: React.FC<JsonNodeProps> = ({
     visible: { opacity: 1, x: 0 },
   };
 
-  const nameColor = "text-purple-600 dark:text-purple-200";
-  const bracketColor = "text-gray-400 dark:text-gray-500";
-  const hoverColor = "hover:text-gray-800 dark:hover:text-gray-300";
-  const borderStyle = "border-zinc-300 dark:border-zinc-800";
+  const nameColor = 'text-purple-600 dark:text-purple-200';
+  const bracketColor = 'text-gray-400 dark:text-gray-500';
+  const hoverColor = 'hover:text-gray-800 dark:hover:text-gray-300';
+  const borderStyle = 'border-zinc-300 dark:border-zinc-800';
 
   return (
     <motion.div
@@ -77,11 +77,11 @@ export const JsonNode: React.FC<JsonNodeProps> = ({
                 ? `[`
                 : `[...]`
               : !collapsed && !isArray
-              ? `{`
-              : `{...}`}
+                ? `{`
+                : `{...}`}
           </span>
           {!collapsed && (
-            <motion.div 
+            <motion.div
               variants={containerVariants}
               initial="hidden"
               animate="visible"

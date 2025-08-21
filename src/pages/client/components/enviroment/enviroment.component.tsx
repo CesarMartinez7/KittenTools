@@ -135,7 +135,7 @@ export default function EnviromentComponent() {
                     <motion.tr
                       key={i}
                       variants={rowVariants}
-                      className={`dark:hover:bg-zinc-900 dark:bg-zinc-900 hover:bg-gray-200  text-gray-600 dark:text-zinc-300 transition-colors border-gray-200 dark:border-zinc-700 bg-white ${i % 2 === 0 ? 'dark:bg-zinc-950/30  bg-gray-200' : ''} `}
+                      className={`dark:hover:bg-zinc-900 dark:bg-zinc-900 hover:bg-gray-50  text-gray-600 dark:text-zinc-300 transition-colors border-gray-100 dark:border-zinc-800 bg-white ${i % 2 === 0 ? 'dark:bg-zinc-950/30  bg-gray-200' : ''} `}
                     >
                       <td className="px-2 py-1 whitespace-nowrap">
                         <input
@@ -154,7 +154,7 @@ export default function EnviromentComponent() {
                           onChange={(e) =>
                             handleChange(i, 'value', e.target.value)
                           }
-                          className="w-full bg-transparent accent-green-600 border-0 outline-none focus:ring-1 focus:ring-zinc-600 rounded"
+                          className="w-full dark:bg-transparent accent-green-600 border-0 outline-none focus:ring-1 focus:ring-zinc-600 dark:focus:bg-zinc-800 focus:bg-gray-200"
                         />
                       </td>
                       <td className="px-2 py-1 whitespace-nowrap text-center">

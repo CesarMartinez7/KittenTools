@@ -257,7 +257,31 @@ export default function AppClient() {
   const { value, setter } = ClientCustomHook();
   const listEntornos = useEnviromentStore((state) => state.listEntorno);
   const nombreEntorno = useEnviromentStore((state) => state.nameEntornoActual);
-  const refForm = useRef(null);
+  const refForm = useRef<HTMLFormElement>(null);
+
+
+  useEffect(() => {
+
+    const handlerSendWwindos = (e: KeyboardEvent) => {
+      
+      if(e.key === "Enter" &&  e.ctrlKey) {
+        const target = refForm.current
+        target?.requestSubmit()
+      }
+
+
+      if(e.key.toLocaleLowerCase() === "e" &&  e.ctrlKey) {
+        e.preventDefault()
+        setMimeSelected(3)
+      }
+    }
+
+    window.addEventListener("keydown",  handlerSendWwindos)
+    
+
+    return () => window.removeEventListener("keydown", handlerSendWwindos)
+
+  }, [])
 
   const {
     isOpenSiderBar,
@@ -479,7 +503,7 @@ export default function AppClient() {
           {/* Contenedor de pestañas desplazable */}
           <div
             ref={tabsContainerRef}
-            className="flex overflow-scroll max-w-[75vw] no-scrollbar scroll-smooth w-full" // no-scrollbar oculta la barra de desplazamiento
+            className="flex overflow-scroll max-w-[75vw] no-scrollbar scroll-smooth w-full px-10" // no-scrollbar oculta la barra de desplazamiento
             style={{ scrollbarWidth: 'none' }} // Para Firefox
           >
             <AnimatePresence>
