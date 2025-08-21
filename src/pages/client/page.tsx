@@ -138,6 +138,7 @@ const ContentPanel = ({
                   </p>
                 </div>
               ) : (
+                <>
                 <CodeEditorLazy
                   value={bodyRequest}
                   maxHeight="85vh"
@@ -146,6 +147,7 @@ const ContentPanel = ({
                   height="73vh"
                   minHeight="65vh"
                 />
+</>
               )}
             </div>
           </motion.div>
@@ -337,7 +339,7 @@ export default function AppClient() {
   const handleCodeEditorChange = useCallback(
     (value: string) => {
       if (currentTabId) {
-        updateTab(currentTabId, { body: JSON.parse(value) });
+        updateTab(currentTabId, { body: value });
       }
     },
     [currentTabId, updateTab],
@@ -423,29 +425,20 @@ export default function AppClient() {
 
   const handleRequestSubmit = useCallback(
     async (e) => {
-
-      toast.success("start")
-      
-
       e.preventDefault();
       setIsLoading(true);
       let finalResponse; // Variable para almacenar la respuesta
   
       try {
         finalResponse = await handleRequest();
-        console.warn("abajo")
-        console.log(finalResponse)
       } catch (error: any) {
-        toast.error("ocurrio un error")
         finalResponse = error;
       } finally {
-        toast.success("en el hanlde request submit padre")
         if (finalResponse) {
           setResponseRequest(finalResponse);
           setTypeResponse(finalResponse.typeResponse);
           setStatusCode(finalResponse.status);
 
-          toast.success(JSON.stringify(finalResponse))
   
           // Actualiza la pestaña con la respuesta completa
           updateTab(currentTabId, {

@@ -57,7 +57,6 @@ export default function RequestHook({
     const finalUrl = (replaceEnvVariables(endpointUrl) as string) || '';
 
     toast.success(`La url final ${finalUrl}`)
-    console.log("lkjsdfjksadkjflkdsñjfdsañflkj")
 
     const finalHeaders = replaceEnvVariables(cabeceras) as Record<
       string,
