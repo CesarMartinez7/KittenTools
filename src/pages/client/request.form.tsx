@@ -47,7 +47,7 @@ const RequestForm = ({
         const isDefinedAndEnabled = variable && variable.enabled === true;
         const color = isDefinedAndEnabled ? '#00a6f4' : '#D2042D';
 
-        return `<span style="color: ${color};">{{${grupo}}}</span>`;
+        return `<span title="${grupo}" style="color: ${color};">{{${grupo}}}</span>`;
       });
     },
     [],
@@ -111,7 +111,7 @@ const RequestForm = ({
             placeholder="https://api.example.com/endpoint"
             value={endpointUrl}
             onChange={handlerChangeInputRequest}
-            className="p-2 absolute inset-0 text-transparent transition-colors caret-gray-500 dark:caret-zinc-400 w-full outline-none select-all placeholder-zinc-200 dark:placeholder:text-zinc-600 select"
+            className="p-2 absolute inset-0 text-transparent transition-colors caret-gray-500 dark:caret-zinc-400 w-full outline-none select-all placeholder-zinc-500 dark:placeholder:text-zinc-600 select"
           />
         </div>
         <div className="flex divide-x divide-zinc-900 rounded-md overflow-hidden">

@@ -16,9 +16,11 @@ export default function RequestHook({
   endpointUrl,
   contentType,
 }: RequestHookProps): ReturnHookRequest {
+
+
+
   const handleRequest = useCallback(async () => {
     const { baseUrl, entornoActual } = useEnviromentStore.getState();
-
     // Lógica para reemplazar variables de entorno
     const replaceEnvVariables = (
       text: string | Record<string, string>,
@@ -33,30 +35,32 @@ export default function RequestHook({
           return envVar ? envVar.value : '';
         });
       }
-    
+
       if (text && typeof text === 'object') {
         const newObject: Record<string, string> = {};
         for (const key of Object.keys(text)) {
           if (typeof text[key] === 'string') {
-            newObject[key] = (text[key] as string).replace(/{{(.*?)}}/g, (_, envKey) => {
-              const trimmedKey = envKey.trim();
-              const envVar = entornoActual.find(
-                (env) => env.key === trimmedKey && env.enabled,
-              );
-              return envVar ? envVar.value : '';
-            });
+            newObject[key] = (text[key] as string).replace(
+              /{{(.*?)}}/g,
+              (_, envKey) => {
+                const trimmedKey = envKey.trim();
+                const envVar = entornoActual.find(
+                  (env) => env.key === trimmedKey && env.enabled,
+                );
+                return envVar ? envVar.value : '';
+              },
+            );
           }
         }
         return newObject;
       }
-    
+
       return text;
     };
-    
 
     const finalUrl = (replaceEnvVariables(endpointUrl) as string) || '';
 
-    toast.success(`La url final ${finalUrl}`)
+    toast.success(`La url final ${finalUrl}`);
 
     const finalHeaders = replaceEnvVariables(cabeceras) as Record<
       string,

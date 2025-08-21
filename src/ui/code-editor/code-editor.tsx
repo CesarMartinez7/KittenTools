@@ -50,6 +50,7 @@ const CodeEditor = ({
   );
 
   useEffect(() => {
+    toast.success("cambiando code")
     setCode(value);
   }, [value]);
 
@@ -434,7 +435,7 @@ const CodeEditor = ({
             <LazyListItem>
               <div
                 ref={highlightRef}
-                className="absolute inset-0 p-2 text-sm font-mono leading-6 pointer-events-no overflow-hidden whitespace-pre-wrap break-words"
+                className="absolute  inset-0 p-2 text-sm font-mono leading-6 pointer-events-no overflow-hidden whitespace-pre-wrap break-words"
                 dangerouslySetInnerHTML={{
                   __html: highlightCode(
                     code,
@@ -450,15 +451,14 @@ const CodeEditor = ({
 
             <LazyListItem>
               <textarea
-                autoFocus
                 ref={textareaRef}
                 value={code}
                 onChange={handleChange}
                 onScroll={handleScroll}
                 onKeyDown={handleKeyDown}
-                className="absolute inset-0 transition-colors p-2 text-sm font-mono leading-6 resize-none outline-none bg-transparent placeholder-lime-600 bg-amber-500 dark:placeholder-lime-200"
+                className="absolute inset-0 transition-colors p-2 text-sm font-mono leading-6 resize-none outline-none placeholder-lime-600  dark:placeholder-lime-200"
                 style={{
-                  color: 'transparent',
+                  color: 'yellow',
                   caretColor: 'var(--caret-color, gray)',
                 }}
                 spellCheck={false}

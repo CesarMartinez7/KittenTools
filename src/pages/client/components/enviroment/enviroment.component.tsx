@@ -5,31 +5,23 @@ import { useEnviromentStore } from './store.enviroment';
 import toast from 'react-hot-toast';
 
 export default function EnviromentComponent() {
-
-
-  const createEntornoFunction = useEnviromentStore((state) => state.createAndSetNewEnviroment)
-  
-
+  const createEntornoFunction = useEnviromentStore(
+    (state) => state.createAndSetNewEnviroment,
+  );
 
   const handleClickCrearEntorno = () => {
-    console.log("Crear entorno")
-    const name = window.prompt("Nombre del entorno")
+    console.log('Crear entorno');
+    const name = window.prompt('Nombre del entorno');
 
-    if(name){
-      if(name?.trim().length > 0){
-        createEntornoFunction(name as string)
+    if (name) {
+      if (name?.trim().length > 0) {
+        createEntornoFunction(name as string);
         return;
       }
-      toast.error("Asegurese de asignar un nombre al entorno")
+      toast.error('Asegurese de asignar un nombre al entorno');
     }
-    toast.error("Asegurese de asignar un nombre al entorno")
-
-    
-  }
-
-
-
-
+    toast.error('Asegurese de asignar un nombre al entorno');
+  };
 
   const {
     handleAddVariable,
@@ -126,27 +118,25 @@ export default function EnviromentComponent() {
               >
                 + Añadir Variable
               </motion.button>
-              <div className='space-x-2.5'>
-
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={toggleModal}
-                className="px-3 py-1.5 bg-gray-300 dark:bg-zinc-800 hover:bg-sky-600 dark:hover:bg-sky-600 rounded-md text-zinc-800 dark:text-zinc-300 hover:text-white transition-colors text-xs font-semibold shadow-md"
-              >
-                Importar Entornos
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => {
-                  handleClickCrearEntorno()
-                }}
-                className="px-3 py-1.5 bg-gray-300 dark:bg-zinc-800 hover:bg-sky-600 dark:hover:bg-sky-600 rounded-md text-zinc-800 dark:text-zinc-300 hover:text-white transition-colors text-xs font-semibold shadow-md"
-              >
-                Crear entorno
-              </motion.button>
-
+              <div className="space-x-2.5">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={toggleModal}
+                  className="px-3 py-1.5 bg-gray-300 dark:bg-zinc-800 hover:bg-sky-600 dark:hover:bg-sky-600 rounded-md text-zinc-800 dark:text-zinc-300 hover:text-white transition-colors text-xs font-semibold shadow-md"
+                >
+                  Importar Entornos
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => {
+                    handleClickCrearEntorno();
+                  }}
+                  className="px-3 py-1.5 bg-gray-300 dark:bg-zinc-800 hover:bg-sky-600 dark:hover:bg-sky-600 rounded-md text-zinc-800 dark:text-zinc-300 hover:text-white transition-colors text-xs font-semibold shadow-md"
+                >
+                  Crear entorno
+                </motion.button>
               </div>
             </div>
 

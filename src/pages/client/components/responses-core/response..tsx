@@ -94,7 +94,7 @@ export default function ResponsesTypesComponent({
     if (status >= 300 && status < 400)
       return 'bg-yellow-500/40 text-yellow-200';
     if (status >= 400 && status < 500)
-      return 'dark:bg-red-500/40 dark:text-red-200';
+      return 'dark:bg-red-500/40 dark:text-red-200 bg-red-500 text-red-100';
     if (status >= 500 && status < 600)
       return 'bg-orange-500/40 text-orange-200';
     return 'bg-gray-500';
@@ -164,7 +164,7 @@ export default function ResponsesTypesComponent({
     <div className="h-full flex flex-col max-h-[82vh] overflow-y-scroll bg-white dark:bg-transparent">
       <div className="flex-1 flex flex-col justify-between">
         <nav
-          className="flex border-b  justify-between border-zinc-400 dark:border-zinc-700 items-center py-2"
+          className="flex border-b  justify-between border-zinc-400 dark:border-zinc-700 items-center pt-3"
           role="tablist"
           aria-label="Tipos de respuesta"
         >

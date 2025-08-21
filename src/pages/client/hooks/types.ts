@@ -31,7 +31,7 @@ export interface SetterRetornoClient {
   setResponse: Dispatch<SetStateAction<string>>;
   setErrorAxios: Dispatch<SetStateAction<string>>;
   setErrorRequest: Dispatch<SetStateAction<boolean>>;
-  setBodyRequest: Dispatch<SetStateAction<string>>;
+  setBodyRequest: Dispatch<SetStateAction<string | null>>;
   setShowMethods: Dispatch<SetStateAction<boolean>>;
   setHeadersResponse: any;
   setEndpointUrl: Dispatch<SetStateAction<string>>;

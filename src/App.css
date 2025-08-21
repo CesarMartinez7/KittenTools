@@ -521,7 +521,7 @@ body {
 }
 
 ::selection {
-  @apply bg-zinc-800 text-zinc-200;
+  @apply bg-sky-500 text-white;
 }
 
 

@@ -21,6 +21,7 @@ import { VariantsAnimation } from './mapper-ops';
 import RequestForm from './request.form';
 import { type RequestData, useRequestStore } from './stores/request.store';
 import ResponsePanel from './response-panel';
+import type { EventRequest } from './types/types';
 
 const Header = ({
   isFullScreen,
@@ -71,7 +72,7 @@ const TabNavigation = ({ Opciones, selectedIdx, setMimeSelected }) => {
             onClick={() => setMimeSelected(index)}
             className={`
               relative btn btn-sm text-sm py-2 px-4 z-10
-              ${isSelected ? 'font-semibold text-gray-800 dark:text-white' : 'text-gray-500 dark:text-zinc-400 hover:text-gray-800 dark:hover:text-white'}
+              ${isSelected ? 'font-semibold text-gray-800 dark:text-white dark:bg-zinc-950 bg-gray-200' : 'text-gray-500 dark:text-zinc-400 hover:text-gray-800 dark:hover:text-white'}
             `}
           >
             <span>{opcion.name}</span>
@@ -93,6 +94,19 @@ const TabNavigation = ({ Opciones, selectedIdx, setMimeSelected }) => {
   );
 };
 
+
+interface ContentTypeProps {
+  selectedIdx: number,
+  bodyRequest: string,
+  contentType: string,
+  setContentType: React.Dispatch<React.SetStateAction<string>>
+  scriptsValues: EventRequest[];
+  setScriptsValues: React.Dispatch<React.SetStateAction<EventRequest>>
+  onCodeChange: () => void,
+  setBodyRequest: React.Dispatch<React.SetStateAction<string | null>>
+}
+
+
 const ContentPanel = ({
   selectedIdx,
   bodyRequest,
@@ -101,7 +115,21 @@ const ContentPanel = ({
   scriptsValues,
   setScriptsValues,
   onCodeChange,
-}) => {
+  setBodyRequest
+} : ContentTypeProps) => {
+
+
+  useEffect(() => {
+    if (contentType === 'none') {
+      toast.error('es none');
+      setBodyRequest(null)
+      toast.success(bodyRequest)
+    }
+    setBodyRequest(null)
+    toast.success(bodyRequest)
+    
+  }, [contentType]);
+
   const getContent = () => {
     switch (selectedIdx) {
       case 0:
@@ -139,15 +167,15 @@ const ContentPanel = ({
                 </div>
               ) : (
                 <>
-                <CodeEditorLazy
-                  value={bodyRequest}
-                  maxHeight="85vh"
-                  onChange={onCodeChange}
-                  language={contentType}
-                  height="73vh"
-                  minHeight="65vh"
-                />
-</>
+                  <CodeEditorLazy
+                    value={bodyRequest}
+                    maxHeight="85vh"
+                    onChange={onCodeChange}
+                    language={contentType}
+                    height="73vh"
+                    minHeight="65vh"
+                  />
+                </>
               )}
             </div>
           </motion.div>
@@ -217,7 +245,7 @@ const ContentPanel = ({
   );
 };
 
-const TabDisplay = ({ currentTab }) => {
+const TabDisplay = ({ currentTab } : {currentTab: any}) => {
   return (
     <AnimatePresence>
       {currentTab && (
@@ -258,32 +286,24 @@ export default function AppClient() {
   const { value, setter } = ClientCustomHook();
   const listEntornos = useEnviromentStore((state) => state.listEntorno);
   const nombreEntorno = useEnviromentStore((state) => state.nameEntornoActual);
-  const entornoActual = useEnviromentStore((state) => state.entornoActual)
+  const entornoActual = useEnviromentStore((state) => state.entornoActual);
   const refForm = useRef<HTMLFormElement>(null);
 
-
   useEffect(() => {
-
     const handlerSendWwindos = (e: KeyboardEvent) => {
-      
-      if(e.key === "Enter" &&  e.ctrlKey) {
-        const target = refForm.current
-        target?.requestSubmit()
+      if (e.key === 'Enter' && e.ctrlKey) {
+        const target = refForm.current;
+        target?.requestSubmit();
       }
 
-
-      if(e.key.toLocaleLowerCase() === "e" &&  e.ctrlKey) {
-        e.preventDefault()
-        setMimeSelected(3)
+      if (e.key.toLocaleLowerCase() === 'e' && e.ctrlKey) {
+        e.preventDefault();
+        setMimeSelected(3);
       }
-    }
-
-    window.addEventListener("keydown",  handlerSendWwindos)
-    
-
-    return () => window.removeEventListener("keydown", handlerSendWwindos)
-
-  }, [])
+    };
+    window.addEventListener('keydown', handlerSendWwindos);
+    return () => window.removeEventListener('keydown', handlerSendWwindos);
+  }, []);
 
   const {
     isOpenSiderBar,
@@ -346,7 +366,7 @@ export default function AppClient() {
   );
 
   const handleMethodChange = useCallback(
-    (newMethod : string) => {
+    (newMethod: string) => {
       if (currentTabId) {
         updateTab(currentTabId, { method: newMethod });
       }
@@ -397,7 +417,6 @@ export default function AppClient() {
 
   const handleTabClick = (tab: RequestData, currentIdx: number) => {
     setCurrentTab(tab.id);
-    toast.success(currentIdx);
     localStorage.setItem('currentIdx', String(currentIdx));
   };
 
@@ -428,7 +447,6 @@ export default function AppClient() {
       e.preventDefault();
       setIsLoading(true);
       let finalResponse; // Variable para almacenar la respuesta
-  
       try {
         finalResponse = await handleRequest();
       } catch (error: any) {
@@ -439,7 +457,6 @@ export default function AppClient() {
           setTypeResponse(finalResponse.typeResponse);
           setStatusCode(finalResponse.status);
 
-  
           // Actualiza la pestaña con la respuesta completa
           updateTab(currentTabId, {
             response: {
@@ -454,10 +471,15 @@ export default function AppClient() {
         setIsLoading(false);
       }
     },
-    [handleRequest, currentTabId, updateTab, setIsLoading, responseRequest, listEntornos],
+    [
+      handleRequest,
+      currentTabId,
+      updateTab,
+      setIsLoading,
+      responseRequest,
+      listEntornos,
+    ],
   );
-  
-
   const tabsContainerRef = useRef(null);
 
   const scrollTabs = (direction) => {
@@ -583,7 +605,7 @@ export default function AppClient() {
           </button>
         </div>
 
-         <TabDisplay currentTab={currentTab} />
+        <TabDisplay currentTab={currentTab} />
         {/* <TabDisplay currentTab={entornoActual} /> */}
 
         <RequestForm
@@ -619,6 +641,7 @@ export default function AppClient() {
               scriptsValues={scriptsValues}
               setScriptsValues={setScriptsValues}
               onCodeChange={handleCodeEditorChange}
+              setBodyRequest={setBodyRequest}
             />
           </Panel>
 
@@ -626,7 +649,11 @@ export default function AppClient() {
 
           {/* Panel de respuesta */}
           <Panel defaultSize={50} minSize={20} className="h-full">
-            <ResponsePanel typeResponse={typeResponse} response={responseRequest} statusCode={statusCode} />
+            <ResponsePanel
+              typeResponse={typeResponse}
+              response={responseRequest}
+              statusCode={statusCode}
+            />
             {/* <ResponsesTypesComponent
               typeResponse={typeResponse}
               data={responseRequest}
