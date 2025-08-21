@@ -458,7 +458,7 @@ const CodeEditor = ({
                 onKeyDown={handleKeyDown}
                 className="absolute inset-0 transition-colors p-2 text-sm font-mono leading-6 resize-none outline-none placeholder-lime-600  dark:placeholder-lime-200"
                 style={{
-                  color: 'yellow',
+                  color: "transparent",
                   caretColor: 'var(--caret-color, gray)',
                 }}
                 spellCheck={false}
