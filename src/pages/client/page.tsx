@@ -33,10 +33,10 @@ const Header = ({
   nombreEntorno: string | null;
 }) => {
   return (
-    <div className="flex dark items-center text-xs gap-2 justify-end px-4 border-gray-200 dark:border-zinc-800 backdrop-blur-sm py-2">
+    <div className="flex dark items-center text-xs gap-2 justify-end px-4 border-gray-200 dark:border-zinc-800 backdrop-blur-sm py-1">
       {/* Nombre entorno */}
       <div
-        className={`font-medium text-zinc-800 dark:text-zinc-300 truncate max-w-[250px] px-3 py-1 rounded-full 
+        className={`font-medium text-zinc-800 dark:text-zinc-300 truncate max-w-[250px] px-3 rounded-full 
     ${
       nombreEntorno === null
         ? 'bg-red-200 dark:bg-red-950 text-red-500'
@@ -48,7 +48,7 @@ const Header = ({
 
       <button
         onClick={toogleFullScreen}
-        className="flex items-center gap-2 px-3 py-1 text-xs rounded-md  text-zinc-600 dark:text-zinc-200 font-medium shadow-sm hover:bg-gray-300 dark:bg-zinc-800 bg-gray-200 dark:hover:bg-blue-500 transition-colors"
+        className="flex items-center gap-2 px-3  text-xs rounded-md  text-zinc-600 dark:text-zinc-200 font-medium shadow-sm hover:bg-gray-300 dark:bg-zinc-800 bg-gray-200 dark:hover:bg-blue-500 transition-colors"
       >
         <Icon
           icon={isFullScreen ? arrowsMinimize : arrowsMaximize}
@@ -490,8 +490,17 @@ export default function AppClient() {
   };
 
   return (
-    <div className="min-h-screen flex text-white overflow-hidden h-screen text-xs">
+    <div className="min-h-screen flex text-white overflow-hidden h-screen text-xs relative">
       {/* SideBar en escritorio y modal en móvil */}
+
+      <div className='dark:bg-zinc-900 border-t border-zinc-800 bg-white text-gray-600 w-screen bottom-0 fixed z-50'>
+      
+      <Header
+          isFullScreen={isFullScreen}
+          nombreEntorno={nombreEntorno}
+          toogleFullScreen={toogleFullScreen}
+        />
+      </div>
       <SideBar
         currentUrl={currentTab?.url}
         currentBody={currentTab?.body}

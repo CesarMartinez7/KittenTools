@@ -21,7 +21,7 @@ const Router =
 const root = document.getElementById('root')!;
 
 ReactDOM.createRoot(root).render(
-  <div className="dark:bg-zinc-900 bg-zinc-100">
+  <div className="dark:bg-zinc-900 bg-zinc-100 ">
     <Toaster
       toastOptions={{
         className: 'dark:bg-zinc-700! dark:text-white! text-gray-500',
@@ -30,7 +30,7 @@ ReactDOM.createRoot(root).render(
 
     <div className="z-[777] relative">
       <Router>
-        <Suspense
+        {/* <Suspense
           fallback={
             <AnimatePresence>
               <motion.div
@@ -43,7 +43,7 @@ ReactDOM.createRoot(root).render(
               </motion.div>
             </AnimatePresence>
           }
-        >
+        > */}
           <Routes>
             <Route index path="/loading" element={<LoadingElement />} />
             <Route index path="/" element={<AppClientRouteLazy />} />
@@ -56,7 +56,7 @@ ReactDOM.createRoot(root).render(
               }
             />
           </Routes>
-        </Suspense>
+        {/* </Suspense> */}
       </Router>
     </div>
   </div>,

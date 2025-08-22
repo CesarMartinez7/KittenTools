@@ -49,10 +49,6 @@ const CodeEditor = ({
     [entornoActual],
   );
 
-  useEffect(() => {
-    toast.success('cambiando code');
-    setCode(value);
-  }, [value]);
 
   const { JsonSchema, minifyJson } = useJsonHook({
     code: code,
