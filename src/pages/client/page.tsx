@@ -658,18 +658,12 @@ export default function AppClient() {
           <Panel defaultSize={50} minSize={20} className="h-full">
             <ResponsePanel
               isLoading={isLoading}
-              headersResponse={responseRequest}
-              typeResponse={typeResponse}
-              response={responseRequest}
-              statusCode={statusCode}
+              headersResponse={currentTab?.response?.headers}
+              typeResponse={currentTab?.response?.type}
+              response={currentTab?.response?.data}
+              statusCode={currentTab?.response?.status}
             />
-            {/* <ResponsesTypesComponent
-              typeResponse={typeResponse}
-              data={responseRequest}
-              height="500px"
-              statusCode={statusCode}
-              timeResponse={timeResponse}
-            /> */}
+            
           </Panel>
         </PanelGroup>
       </div>
