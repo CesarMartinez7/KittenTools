@@ -201,6 +201,7 @@ const ItemNode: React.FC<ItemNodeProps> = ({
             query: {},
           },
         };
+        
         const newItems = item.item ? [...item.item, newRequest] : [newRequest];
         return { ...item, item: newItems };
       },

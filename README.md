@@ -7,7 +7,7 @@ El objetivo de Elisa es claro: ser una alternativa libre, rápida y potente a he
 
 💡 Desarrollada con React, Axios, Zustand y otras tecnologías modernas. También cuenta con versión empaquetada en Tauri para escritorio (Windows), y una landing page oficial.
 
-🚀 ¿Qué ofrece Elisa?
+- 🚀 ¿Qué ofrece Elisa?
 
 ✨ Formateo de JSON claro, legible y con estilos modernos.
 
