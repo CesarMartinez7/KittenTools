@@ -656,7 +656,9 @@ export default function AppClient() {
 
           {/* Panel de respuesta */}
           <Panel defaultSize={50} minSize={20} className="h-full">
+            <p>{typeResponse}</p>
             <ResponsePanel
+              setTypeResponse={setTypeResponse}
               isLoading={isLoading}
               headersResponse={currentTab?.response?.headers}
               typeResponse={currentTab?.response?.type}

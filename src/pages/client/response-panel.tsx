@@ -8,6 +8,7 @@ const ResponsePanel = ({
   isLoading,
   headersResponse,
   statusCode,
+  setTypeResponse
 }) => (
   <div className="h-full bg-white/90 dark:bg-zinc-900/80 p-4 border-gray-200 dark:border-zinc-800 flex flex-col overflow-hidden shadow-lg">
     {response || isLoading ? (
@@ -19,6 +20,7 @@ const ResponsePanel = ({
         ) : (
           <div className="flex-1 overflow-hidden">
             <ResponsesTypesComponent
+              setTypeResponse={setTypeResponse}
               typeResponse={typeResponse}
               headersResponse={headersResponse}
               data={response}

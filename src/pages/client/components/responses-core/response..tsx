@@ -1,13 +1,15 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { JsonNode } from '../../../../ui/formatter-JSON/jsonnode.';
-import alien from "@iconify-icons/tabler/alien"
+import alien from '@iconify-icons/tabler/alien';
 import TableData from '../../../../ui/Table';
 import XmlNode from '../../../../ui/xml-node/xmlnode';
 import { useRequestStore } from '../../stores/request.store';
 
+// Define los tipos de respuesta del dropdown
+const responseViewTypes = ['Raw', 'Preview', 'JSON', 'XML', 'HTML', 'Base64'];
 const tabs = ['Respuesta', 'Cabeceras', 'Cookies', 'Timeline'];
 
 const SelectedType = ({
@@ -42,6 +44,7 @@ interface ResponseTypes {
   timeResponse: number | string;
   typeResponse: string;
   headersResponse: any;
+  setTypeResponse: React.Dispatch<React.SetStateAction<any>>
 }
 
 export default function ResponsesTypesComponent({
@@ -50,27 +53,43 @@ export default function ResponsesTypesComponent({
   timeResponse,
   data,
   typeResponse,
+  setTypeResponse
 }: ResponseTypes) {
   const { listTabs, currentTabId } = useRequestStore();
 
   const [activeTab, setActiveTab] = useState('Respuesta');
+  const [activeResponseType, setActiveResponseType] = useState('Raw');
+  const [showResponseMenu, setShowResponseMenu] = useState(false);
+
   const currentTab = listTabs.find((tab) => tab.id === currentTabId);
+
+  // Sincroniza el tipo de respuesta activo con el tipo de respuesta de la API
+  useEffect(() => {
+    if (typeResponse.includes('json')) {
+      setActiveResponseType('JSON');
+    } else if (typeResponse.includes('xml')) {
+      setActiveResponseType('XML');
+    } else if (typeResponse.includes('html')) {
+      setActiveResponseType('HTML');
+    } else {
+      setActiveResponseType('Raw');
+    }
+  }, [typeResponse]);
 
   const parsedData = useMemo(() => {
     try {
-      if (typeof data === 'string' && typeResponse.toLowerCase() === 'json') {
+      if (typeof data === 'string' && (typeResponse.toLowerCase().includes('json') || activeResponseType === 'JSON')) {
         return JSON.parse(data);
       }
       return data;
     } catch (e) {
       return data;
     }
-  }, [data, typeResponse]);
+  }, [data, typeResponse, activeResponseType]);
 
   const size = useMemo(() => {
     try {
-      const sizeInKB =
-        new TextEncoder().encode(JSON.stringify(data)).length / 1024;
+      const sizeInKB = new TextEncoder().encode(JSON.stringify(data)).length / 1024;
       return sizeInKB.toFixed(2) + ' KB';
     } catch (e) {
       return '0.00 kb';
@@ -100,10 +119,22 @@ export default function ResponsesTypesComponent({
     return 'bg-gray-500';
   };
 
-  // Nueva función para renderizar el contenido de la respuesta
   const renderResponseContent = () => {
-    if (typeResponse) {
-      if (typeResponse.includes('json')) {
+    const finalType = activeResponseType.toLowerCase();
+
+    switch (finalType) {
+      case 'preview':
+        if (typeResponse.includes('html') || typeResponse.includes('xml')) {
+          return (
+            <iframe
+              srcDoc={data}
+              className="w-full h-full border-none text-wrap"
+              title="Preview"
+            />
+          );
+        }
+        return <pre>Preview no disponible para este tipo de contenido.</pre>;
+      case 'json':
         return (
           <JsonNode
             open={true}
@@ -113,9 +144,7 @@ export default function ResponsesTypesComponent({
             data={parsedData}
           />
         );
-      }
-
-      if (typeResponse.includes('xml') || typeResponse.includes('html')) {
+      case 'xml':
         try {
           const parser = new DOMParser();
           const xmlDoc = parser.parseFromString(
@@ -149,26 +178,34 @@ export default function ResponsesTypesComponent({
             </div>
           );
         }
-      }
+      case 'html':
+        return <pre className="text-xs">{data}</pre>;
+      case 'base64':
+        try {
+          const base64Content = btoa(data);
+          return <pre className="text-xs break-all">{base64Content}</pre>;
+        } catch (e) {
+          return <p className="text-red-400">Error al codificar a Base64.</p>;
+        }
+      case 'raw':
+      default:
+        return (
+          <pre className="text-xs text-green-primary whitespace-pre-wrap break-all">
+            {JSON.stringify(data, null, 2)}
+          </pre>
+        );
     }
-
-    // Fallback para otros tipos de datos (como texto plano o HTML)
-    return (
-      <pre className="text-xs text-green-primary">
-        {JSON.stringify(data, null, 2)}
-      </pre>
-    );
   };
 
   return (
-    <div className="h-full flex flex-col max-h-[82vh] overflow-y-scroll bg-white dark:bg-transparent max-w-[40vw]">
+    <div className="h-full flex flex-col max-h-[82vh] overflow-y-scroll bg-white dark:bg-transparent ">
       <div className="flex-1 flex flex-col justify-between">
         <nav
-          className="flex border-b  justify-between border-zinc-400 dark:border-zinc-700 items-center pt-1 sticky top-0 dark:bg-zinc-950/50 backdrop-blur-2xl bg-white"
+          className="flex border-b justify-between border-zinc-400 dark:border-zinc-700 items-center pt-1 sticky top-0 dark:bg-zinc-950/50 backdrop-blur-2xl bg-white"
           role="tablist"
           aria-label="Tipos de respuesta"
         >
-          <div>
+          <div className="flex">
             {tabs.map((tab) => (
               <SelectedType
                 key={tab}
@@ -177,8 +214,46 @@ export default function ResponsesTypesComponent({
                 onClick={() => setActiveTab(tab)}
               />
             ))}
+            {activeTab === 'Respuesta' && (
+              <div className="relative inline-block text-left ml-4">
+                <button
+                  type="button"
+                  onClick={() => setShowResponseMenu(!showResponseMenu)}
+                  className="inline-flex justify-center w-full rounded-md border border-gray-300 dark:border-zinc-700 shadow-sm px-4 py-1 bg-white dark:bg-zinc-950 text-sm font-medium text-gray-700 dark:text-zinc-200 hover:bg-gray-50 dark:hover:bg-zinc-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                  {activeResponseType}
+                  <Icon icon="tabler:chevron-down" className="-mr-1 ml-2 h-5 w-5" />
+                </button>
+                <AnimatePresence>
+                  {showResponseMenu && (
+                    <motion.div
+                      className="origin-top-right absolute right-0 mt-2 w-32 rounded-md shadow-lg bg-white dark:bg-zinc-800 ring-1 ring-black ring-opacity-5 focus:outline-none z-10"
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <div className="py-1" role="menu" aria-orientation="vertical">
+                        {responseViewTypes.map((type) => (
+                          <button
+                            key={type}
+                            onClick={() => {
+                              setActiveResponseType(type);
+                              setShowResponseMenu(false);
+                            }}
+                            className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-zinc-200 hover:bg-gray-100 dark:hover:bg-zinc-700"
+                            role="menuitem"
+                          >
+                            {type}
+                          </button>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            )}
           </div>
-
           <div className="flex items-center gap-2 mr-4 text-zinc-300 text-xs">
             <span
               className={`text-xs font-bold px-1 rounded ${getStatusCodeClass(statusCode)}`}
@@ -194,7 +269,7 @@ export default function ResponsesTypesComponent({
 
         <AnimatePresence mode="wait">
           <motion.div
-            key={activeTab}
+            key={activeTab + activeResponseType}
             initial={{ y: 10, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -10, opacity: 0 }}
@@ -244,7 +319,6 @@ export default function ResponsesTypesComponent({
       </div>
 
       <div className="flex justify-between items-center text-[8px] text-gray-500 dark:text-zinc-400 backdrop-blur-3xl bg-gray-200/70 dark:bg-zinc-950/50 border-t border-gray-300 dark:border-zinc-800 px-2 py-1.5 shadow-sm sticky bottom-0">
-        {/* <span className="text-sm text-zinc-400">{size}</span> */}
         <div className="flex gap-2">
           <button
             className="p-1.5 rounded-md hover:bg-zinc-800 transition-colors text-zinc-400 hover:text-zinc-200"
