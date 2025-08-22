@@ -1,6 +1,6 @@
 # <p style="text-align:center;">Elisa</p>
 
-![./reactmatter.png](./src/assets/images/elisa-white.png)
+![./reactmatter.png](./src/assets/images/elisa-client-0.0.3.png)
 
 Elisa es una herramienta sencilla independiente a jade. pero poderosa y diseñada para ser un client api, la idea es que elisa pueda ser integrado con github como bruno tiene, para asi no tener necesidad de membrasias premiun todo sin necesidad de conectarse a un backend ni hacer consumos externos.
 Bajo la filosofía de "lo que es del frontend, se queda en el frontend", ReactMatter apuesta por la eficiencia, rapidez y simplicidad.
