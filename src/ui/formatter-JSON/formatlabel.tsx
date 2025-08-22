@@ -8,7 +8,7 @@ const FormatDataTypeLabel = ({ data }: { data: JsonValue }) => {
     <b
       className="text-[9px] p-1 rounded-md 
       text-zinc-700 dark:text-zinc-200 
-      bg-gradient-to-t from-zinc-200 to-zinc-100 dark:from-zinc-900 dark:to-zinc-700"
+      bg-gradient-to-t from-zinc-200 to-zinc-100 dark:from-zinc-900 dark:to-zinc-800"
     >
       {type}
     </b>

@@ -113,7 +113,7 @@ const ColoredInput: React.FC<HeaderInputProps> = ({
       onChange={(e) => onChange(e.target.value)}
       onFocus={() => setIsFocused(true)}
       onBlur={() => setIsFocused(false)}
-      className="p-2 rounded bg-zinc-800 text-zinc-200 outline-none placeholder:text-zinc-500 w-full"
+      className="p-2 rounded bg-gray-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-200 outline-none placeholder:text-zinc-500 w-full"
     />
   );
 };
@@ -198,7 +198,7 @@ export const HeadersAddRequest: React.FC<HeadersAddRequestProps> = () => {
             placeholder="Key"
             value={header.key || ''}
             onChange={(e) => handleInputChange(index, 'key', e.target.value)}
-            className="p-2 rounded bg-zinc-800 text-zinc-200 outline-none placeholder:text-zinc-500"
+            className="p-2 rounded bg-gray-200  dark:bg-zinc-800 text-zinc-200 outline-none placeholder:text-zinc-500"
           />
 
           <ColoredInput

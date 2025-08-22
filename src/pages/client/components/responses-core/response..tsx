@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { JsonNode } from '../../../../ui/formatter-JSON/jsonnode.';
-import { CodeEditorLazy } from '../../../../ui/lazy-components';
+import alien from "@iconify-icons/tabler/alien"
 import TableData from '../../../../ui/Table';
 import XmlNode from '../../../../ui/xml-node/xmlnode';
 import { useRequestStore } from '../../stores/request.store';
@@ -131,7 +131,7 @@ export default function ResponsesTypesComponent({
             <div className="text-red-400 absolute inset-0 backdrop-blur-3xl text-center grid place-content-center gap-2 overflow-hidden rounded-xl">
               <Icon
                 className="mx-auto text-zinc-500"
-                icon="tabler:alien"
+                icon={alien}
                 width="54"
                 height="54"
               />
@@ -161,10 +161,10 @@ export default function ResponsesTypesComponent({
   };
 
   return (
-    <div className="h-full flex flex-col max-h-[82vh] overflow-y-scroll bg-white dark:bg-transparent">
+    <div className="h-full flex flex-col max-h-[82vh] overflow-y-scroll bg-white dark:bg-transparent max-w-[40vw]">
       <div className="flex-1 flex flex-col justify-between">
         <nav
-          className="flex border-b  justify-between border-zinc-400 dark:border-zinc-700 items-center pt-3"
+          className="flex border-b  justify-between border-zinc-400 dark:border-zinc-700 items-center pt-1 sticky top-0 dark:bg-zinc-950/50 backdrop-blur-2xl bg-white"
           role="tablist"
           aria-label="Tipos de respuesta"
         >
@@ -188,7 +188,7 @@ export default function ResponsesTypesComponent({
             <span className="text-xs dark:bg-zinc-800/90 bg-gray-200 text-gray-600 dark:text-zinc-200 py-0.5 px-2 rounded text-r">
               {currentTab?.response?.time || timeResponse} ms
             </span>
-            <span className="text-gray-600 dark:text-zinc-200">{size}</span>
+            <span className="text-gray-600 dark:text-zinc-400 ">{size}</span>
           </div>
         </nav>
 
@@ -215,7 +215,7 @@ export default function ResponsesTypesComponent({
 
             {activeTab.toLowerCase() === 'cookies' && (
               <div className="p-4">
-                {/* <TableData
+                <TableData
                   data={
                     headersResponse['Set-Cookie']
                       ? headersResponse['Set-Cookie']
@@ -229,7 +229,7 @@ export default function ResponsesTypesComponent({
                           }, {})
                       : {}
                   }
-                /> */}
+                />
               </div>
             )}
             {activeTab.toLowerCase() === 'timeline' && (
@@ -243,7 +243,7 @@ export default function ResponsesTypesComponent({
         </AnimatePresence>
       </div>
 
-      <div className="relative flex justify-between items-center text-[8px] text-gray-500 dark:text-zinc-400 bg-gray-200/70 dark:bg-zinc-950/50 border-t border-gray-300 dark:border-zinc-800 px-2 py-1.5 shadow-sm">
+      <div className="flex justify-between items-center text-[8px] text-gray-500 dark:text-zinc-400 backdrop-blur-3xl bg-gray-200/70 dark:bg-zinc-950/50 border-t border-gray-300 dark:border-zinc-800 px-2 py-1.5 shadow-sm sticky bottom-0">
         {/* <span className="text-sm text-zinc-400">{size}</span> */}
         <div className="flex gap-2">
           <button

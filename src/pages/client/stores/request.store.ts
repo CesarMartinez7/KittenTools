@@ -1,7 +1,14 @@
+// src/stores/request.store.ts
 import { nanoid } from 'nanoid';
 import toast from 'react-hot-toast';
 import { create } from 'zustand';
 import { type Collection, db, type RequestTab } from '../db';
+import { open, save } from '@tauri-apps/plugin-dialog';
+import {
+  readTextFile,
+  writeTextFile,
+  BaseDirectory,
+} from '@tauri-apps/plugin-fs';
 
 export interface RequestData {
   id: string;
@@ -182,34 +189,31 @@ export const useRequestStore = create<RequestState>((set, get) => ({
     }
   },
 
+  // ✅ Nueva lógica para importar colecciones usando los plugins de Tauri
   importCollections: async () => {
     try {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = '.json, .txt';
-      input.style.display = 'none';
-
-      const file = await new Promise<File | null>((resolve) => {
-        input.onchange = () => {
-          resolve(input.files?.[0] || null);
-          document.body.removeChild(input);
-        };
-        document.body.appendChild(input);
-        input.click();
+      const selectedPath = await open({
+        multiple: false,
+        filters: [
+          {
+            name: 'Postman Collection',
+            extensions: ['json'],
+          },
+        ],
       });
 
-      if (!file) {
+      if (!selectedPath) {
         toast.error('No se seleccionó ningún archivo');
         return;
       }
 
-      const fileContent = await file.text();
+      const fileContent = await readTextFile(selectedPath as string);
       let parsedData;
+
       try {
         parsedData = JSON.parse(fileContent);
       } catch (parseError) {
         toast.error('El archivo no tiene un formato JSON válido');
-        console.error('Error de parsing:', parseError);
         return;
       }
 
@@ -220,7 +224,7 @@ export const useRequestStore = create<RequestState>((set, get) => ({
         !Array.isArray(parsedData.item)
       ) {
         toast.error(
-          'La estructura del archivo no coincide con una colección válida',
+          'La estructura del archivo no coincide con una colección de Postman válida',
         );
         return;
       }
@@ -237,12 +241,56 @@ export const useRequestStore = create<RequestState>((set, get) => ({
       }));
       toast.success(`"${parsedData.info.name}" cargado exitosamente`);
     } catch (error) {
-      toast.error('Error inesperado al cargar el archivo');
-      console.error('Error general:', error);
+      toast.error('Error al cargar la colección');
+      console.error('Error de importación:', error);
     }
   },
 
+  // ✅ Nueva lógica para exportar colecciones
   exportCollections: async () => {
-    /* ... (se mantiene igual) ... */
+    const { collections } = get();
+    if (collections.length === 0) {
+      toast.error('No hay colecciones para exportar.');
+      return;
+    }
+
+    // Selecciona la primera colección para exportar
+    const collectionToExport = collections[0];
+
+    // Crea un objeto con el formato de Postman
+    const postmanExport = {
+      info: {
+        _postman_id: nanoid(),
+        name: collectionToExport.name,
+        schema:
+          'https://schema.getpostman.com/json/collection/v2.1.0/collection.json',
+      },
+      item: collectionToExport.item,
+    };
+
+    const fileName = `Elisa-${collectionToExport.name}.json`;
+
+    try {
+      const selectedPath = await save({
+        filters: [
+          {
+            name: 'Postman Collection',
+            extensions: ['json'],
+          },
+        ],
+        defaultPath: fileName,
+      });
+
+      if (!selectedPath) {
+        toast.error('Exportación cancelada');
+        return;
+      }
+
+      await writeTextFile(selectedPath, JSON.stringify(postmanExport, null, 2));
+      toast.success('Colección exportada exitosamente');
+    } catch (error) {
+      toast.error('Error al exportar la colección');
+      console.error('Error de exportación:', error);
+    }
   },
 }));

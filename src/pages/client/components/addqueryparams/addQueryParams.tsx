@@ -40,7 +40,7 @@ const AddQueryParam: React.FC<AddQueryParamProps> = () => {
   // Actualiza el store cada vez que la query cambia
   useMemo(() => {
     const params = new URLSearchParams();
-    queryArray.forEach(param => {
+    queryArray.forEach((param) => {
       if (param.key.trim() !== '') {
         params.append(param.key, param.value);
       }
@@ -89,7 +89,8 @@ const AddQueryParam: React.FC<AddQueryParamProps> = () => {
 
   const handleCopy = useCallback(() => {
     if (formattedUrl) {
-      navigator.clipboard.writeText(formattedUrl)
+      navigator.clipboard
+        .writeText(formattedUrl)
         .then(() => {
           toast.success('Parámetros copiados al portapapeles');
         })
@@ -102,10 +103,8 @@ const AddQueryParam: React.FC<AddQueryParamProps> = () => {
   return (
     <div className="p-4 overflow-auto">
       {formattedUrl.length > 0 && (
-        <div className="mb-4 p-3 bg-zinc-800 rounded-lg flex justify-between items-center">
-          <p className="font-mono text-sm text-zinc-300 break-all">
-            {formattedUrl}
-          </p>
+        <div className="mb-4 px-2 py-1 text-xs bg-gray-200 dark:bg-zinc-800 rounded-lg flex justify-between items-center text-gray-600">
+          <p className="font-mono  text-zinc-300 break-all">{formattedUrl}</p>
           <button
             onClick={handleCopy}
             className="ml-4 p-2 rounded-lg text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700 transition-colors duration-200"
@@ -133,14 +132,14 @@ const AddQueryParam: React.FC<AddQueryParamProps> = () => {
             placeholder="Key"
             value={param.key}
             onChange={(e) => handleInputChange(index, 'key', e.target.value)}
-            className="p-2 rounded bg-zinc-800 text-zinc-200 outline-none placeholder:text-zinc-500"
+            className="p-2 rounded bg-gray-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 outline-none placeholder:text-zinc-500"
           />
           <input
             type="text"
             placeholder="Value"
             value={param.value}
             onChange={(e) => handleInputChange(index, 'value', e.target.value)}
-            className="p-2 rounded bg-zinc-800 text-zinc-200 outline-none placeholder:text-zinc-500"
+            className="p-2 rounded bg-gray-200 dark:bg-zinc-800 dark:bg-zinc-800 text-zinc-200 outline-none placeholder:text-zinc-500"
           />
           {displayedQueryArray.length > 1 && (
             <button

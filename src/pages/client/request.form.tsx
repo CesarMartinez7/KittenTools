@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useEnviromentStore } from './components/enviroment/store.enviroment';
 import { useFormattedUrlStore } from './components/addqueryparams/addQueryParams';
 import { Methodos } from './mapper-ops';
@@ -18,7 +18,7 @@ const RequestForm = ({
 }) => {
   const { currentTabId, updateTab } = useRequestStore();
   const entornoActual = useEnviromentStore((state) => state.entornoActual);
-  
+
   // Accede al valor del store de URL formateada
   const { formattedUrl } = useFormattedUrlStore();
 
@@ -58,22 +58,22 @@ const RequestForm = ({
         const color = isDefinedAndEnabled ? '#00a6f4' : '#D2042D';
         return `<span title="${grupo}" style="color: ${color};">{{${grupo}}}</span>`;
       });
-      
+
       finalHtml += `<span style="color: #666666; dark:text-zinc-400">${baseUrlHtml}</span>`;
 
       // Si hay una parte de query, la formatea y la añade
       if (queryPart) {
         finalHtml += `<span style="color: #666666; dark:text-zinc-400">?</span>`;
-        
+
         // Separa los parámetros para estilizarlos individualmente
         const paramsArray = queryPart.split('&');
         paramsArray.forEach((param, index) => {
           const [key, value] = param.split('=');
-          
+
           finalHtml += `<span style="color: #a673d4;">${key}</span>`; // Estilo para la clave
           finalHtml += `<span style="color: #666666; dark:text-zinc-400">=</span>`;
           finalHtml += `<span style="color: #e5b567;">${value}</span>`; // Estilo para el valor
-          
+
           if (index < paramsArray.length - 1) {
             finalHtml += `<span style="color: #666666; dark:text-zinc-400">&</span>`;
           }
@@ -94,6 +94,8 @@ const RequestForm = ({
     },
     [currentTabId, updateTab, setShowMethods],
   );
+
+  const [open, setOpen] = useState(true);
 
   // Combina la URL del endpoint con los parámetros formateados
   const fullUrl = useMemo(() => {
@@ -136,7 +138,7 @@ const RequestForm = ({
             )}
           </AnimatePresence>
         </div>
-        
+
         {/* Contenedor de la URL con estilos originales */}
         <div className="bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 relative flex-1 p-2 rounded-md border border-gray-200 dark:border-zinc-800">
           {/* DIV para mostrar el texto formateado */}
@@ -155,7 +157,7 @@ const RequestForm = ({
             className="p-2 absolute inset-0 text-transparent transition-colors caret-gray-500 dark:caret-zinc-400 w-full outline-none select-all placeholder-zinc-500 dark:placeholder:text-zinc-600 select"
           />
         </div>
-        
+
         <div className="flex divide-x divide-zinc-900 rounded-md overflow-hidden">
           <button
             type="submit"
@@ -168,12 +170,33 @@ const RequestForm = ({
               'Enviar'
             )}
           </button>
-          <button
-            aria-label="options-envio"
-            className="px-2 py-2 bg-sky-500 text-white transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <span className="iconamoon--arrow-down-2"></span>
-          </button>
+          <>
+            <div className="relative inline-block">
+              <button
+                aria-label="options-envio"
+                className="px-2 py-2 bg-sky-500 text-white transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none"
+                onClick={() => setOpen(!open)}
+              >
+                <span className="iconamoon--arrow-down-2"></span>
+              </button>
+
+              {open && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="absolute top-full left-0 mt-2 w-40 bg-black text-white rounded-lg shadow-lg"
+                >
+                  <div className="p-2 hover:bg-gray-700 cursor-pointer">
+                    Opción 1
+                  </div>
+                  <div className="p-2 hover:bg-gray-700 cursor-pointer">
+                    Opción 2
+                  </div>
+                </motion.div>
+              )}
+            </div>
+          </>
         </div>
       </div>
     </form>

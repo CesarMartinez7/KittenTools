@@ -16,9 +16,6 @@ export default function RequestHook({
   endpointUrl,
   contentType,
 }: RequestHookProps): ReturnHookRequest {
-
-
-
   const handleRequest = useCallback(async () => {
     const { baseUrl, entornoActual } = useEnviromentStore.getState();
     // Lógica para reemplazar variables de entorno

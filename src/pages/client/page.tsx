@@ -94,18 +94,16 @@ const TabNavigation = ({ Opciones, selectedIdx, setMimeSelected }) => {
   );
 };
 
-
 interface ContentTypeProps {
-  selectedIdx: number,
-  bodyRequest: string,
-  contentType: string,
-  setContentType: React.Dispatch<React.SetStateAction<string>>
+  selectedIdx: number;
+  bodyRequest: string;
+  contentType: string;
+  setContentType: React.Dispatch<React.SetStateAction<string>>;
   scriptsValues: EventRequest[];
-  setScriptsValues: React.Dispatch<React.SetStateAction<EventRequest>>
-  onCodeChange: () => void,
-  setBodyRequest: React.Dispatch<React.SetStateAction<string | null>>
+  setScriptsValues: React.Dispatch<React.SetStateAction<EventRequest>>;
+  onCodeChange: () => void;
+  setBodyRequest: React.Dispatch<React.SetStateAction<string | null>>;
 }
-
 
 const ContentPanel = ({
   selectedIdx,
@@ -115,19 +113,16 @@ const ContentPanel = ({
   scriptsValues,
   setScriptsValues,
   onCodeChange,
-  setBodyRequest
-} : ContentTypeProps) => {
-
-
+  setBodyRequest,
+}: ContentTypeProps) => {
   useEffect(() => {
     if (contentType === 'none') {
       toast.error('es none');
-      setBodyRequest(null)
-      toast.success(bodyRequest)
+      setBodyRequest(null);
+      toast.success(bodyRequest);
     }
-    setBodyRequest(null)
-    toast.success(bodyRequest)
-    
+    setBodyRequest(null);
+    toast.success(bodyRequest);
   }, [contentType]);
 
   const getContent = () => {
@@ -245,13 +240,13 @@ const ContentPanel = ({
   );
 };
 
-const TabDisplay = ({ currentTab } : {currentTab: any}) => {
+const TabDisplay = ({ currentTab }: { currentTab: any }) => {
   return (
     <AnimatePresence>
       {currentTab && (
         <motion.div
           key={currentTab.id || 'tab-display'}
-          initial={{ opacity: 0, x: 200, height: 40 }}
+          initial={{ opacity: 0, x: 200, height: 20 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: 200 }}
           transition={{
@@ -259,7 +254,7 @@ const TabDisplay = ({ currentTab } : {currentTab: any}) => {
             stiffness: 260,
             damping: 20,
           }}
-          className="fixed right-0 p-4 bottom-0 bg-white/50 dark:bg-black/70 z-4 h-2/4 w-[400px] overflow-scroll"
+          className="fixed right-0 p-4 bottom-0 bg-white/95 dark:bg-black/70 z-4 h-2/4 w-[400px] overflow-scroll"
           whileHover={{ scale: 1.02, height: '600px' }}
         >
           <pre className="text-xs h-full text-blue-500 dark:text-green-primary">
@@ -542,7 +537,7 @@ export default function AppClient() {
                       className={`
                       relative px-4 py-2 cursor-pointer text-xs font-medium whitespace-nowrap transition-colors duration-200 flex-shrink-0 bg-white dark:bg-transparent border-gray-200
                       border-r dark:border-zinc-700 last:border-r-0
-                      ${isActive ? 'dark:text-green-primary text-blue-500' : 'dark:text-zinc-400 s dark:hover:text-zinc-900 text-gray-900'}
+                      ${isActive ? 'dark:text-green-primary ' : 'dark:text-zinc-400 s dark:hover:text-zinc-900 text-gray-900'}
                     `}
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
@@ -554,7 +549,10 @@ export default function AppClient() {
                       }}
                     >
                       <div className="relative z-10 flex items-center gap-2">
-                        <MethodFormater nameMethod={tab.method} /> {tab.name}
+                        <MethodFormater nameMethod={tab.method} /> 
+                        <span className='text-zinc-700 dark:text-zinc-200'>
+                        {tab.name}
+                        </span>
                         <motion.div
                           className="flex"
                           initial={{ opacity: 0, width: 0 }}
@@ -650,6 +648,8 @@ export default function AppClient() {
           {/* Panel de respuesta */}
           <Panel defaultSize={50} minSize={20} className="h-full">
             <ResponsePanel
+              isLoading={isLoading}
+              headersResponse={responseRequest}
               typeResponse={typeResponse}
               response={responseRequest}
               statusCode={statusCode}

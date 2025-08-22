@@ -21,6 +21,8 @@
     "@iconify-icons/mdi": "^1.2.48",
     "@iconify-icons/tabler": "^1.2.95",
     "@tailwindcss/postcss": "^4.1.11",
+    "@tauri-apps/plugin-dialog": "^2.3.3",
+    "@tauri-apps/plugin-fs": "^2.4.2",
     "axios": "^1.11.0",
     "dexie": "^4.2.0",
     "electron-squirrel-startup": "^1.0.1",

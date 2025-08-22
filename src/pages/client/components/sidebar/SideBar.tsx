@@ -120,7 +120,7 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
               <div>
                 <button
                   onClick={handleAddCollection}
-                  className="p-2 text-xs rounded-md font-semibold bg-green-500/10 text-green-primary hover:bg-green-500/20"
+                  className="p-2 text-xs rounded-md font-semibold bg-green-500/20 text-gree dark:bg-green-500/10 text-green-primary hover:bg-green-500/20"
                 >
                   + Nueva Colección
                 </button>

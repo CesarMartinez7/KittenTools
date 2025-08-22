@@ -10,9 +10,8 @@ export default function EnviromentComponent() {
   );
 
   const handleClickCrearEntorno = () => {
-    console.log('Crear entorno');
+    
     const name = window.prompt('Nombre del entorno');
-
     if (name) {
       if (name?.trim().length > 0) {
         createEntornoFunction(name as string);
@@ -133,6 +132,7 @@ export default function EnviromentComponent() {
                   onClick={() => {
                     handleClickCrearEntorno();
                   }}
+                  title='En desarrollo'
                   className="px-3 py-1.5 bg-gray-300 dark:bg-zinc-800 hover:bg-sky-600 dark:hover:bg-sky-600 rounded-md text-zinc-800 dark:text-zinc-300 hover:text-white transition-colors text-xs font-semibold shadow-md"
                 >
                   Crear entorno
@@ -142,7 +142,7 @@ export default function EnviromentComponent() {
 
             <div className="overflow-x-auto dark:border-zinc-800 border-gray-400 overflow-y-scroll h-[70vh] custom-scrollbar">
               <table className="min-w-full divide-y dark:divide-zinc-800">
-                <thead className="dark:bg-zinc-900 dark:text-zinc-200 text-zinc-700 bg-zinc-200 sticky top-0 z-10">
+                <thead className="dark:bg-zinc-900 bg-gray-200 dark:text-zinc-200 text-zinc-700  sticky top-0 z-10">
                   <tr>
                     <th className="px-2 py-1 text-left text-xs font-medium uppercase tracking-wider">
                       LLave
@@ -159,7 +159,7 @@ export default function EnviromentComponent() {
                   </tr>
                 </thead>
                 <motion.tbody
-                  className="dark:bg-zinc-900/60 text-zinc-800 divide-y divide-amber-600 dark:divide-zinc-900  "
+                  className="dark:bg-zinc-900/60 bg-gray-200 text-zinc-800 divide-y divide-amber-600 dark:divide-zinc-900  "
                   variants={tableVariants}
                 >
                   {entornoActual.map((v, i) => (

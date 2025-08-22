@@ -1,7 +1,7 @@
 export default function MethodFormater({ nameMethod }: { nameMethod: string }) {
   if (nameMethod === 'GET') {
     return (
-      <span aria-label="method" className="text-green-500 bg-r">
+      <span aria-label="method" className="text-green-500 ">
         {nameMethod}
       </span>
     );

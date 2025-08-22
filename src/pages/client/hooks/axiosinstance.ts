@@ -38,7 +38,7 @@ axiosInstance.interceptors.request.use(
     if (config.url) {
       config.url = replaceEnvVariables(config.url, entornoActual);
     }
-    
+
     if (config.headers) {
       Object.keys(config.headers).forEach((header) => {
         if (typeof config.headers[header] === 'string') {
