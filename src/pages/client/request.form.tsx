@@ -59,11 +59,11 @@ const RequestForm = ({
         return `<span title="${grupo}" style="color: ${color};">{{${grupo}}}</span>`;
       });
 
-      finalHtml += `<span style="color: #666666; dark:text-zinc-400">${baseUrlHtml}</span>`;
+      finalHtml += `<span style="color: #a3a2a2; dark:text-zinc-400">${baseUrlHtml}</span>`;
 
       // Si hay una parte de query, la formatea y la añade
       if (queryPart) {
-        finalHtml += `<span style="color: #666666; dark:text-zinc-400">?</span>`;
+        finalHtml += `<span style="color: #a3a2a2; dark:text-zinc-400">?</span>`;
 
         // Separa los parámetros para estilizarlos individualmente
         const paramsArray = queryPart.split('&');
@@ -71,11 +71,11 @@ const RequestForm = ({
           const [key, value] = param.split('=');
 
           finalHtml += `<span style="color: #a673d4;">${key}</span>`; // Estilo para la clave
-          finalHtml += `<span style="color: #666666; dark:text-zinc-400">=</span>`;
+          finalHtml += `<span style="color: #a3a2a2; dark:text-zinc-400">=</span>`;
           finalHtml += `<span style="color: #e5b567;">${value}</span>`; // Estilo para el valor
 
           if (index < paramsArray.length - 1) {
-            finalHtml += `<span style="color: #666666; dark:text-zinc-400">&</span>`;
+            finalHtml += `<span style="color: #a3a2a2; dark:text-zinc-400">&</span>`;
           }
         });
       }
