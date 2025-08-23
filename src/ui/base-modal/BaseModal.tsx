@@ -2,16 +2,43 @@ import { Icon } from '@iconify/react/dist/iconify.js';
 import { AnimatePresence, motion } from 'framer-motion';
 import type BaseModalProps from './types';
 import modalVariants from './variants';
+import { useEffect, useRef } from 'react';
+import toast from 'react-hot-toast';
 
 const BaseModal = ({ isOpen, onClose, children }: BaseModalProps) => {
+
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const target = modalRef.current;
+    if (target) {
+      target.focus();
+      console.log('Modal focused');
+      toast.success("Modal focused");
+    }
+
+    const keyDownHandler = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    document.addEventListener('keydown', keyDownHandler);
+    return () => {
+      document.removeEventListener('keydown', keyDownHandler);
+    };
+  }, [onClose]);
+
+
   return (
     <AnimatePresence>
       {isOpen && (
         <motion.div
           autoFocus
+          tabIndex={0}
           initial={{ y: -20 }}
           whileInView={{ y: 0 }}
-          className="fixed inset-0 z-[887] flex items-center justify-center p-4 dark:bg-black/40 backdrop-blur-sm"
+          className="fixed inset-0 z-[887] flex items-center justify-center p-4 dark:bg-black/40 backdrop-blur-sm "
         >
           {/* Botón cerrar fuera del modal */}
           <button

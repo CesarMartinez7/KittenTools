@@ -179,7 +179,7 @@ export default function ResponsesTypesComponent({
           );
         }
       case 'html':
-        return <pre className="text-xs">{data}</pre>;
+        return <pre className="text-xs whitespace-pre-wrap">{JSON.stringify(data)}</pre>;
       case 'base64':
         try {
           const base64Content = btoa(data);
@@ -198,7 +198,7 @@ export default function ResponsesTypesComponent({
   };
 
   return (
-    <div className="h-full flex flex-col max-h-[82vh] overflow-y-scroll bg-white dark:bg-transparent ">
+    <div className="h-full flex flex-col ma overflow-y-scroll bg-white dark:bg-transparent ">
       <div className="flex-1 flex flex-col justify-between">
         <nav
           className="flex border-b justify-between border-zinc-400 dark:border-zinc-700 items-center pt-1 sticky top-0 dark:bg-zinc-950/50 backdrop-blur-2xl bg-white"
@@ -214,12 +214,27 @@ export default function ResponsesTypesComponent({
                 onClick={() => setActiveTab(tab)}
               />
             ))}
+            
+          </div>
+          <div className="flex items-center gap-2 mr-4 text-zinc-300 text-xs">
+
+            
+            <span
+              className={`text-xs font-bold px-1 rounded ${getStatusCodeClass(statusCode)}`}
+            >
+              {statusCode || currentTab?.response?.status}
+            </span>
+            <span className="text-xs dark:bg-zinc-800/90 bg-gray-200 text-gray-600 dark:text-zinc-200 py-0.5 px-2 rounded text-r">
+              {currentTab?.response?.time || timeResponse} ms
+            </span>
+            <span className="text-gray-600 dark:text-zinc-400 ">{size}</span>
+
             {activeTab === 'Respuesta' && (
-              <div className="relative inline-block text-left ml-4">
+              <div className="relative inline-block text-left ">
                 <button
                   type="button"
                   onClick={() => setShowResponseMenu(!showResponseMenu)}
-                  className="inline-flex justify-center w-full rounded-md border border-gray-300 dark:border-zinc-700 shadow-sm px-4 py-1 bg-white dark:bg-zinc-950 text-sm font-medium text-gray-700 dark:text-zinc-200 hover:bg-gray-50 dark:hover:bg-zinc-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  className="inline-flex justify-center w-full rounded-md border border-gray-300 dark:border-zinc-700 shadow-sm px-4 py-1 bg-white dark:bg-zinc-900 text-sm font-medium text-gray-700 dark:text-zinc-200 hover:bg-gray-50 dark:hover:bg-zinc-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
                   {activeResponseType}
                   <Icon icon="tabler:chevron-down" className="-mr-1 ml-2 h-5 w-5" />
@@ -253,17 +268,6 @@ export default function ResponsesTypesComponent({
                 </AnimatePresence>
               </div>
             )}
-          </div>
-          <div className="flex items-center gap-2 mr-4 text-zinc-300 text-xs">
-            <span
-              className={`text-xs font-bold px-1 rounded ${getStatusCodeClass(statusCode)}`}
-            >
-              {statusCode || currentTab?.response?.status}
-            </span>
-            <span className="text-xs dark:bg-zinc-800/90 bg-gray-200 text-gray-600 dark:text-zinc-200 py-0.5 px-2 rounded text-r">
-              {currentTab?.response?.time || timeResponse} ms
-            </span>
-            <span className="text-gray-600 dark:text-zinc-400 ">{size}</span>
           </div>
         </nav>
 

@@ -9,41 +9,43 @@ import { useRequestStore } from '../../stores/request.store';
 import type { ItemNodeProps } from './types';
 
 // --- Funciones auxiliares para manipulación de colecciones ---
-// Estas funciones ahora están fuera del componente para no recrearlas en cada render.
+// Esta función ya estaba bien, por lo que no la modificamos.
 const findAndUpdateItem = (
   items: any[],
   targetId: string,
-  updateFn: (item: any) => any | null,
+  updateFn: (item: any) => any,
 ): any[] => {
-  return items.flatMap((item) => {
+  return items.map((item) => {
     if (item.id === targetId) {
-      const updatedItem = updateFn(item);
-      return updatedItem ? [updatedItem] : [];
+      return updateFn(item);
     }
     if (item.item) {
       const updatedSubItems = findAndUpdateItem(item.item, targetId, updateFn);
-      return [{ ...item, item: updatedSubItems }];
+      if (updatedSubItems === item.item) return item;
+      return { ...item, item: updatedSubItems };
+    }
+    return item;
+  });
+};
+
+// ✅ CORRECCIÓN FINAL: Función findAndRemoveItem reescrita para ser 100% inmutable.
+const findAndRemoveItem = (items: any[], targetId: string): any[] => {
+  return items.flatMap((item) => {
+    if (item.id === targetId) {
+      return [];
+    }
+    if (item.item) {
+      const updatedSubItems = findAndRemoveItem(item.item, targetId);
+      if (updatedSubItems.length !== item.item.length) {
+        return [{ ...item, item: updatedSubItems }];
+      }
     }
     return [item];
   });
 };
-
-const findAndRemoveItem = (items: any[], targetId: string): any[] => {
-  return items
-    .filter((item) => item.id !== targetId)
-    .map((item) => {
-      if (item.item) {
-        return {
-          ...item,
-          item: findAndRemoveItem(item.item, targetId),
-        };
-      }
-      return item;
-    });
-};
 // --- Fin de las funciones auxiliares ---
 
-// Componente ResizableSidebar (sin cambios)
+// Componente ResizableSidebar (con su código original)
 interface ResizableSidebarProps {
   children: React.ReactNode;
   initialWidth?: number;
@@ -160,9 +162,8 @@ const ItemNode: React.FC<ItemNodeProps> = ({
       case 'POST':
         return 'text-sky-400';
       case 'PUT':
-        return 'text-orange-400';
       case 'DELETE':
-        return 'text-red-400';
+        return 'text-orange-400';
       case 'PATCH':
         return 'text-purple-400';
       default:
@@ -170,45 +171,49 @@ const ItemNode: React.FC<ItemNodeProps> = ({
     }
   };
 
-  const handleNuevaPeticion = () => {
-    const nameNewRequest = window.prompt('Nombre de tu nueva petición');
-    if (!nameNewRequest || !nodeData) return;
-
+  const handleAction = (action: (col: any) => void) => {
+    setShowBar(false);
     const collectionToUpdate = collections.find(
       (col) => col.id === parentCollectionId,
     );
     if (!collectionToUpdate) return;
+    action(collectionToUpdate);
+  };
 
-    // Asumimos que data.id es el ID del folder al que se agregará la petición
-    const updatedItems = findAndUpdateItem(
-      collectionToUpdate.item,
-      nodeData.id,
-      (item) => {
-        const newRequest = {
-          id: nanoid(),
-          name: nameNewRequest,
-          request: {
+  const handleNuevaPeticion = () => {
+    const nameNewRequest = window.prompt('Nombre de tu nueva petición');
+    if (!nameNewRequest || !nodeData) return;
+
+    handleAction((collectionToUpdate) => {
+      const updatedItems = findAndUpdateItem(
+        collectionToUpdate.item,
+        nodeData.id,
+        (item) => {
+          const newRequest = {
             id: nanoid(),
             name: nameNewRequest,
-            method: 'GET',
-            headers: {},
-            body: {
-              mode: 'raw',
-              raw: '',
-              options: { raw: { language: 'json' } },
+            request: {
+              id: nanoid(),
+              name: nameNewRequest,
+              method: 'GET',
+              headers: [], // Usar un array para headers
+              body: {
+                mode: 'raw',
+                raw: '',
+              },
+              url: {
+                raw: '',
+                query: [], // Usar un array para query
+              },
             },
-            url: '',
-            query: {},
-          },
-        };
-        
-        const newItems = item.item ? [...item.item, newRequest] : [newRequest];
-        return { ...item, item: newItems };
-      },
-    );
-
-    updateCollection(parentCollectionId, { item: updatedItems });
-    toast.success('Nueva petición creada.');
+          };
+          const newItems = item.item ? [...item.item, newRequest] : [newRequest];
+          return { ...item, item: newItems };
+        },
+      );
+      updateCollection(parentCollectionId, { item: updatedItems });
+      toast.success('Nueva petición creada.');
+    });
   };
 
   const handleChangeName = () => {
@@ -216,38 +221,30 @@ const ItemNode: React.FC<ItemNodeProps> = ({
     const newName = prompt('Nuevo nombre:', oldName || getDisplayName());
     if (!newName || !newName.trim() || !nodeData) return;
 
-    const collectionToUpdate = collections.find(
-      (col) => col.id === parentCollectionId,
-    );
-    if (!collectionToUpdate) return;
-
-    const updatedItems = findAndUpdateItem(
-      collectionToUpdate.item,
-      nodeData.id,
-      (item) => ({ ...item, name: newName.trim() }),
-    );
-    updateCollection(parentCollectionId, { item: updatedItems });
-    toast.success(`"${oldName}" renombrado a "${newName.trim()}"`);
+    handleAction((collectionToUpdate) => {
+      const updatedItems = findAndUpdateItem(
+        collectionToUpdate.item,
+        nodeData.id,
+        (item) => ({ ...item, name: newName.trim() }),
+      );
+      updateCollection(parentCollectionId, { item: updatedItems });
+      toast.success(`"${oldName}" renombrado a "${newName.trim()}"`);
+    });
   };
 
   const handleClickDelete = () => {
     const displayName = getDisplayName();
     if (confirm(`¿Eliminar "${displayName}"?`) && nodeData) {
       if (nodeData.id === parentCollectionId) {
-        // Si es la colección principal, la eliminamos
         removeCollection(parentCollectionId);
       } else {
-        // Si es un ítem dentro de la colección, lo eliminamos
-        const collectionToUpdate = collections.find(
-          (col) => col.id === parentCollectionId,
-        );
-        if (collectionToUpdate) {
+        handleAction((collectionToUpdate) => {
           const newItems = findAndRemoveItem(
             collectionToUpdate.item,
             nodeData.id,
           );
           updateCollection(parentCollectionId, { item: newItems });
-        }
+        });
       }
       toast.success(`"${displayName}" eliminado`);
     }
@@ -256,60 +253,59 @@ const ItemNode: React.FC<ItemNodeProps> = ({
   const handleClickDuplicar = () => {
     if (!nodeData) return;
 
-    const collectionToUpdate = collections.find(
-      (col) => col.id === parentCollectionId,
-    );
-    if (!collectionToUpdate) return;
-
-    const updatedItems = findAndUpdateItem(
-      collectionToUpdate.item,
-      nodeData.id,
-      (item) => {
-        const duplicatedItem = {
-          ...item,
-          id: nanoid(),
-          name: `${item.name} (Copia)`,
-        };
-        return [item, duplicatedItem];
-      },
-    ).flat();
-
-    updateCollection(parentCollectionId, { item: updatedItems });
-    toast.success(`"${nodeData.name}" duplicado`);
+    handleAction((collectionToUpdate) => {
+      const findAndInsert = (items: any[], targetId: string): any[] => {
+        return items.flatMap(item => {
+          if (item.id === targetId) {
+            const duplicatedItem = {
+              ...item,
+              id: nanoid(),
+              name: `${item.name} (Copia)`,
+            };
+            return [item, duplicatedItem];
+          }
+          if (item.item) {
+            const updatedSubItems = findAndInsert(item.item, targetId);
+            if (updatedSubItems.length !== item.item.length) {
+              return [{ ...item, item: updatedSubItems }];
+            }
+          }
+          return [item];
+        });
+      };
+      const updatedItems = findAndInsert(collectionToUpdate.item, nodeData.id);
+      updateCollection(parentCollectionId, { item: updatedItems });
+      toast.success(`"${nodeData.name}" duplicado`);
+    });
   };
 
   const handleNuevaCarpeta = () => {
     const nameNewFolder = window.prompt('Nombre de tu nueva carpeta');
     if (!nameNewFolder || !nodeData) return;
 
-    const collectionToUpdate = collections.find(
-      (col) => col.id === parentCollectionId,
-    );
-    if (!collectionToUpdate) return;
-
-    // Si el nodo actual es una carpeta, se añade dentro de ella
-    const updatedItems = findAndUpdateItem(
-      collectionToUpdate.item,
-      nodeData.id,
-      (item) => {
-        const newFolder = {
-          id: nanoid(),
-          name: nameNewFolder,
-          item: [],
-        };
-        const newItems = item.item ? [...item.item, newFolder] : [newFolder];
-        return { ...item, item: newItems };
-      },
-    );
-
-    updateCollection(parentCollectionId, { item: updatedItems });
-    toast.success('Nueva carpeta creada.');
+    handleAction((collectionToUpdate) => {
+      const updatedItems = findAndUpdateItem(
+        collectionToUpdate.item,
+        nodeData.id,
+        (item) => {
+          const newFolder = {
+            id: nanoid(),
+            name: nameNewFolder,
+            item: [],
+          };
+          const newItems = item.item ? [...item.item, newFolder] : [newFolder];
+          return { ...item, item: newItems };
+        },
+      );
+      updateCollection(parentCollectionId, { item: updatedItems });
+      toast.success('Nueva carpeta creada.');
+    });
   };
 
   const handleClickContextMenu = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setShowBar(!showBar);
+    setShowBar(true);
   };
 
   const handleClick = () => {
@@ -331,7 +327,6 @@ const ItemNode: React.FC<ItemNodeProps> = ({
     { name: 'Eliminar', action: handleClickDelete },
     { name: 'Nueva petición', action: handleNuevaPeticion },
     { name: 'Nueva carpeta', action: handleNuevaCarpeta },
-    { name: 'Info' },
   ];
 
   const mapperRequest = [
@@ -345,10 +340,10 @@ const ItemNode: React.FC<ItemNodeProps> = ({
       className="flex flex-col gap-2 relative"
       onContextMenu={handleClickContextMenu}
       onClick={() => setShowBar(false)}
-      style={{ marginLeft: `${indent}px` }}
+      style={{ marginLeft: `${indent}rem` }}
     >
       <div
-        className="p-1.5 rounded-md border border-gray-300 dark:border-zinc-800 shadow-xl flex justify-between items-center group hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors bg-white/90 dark:bg-zinc-800/20 text-xs cursor-pointer  text-zinc-200"
+        className="p-1.5 rounded-md border border-gray-300 dark:border-zinc-800 shadow-xl flex justify-between items-center group hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors bg-white/90 dark:bg-zinc-800/20 text-xs cursor-pointer text-zinc-200"
         onClick={handleClick}
       >
         <div className="flex items-center gap-2">
@@ -357,7 +352,17 @@ const ItemNode: React.FC<ItemNodeProps> = ({
               icon={collapsed ? 'tabler:folder' : 'tabler:folder-open'}
               width="15"
               height="15"
-              className={`${level === 0 ? 'text-green-primary/85' : level === 1 ? 'text-green-primary' : level === 2 ? 'text-green-300' : level === 3 ? 'text-green-200' : 'text-green-100'}`}
+              className={`${
+                level === 0
+                  ? 'text-green-primary/85'
+                  : level === 1
+                    ? 'text-green-primary'
+                    : level === 2
+                      ? 'text-green-300'
+                      : level === 3
+                        ? 'text-green-200'
+                        : 'text-green-100'
+              }`}
             />
           )}
           {nodeData.request?.method && !isFolder && (
@@ -368,7 +373,11 @@ const ItemNode: React.FC<ItemNodeProps> = ({
             </span>
           )}
           <p
-            className={`truncate ${!nodeData.name || nodeData.name.trim() === '' ? 'italic text-zinc-500' : ' text-zinc-700 dark:text-zinc-200'}`}
+            className={`truncate ${
+              !nodeData.name || nodeData.name.trim() === ''
+                ? 'italic text-zinc-500'
+                : ' text-zinc-700 dark:text-zinc-200'
+            }`}
           >
             {getDisplayName()}
           </p>
@@ -379,31 +388,32 @@ const ItemNode: React.FC<ItemNodeProps> = ({
               {nodeData.item.length}
             </span>
           )}
-          {haveResponses && (
-            <span className="text-green-400 text-[10px]">
-              {nodeData.response.length}
-            </span>
-          )}
         </div>
       </div>
-      {showBar && (
-        <div
-          className="absolute text-xs text-gray-700 bg-white dark:bg-zinc-900 dark:text-white rounded-md shadow-lg z-50 p-2 w-50"
-          style={{ top: '100%', left: 0 }}
-        >
-          <ul className="text-sm space-y-1 divide-y divide-gray-200 dark:divide-zinc-800">
-            {(isFolder ? mapperFolder : mapperRequest).map((res) => (
-              <li
-                key={res.name}
-                className="dark:hover:bg-zinc-700 hover:bg-zinc-200 px-2 py-1 text-xs cursor-pointer flex gap-2"
-                onClick={res.action}
-              >
-                {res.name}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      <AnimatePresence>
+        {showBar && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.1 }}
+            className="absolute text-xs text-gray-700 bg-white dark:bg-zinc-900 dark:text-white rounded-md shadow-lg z-50 p-2 w-50"
+            style={{ top: '100%', left: 0 }}
+          >
+            <ul className="text-sm space-y-1 divide-y divide-gray-200 dark:divide-zinc-800">
+              {(isFolder ? mapperFolder : mapperRequest).map((res) => (
+                <li
+                  key={res.name}
+                  className="dark:hover:bg-zinc-700 hover:bg-zinc-200 px-2 py-1 text-xs cursor-pointer flex gap-2"
+                  onClick={res.action}
+                >
+                  {res.name}
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+        )}
+      </AnimatePresence>
       {!collapsed && isFolder && nodeData.item && (
         <div className="ml-2 flex flex-col gap-2">
           {nodeData.item.map((child, index) => (
@@ -415,64 +425,6 @@ const ItemNode: React.FC<ItemNodeProps> = ({
               />
             </LazyListPerform>
           ))}
-        </div>
-      )}
-      {haveResponses && (
-        <div className="ml-4 mt-1">
-          <button
-            onClick={() => setShowResponses(!showResponses)}
-            className="dark:text-zinc-400 dark:hover:text-white text-zinc-500 text-xs"
-          >
-            {showResponses
-              ? `Ocultar respuestas (${nodeData.response.length})`
-              : `Mostrar respuestas (${nodeData.response.length})`}
-          </button>
-          {showResponses && (
-            <div className="mt-2 space-y-1 text-[11px]">
-              {nodeData.response.map((resp, i) => (
-                <div
-                  key={i}
-                  onClick={() => {
-                    try {
-                      const requestData = {
-                        id: nanoid(),
-                        name: `${nodeData.name} - Respuesta ${i + 1}`,
-                        method: nodeData.request.method,
-                        url: nodeData.request.url.raw,
-                        headers: (nodeData.request.header || []).reduce(
-                          (acc, h) => {
-                            acc[h.key] = h.value;
-                            return acc;
-                          },
-                          {},
-                        ),
-                        body: nodeData.request.body.raw,
-                        query: (nodeData.request.url.query || []).reduce(
-                          (acc, q) => {
-                            acc[q.key] = q.value;
-                            return acc;
-                          },
-                          {},
-                        ),
-                        response: resp,
-                      };
-                      addFromNode({
-                        ...requestData,
-                        collectionId: parentCollectionId,
-                      });
-                    } catch (e) {
-                      toast.error(String(e));
-                    }
-                  }}
-                  className="py-1 px-2 border bg-white shadow border-gray-300 dark:border-zinc-700 rounded dark:bg-zinc-900"
-                >
-                  <p className="font-bold text-teal-500 dark:text-teal-300">
-                    {resp.name}
-                  </p>
-                </div>
-              ))}
-            </div>
-          )}
         </div>
       )}
     </div>

@@ -28,7 +28,7 @@ interface RequestState {
   // Lista de colecciones
   collections: Collection[];
 
-  addFromNode: (nodeData: any) => void; // añadir al node
+  addFromNode: (nodeData: any) => void;
   removeTab: (id: string) => void;
   setCurrentTab: (id: string) => void;
   updateTab: (id: string, changes: Partial<RequestData>) => void;
@@ -43,6 +43,26 @@ interface RequestState {
   importCollections: () => Promise<void>;
   exportCollections: () => Promise<void>;
 }
+
+// Función auxiliar para asignar IDs únicos de forma recursiva
+const assignIdsRecursively = (items) => {
+  if (!Array.isArray(items)) {
+    return items;
+  }
+  return items.map((item) => {
+    const newItem = {
+      ...item,
+      id: item.id || nanoid(), // Asigna un nuevo ID si no existe
+    };
+
+    // Si el item es una carpeta, procesa sus hijos
+    if (newItem.item && Array.isArray(newItem.item)) {
+      newItem.item = assignIdsRecursively(newItem.item);
+    }
+
+    return newItem;
+  });
+};
 
 export const useRequestStore = create<RequestState>((set, get) => ({
   listTabs: [],
@@ -75,7 +95,6 @@ export const useRequestStore = create<RequestState>((set, get) => ({
       ),
     };
 
-    // --- LÍNEA CORREGIDA ---
     // Ahora guardamos la nueva pestaña en Dexie.
     db.tabs.add(newTab);
 
@@ -225,10 +244,13 @@ export const useRequestStore = create<RequestState>((set, get) => ({
         return;
       }
 
+      // ✅ Solución: Asignar IDs únicos a cada item de la colección importada.
+      const itemsWithIds = assignIdsRecursively(parsedData.item);
+
       const newCollection: Collection = {
         id: nanoid(),
         name: parsedData.info.name,
-        item: parsedData.item,
+        item: itemsWithIds, // Usamos los items con IDs ya asignados
       };
 
       await db.collections.add(newCollection);

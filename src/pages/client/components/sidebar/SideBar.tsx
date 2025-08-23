@@ -126,7 +126,7 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
                 </button>
               </div>
 
-              <div className="space-x-1.5">
+              <div className="space-x-1.5 flex text-nowrap items-center">
                 <ToolTipButton
                   ariaText="Importar"
                   tooltipText="Importar coleccion"
