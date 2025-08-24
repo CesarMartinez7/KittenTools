@@ -2,40 +2,16 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { nanoid } from 'nanoid';
 import { useState } from 'react';
 import ToolTipButton from '../../../../ui/tooltip/TooltipButton';
-import type { Collection, CollectionItem } from '../../db';
-// Importamos el store de Zustand y sus acciones
+import type { Collection } from '../../db';
 import { useRequestStore } from '../../stores/request.store';
 import type { SavedRequestsSidebarProps } from '../../types/types';
 import { useEnviromentStore } from '../enviroment/store.enviroment';
 import ItemNode, { ResizableSidebar } from '../itemnode/item-node';
 
-// Helper function to find a specific item by its ID within a nested structure
-function findAndUpdate(
-  items: CollectionItem[],
-  targetId: string,
-  updateFn: (item: CollectionItem) => CollectionItem,
-): CollectionItem[] {
-  return items.map((item) => {
-    if (item.id === targetId) {
-      return updateFn(item);
-    }
-    if (item.item) {
-      return {
-        ...item,
-        item: findAndUpdate(item.item, targetId, updateFn),
-      };
-    }
-    return item;
-  });
-}
-
 export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
-  // Consumimos las colecciones y las acciones de la store
   const {
     collections,
     addCollection,
-    updateCollection,
-    removeCollection,
     importCollections,
     exportCollections,
   } = useRequestStore();
@@ -49,50 +25,6 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
   );
 
   const [currenIdx, setCurrentIdx] = useState<number>(1);
-
-  // Lógica para manejar la actualización y eliminación de la colección
-  // Ahora usan las acciones de la store para persistencia.
-
-  const handleUpdateItem = (
-    collectionId: string,
-    itemId: string,
-    changes: Partial<CollectionItem>,
-  ) => {
-    const collectionToUpdate = collections.find(
-      (col) => col.id === collectionId,
-    );
-    if (!collectionToUpdate) return;
-
-    const newItems = findAndUpdate(collectionToUpdate.item, itemId, (item) => ({
-      ...item,
-      ...changes,
-    }));
-
-    updateCollection(collectionId, { item: newItems });
-  };
-
-  const handleRemoveItem = (collectionId: string, itemId: string) => {
-    const collectionToUpdate = collections.find(
-      (col) => col.id === collectionId,
-    );
-    if (!collectionToUpdate) return;
-
-    // Función recursiva para eliminar el ítem
-    const filterAndRemove = (
-      items: CollectionItem[],
-      targetId: string,
-    ): CollectionItem[] => {
-      return items
-        .filter((item) => item.id !== targetId)
-        .map((item) => ({
-          ...item,
-          item: item.item ? filterAndRemove(item.item, targetId) : item.item,
-        }));
-    };
-
-    const newItems = filterAndRemove(collectionToUpdate.item, itemId);
-    updateCollection(collectionId, { item: newItems });
-  };
 
   const handleAddCollection = () => {
     const newCollection: Collection = {
@@ -109,12 +41,12 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
         {isOpen && (
           <motion.div
             className="
-              h-svh max-h-svh 
+              h-svh max-h-svh
             bg-white/90 text-gray-800
             dark:bg-zinc-900/80 dark:text-slate-200
             backdrop-blur-3xl p-4 z-50 md:flex flex-col hidden shadow-xl
             border-r border-gray-200 dark:border-zinc-800
-          "
+            "
           >
             <div className="flex flex-row gap-2 mb-6 justify-between">
               <div>
@@ -139,15 +71,12 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
                 />
               </div>
             </div>
-            {/* Header */}
             <div className="flex justify-start items-center my-4 space-x-3 relative">
               <span className="pixel--bolt-solid text-gray-900 dark:text-zinc-200"></span>
-              <h3 className="text-4xl  bg-gradient-to-tr text-gray-700 dark:text-lime-50 share-tech-mono-regular ">
+              <h3 className="text-4xl  bg-gradient-to-tr text-gray-700 dark:text-lime-50 share-tech-mono-regular ">
                 Elisa
               </h3>
             </div>
-
-            {/* Tabs */}
             <div
               className="
             bg-gray-100 dark:bg-zinc-950/60 px-2 py-1 flex w-full transition-all truncate"
@@ -181,8 +110,6 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
                 </div>
               </div>
             </div>
-
-            {/* Main Content */}
             <div className="flex w-full gap-4 flex-1 overflow-hidden">
               <div
                 className="
@@ -248,10 +175,7 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
                         <ItemNode
                           data={collection}
                           level={0}
-                          // Pasamos las funciones de actualización al ItemNode para que este se comunique con la store
-                          onUpdate={handleUpdateItem}
-                          onRemove={handleRemoveItem}
-                          collectionId={collection.id}
+                          parentCollectionId={collection.id}
                         />
                       </div>
                     ))}

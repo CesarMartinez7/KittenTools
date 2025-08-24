@@ -8,43 +8,6 @@ import LazyListPerform from '../../../../ui/LazyListPerform';
 import { useRequestStore } from '../../stores/request.store';
 import type { ItemNodeProps } from './types';
 
-// --- Funciones auxiliares para manipulación de colecciones ---
-// Esta función ya estaba bien, por lo que no la modificamos.
-const findAndUpdateItem = (
-  items: any[],
-  targetId: string,
-  updateFn: (item: any) => any,
-): any[] => {
-  return items.map((item) => {
-    if (item.id === targetId) {
-      return updateFn(item);
-    }
-    if (item.item) {
-      const updatedSubItems = findAndUpdateItem(item.item, targetId, updateFn);
-      if (updatedSubItems === item.item) return item;
-      return { ...item, item: updatedSubItems };
-    }
-    return item;
-  });
-};
-
-// ✅ CORRECCIÓN FINAL: Función findAndRemoveItem reescrita para ser 100% inmutable.
-const findAndRemoveItem = (items: any[], targetId: string): any[] => {
-  return items.flatMap((item) => {
-    if (item.id === targetId) {
-      return [];
-    }
-    if (item.item) {
-      const updatedSubItems = findAndRemoveItem(item.item, targetId);
-      if (updatedSubItems.length !== item.item.length) {
-        return [{ ...item, item: updatedSubItems }];
-      }
-    }
-    return [item];
-  });
-};
-// --- Fin de las funciones auxiliares ---
-
 // Componente ResizableSidebar (con su código original)
 interface ResizableSidebarProps {
   children: React.ReactNode;
@@ -131,13 +94,12 @@ export const ResizableSidebar: React.FC<ResizableSidebarProps> = ({
   );
 };
 
-// --- Componente ItemNode refactorizado para usar el store ---
 const ItemNode: React.FC<ItemNodeProps> = ({
   data,
   level,
   parentCollectionId,
 }) => {
-  const { collections, updateCollection, removeCollection, addFromNode } =
+  const { collections, addFromNode, handleUpdateItem, handleRemoveItem, handleDuplicateItem, handleAddNewItem, handleAddNewFolder } =
     useRequestStore();
   const [collapsed, setCollapsed] = useState(true);
   const [showResponses, setShowResponses] = useState(false);
@@ -170,136 +132,50 @@ const ItemNode: React.FC<ItemNodeProps> = ({
         return 'text-gray-400';
     }
   };
-
-  const handleAction = (action: (col: any) => void) => {
+  
+  const handleChangeName = () => {
+    const oldName = nodeData?.name || '';
+    const newName = prompt('Nuevo nombre:', oldName || getDisplayName());
+    if (!newName || !newName.trim() || !nodeData) return;
+  
+    handleUpdateItem(parentCollectionId, nodeData.id, { name: newName.trim() });
+    toast.success(`"${oldName}" renombrado a "${newName.trim()}"`);
     setShowBar(false);
-    const collectionToUpdate = collections.find(
-      (col) => col.id === parentCollectionId,
-    );
-    if (!collectionToUpdate) return;
-    action(collectionToUpdate);
+  };
+
+  const handleClickDelete = () => {
+    const displayName = getDisplayName();
+    if (confirm(`¿Eliminar "${displayName}"?`) && nodeData) {
+      handleRemoveItem(parentCollectionId, nodeData.id);
+      toast.success(`"${displayName}" eliminado`);
+      setShowBar(false);
+    }
+  };
+
+  const handleClickDuplicar = () => {
+    if (!nodeData) return;
+    
+    handleDuplicateItem(parentCollectionId, nodeData.id);
+    toast.success(`"${nodeData.name}" duplicado`);
+    setShowBar(false);
   };
 
   const handleNuevaPeticion = () => {
     const nameNewRequest = window.prompt('Nombre de tu nueva petición');
     if (!nameNewRequest || !nodeData) return;
 
-    handleAction((collectionToUpdate) => {
-      const updatedItems = findAndUpdateItem(
-        collectionToUpdate.item,
-        nodeData.id,
-        (item) => {
-          const newRequest = {
-            id: nanoid(),
-            name: nameNewRequest,
-            request: {
-              id: nanoid(),
-              name: nameNewRequest,
-              method: 'GET',
-              headers: [], // Usar un array para headers
-              body: {
-                mode: 'raw',
-                raw: '',
-              },
-              url: {
-                raw: '',
-                query: [], // Usar un array para query
-              },
-            },
-          };
-          const newItems = item.item ? [...item.item, newRequest] : [newRequest];
-          return { ...item, item: newItems };
-        },
-      );
-      updateCollection(parentCollectionId, { item: updatedItems });
-      toast.success('Nueva petición creada.');
-    });
-  };
-
-  const handleChangeName = () => {
-    const oldName = nodeData?.name || '';
-    const newName = prompt('Nuevo nombre:', oldName || getDisplayName());
-    if (!newName || !newName.trim() || !nodeData) return;
-
-    handleAction((collectionToUpdate) => {
-      const updatedItems = findAndUpdateItem(
-        collectionToUpdate.item,
-        nodeData.id,
-        (item) => ({ ...item, name: newName.trim() }),
-      );
-      updateCollection(parentCollectionId, { item: updatedItems });
-      toast.success(`"${oldName}" renombrado a "${newName.trim()}"`);
-    });
-  };
-
-  const handleClickDelete = () => {
-    const displayName = getDisplayName();
-    if (confirm(`¿Eliminar "${displayName}"?`) && nodeData) {
-      if (nodeData.id === parentCollectionId) {
-        removeCollection(parentCollectionId);
-      } else {
-        handleAction((collectionToUpdate) => {
-          const newItems = findAndRemoveItem(
-            collectionToUpdate.item,
-            nodeData.id,
-          );
-          updateCollection(parentCollectionId, { item: newItems });
-        });
-      }
-      toast.success(`"${displayName}" eliminado`);
-    }
-  };
-
-  const handleClickDuplicar = () => {
-    if (!nodeData) return;
-
-    handleAction((collectionToUpdate) => {
-      const findAndInsert = (items: any[], targetId: string): any[] => {
-        return items.flatMap(item => {
-          if (item.id === targetId) {
-            const duplicatedItem = {
-              ...item,
-              id: nanoid(),
-              name: `${item.name} (Copia)`,
-            };
-            return [item, duplicatedItem];
-          }
-          if (item.item) {
-            const updatedSubItems = findAndInsert(item.item, targetId);
-            if (updatedSubItems.length !== item.item.length) {
-              return [{ ...item, item: updatedSubItems }];
-            }
-          }
-          return [item];
-        });
-      };
-      const updatedItems = findAndInsert(collectionToUpdate.item, nodeData.id);
-      updateCollection(parentCollectionId, { item: updatedItems });
-      toast.success(`"${nodeData.name}" duplicado`);
-    });
+    handleAddNewItem(parentCollectionId, nodeData.id, nameNewRequest);
+    toast.success('Nueva petición creada.');
+    setShowBar(false);
   };
 
   const handleNuevaCarpeta = () => {
     const nameNewFolder = window.prompt('Nombre de tu nueva carpeta');
     if (!nameNewFolder || !nodeData) return;
-
-    handleAction((collectionToUpdate) => {
-      const updatedItems = findAndUpdateItem(
-        collectionToUpdate.item,
-        nodeData.id,
-        (item) => {
-          const newFolder = {
-            id: nanoid(),
-            name: nameNewFolder,
-            item: [],
-          };
-          const newItems = item.item ? [...item.item, newFolder] : [newFolder];
-          return { ...item, item: newItems };
-        },
-      );
-      updateCollection(parentCollectionId, { item: updatedItems });
-      toast.success('Nueva carpeta creada.');
-    });
+    
+    handleAddNewFolder(parentCollectionId, nodeData.id, nameNewFolder);
+    toast.success('Nueva carpeta creada.');
+    setShowBar(false);
   };
 
   const handleClickContextMenu = (e: React.MouseEvent) => {
