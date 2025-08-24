@@ -36,13 +36,14 @@ interface RequestState {
   updateCollection: (id: string, changes: Partial<Collection>) => void;
   removeCollection: (id: string) => void;
   importCollections: () => Promise<void>;
-  exportCollections: () => Promise<void>;
+  exportCollections: (collectionId: string) => Promise<void>;
   executeRequest: (tabId: string) => Promise<void>;
   handleUpdateItem: (collectionId: string, itemId: string, changes: Partial<any>) => void;
   handleRemoveItem: (collectionId: string, itemId: string) => void;
   handleDuplicateItem: (collectionId: string, itemId: string) => void;
   handleAddNewItem: (collectionId: string, itemId: string, name: string) => void;
   handleAddNewFolder: (collectionId: string, itemId: string, name: string) => void;
+  initTab: () => void; // 🚀 Nueva acción para inicializar una pestaña
 }
 
 const findAndUpdateItem = (
@@ -100,6 +101,21 @@ export const useRequestStore = create<RequestState>((set, get) => ({
   listTabs: [],
   currentTabId: null,
   collections: [],
+  
+  // 🚀 Función para inicializar una pestaña por defecto
+  initTab: async () => {
+    const newTab: RequestData = {
+      id: nanoid(),
+      name: 'Nueva Petición',
+      method: 'GET',
+      url: 'https://',
+      headers: {},
+      body: {},
+      query: {},
+    };
+    await db.tabs.add(newTab);
+    set({ listTabs: [newTab], currentTabId: newTab.id });
+  },
 
   addFromNode: async (nodeData) => {
     if (!nodeData.request) return;
@@ -187,7 +203,6 @@ export const useRequestStore = create<RequestState>((set, get) => ({
         (item) => ({ ...item, ...changes })
       );
 
-      // Update the database immediately
       db.collections.update(collectionId, { item: updatedItems });
 
       return {
@@ -205,7 +220,6 @@ export const useRequestStore = create<RequestState>((set, get) => ({
 
       const newItems = findAndRemoveItem(collectionToUpdate.item, itemId);
       
-      // Update the database immediately
       db.collections.update(collectionId, { item: newItems });
       
       return {
@@ -240,7 +254,6 @@ export const useRequestStore = create<RequestState>((set, get) => ({
       };
       const updatedItems = findAndInsert(collectionToUpdate.item, itemId);
 
-      // Update the database immediately
       db.collections.update(collectionId, { item: updatedItems });
 
       return {
@@ -278,7 +291,6 @@ export const useRequestStore = create<RequestState>((set, get) => ({
         })
       );
       
-      // Update the database immediately
       db.collections.update(collectionId, { item: updatedItems });
 
       return {
@@ -309,7 +321,6 @@ export const useRequestStore = create<RequestState>((set, get) => ({
         })
       );
       
-      // Update the database immediately
       db.collections.update(collectionId, { item: updatedItems });
 
       return {
@@ -320,45 +331,57 @@ export const useRequestStore = create<RequestState>((set, get) => ({
     });
   },
 
-  removeTab: (id) => {
-    db.tabs.delete(id);
-    set((state) => {
-      const remainingTabs = state.listTabs.filter((t) => t.id !== id);
-      const newCurrentTabId =
-        state.currentTabId === id
-          ? remainingTabs[0]?.id || null
-          : state.currentTabId;
-      return {
-        listTabs: remainingTabs,
-        currentTabId: newCurrentTabId,
-      };
-    });
-  },
+  exportCollections: async (collectionId: string) => {
+    const collectionToExport = get().collections.find(col => col.id === collectionId);
+    if (!collectionToExport) {
+      toast.error('Colección no encontrada para exportar.');
+      return;
+    }
+    
+    const exportData = {
+      info: {
+        _postman_id: collectionToExport.id,
+        name: collectionToExport.name,
+        schema: "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+      },
+      item: collectionToExport.item
+    };
 
-  setCurrentTab: (id) => set({ currentTabId: id }),
-
-  updateTab: (id, changes) => {
-    db.tabs.update(id, changes);
-    set((state) => ({
-      listTabs: state.listTabs.map((tab) =>
-        tab.id === id ? { ...tab, ...changes } : tab,
-      ),
-    }));
-  },
-
-  setResponse: (id, response) => {
-    db.tabs.update(id, { response });
-    set((state) => ({
-      listTabs: state.listTabs.map((tab) =>
-        tab.id === id ? { ...tab, response } : tab,
-      ),
-    }));
+    const dataStr =
+      'data:text/json;charset=utf-8,' +
+      encodeURIComponent(JSON.stringify(exportData, null, 2));
+      
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute('href', dataStr);
+    downloadAnchorNode.setAttribute(
+      'download',
+      `${collectionToExport.name}_export.json`,
+    );
+    document.body.appendChild(downloadAnchorNode);
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+    toast.success(`"${collectionToExport.name}" exportada exitosamente.`);
   },
 
   loadTabs: async () => {
     try {
       const tabs = await db.tabs.toArray();
-      set({ listTabs: tabs, currentTabId: tabs[0]?.id || null });
+      // 🚀 Si no hay pestañas, inicializa una nueva
+      if (tabs.length === 0) {
+        const newTab: RequestData = {
+          id: nanoid(),
+          name: 'Nueva Petición',
+          method: 'GET',
+          url: 'https://',
+          headers: {},
+          body: {},
+          query: {},
+        };
+        await db.tabs.add(newTab);
+        set({ listTabs: [newTab], currentTabId: newTab.id });
+      } else {
+        set({ listTabs: tabs, currentTabId: tabs[0]?.id || null });
+      }
     } catch (error) {
       console.error('Failed to load tabs from Dexie:', error);
     }
@@ -471,24 +494,70 @@ export const useRequestStore = create<RequestState>((set, get) => ({
     }
   },
 
-  exportCollections: async () => {
-    const { collections } = get();
-    if (collections.length === 0) {
-      toast.error('No hay colecciones para exportar.');
+  exportCollections: async (collectionId: string) => {
+    const collectionToExport = get().collections.find(col => col.id === collectionId);
+    if (!collectionToExport) {
+      toast.error('Colección no encontrada para exportar.');
       return;
     }
+    
+    const exportData = {
+      info: {
+        _postman_id: collectionToExport.id,
+        name: collectionToExport.name,
+        schema: "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+      },
+      item: collectionToExport.item
+    };
+
     const dataStr =
       'data:text/json;charset=utf-8,' +
-      encodeURIComponent(JSON.stringify(collections, null, 2));
+      encodeURIComponent(JSON.stringify(exportData, null, 2));
+      
     const downloadAnchorNode = document.createElement('a');
     downloadAnchorNode.setAttribute('href', dataStr);
     downloadAnchorNode.setAttribute(
       'download',
-      `postman_collection_export_${new Date().toISOString()}.json`,
+      `${collectionToExport.name}_export.json`,
     );
     document.body.appendChild(downloadAnchorNode);
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
-    toast.success('Colecciones exportadas exitosamente.');
+    toast.success(`"${collectionToExport.name}" exportada exitosamente.`);
+  },
+
+  removeTab: (id) => {
+    db.tabs.delete(id);
+    set((state) => {
+      const remainingTabs = state.listTabs.filter((t) => t.id !== id);
+      const newCurrentTabId =
+        state.currentTabId === id
+          ? remainingTabs[0]?.id || null
+          : state.currentTabId;
+      return {
+        listTabs: remainingTabs,
+        currentTabId: newCurrentTabId,
+      };
+    });
+  },
+
+  setCurrentTab: (id) => set({ currentTabId: id }),
+
+  updateTab: (id, changes) => {
+    db.tabs.update(id, changes);
+    set((state) => ({
+      listTabs: state.listTabs.map((tab) =>
+        tab.id === id ? { ...tab, ...changes } : tab,
+      ),
+    }));
+  },
+
+  setResponse: (id, response) => {
+    db.tabs.update(id, { response });
+    set((state) => ({
+      listTabs: state.listTabs.map((tab) =>
+        tab.id === id ? { ...tab, response } : tab,
+      ),
+    }));
   },
 }));

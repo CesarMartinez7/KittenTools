@@ -1,12 +1,288 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { nanoid } from 'nanoid';
 import { useState } from 'react';
+import type React from 'react';
+import { useEffect, useRef } from 'react';
+import toast from 'react-hot-toast';
+import LazyListPerform from '../../../../ui/LazyListPerform';
 import ToolTipButton from '../../../../ui/tooltip/TooltipButton';
-import type { Collection } from '../../db';
+import type { Collection, CollectionItem } from '../../db';
 import { useRequestStore } from '../../stores/request.store';
 import type { SavedRequestsSidebarProps } from '../../types/types';
 import { useEnviromentStore } from '../enviroment/store.enviroment';
-import ItemNode, { ResizableSidebar } from '../itemnode/item-node';
+import ItemNode from '../itemnode/item-node';
+import { Icon } from '@iconify/react/dist/iconify.js';
+
+// Componente ResizableSidebar
+interface ResizableSidebarProps {
+  children: React.ReactNode;
+  initialWidth?: number;
+  minWidth?: number;
+  maxWidth?: number;
+  className?: string;
+}
+
+export const ResizableSidebar: React.FC<ResizableSidebarProps> = ({
+  children,
+  initialWidth = 300,
+  minWidth = 200,
+  maxWidth = 800,
+  className = '',
+}) => {
+  const [width, setWidth] = useState(initialWidth);
+  const [isResizing, setIsResizing] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const startXRef = useRef(0);
+  const startWidthRef = useRef(0);
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsResizing(true);
+    startXRef.current = e.clientX;
+    startWidthRef.current = width;
+  };
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isResizing) return;
+      const deltaX = e.clientX - startXRef.current;
+      const newWidth = startWidthRef.current + deltaX;
+      const constrainedWidth = Math.min(Math.max(newWidth, minWidth), maxWidth);
+      setWidth(constrainedWidth);
+    };
+
+    const handleMouseUp = () => {
+      setIsResizing(false);
+    };
+
+    if (isResizing) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = 'col-resize';
+      document.body.style.userSelect = 'none';
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    };
+  }, [isResizing, minWidth, maxWidth]);
+
+  return (
+    <div
+      ref={containerRef}
+      className={`relative transition-all ${className}`}
+      style={{ width: `${width}px` }}
+    >
+      <div className="h-full overflow-auto">{children}</div>
+      <div
+        className={`
+          absolute top-0 right-0 w-1 h-full cursor-col-resize group z-10
+          ${isResizing ? 'bg-green-primary' : 'hover:bg-green-primary/50'}
+        `}
+        onMouseDown={handleMouseDown}
+      >
+        <div className="absolute right-0 top-1/2 transform translate-x-full -translate-y-1/2">
+          <div className="bg-zinc-800 border border-zinc-600 rounded-md p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            <Icon
+              icon="tabler:grip-vertical"
+              width="12"
+              height="12"
+              className="text-zinc-400"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+
+// 🚀 Componente de modal Base para el sidebar
+interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  children: React.ReactNode;
+}
+
+const SidebarModal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
+  if (!isOpen) return null;
+  return (
+    <div
+      // 🚀 Posicionamiento absoluto para confinarlo al sidebar
+      className="absolute inset-0 z-50 flex items-center justify-center bg-zinc-950/70 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <div className="w-96 rounded-lg border border-zinc-700 bg-zinc-900 p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+        {children}
+      </div>
+    </div>
+  );
+};
+
+// 🚀 Modales específicas
+interface RenameModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  initialName: string;
+  onRename: (newName: string) => void;
+}
+const RenameModal: React.FC<RenameModalProps> = ({ isOpen, onClose, initialName, onRename }) => {
+  const [newName, setNewName] = useState(initialName);
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newName.trim()) {
+      onRename(newName.trim());
+      onClose();
+    }
+  };
+  return (
+    <SidebarModal isOpen={isOpen} onClose={onClose}>
+      <h3 className="mb-4 text-xl font-bold text-white">Renombrar</h3>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          value={newName}
+          onChange={(e) => setNewName(e.target.value)}
+          className="w-full rounded-md border border-zinc-700 bg-zinc-800 p-2 text-white outline-none focus:ring-2 focus:ring-green-primary"
+          autoFocus
+        />
+        <div className="mt-6 flex justify-end space-x-2">
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-md border border-zinc-700 px-4 py-2 font-semibold text-zinc-400 transition-colors hover:bg-zinc-800"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            className="rounded-md bg-green-primary px-4 py-2 font-semibold text-white transition-colors hover:bg-green-600"
+          >
+            Aceptar
+          </button>
+        </div>
+      </form>
+    </SidebarModal>
+  );
+};
+
+interface DeleteModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  itemName: string;
+  onDelete: () => void;
+}
+const DeleteModal: React.FC<DeleteModalProps> = ({ isOpen, onClose, itemName, onDelete }) => (
+  <SidebarModal isOpen={isOpen} onClose={onClose}>
+    <h3 className="mb-2 text-xl font-bold text-white">Confirmar eliminación</h3>
+    <p className="text-zinc-400">¿Estás seguro de que quieres eliminar "{itemName}"?</p>
+    <div className="mt-6 flex justify-end space-x-2">
+      <button
+        onClick={onClose}
+        className="rounded-md border border-zinc-700 px-4 py-2 font-semibold text-zinc-400 transition-colors hover:bg-zinc-800"
+      >
+        Cancelar
+      </button>
+      <button
+        onClick={onDelete}
+        className="rounded-md bg-red-600 px-4 py-2 font-semibold text-white transition-colors hover:bg-red-700"
+      >
+        Eliminar
+      </button>
+    </div>
+  </SidebarModal>
+);
+
+interface NewItemModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  label: string;
+  onSubmit: (name: string) => void;
+}
+const NewItemModal: React.FC<NewItemModalProps> = ({ isOpen, onClose, title, label, onSubmit }) => {
+  const [name, setName] = useState('');
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (name.trim()) {
+      onSubmit(name.trim());
+      onClose();
+    }
+  };
+  return (
+    <SidebarModal isOpen={isOpen} onClose={onClose}>
+      <h3 className="mb-4 text-xl font-bold text-white">{title}</h3>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          placeholder={label}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="w-full rounded-md border border-zinc-700 bg-zinc-800 p-2 text-white outline-none focus:ring-2 focus:ring-green-primary"
+          autoFocus
+        />
+        <div className="mt-6 flex justify-end space-x-2">
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-md border border-zinc-700 px-4 py-2 font-semibold text-zinc-400 transition-colors hover:bg-zinc-800"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            className="rounded-md bg-green-primary px-4 py-2 font-semibold text-white transition-colors hover:bg-green-600"
+          >
+            Crear
+          </button>
+        </div>
+      </form>
+    </SidebarModal>
+  );
+};
+
+// 🚀 Nuevo componente Modal de Exportación
+const ExportModal = ({ isOpen, onClose, onExport }) => {
+  const collections = useRequestStore((state) => state.collections);
+
+  if (!isOpen) return null;
+
+  return (
+    <SidebarModal isOpen={isOpen} onClose={onClose}>
+      <h3 className="mb-4 text-xl font-bold text-white">
+        Selecciona una colección para exportar
+      </h3>
+      <ul className="max-h-60 space-y-2 overflow-y-auto">
+        {collections.map((collection) => (
+          <li
+            key={collection.id}
+            className="flex items-center justify-between rounded-md p-2 transition-colors hover:bg-zinc-800"
+          >
+            <span className="text-zinc-300">{collection.name}</span>
+            <button
+              onClick={() => onExport(collection.id)}
+              className="rounded-md bg-green-primary px-3 py-1 text-xs font-semibold text-white transition-colors hover:bg-green-600"
+            >
+              Exportar
+            </button>
+          </li>
+        ))}
+      </ul>
+      <div className="mt-6 flex justify-end">
+        <button
+          onClick={onClose}
+          className="rounded-md border border-zinc-700 px-4 py-2 font-semibold text-zinc-400 transition-colors hover:bg-zinc-800"
+        >
+          Cerrar
+        </button>
+      </div>
+    </SidebarModal>
+  );
+};
+
 
 export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
   const {
@@ -25,6 +301,7 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
   );
 
   const [currenIdx, setCurrentIdx] = useState<number>(1);
+  const [showExportModal, setShowExportModal] = useState(false);
 
   const handleAddCollection = () => {
     const newCollection: Collection = {
@@ -34,6 +311,11 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
     };
     addCollection(newCollection);
   };
+  
+  const handleExport = (collectionId: string) => {
+      exportCollections(collectionId);
+      setShowExportModal(false);
+  }
 
   return (
     <ResizableSidebar minWidth={100} maxWidth={800} initialWidth={470}>
@@ -67,7 +349,7 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
                 <ToolTipButton
                   ariaText="Exportar"
                   tooltipText="Exportar coleccion"
-                  onClick={exportCollections}
+                  onClick={() => setShowExportModal(true)}
                 />
               </div>
             </div>
@@ -186,6 +468,12 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
           </motion.div>
         )}
       </AnimatePresence>
+      {/* 🚀 Renderizamos el modal de exportación */}
+      <ExportModal
+        isOpen={showExportModal}
+        onClose={() => setShowExportModal(false)}
+        onExport={handleExport}
+      />
     </ResizableSidebar>
   );
 }

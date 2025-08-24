@@ -474,12 +474,7 @@ export default function AppClient() {
                       `}
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.8 }}
-                      transition={{
-                        type: 'spring',
-                        stiffness: 400,
-                        damping: 25,
-                      }}
+                      exit={{ opacity: 0, scale: 0 }}
                     >
                       <div className="relative z-10 flex items-center gap-2">
                         <MethodFormater nameMethod={tab.method} />
