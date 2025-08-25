@@ -20,7 +20,9 @@ const RequestForm = ({
   const entornoActual = useEnviromentStore((state) => state.entornoActual);
 
   // Accede al valor del store de URL formateada
-  const { formattedUrl } = useFormattedUrlStore();
+  
+
+  const formattedUrl = useFormattedUrlStore((state) => state.formattedUrl)
 
   const getMethodColor = (method: string) => {
     switch (method) {
@@ -104,7 +106,7 @@ const RequestForm = ({
 
   return (
     <form className="p-4 space-y-3" ref={refForm} onSubmit={onSubmit}>
-      <div className="flex flex-col md:flex-row gap-3 md:items-center">
+      <div className="flex flex-row md:flex-row gap-3 md:items-center">
         <div className="relative">
           <button
             type="button"

@@ -50,7 +50,7 @@ const Header = React.memo(
   
 
     return (
-      <div className="flex dark items-center text-xs gap-2 justify-end px-4 border-gray-200 dark:border-zinc-800 backdrop-blur-sm py-1">
+      <div className="flex dark items-center text-xs gap-2 justify-end px-4 border-gray-100  dark:border-zinc-800 backdrop-blur-sm py-1">
         {/* Nombre entorno */}
         <div
           className={`font-medium text-zinc-800 dark:text-zinc-300 truncate max-w-[250px] px-3 rounded-full 
@@ -72,7 +72,7 @@ const Header = React.memo(
             width={14}
           />
         </button>
-        <p>{!isRunningInTauri ? "Version web" : "Version tauri"}</p>
+        <p className='dark:text-zinc-200 text-gray-600'>{!isRunningInTauri ? "Version Web" : "Version Tauri"}</p>
       </div>
     );
   },
@@ -137,6 +137,7 @@ interface ContentTypeProps {
   setScriptsValues: React.Dispatch<React.SetStateAction<EventRequest>>;
 }
 
+// eslint-disable-next-line react/display-name
 const ContentPanel = React.memo(
   ({
     selectedIdx,
@@ -168,115 +169,105 @@ const ContentPanel = React.memo(
     );
 
     const getContent = () => {
-      switch (selectedIdx) {
-        case 0:
-          return (
-            <motion.div
-              key="body-section-body"
-              variants={VariantsAnimation}
-              className="flex flex-col flex-1 min-h-0"
-            >
-              <div className="flex gap-4 mb-3">
-                {['json', 'form', 'xml', 'none'].map((type, idx) => (
-                  <label
-                    key={idx}
-                    className="text-sm text-gray-800 dark:text-gray-300 flex items-center gap-2 cursor-pointer"
-                  >
-                    <input
-                      type="radio"
-                      name="contentType"
-                      checked={
-                        currentTab?.headers['Content-Type'] === type ||
-                        currentTab?.headers['content-type'] === type
-                      }
-                      onChange={() => setContentType(type)}
-                      className="form-radio text-sky-500 bg-gray-200 dark:bg-zinc-700 border-gray-300 dark:border-zinc-600 focus:ring-sky-500"
-                    />
-                    <span className="text-gray-700 dark:text-zinc-300">
-                      {type.toUpperCase()}
-                    </span>
-                  </label>
-                ))}
-              </div>
-              <div className="flex-1 overflow-auto">
-                {currentTab?.headers['Content-Type'] === 'none' ? (
-                  <div className="h-full flex items-center justify-center text-gray-500 dark:text-zinc-500">
-                    <p className="text-lg font-medium">
-                      No body for this request.
-                    </p>
-                  </div>
-                ) : (
-                  <>
-                    <CodeEditorLazy
-                      value={currentTab?.body || ''}
-                      maxHeight="85vh"
-                      onChange={onCodeChange}
-                      language={currentTab?.headers['Content-Type'] || 'json'}
-                      height="73vh"
-                      minHeight="65vh"
-                    />
-                  </>
-                )}
-              </div>
-            </motion.div>
-          );
-        case 1:
-          return (
-            <motion.div
-              key="query-params-section"
-              variants={VariantsAnimation}
-              className="flex-1 overflow-auto"
-            >
-              <AddQueryParam />
-            </motion.div>
-          );
-        case 2:
-          return (
-            <motion.div
-              key="headers-section"
-              variants={VariantsAnimation}
-              className="flex-1 overflow-auto"
-            >
-              <HeadersAddRequest />
-            </motion.div>
-          );
-        case 5:
-          return (
-            <motion.div
-              key="auth-section"
-              variants={VariantsAnimation}
-              className="flex-1 flex items-center justify-center text-gray-500 dark:text-zinc-500"
-            >
-              <p className="text-lg">Proximamente</p>
-            </motion.div>
-          );
-        case 4:
-          return (
-            <motion.div key="scripts-section" variants={VariantsAnimation}>
-              <ScriptComponent
-                value={scriptsValues}
-                setValue={setScriptsValues}
-              />
-              <ScriptComponent
-                value={scriptsValues}
-                setValue={setScriptsValues}
-              />
-            </motion.div>
-          );
-        case 3:
-          return (
-            <motion.div
-              key="env-section"
-              variants={VariantsAnimation}
-              className="h-full"
-            >
-              <EnviromentComponent />
-            </motion.div>
-          );
-        default:
-          return null;
-      }
+      return (
+        <div className="relative w-full h-full">
+          <motion.div
+            key="body-section-body"
+            variants={VariantsAnimation}
+            className={`absolute inset-0 flex flex-col flex-1 min-h-0 ${
+              selectedIdx === 0 ? 'block' : 'hidden'
+            }`}
+          >
+            <div className="flex gap-4 mb-3">
+              {['json', 'form', 'xml', 'none'].map((type, idx) => (
+                <label
+                  key={idx}
+                  className="text-sm text-gray-800 dark:text-gray-300 flex items-center gap-2 cursor-pointer"
+                >
+                  <input
+                    type="radio"
+                    name="contentType"
+                    checked={
+                      currentTab?.headers['Content-Type'] === type ||
+                      currentTab?.headers['content-type'] === type
+                    }
+                    onChange={() => setContentType(type)}
+                    className="form-radio text-sky-500 bg-gray-200 dark:bg-zinc-700 border-gray-300 dark:border-zinc-600 focus:ring-sky-500"
+                  />
+                  <span className="text-gray-700 dark:text-zinc-300">
+                    {type.toUpperCase()}
+                  </span>
+                </label>
+              ))}
+            </div>
+            <div className="flex-1 overflow-auto">
+              {currentTab?.headers['Content-Type'] === 'none' ? (
+                <div className="h-full flex items-center justify-center text-gray-500 dark:text-zinc-500">
+                  <p className="text-lg font-medium">No body for this request.</p>
+                </div>
+              ) : (
+                <CodeEditorLazy
+                  value={currentTab?.body || ''}
+                  maxHeight="85vh"
+                  onChange={onCodeChange}
+                  language={currentTab?.headers['Content-Type'] || 'json'}
+                  height="73vh"
+                  minHeight="65vh"
+                />
+              )}
+            </div>
+          </motion.div>
+    
+          <motion.div
+            key="query-params-section"
+            variants={VariantsAnimation}
+            className={`absolute inset-0 flex-1 overflow-auto ${
+              selectedIdx === 1 ? 'block' : 'hidden'
+            }`}
+          >
+            <AddQueryParam />
+          </motion.div>
+    
+          <motion.div
+            key="headers-section"
+            variants={VariantsAnimation}
+            className={`absolute inset-0 flex-1 overflow-auto ${
+              selectedIdx === 2 ? 'block' : 'hidden'
+            }`}
+          >
+            <HeadersAddRequest />
+          </motion.div>
+    
+          <motion.div
+            key="env-section"
+            variants={VariantsAnimation}
+            className={`absolute inset-0 h-full ${selectedIdx === 3 ? 'block' : 'hidden'}`}
+          >
+            <EnviromentComponent />
+          </motion.div>
+    
+          <motion.div
+            key="scripts-section"
+            variants={VariantsAnimation}
+            className={`absolute inset-0 ${selectedIdx === 4 ? 'block' : 'hidden'}`}
+          >
+            <ScriptComponent value={scriptsValues} setValue={setScriptsValues} />
+            <ScriptComponent value={scriptsValues} setValue={setScriptsValues} />
+          </motion.div>
+    
+          <motion.div
+            key="auth-section"
+            variants={VariantsAnimation}
+            className={`absolute inset-0 flex-1 flex items-center justify-center text-gray-500 dark:text-zinc-500 ${
+              selectedIdx === 5 ? 'block' : 'hidden'
+            }`}
+          >
+            <p className="text-lg">Próximamente</p>
+          </motion.div>
+        </div>
+      );
     };
+    
 
     return (
       <div className="h-full bg-white/90 dark:bg-zinc-900/80 p-4 border-gray-200 dark:border-zinc-800 relative flex flex-col shadow-lg overflow-hidden">
@@ -440,7 +431,7 @@ export default function AppClient() {
 
   return (
     <div className="min-h-screen flex text-white overflow-hidden h-screen text-xs relative">
-      <div className="dark:bg-zinc-900 border-t border-zinc-800 bg-white text-gray-600 w-screen bottom-0 fixed z-50">
+      <div className="dark:bg-zinc-900 border-t dark:border-zinc-800 border-gray-200 bg-white text-gray-600 w-screen bottom-0 fixed z-50">
         <Header
           isFullScreen={isFullScreen}
           nombreEntorno={nombreEntorno}
@@ -462,7 +453,7 @@ export default function AppClient() {
           {/* Botón de desplazamiento a la izquierda */}
           <button
             onClick={() => scrollTabs('left')}
-            className="z-20 p-2 text-zinc-400 hover:text-white bg-gradient-to-r bg-white dark:bg-zinc-900 border-r border-gray-200 dark:border-zinc-800 absolute left-0 h-full flex items-center shadow-[28px_6px_29px_11px_rgba(0,_0,_0,_0.1)]"
+            className="z-20 p-2 text-zinc-400 hover:text-zinc-400  bg-gradient-to-r bg-white dark:bg-zinc-900 border-r border-gray-200 dark:border-zinc-800 absolute left-0 h-full flex items-center shadow-[28px_6px_29px_11px_rgba(0,_0,_0,_0.1)]"
           >
             <Icon icon="tabler:chevron-left" width="20" height="20" />
           </button>
@@ -541,7 +532,7 @@ export default function AppClient() {
           {/* Botón de desplazamiento a la derecha */}
           <button
             onClick={() => scrollTabs('right')}
-            className="z-20 p-2 text-zinc-400 hover:text-white bg-white dark:bg-zinc-900 border-l border-gray-200 dark:border-zinc-800 absolute right-0 h-full flex items-center shadow-[-31px_-1px_23px_0px_rgba(0,_0,_0,_0.1)]"
+            className="z-20 p-2 text-zinc-400 hover:text-zinc-400  bg-white dark:bg-zinc-900 border-l border-gray-200 dark:border-zinc-800 absolute right-0 h-full flex items-center shadow-[-31px_-1px_23px_0px_rgba(0,_0,_0,_0.1)]"
           >
             <Icon icon={chevronRight} width="20" height="20" />
           </button>

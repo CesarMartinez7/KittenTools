@@ -102,57 +102,71 @@ const AddQueryParam: React.FC<AddQueryParamProps> = () => {
 
   return (
     <div className="p-4 overflow-auto">
-      {formattedUrl.length > 0 && (
-        <div className="mb-4 px-2 py-1 text-xs bg-gray-200 dark:bg-zinc-800 rounded-lg flex justify-between items-center text-gray-600">
-          <p className="font-mono  text-zinc-300 break-all">{formattedUrl}</p>
-          <button
-            onClick={handleCopy}
-            className="ml-4 p-2 rounded-lg text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700 transition-colors duration-200"
-            aria-label="Copiar parámetros"
-          >
-            <Icon icon="tabler:copy" />
-          </button>
-        </div>
-      )}
-      <div className="grid grid-cols-[1fr_1fr_40px] gap-2 mb-2 text-gray-400 font-medium">
-        <span>Parámetro</span>
-        <span>Valor</span>
-        <span />
-      </div>
+  {formattedUrl.length > 0 && (
+    <div className="mb-4 px-2 py-1 text-xs bg-gray-200 dark:bg-zinc-800 rounded-lg flex justify-between items-center text-gray-600">
+      <p className="font-mono text-zinc-300 break-all">{formattedUrl}</p>
+      <button
+        onClick={handleCopy}
+        className="ml-4 p-2 rounded-lg text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700 transition-colors duration-200"
+        aria-label="Copiar parámetros"
+      >
+        <Icon icon="tabler:copy" />
+      </button>
+    </div>
+  )}
+
+  <table className="table-auto w-full border-collapse">
+    <thead>
+      <tr className="bg-zinc-900 text-zinc-300">
+        <th className="px-3 py-2 text-left">Parámetro</th>
+        <th className="px-3 py-2 text-left">Valor</th>
+        <th className="px-3 py-2 text-left">Acción</th>
+      </tr>
+    </thead>
+    <tbody>
       {displayedQueryArray.map((param, index) => (
-        <motion.div
+        <motion.tr
           key={index}
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.2 }}
-          className="grid grid-cols-[1fr_1fr_40px] gap-2 mb-2 items-center"
+          className="border-b border-zinc-800"
         >
-          <input
-            type="text"
-            placeholder="Key"
-            value={param.key}
-            onChange={(e) => handleInputChange(index, 'key', e.target.value)}
-            className="p-2 rounded bg-gray-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 outline-none placeholder:text-zinc-500"
-          />
-          <input
-            type="text"
-            placeholder="Value"
-            value={param.value}
-            onChange={(e) => handleInputChange(index, 'value', e.target.value)}
-            className="p-2 rounded bg-gray-200 dark:bg-zinc-800 dark:bg-zinc-800 text-zinc-200 outline-none placeholder:text-zinc-500"
-          />
-          {displayedQueryArray.length > 1 && (
-            <button
-              onClick={() => handleRemoveParam(index)}
-              className="w-10 h-10 flex items-center justify-center text-red-500 hover:bg-zinc-800 rounded"
-              aria-label="Eliminar Parámetro"
-            >
-              <Icon icon="tabler:trash" />
-            </button>
-          )}
-        </motion.div>
+          <td className="px-3 py-2">
+            <input
+              type="text"
+              placeholder="Key"
+              value={param.key}
+              onChange={(e) => handleInputChange(index, 'key', e.target.value)}
+              className="w-full p-2 rounded bg-gray-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 outline-none placeholder:text-zinc-500"
+            />
+          </td>
+          <td className="px-3 py-2">
+            <input
+              type="text"
+              placeholder="Value"
+              value={param.value}
+              onChange={(e) => handleInputChange(index, 'value', e.target.value)}
+              className="w-full p-2 rounded bg-gray-200 dark:bg-zinc-800 text-zinc-200 outline-none placeholder:text-zinc-500"
+            />
+          </td>
+          <td className="px-3 py-2 text-center">
+            {displayedQueryArray.length > 1 && (
+              <button
+                onClick={() => handleRemoveParam(index)}
+                className="w-10 h-10 flex items-center justify-center text-red-500 hover:bg-zinc-800 rounded"
+                aria-label="Eliminar Parámetro"
+              >
+                <Icon icon="tabler:trash" />
+              </button>
+            )}
+          </td>
+        </motion.tr>
       ))}
-    </div>
+    </tbody>
+  </table>
+</div>
+
   );
 };
 

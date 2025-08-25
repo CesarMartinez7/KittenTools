@@ -87,7 +87,7 @@ const ColoredInput: React.FC<HeaderInputProps> = ({
           onChange={(e) => onChange(e.target.value)}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          className="p-2 rounded bg-zinc-800 text-transparent outline-none placeholder:text-zinc-500 w-full relative z-10 caret-white"
+          className="p-1 rounded bg-zinc-800 text-transparent outline-none placeholder:text-zinc-500 w-full relative z-10 caret-white"
         />
         <div className="absolute inset-0 pointer-events-none p-2 overflow-hidden whitespace-nowrap z-0">
           {formattedParts.map((part, index) => (
@@ -113,7 +113,7 @@ const ColoredInput: React.FC<HeaderInputProps> = ({
       onChange={(e) => onChange(e.target.value)}
       onFocus={() => setIsFocused(true)}
       onBlur={() => setIsFocused(false)}
-      className="p-2 rounded bg-gray-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-200 outline-none placeholder:text-zinc-500 w-full"
+      className="p-1 bg-gray-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-200 outline-none placeholder:text-zinc-500 w-full"
     />
   );
 };
@@ -197,17 +197,17 @@ export const HeadersAddRequest: React.FC<HeadersAddRequestProps> = () => {
         </thead>
         <tbody className="bg-zinc-800 divide-y divide-zinc-700">
           {displayedHeaders.map((header, index) => (
-            <tr key={index} className="hover:bg-zinc-700">
-              <td className="px-3 py-1 whitespace-nowrap">
+            <tr key={index} className="">
+              <td className="px-3 py- whitespace-nowrap">
                 <input
                   type="text"
                   placeholder="Key"
                   value={header.key || ''}
                   onChange={(e) => handleInputChange(index, 'key', e.target.value)}
-                  className="p-2 w-full rounded bg-gray-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-200 outline-none placeholder:text-zinc-500 border border-transparent focus:border-zinc-500 transition-colors"
+                  className=" p-1 w-full  bg-gray-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-200 outline-none placeholder:text-zinc-500 border border-transparent focus:border-zinc-500 transition-colors"
                 />
               </td>
-              <td className="px-3 py-1 whitespace-nowrap">
+              <td className="px-3 py- whitespace-nowrap">
                 <ColoredInput
                   value={header.value || ''}
                   onChange={(value) => handleInputChange(index, 'value', value)}
@@ -215,7 +215,7 @@ export const HeadersAddRequest: React.FC<HeadersAddRequestProps> = () => {
                   entornoActual={entornoActual || []}
                 />
               </td>
-              <td className="px-3 py-1 whitespace-nowrap text-right text-sm font-medium">
+              <td className="px-3 py- whitespace-nowrap text-right text-sm font-medium">
                 {index < headersArray.length && (
                   <button
                     onClick={() => handleRemoveHeader(index)}

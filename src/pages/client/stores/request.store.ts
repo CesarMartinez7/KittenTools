@@ -108,8 +108,8 @@ export const useRequestStore = create<RequestState>((set, get) => ({
   initTab: async () => {
     const newTab: RequestData = {
       id: nanoid(),
-      name: 'Nueva Petición',
-      method: 'GET',
+      name: 'Nueva Peticion',
+      method: "POST",
       url: 'https://dsfsdf',
       headers: {},
       body: {
@@ -411,7 +411,8 @@ export const useRequestStore = create<RequestState>((set, get) => ({
   },
 
   importCollections: async () => {
-    if (isTauri()) {
+  const isTauri = "__TAURI__" in window;
+    if (isTauri) {
       // Lógica para Tauri
       try {
         const selected = await open({

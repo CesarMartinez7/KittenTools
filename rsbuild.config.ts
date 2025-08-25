@@ -15,7 +15,7 @@ export default defineConfig({
     },
   },
   // 👇 Añade esta configuración
-  source: {
+  resolve: {
     alias: {
       // Ignora las importaciones de las APIs de Tauri durante la construcción
       '@tauri-apps/api/fs': false,

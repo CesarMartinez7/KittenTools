@@ -11,8 +11,6 @@ import RenameModal from './component/rename.modal';
 import DeleteModal from './component/delete.modal';
 import NewItemModal from './component/newitem.modal';
 
-// El componente ResizableSidebar se mantiene sin cambios, así que no lo incluimos para brevedad.
-
 const ItemNode: React.FC<ItemNodeProps> = ({
   data,
   level,
@@ -122,7 +120,7 @@ const ItemNode: React.FC<ItemNodeProps> = ({
   return (
     <>
       <div
-        className="flex flex-col gap-2 relative"
+        className="relative flex flex-col"
         onContextMenu={handleClickContextMenu}
         onClick={() => setShowBar(false)}
         style={{ marginLeft: `${indent}rem` }}
@@ -141,12 +139,12 @@ const ItemNode: React.FC<ItemNodeProps> = ({
                   level === 0
                     ? 'text-green-primary/85'
                     : level === 1
-                      ? 'text-green-primary'
-                      : level === 2
-                        ? 'text-green-300'
-                        : level === 3
-                          ? 'text-green-200'
-                          : 'text-green-100'
+                    ? 'text-green-primary'
+                    : level === 2
+                    ? 'text-green-300'
+                    : level === 3
+                    ? 'text-green-200'
+                    : 'text-green-100'
                 }`}
               />
             )}
@@ -161,7 +159,7 @@ const ItemNode: React.FC<ItemNodeProps> = ({
               className={`truncate ${
                 !nodeData.name || nodeData.name.trim() === ''
                   ? 'italic text-zinc-500'
-                  : ' text-zinc-700 dark:text-zinc-200'
+                  : 'text-zinc-700 dark:text-zinc-200'
               }`}
             >
               {getDisplayName()}
@@ -200,17 +198,25 @@ const ItemNode: React.FC<ItemNodeProps> = ({
           )}
         </AnimatePresence>
         {!collapsed && isFolder && nodeData.item && (
-          <div className="ml-2 flex flex-col gap-2">
-            {nodeData.item.map((child, index) => (
-              <LazyListPerform key={child.id || index}>
-                <ItemNode
-                  data={child}
-                  level={(level || 0) + 1}
-                  parentCollectionId={parentCollectionId}
-                />
-              </LazyListPerform>
-            ))}
-          </div>
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden"
+          >
+            <div className="flex flex-col gap-2 pt-2">
+              {nodeData.item.map((child, index) => (
+                <LazyListPerform key={child.id || index}>
+                  <ItemNode
+                    data={child}
+                    level={(level || 0) + 1}
+                    parentCollectionId={parentCollectionId}
+                  />
+                </LazyListPerform>
+              ))}
+            </div>
+          </motion.div>
         )}
       </div>
 
