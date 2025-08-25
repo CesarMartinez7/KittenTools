@@ -22,7 +22,10 @@ import { type RequestData, useRequestStore } from './stores/request.store';
 import ResponsePanel from './response-panel';
 import type { EventRequest } from './types/types';
 
+
+
 // Componente Header
+// eslint-disable-next-line react/display-name
 const Header = React.memo(
   ({
     isFullScreen,
@@ -33,6 +36,19 @@ const Header = React.memo(
     toogleFullScreen: () => void;
     nombreEntorno: string | null;
   }) => {
+  
+    
+  const tauriApi = window.__TAURI_IPC__ ? true : false
+
+  const isRunningInTauri = window.__TAURI_IPC__ !== undefined;
+
+ useEffect(() => 
+    {
+      console.log(tauriApi)
+      console.log(isRunningInTauri)
+    }, []) 
+  
+
     return (
       <div className="flex dark items-center text-xs gap-2 justify-end px-4 border-gray-200 dark:border-zinc-800 backdrop-blur-sm py-1">
         {/* Nombre entorno */}
@@ -56,12 +72,14 @@ const Header = React.memo(
             width={14}
           />
         </button>
+        <p>{!isRunningInTauri ? "Version web" : "Version tauri"}</p>
       </div>
     );
   },
 );
 
 // Componente de navegación por pestañas
+// eslint-disable-next-line react/display-name
 const TabNavigation = React.memo(
   ({
     Opciones,
