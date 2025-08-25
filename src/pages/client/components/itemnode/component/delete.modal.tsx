@@ -1,5 +1,5 @@
 import React from 'react';
-import Modal from './modal';
+import { BaseModalLazy } from '../../../../../ui/lazy-components';
 
 interface DeleteModalProps {
   isOpen: boolean;
@@ -9,7 +9,8 @@ interface DeleteModalProps {
 }
 
 const DeleteModal: React.FC<DeleteModalProps> = ({ isOpen, onClose, itemName, onDelete }) => (
-  <Modal isOpen={isOpen} onClose={onClose}>
+  <BaseModalLazy isOpen={isOpen} onClose={onClose}>
+  
     <h3 className="mb-2 text-xl font-bold text-white">Confirmar eliminación</h3>
     <p className="text-zinc-400">¿Estás seguro de que quieres eliminar "{itemName}"?</p>
     <div className="mt-6 flex justify-end space-x-2">
@@ -26,7 +27,7 @@ const DeleteModal: React.FC<DeleteModalProps> = ({ isOpen, onClose, itemName, on
         Eliminar
       </button>
     </div>
-  </Modal>
+  </BaseModalLazy>
 );
 
 export default DeleteModal;

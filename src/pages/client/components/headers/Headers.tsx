@@ -180,45 +180,56 @@ export const HeadersAddRequest: React.FC<HeadersAddRequestProps> = () => {
   }, [headersArray]);
 
   return (
-    <div className="p-4 overflow-auto">
-      <div className="grid grid-cols-[1fr_1fr_40px] gap-2 mb-2 text-gray-400 font-medium">
-        <span>Cabecera</span>
-        <span>Valor</span>
-        <span />
-      </div>
-
-      {/* <pre>{JSON.stringify(headersArray)}</pre> */}
-      {displayedHeaders.map((header, index) => (
-        <div
-          key={index}
-          className="grid grid-cols-[1fr_1fr_40px] gap-2 mb-2 items-center"
-        >
-          <input
-            type="text"
-            placeholder="Key"
-            value={header.key || ''}
-            onChange={(e) => handleInputChange(index, 'key', e.target.value)}
-            className="p-2 rounded bg-gray-200  dark:bg-zinc-800 text-zinc-200 outline-none placeholder:text-zinc-500"
-          />
-
-          <ColoredInput
-            value={header.value || ''}
-            onChange={(value) => handleInputChange(index, 'value', value)}
-            placeholder="Value"
-            entornoActual={entornoActual || []}
-          />
-
-          {index < headersArray.length && (
-            <button
-              onClick={() => handleRemoveHeader(index)}
-              className="w-10 h-10 flex items-center justify-center text-red-500 hover:bg-zinc-800 rounded"
-              aria-label="Eliminar cabecera"
-            >
-              <Icon icon="tabler:trash" />
-            </button>
-          )}
-        </div>
-      ))}
+    <div className="p-4">
+      <table className="min-w-full divide-y divide-zinc-700 border-collapse">
+        <thead className="bg-zinc-900">
+          <tr>
+            <th className="px-3 py-2 text-left text-xs font-medium text-zinc-400 uppercase tracking-wider border-b border-zinc-700">
+              Cabecera
+            </th>
+            <th className="px-3 py-2 text-left text-xs font-medium text-zinc-400 uppercase tracking-wider border-b border-zinc-700">
+              Valor
+            </th>
+            <th className="px-3 py-2 text-left text-xs font-medium text-zinc-400 uppercase tracking-wider border-b border-zinc-700">
+              Acción
+            </th>
+          </tr>
+        </thead>
+        <tbody className="bg-zinc-800 divide-y divide-zinc-700">
+          {displayedHeaders.map((header, index) => (
+            <tr key={index} className="hover:bg-zinc-700">
+              <td className="px-3 py-1 whitespace-nowrap">
+                <input
+                  type="text"
+                  placeholder="Key"
+                  value={header.key || ''}
+                  onChange={(e) => handleInputChange(index, 'key', e.target.value)}
+                  className="p-2 w-full rounded bg-gray-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-200 outline-none placeholder:text-zinc-500 border border-transparent focus:border-zinc-500 transition-colors"
+                />
+              </td>
+              <td className="px-3 py-1 whitespace-nowrap">
+                <ColoredInput
+                  value={header.value || ''}
+                  onChange={(value) => handleInputChange(index, 'value', value)}
+                  placeholder="Value"
+                  entornoActual={entornoActual || []}
+                />
+              </td>
+              <td className="px-3 py-1 whitespace-nowrap text-right text-sm font-medium">
+                {index < headersArray.length && (
+                  <button
+                    onClick={() => handleRemoveHeader(index)}
+                    className="w-8 h-8 flex items-center justify-center text-red-500 hover:bg-zinc-600 rounded-full transition-colors"
+                    aria-label="Eliminar cabecera"
+                  >
+                    <Icon icon="tabler:trash" />
+                  </button>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };

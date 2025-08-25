@@ -108,9 +108,11 @@ export const useRequestStore = create<RequestState>((set, get) => ({
       id: nanoid(),
       name: 'Nueva Petición',
       method: 'GET',
-      url: 'https://',
+      url: 'https://dsfsdf',
       headers: {},
-      body: {},
+      body: {
+        cesar: "martinez"
+      },
       query: {},
     };
     await db.tabs.add(newTab);

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Modal from './modal';
+import { BaseModalLazy } from '../../../../../ui/lazy-components';
 
 interface NewItemModalProps {
   isOpen: boolean;
@@ -21,7 +22,7 @@ const NewItemModal: React.FC<NewItemModalProps> = ({ isOpen, onClose, title, lab
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <BaseModalLazy isOpen={isOpen} onClose={onClose}>
       <h3 className="mb-4 text-xl font-bold text-white">{title}</h3>
       <form onSubmit={handleSubmit}>
         <input
@@ -48,7 +49,7 @@ const NewItemModal: React.FC<NewItemModalProps> = ({ isOpen, onClose, title, lab
           </button>
         </div>
       </form>
-    </Modal>
+    </BaseModalLazy>
   );
 };
 

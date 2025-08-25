@@ -12,6 +12,7 @@ import type { SavedRequestsSidebarProps } from '../../types/types';
 import { useEnviromentStore } from '../enviroment/store.enviroment';
 import ItemNode from '../itemnode/item-node';
 import { Icon } from '@iconify/react/dist/iconify.js';
+import { BaseModalLazy } from '../../../../ui/lazy-components';
 
 // Componente ResizableSidebar
 interface ResizableSidebarProps {
@@ -332,12 +333,15 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
           >
             <div className="flex flex-row gap-2 mb-6 justify-between">
               <div>
-                <button
+                <ToolTipButton ariaText='Nueva' tooltipText='Añadir coleccion, request, enviroment' onClick={handleAddCollection}>
+                  Nueva
+                </ToolTipButton>
+                {/* <button
                   onClick={handleAddCollection}
                   className="p-2 text-xs rounded-md font-semibold bg-green-500/20 text-gree dark:bg-green-500/10 text-green-primary hover:bg-green-500/20"
                 >
-                  + Nueva Colección
-                </button>
+                  + Nueva
+                </button> */}
               </div>
 
               <div className="space-x-1.5 flex text-nowrap items-center">
@@ -452,7 +456,7 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
                     {collections.map((collection) => (
                       <div
                         key={collection.id}
-                        className="p-1.5 rounded-md border shadow-xl transition-colors cursor-pointer bg-gray-50 border-gray-200 text-gray-800 dark:bg-transparent dark:border-zinc-800 dark:text-zinc-200"
+                        className="p-1 rounded-md shadow-xl transition-colors cursor-pointer bg-gray-50 border-gray-200 text-gray-800 dark:bg-transparent dark:border-zinc-800 dark:text-zinc-200"
                       >
                         <ItemNode
                           data={collection}
@@ -474,6 +478,8 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
         onClose={() => setShowExportModal(false)}
         onExport={handleExport}
       />
+
+
     </ResizableSidebar>
   );
 }

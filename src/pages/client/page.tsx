@@ -530,10 +530,6 @@ export default function AppClient() {
         </div>
 
         {/* Paneles de solicitud y respuesta */}
-        <PanelGroup direction="horizontal" className="flex-grow">
-          {/* Panel de solicitud */}
-          <Panel defaultSize={50} minSize={20} className="h-full">
-            <div className="flex flex-col h-full w-full">
               <RequestForm
                 refForm={refForm}
                 onSubmit={handleRequestSubmit}
@@ -546,6 +542,10 @@ export default function AppClient() {
                 handlerChangeInputRequest={handleUrlChange}
                 isLoading={isLoading}
               />
+        <PanelGroup direction="horizontal" className="flex-grow">
+          {/* Panel de solicitud */}
+          <Panel defaultSize={50} minSize={20} className="h-full">
+            <div className="flex flex-col h-full w-full">
               <TabNavigation
                 Opciones={Opciones}
                 selectedIdx={selectedIdx}

@@ -224,7 +224,7 @@ export default function ResponsesTypesComponent({
             >
               {statusCode || currentTab?.response?.status}
             </span>
-            <span className="text-xs dark:bg-zinc-800/90 bg-gray-200 text-gray-600 dark:text-zinc-200 py-0.5 px-2 rounded text-r">
+            <span className="text-xs dark:bg-zinc-800/90 bg-gray-200 text-gray-600 dark:text-zinc-200 py-0.5 px-2 rounded text-r whitespace-nowrap">
               {currentTab?.response?.time || timeResponse} ms
             </span>
             <span className="text-gray-600 dark:text-zinc-400 ">{size}</span>
@@ -242,7 +242,7 @@ export default function ResponsesTypesComponent({
                 <AnimatePresence>
                   {showResponseMenu && (
                     <motion.div
-                      className="origin-top-right absolute right-0 mt-2 w-32 rounded-md shadow-lg bg-white dark:bg-zinc-800 ring-1 ring-black ring-opacity-5 focus:outline-none z-10"
+                      className="origin-top-right absolute right-0 mt-2 w-32 rounded-md shadow-lg bg-white dark:bg-zinc-900  focus:outline-none z-10"
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}

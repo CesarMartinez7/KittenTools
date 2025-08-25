@@ -206,6 +206,8 @@ const CodeEditor = ({
       lineNumbersRef.current!.scrollTop = scrollTop;
       highlightRef.current!.scrollTop = scrollTop;
       highlightRef.current!.scrollLeft = scrollLeft;
+      console.log(lineNumbersRef.current.scrollTop)
+      console.log(highlightRef.current.scrollTop)
     });
   };
 
@@ -356,10 +358,13 @@ const CodeEditor = ({
                   <Icon icon="tabler:x" width={16} />
                 </button>
               </div>
-
+              <AnimatePresence>
               {isOpenBar && (
-                <motion.div>
-                  <div className="flex flex-col">
+
+                // Entradas de remplazo
+
+                <motion.div className='space-y-2' initial={{opacity: 0}} animate={{opacity: 1}} >
+                  <div className="flex">
                     <input
                       ref={inputRefTextOld}
                       type="text"
@@ -374,6 +379,9 @@ const CodeEditor = ({
                       placeholder="Valor a Reemplazar"
                     />
                   </div>
+
+                  {/* Botones de busqueda */}
+
                   <div className="flex h-6 gap-2">
                     <button
                       className="bg-gradient-to-r flex-1 from-green-400 to-green-500 p-1  text-xs truncate text-white"
@@ -390,6 +398,7 @@ const CodeEditor = ({
                   </div>
                 </motion.div>
               )}
+              </AnimatePresence>
             </motion.div>
           )}
         </AnimatePresence>
@@ -400,7 +409,7 @@ const CodeEditor = ({
           {/* Line Numbers */}
           <div
             ref={lineNumbersRef}
-            className="px-3 py-2 text-sm overflow-hidd bg-gray-200/50 border-r-zinc-200 dark:bg-zinc-950/70 dark:border-zinc-800 text-sky-600 dark:text-teal-200"
+            className="px-3 py-2 text-sm overflow-hidden bg-gray-200/50 border-r-zinc-200 dark:bg-zinc-950/70 dark:border-zinc-800 text-sky-600 dark:text-teal-200"
             style={{ height, minHeight, maxHeight }}
           >
             {lineNumberElements}
