@@ -179,11 +179,11 @@ export default function ResponsesTypesComponent({
           );
         }
       case 'html':
-        return <pre className="text-xs whitespace-pre-wrap">{JSON.stringify(data)}</pre>;
+        return <pre className="text-xs whitespace-pre-wrap text-gray-500 dark:text-zinc-200">{JSON.stringify(data)}</pre>;
       case 'base64':
         try {
           const base64Content = btoa(data);
-          return <pre className="text-xs break-all">{base64Content}</pre>;
+          return <pre className="text-xs break-all text-gray-700">{base64Content}</pre>;
         } catch (e) {
           return <p className="text-red-400">Error al codificar a Base64.</p>;
         }

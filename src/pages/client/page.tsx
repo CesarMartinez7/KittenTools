@@ -7,7 +7,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
-import { CodeEditorLazy } from '../../ui/lazy-components';
+import { BaseModalLazy, CodeEditorLazy } from '../../ui/lazy-components';
 import AddQueryParam from './components/addqueryparams/addQueryParams';
 import EnviromentComponent from './components/enviroment/enviroment.component';
 import { useEnviromentStore } from './components/enviroment/store.enviroment';
@@ -21,6 +21,7 @@ import RequestForm from './request.form';
 import { type RequestData, useRequestStore } from './stores/request.store';
 import ResponsePanel from './response-panel';
 import type { EventRequest } from './types/types';
+import substack from "@iconify-icons/tabler/subtask"
 
 
 
@@ -298,6 +299,11 @@ export default function AppClient() {
   const [showMethods, setShowMethods] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+
+  const [newShow, setNewShow] = useState(true)
+
+
+
   useEffect(() => {
     const handlerSendWwindos = (e: KeyboardEvent) => {
       if (e.key === 'Enter' && e.ctrlKey) {
@@ -429,8 +435,31 @@ export default function AppClient() {
     }
   };
 
+
+  const NewMappers = [ {name: "HTTP", icon: substack, method: () => console.log("dsfdsf")} ,{name: "Enviroment", icon: substack, method: () => console.log("dsfdsf")}, {name: "Coleccion", icon: substack,  method: () => console.log("dsfdsf")} ]
+
   return (
-    <div className="min-h-screen flex text-white overflow-hidden h-screen text-xs relative">
+    <div className="min-h-screen flex overflow-hidden h-screen text-xs relative text-gray-600 dark:text-zinc-200">
+
+
+      <AnimatePresence>
+        
+          <BaseModalLazy isOpen={newShow} onClose={() => setNewShow(false)}>
+            <div className='bg-white p-2 border-gray-800 text-gray-600 dark:text-zinc-200'>
+              <p>Opciones</p>
+                <div className='flex-row flex gap-2'>
+                  {NewMappers.map((ne) => (
+                    <button onClick={ne.method} className='p-4 hover:bg-gray-200 rounded-2xl flex justify-center items-center min-w-2xs flex-col' title={ne.name} key={ne.name}>
+                      <Icon  icon={ne.icon} height={20} width={20} />
+                      {ne.name}
+                    </button>
+                  ) )}
+                </div>
+            </div>
+          </BaseModalLazy>
+        
+      </AnimatePresence>
+
       <div className="dark:bg-zinc-900 border-t dark:border-zinc-800 border-gray-200 bg-white text-gray-600 w-screen bottom-0 fixed z-50">
         <Header
           isFullScreen={isFullScreen}

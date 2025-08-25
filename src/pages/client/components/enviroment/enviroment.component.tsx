@@ -140,7 +140,7 @@ export default function EnviromentComponent() {
               </div>
             </div>
 
-            <div className="overflow-x-auto dark:border-zinc-800 border-gray-400 overflow-y-scroll h-[70vh] custom-scrollbar">
+            <div className="overflow-x-auto dark:border-zinc-800 border-gray-400 overflow-y-scroll h-[80vh] custom-scrollbar">
               <table className="min-w-full divide-y dark:divide-zinc-800">
                 <thead className="dark:bg-zinc-900 bg-gray-200 dark:text-zinc-200 text-zinc-700  sticky top-0 z-10">
                   <tr>

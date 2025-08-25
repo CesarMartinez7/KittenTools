@@ -23,7 +23,7 @@ export default function ToolTipButton({
         onFocus={() => setShow(true)}   // accesible con teclado
         onBlur={() => setShow(false)}   // accesible con teclado
         onClick={onClick}
-        className={`tooltip ${className} flex items-center gap-2 px-3 py-0.5 
+        className={`tooltip ${className} flex font-bold items-center gap-2 px-3 py-0.5 
           text-sm rounded-md transition-colors duration-200
           bg-gray-200 text-gray-800 
           hover:bg-gray-300 

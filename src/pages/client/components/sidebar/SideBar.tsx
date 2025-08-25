@@ -314,6 +314,7 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
   };
   
   const handleExport = (collectionId: string) => {
+      toast.success(collectionId)
       exportCollections(collectionId);
       setShowExportModal(false);
   }

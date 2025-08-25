@@ -507,6 +507,8 @@ export const useRequestStore = create<RequestState>((set, get) => ({
   },
 
   exportCollections: async (collectionId: string) => {
+
+  const isTauri = "__TAURI__" in window;
     const collectionToExport = get().collections.find(col => col.id === collectionId);
     if (!collectionToExport) {
       toast.error('Colección no encontrada para exportar.');
@@ -524,7 +526,7 @@ export const useRequestStore = create<RequestState>((set, get) => ({
 
     const dataStr = JSON.stringify(exportData, null, 2);
 
-    if (isTauri()) {
+    if (isTauri) {
       // Lógica para Tauri
       try {
         const filePath = await save({

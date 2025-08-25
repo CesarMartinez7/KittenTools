@@ -4,6 +4,7 @@ import { useEnviromentStore } from './components/enviroment/store.enviroment';
 import { useFormattedUrlStore } from './components/addqueryparams/addQueryParams';
 import { Methodos } from './mapper-ops';
 import { useRequestStore } from './stores/request.store';
+import toast from 'react-hot-toast';
 
 const RequestForm = ({
   refForm,
@@ -61,7 +62,7 @@ const RequestForm = ({
         return `<span title="${grupo}" style="color: ${color};">{{${grupo}}}</span>`;
       });
 
-      finalHtml += `<span style="color: #a3a2a2; dark:text-zinc-400">${baseUrlHtml}</span>`;
+      finalHtml += `<span style=" text-gray-700 dark:text-zinc-300">${baseUrlHtml}</span>`;
 
       // Si hay una parte de query, la formatea y la añade
       if (queryPart) {
@@ -160,7 +161,7 @@ const RequestForm = ({
           />
         </div>
 
-        <div className="flex divide-x divide-zinc-900 rounded-md overflow-hidden">
+        <div className="flex divide-x divide-zinc-900 rounded-md overflow-hidden ">
           <button
             type="submit"
             className="px-6 py-2 bg-sky-500 text-white transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -172,16 +173,22 @@ const RequestForm = ({
               'Enviar'
             )}
           </button>
-          <>
+
+          
+          <div>
             <div className="relative inline-block">
               <button
                 aria-label="options-envio"
                 className="px-2 py-2 bg-sky-500 text-white transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none"
-                onClick={() => setOpen(!open)}
+                onClick={(e) => {
+                  e.preventDefault()
+                  toast.success("cambio")
+                  setOpen(!open)}}
               >
                 <span className="iconamoon--arrow-down-2"></span>
               </button>
 
+            </div>
               {open && (
                 <motion.div
                   initial={{ opacity: 0, y: -10 }}
@@ -197,9 +204,24 @@ const RequestForm = ({
                   </div>
                 </motion.div>
               )}
-            </div>
-          </>
+               <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="absolute top-full left-0 mt-2 w-40 bg-black text-white rounded-lg shadow-lg"
+                >
+                  <div className="p-2 hover:bg-gray-700 cursor-pointer">
+                    Opción 1
+                  </div>
+                  <div className="p-2 hover:bg-gray-700 cursor-pointer">
+                    Opción 2
+                  </div>
+                </motion.div>
+          </div>
+
         </div>
+
+        
       </div>
     </form>
   );

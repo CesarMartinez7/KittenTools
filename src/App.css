@@ -221,7 +221,7 @@ kbd {
 }
 
 .card-item{
-  @apply text-gray-900  border-zinc-200 dark:text-zinc-200 p-1.5 rounded-md border shadow-xl flex justify-between items-center dark:border-zinc-800 dark:hover:bg-zinc-800 transition-colors bg-white/90 dark:bg-zinc-200/60  text-xs cursor-pointer 
+  @apply text-gray-900  border-zinc-200 dark:text-zinc-400 p-1.5 rounded-md border shadow-xl flex justify-between items-center dark:border-zinc-800 dark:hover:bg-zinc-800 transition-colors bg-white/90 dark:bg-zinc-900  text-xs cursor-pointer 
 }
 
 .select::selection{
@@ -520,6 +520,10 @@ body {
   @apply bg-sky-500 text-white;
 }
 
+
+.base-btn{
+  @apply px-3 py-1.5 bg-gray-300 dark:bg-zinc-800 hover:bg-sky-600 dark:hover:bg-sky-600 rounded-md text-zinc-800 dark:text-zinc-300 hover:text-white transition-colors text-xs font-semibold shadow-md
+}
 
 .tabler--bolt-off {
   display: inline-block;
