@@ -204,14 +204,17 @@ const ContentPanel = React.memo(
                   </p>
                 </div>
               ) : (
+                <>
+                <p>{JSON.stringify(currentTab?.body)}</p>
                 <CodeEditorLazy
-                  value={currentTab?.body || ''}
+                  value={currentTab?.body}
                   maxHeight="85vh"
                   onChange={onCodeChange}
                   language={currentTab?.headers['Content-Type'] || 'json'}
                   height="73vh"
                   minHeight="65vh"
                 />
+                </>
               )}
             </div>
           </motion.div>
