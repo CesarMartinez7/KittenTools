@@ -1,8 +1,8 @@
 import { AnimatePresence, motion } from 'framer-motion';
+import toast from 'react-hot-toast';
 import { BaseModalLazy } from '../../../../ui/lazy-components';
 import useEnviromentHook from './enviromentHook';
 import { useEnviromentStore } from './store.enviroment';
-import toast from 'react-hot-toast';
 
 export default function EnviromentComponent() {
   const createEntornoFunction = useEnviromentStore(
@@ -10,7 +10,6 @@ export default function EnviromentComponent() {
   );
 
   const handleClickCrearEntorno = () => {
-    
     const name = window.prompt('Nombre del entorno');
     if (name) {
       if (name?.trim().length > 0) {
@@ -113,7 +112,7 @@ export default function EnviromentComponent() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleAddVariable}
-                className="px-3 py-1.5 bg-zinc-950 dark:bg-zinc-700 hover:bg-green-600 dark:hover:bg-green-600 rounded-md text-zinc-200 transition-colors text-xs font-semibold shadow-md"
+                className="base-btn"
               >
                 + Añadir Variable
               </motion.button>
@@ -132,7 +131,7 @@ export default function EnviromentComponent() {
                   onClick={() => {
                     handleClickCrearEntorno();
                   }}
-                  title='En desarrollo'
+                  title="En desarrollo"
                   className="px-3 py-1.5 bg-gray-300 dark:bg-zinc-800 hover:bg-sky-600 dark:hover:bg-sky-600 rounded-md text-zinc-800 dark:text-zinc-300 hover:text-white transition-colors text-xs font-semibold shadow-md"
                 >
                   Crear entorno

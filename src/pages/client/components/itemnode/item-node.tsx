@@ -5,11 +5,11 @@ import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import LazyListPerform from '../../../../ui/LazyListPerform';
 import { useRequestStore } from '../../stores/request.store';
-import type { ItemNodeProps } from './types';
-// 🚀 Importamos los nuevos componentes de modal
-import RenameModal from './component/rename.modal';
 import DeleteModal from './component/delete.modal';
 import NewItemModal from './component/newitem.modal';
+// 🚀 Importamos los nuevos componentes de modal
+import RenameModal from './component/rename.modal';
+import type { ItemNodeProps } from './types';
 
 // El componente ResizableSidebar se mantiene sin cambios, así que no lo incluimos para brevedad.
 
@@ -18,8 +18,15 @@ const ItemNode: React.FC<ItemNodeProps> = ({
   level,
   parentCollectionId,
 }) => {
-  const { collections, addFromNode, handleUpdateItem, handleRemoveItem, handleDuplicateItem, handleAddNewItem, handleAddNewFolder } =
-    useRequestStore();
+  const {
+    collections,
+    addFromNode,
+    handleUpdateItem,
+    handleRemoveItem,
+    handleDuplicateItem,
+    handleAddNewItem,
+    handleAddNewFolder,
+  } = useRequestStore();
   const [collapsed, setCollapsed] = useState(true);
   const [showBar, setShowBar] = useState(false);
   const [showRenameModal, setShowRenameModal] = useState(false);
@@ -53,7 +60,7 @@ const ItemNode: React.FC<ItemNodeProps> = ({
         return 'text-gray-400';
     }
   };
-  
+
   const handleChangeName = (newName: string) => {
     const oldName = nodeData?.name || '';
     handleUpdateItem(parentCollectionId, nodeData.id, { name: newName.trim() });
@@ -227,7 +234,7 @@ const ItemNode: React.FC<ItemNodeProps> = ({
         itemName={getDisplayName()}
         onDelete={handleClickDelete}
       />
-      
+
       <NewItemModal
         isOpen={showNewRequestModal}
         onClose={() => setShowNewRequestModal(false)}

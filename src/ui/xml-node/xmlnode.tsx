@@ -48,7 +48,7 @@ const XmlNode: React.FC<XmlNodeProps> = ({ node, depth = 0 }) => {
     };
 
     return (
-      <div style={{ marginLeft: depth * 16 }} className="text-sm">
+      <div style={{ marginLeft: depth * 16 }} className="text-xs">
         <span className="text-gray-400">{'<'}</span>
         <span
           className="text-purple-600 dark:text-purple-400 cursor-pointer"

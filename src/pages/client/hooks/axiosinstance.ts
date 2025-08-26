@@ -75,7 +75,6 @@ axiosInstance.interceptors.response.use(
     return Promise.reject({
       ...error,
       status: 'N/A',
-      data: 'Error de conexión',
       typeResponse: 'text/plain',
       timeResponse: null,
       isError: true,

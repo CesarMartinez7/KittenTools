@@ -1,11 +1,11 @@
-import { useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
-import "./tooltip.css";
+import { AnimatePresence, motion } from 'motion/react';
+import { useState } from 'react';
+import './tooltip.css';
 
 export default function ToolTipButton({
   ariaText,
   tooltipText,
-  className = "",
+  className = '',
   onClick,
 }: {
   ariaText: string;
@@ -20,8 +20,8 @@ export default function ToolTipButton({
       <motion.button
         onHoverStart={() => setShow(true)}
         onHoverEnd={() => setShow(false)}
-        onFocus={() => setShow(true)}   // accesible con teclado
-        onBlur={() => setShow(false)}   // accesible con teclado
+        onFocus={() => setShow(true)} // accesible con teclado
+        onBlur={() => setShow(false)} // accesible con teclado
         onClick={onClick}
         className={`tooltip ${className} flex font-bold items-center gap-2 px-3 py-0.5 
           text-sm rounded-md transition-colors duration-200
@@ -38,7 +38,7 @@ export default function ToolTipButton({
             initial={{ opacity: 0, y: -5, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -5, scale: 0.95 }}
-            transition={{ duration: 0.2, ease: "easeInOut" }}
+            transition={{ duration: 0.2, ease: 'easeInOut' }}
             className="absolute top-full mt-1 z-10  whitespace-nowrap
               rounded-md px-2 py-1 text-xs shadow-md
               bg-gray-200 text-gray-700

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import type React from 'react';
+import { useState } from 'react';
 import { BaseModalLazy } from '../../../../../ui/lazy-components';
 
 interface RenameModalProps {
@@ -8,7 +9,12 @@ interface RenameModalProps {
   onRename: (newName: string) => void;
 }
 
-const RenameModal: React.FC<RenameModalProps> = ({ isOpen, onClose, initialName, onRename }) => {
+const RenameModal: React.FC<RenameModalProps> = ({
+  isOpen,
+  onClose,
+  initialName,
+  onRename,
+}) => {
   const [newName, setNewName] = useState(initialName);
 
   const handleSubmit = (e: React.FormEvent) => {

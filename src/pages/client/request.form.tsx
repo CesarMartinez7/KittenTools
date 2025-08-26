@@ -1,10 +1,11 @@
+// src/components/request/requestForm.tsx
 import { AnimatePresence, motion } from 'framer-motion';
-import { useCallback, useMemo, useState } from 'react';
-import { useEnviromentStore } from './components/enviroment/store.enviroment';
+import { useCallback, useMemo, useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import { useFormattedUrlStore } from './components/addqueryparams/addQueryParams';
+import { useEnviromentStore } from './components/enviroment/store.enviroment';
 import { Methodos } from './mapper-ops';
 import { useRequestStore } from './stores/request.store';
-import toast from 'react-hot-toast';
 
 const RequestForm = ({
   refForm,
@@ -21,9 +22,7 @@ const RequestForm = ({
   const entornoActual = useEnviromentStore((state) => state.entornoActual);
 
   // Accede al valor del store de URL formateada
-  
-
-  const formattedUrl = useFormattedUrlStore((state) => state.formattedUrl)
+  const formattedUrl = useFormattedUrlStore((state) => state.formattedUrl);
 
   const getMethodColor = (method: string) => {
     switch (method) {
@@ -53,7 +52,7 @@ const RequestForm = ({
       let finalHtml = '';
 
       // Formatea la URL base para resaltar variables de entorno si las hay
-      let baseUrlHtml = baseUrl.replace(regex, (match, grupo) => {
+      const baseUrlHtml = baseUrl.replace(regex, (match, grupo) => {
         const variable = safeListBusqueda.find(
           (item) => item.key.trim() === grupo.trim(),
         );
@@ -104,6 +103,27 @@ const RequestForm = ({
   const fullUrl = useMemo(() => {
     return formattedUrl ? `${endpointUrl}?${formattedUrl}` : endpointUrl;
   }, [endpointUrl, formattedUrl]);
+
+  // Nuevo useEffect para sincronizar los parámetros de la URL con el store
+  useEffect(() => {
+    if (!endpointUrl || !currentTabId) {
+      return;
+    }
+
+    try {
+      const url = new URL(endpointUrl);
+      const newQuery = {};
+      url.searchParams.forEach((value, key) => {
+        newQuery[key] = value;
+      });
+      // Verifica si los parámetros extraídos son diferentes a los del store antes de actualizar
+      if (JSON.stringify(newQuery) !== JSON.stringify(useRequestStore.getState().listTabs.find(tab => tab.id === currentTabId)?.query)) {
+        updateTab(currentTabId, { query: newQuery });
+      }
+    } catch (error) {
+      // Ignora URLs inválidas, no se necesita una acción
+    }
+  }, [endpointUrl, currentTabId, updateTab]);
 
   return (
     <form className="p-4 space-y-3" ref={refForm} onSubmit={onSubmit}>
@@ -174,54 +194,50 @@ const RequestForm = ({
             )}
           </button>
 
-          
           <div>
             <div className="relative inline-block">
               <button
                 aria-label="options-envio"
                 className="px-2 py-2 bg-sky-500 text-white transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none"
                 onClick={(e) => {
-                  e.preventDefault()
-                  toast.success("cambio")
-                  setOpen(!open)}}
+                  e.preventDefault();
+                  toast.success('cambio');
+                  setOpen(!open);
+                }}
               >
                 <span className="iconamoon--arrow-down-2"></span>
               </button>
-
             </div>
-              {open && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="absolute top-full left-0 mt-2 w-40 bg-black text-white rounded-lg shadow-lg"
-                >
-                  <div className="p-2 hover:bg-gray-700 cursor-pointer">
-                    Opción 1
-                  </div>
-                  <div className="p-2 hover:bg-gray-700 cursor-pointer">
-                    Opción 2
-                  </div>
-                </motion.div>
-              )}
-               <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="absolute top-full left-0 mt-2 w-40 bg-black text-white rounded-lg shadow-lg"
-                >
-                  <div className="p-2 hover:bg-gray-700 cursor-pointer">
-                    Opción 1
-                  </div>
-                  <div className="p-2 hover:bg-gray-700 cursor-pointer">
-                    Opción 2
-                  </div>
-                </motion.div>
+            {open && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="absolute top-full left-0 mt-2 w-40 bg-black text-white rounded-lg shadow-lg"
+              >
+                <div className="p-2 hover:bg-gray-700 cursor-pointer">
+                  Opción 1
+                </div>
+                <div className="p-2 hover:bg-gray-700 cursor-pointer">
+                  Opción 2
+                </div>
+              </motion.div>
+            )}
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="absolute top-full left-0 mt-2 w-40 bg-black text-white rounded-lg shadow-lg"
+            >
+              <div className="p-2 hover:bg-gray-700 cursor-pointer">
+                Opción 1
+              </div>
+              <div className="p-2 hover:bg-gray-700 cursor-pointer">
+                Opción 2
+              </div>
+            </motion.div>
           </div>
-
         </div>
-
-        
       </div>
     </form>
   );

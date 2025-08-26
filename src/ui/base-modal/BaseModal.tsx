@@ -1,12 +1,11 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { AnimatePresence, motion } from 'framer-motion';
-import type BaseModalProps from './types';
-import modalVariants from './variants';
 import { useEffect, useRef } from 'react';
 import toast from 'react-hot-toast';
+import type BaseModalProps from './types';
+import modalVariants from './variants';
 
 const BaseModal = ({ isOpen, onClose, children }: BaseModalProps) => {
-
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -14,7 +13,7 @@ const BaseModal = ({ isOpen, onClose, children }: BaseModalProps) => {
     if (target) {
       target.focus();
       console.log('Modal focused');
-      toast.success("Modal focused");
+      toast.success('Modal focused');
     }
 
     const keyDownHandler = (event: KeyboardEvent) => {
@@ -28,7 +27,6 @@ const BaseModal = ({ isOpen, onClose, children }: BaseModalProps) => {
       document.removeEventListener('keydown', keyDownHandler);
     };
   }, [onClose]);
-
 
   return (
     <AnimatePresence>

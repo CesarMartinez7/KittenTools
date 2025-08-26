@@ -4,8 +4,8 @@ import './App.css';
 import { AnimatePresence, motion } from 'motion/react';
 import { Suspense } from 'react';
 import { Toaster } from 'react-hot-toast';
-import { AppClientRouteLazy } from './pages/lazy-pages.tsx';
 import AppClient from './pages/client/page.tsx';
+import { AppClientRouteLazy } from './pages/lazy-pages.tsx';
 
 const LoadingElement = () => (
   <div className="h-screen w-screen flex justify-center items-center backdrop-blur-xl flex-col">
@@ -31,17 +31,17 @@ ReactDOM.createRoot(root).render(
 
     <div className="z-[777] relative">
       <Router>
-          <Routes>
-            <Route index path="/" element={<AppClient/>} />
-            <Route
-              path="*"
-              element={
-                <div className="h-screen w-screen grid place-content-center">
-                  No deberías estar aquí
-                </div>
-              }
-            />
-          </Routes>
+        <Routes>
+          <Route index path="/" element={<AppClient />} />
+          <Route
+            path="*"
+            element={
+              <div className="h-screen w-screen grid place-content-center">
+                No deberías estar aquí
+              </div>
+            }
+          />
+        </Routes>
       </Router>
     </div>
   </div>,

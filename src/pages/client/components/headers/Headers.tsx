@@ -3,6 +3,7 @@ import type React from 'react';
 import { useCallback, useMemo, useState } from 'react';
 import { useRequestStore } from '../../stores/request.store';
 import { useEnviromentStore } from '../enviroment/store.enviroment';
+import './header.css';
 
 type HeaderInputProps = {
   value: string;
@@ -76,6 +77,18 @@ const ColoredInput: React.FC<HeaderInputProps> = ({
     [value, formatValueWithColors],
   );
 
+  const onFocus = () => {
+    setIsFocused(true);
+  };
+
+  const onChangeComp = (any) => {
+    onChange(e.target.value);
+  };
+
+  const onBlur = () => {
+    setIsFocused(false);
+  };
+
   // Mostrar el texto coloreado solo cuando no está enfocado
   if (!isFocused && value && value.includes('{{')) {
     return (
@@ -84,17 +97,17 @@ const ColoredInput: React.FC<HeaderInputProps> = ({
           type="text"
           placeholder={placeholder}
           value={value || ''}
-          onChange={(e) => onChange(e.target.value)}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
-          className="p-1 rounded bg-zinc-800 text-transparent outline-none placeholder:text-zinc-500 w-full relative z-10 caret-white"
+          onChange={onChangeComp}
+          onFocus={onFocus}
+          onBlur={onBlur}
+          className="input- absolute text-transparent inset-0"
         />
-        <div className="absolute inset-0 pointer-events-none p-2 overflow-hidden whitespace-nowrap z-0">
+        <div className="input-table">
           {formattedParts.map((part, index) => (
             <span
               key={index}
               style={part.isVariable ? { color: part.color } : {}}
-              className={`${part.isVariable ? 'bg-zinc-700 px-1 rounded' : ''} text-zinc-200`}
+              className={`${part.isVariable ? '' : ''} text-zinc-200`}
             >
               {part.text}
             </span>
@@ -181,8 +194,8 @@ export const HeadersAddRequest: React.FC<HeadersAddRequestProps> = () => {
 
   return (
     <div className="p-4">
-      <table className="min-w-full divide-y divide-zinc-700 border-collapse">
-        <thead className="bg-zinc-900">
+      <table className="min-w-full divide-y border-gray-200 dark:border-zinc-700  border-collapse text-gray-600">
+        <thead className="dark:bg-zinc-900 bg-gray-200 text-gray-700">
           <tr>
             <th className="px-3 py-2 text-left text-xs font-medium text-zinc-400 uppercase tracking-wider border-b border-zinc-700">
               Cabecera
@@ -195,19 +208,21 @@ export const HeadersAddRequest: React.FC<HeadersAddRequestProps> = () => {
             </th>
           </tr>
         </thead>
-        <tbody className="bg-zinc-800 divide-y divide-zinc-700">
+        <tbody className=" bg-g dark:bg-zinc-800 divide-y divide-gray-200 dark:divide-zinc-700">
           {displayedHeaders.map((header, index) => (
-            <tr key={index} className="">
-              <td className="px-3 py- whitespace-nowrap">
+            <tr key={index}>
+              <td className="px-3  whitespace-nowrap">
                 <input
                   type="text"
                   placeholder="Key"
                   value={header.key || ''}
-                  onChange={(e) => handleInputChange(index, 'key', e.target.value)}
-                  className=" p-1 w-full  bg-gray-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-200 outline-none placeholder:text-zinc-500 border border-transparent focus:border-zinc-500 transition-colors"
+                  onChange={(e) =>
+                    handleInputChange(index, 'key', e.target.value)
+                  }
+                  className="input-table"
                 />
               </td>
-              <td className="px-3 py- whitespace-nowrap">
+              <td className="px-3  whitespace-nowrap">
                 <ColoredInput
                   value={header.value || ''}
                   onChange={(value) => handleInputChange(index, 'value', value)}

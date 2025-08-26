@@ -1,9 +1,9 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
+import alien from '@iconify-icons/tabler/alien';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useMemo, useState, useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { JsonNode } from '../../../../ui/formatter-JSON/jsonnode.';
-import alien from '@iconify-icons/tabler/alien';
 import TableData from '../../../../ui/Table';
 import XmlNode from '../../../../ui/xml-node/xmlnode';
 import { useRequestStore } from '../../stores/request.store';
@@ -44,7 +44,7 @@ interface ResponseTypes {
   timeResponse: number | string;
   typeResponse: string;
   headersResponse: any;
-  setTypeResponse: React.Dispatch<React.SetStateAction<any>>
+  setTypeResponse: React.Dispatch<React.SetStateAction<any>>;
 }
 
 export default function ResponsesTypesComponent({
@@ -53,7 +53,7 @@ export default function ResponsesTypesComponent({
   timeResponse,
   data,
   typeResponse,
-  setTypeResponse
+  setTypeResponse,
 }: ResponseTypes) {
   const { listTabs, currentTabId } = useRequestStore();
 
@@ -78,7 +78,11 @@ export default function ResponsesTypesComponent({
 
   const parsedData = useMemo(() => {
     try {
-      if (typeof data === 'string' && (typeResponse.toLowerCase().includes('json') || activeResponseType === 'JSON')) {
+      if (
+        typeof data === 'string' &&
+        (typeResponse.toLowerCase().includes('json') ||
+          activeResponseType === 'JSON')
+      ) {
         return JSON.parse(data);
       }
       return data;
@@ -89,7 +93,8 @@ export default function ResponsesTypesComponent({
 
   const size = useMemo(() => {
     try {
-      const sizeInKB = new TextEncoder().encode(JSON.stringify(data)).length / 1024;
+      const sizeInKB =
+        new TextEncoder().encode(JSON.stringify(data)).length / 1024;
       return sizeInKB.toFixed(2) + ' KB';
     } catch (e) {
       return '0.00 kb';
@@ -154,10 +159,14 @@ export default function ResponsesTypesComponent({
           if (xmlDoc.getElementsByTagName('parsererror').length > 0) {
             throw new Error('XML inválido');
           }
-          return <XmlNode node={xmlDoc.documentElement} />;
+          return (
+            <div>
+              <XmlNode node={xmlDoc.documentEldement} />
+            </div>
+          );
         } catch (e) {
           return (
-            <div className="text-red-400 absolute inset-0 backdrop-blur-3xl text-center grid place-content-center gap-2 overflow-hidden rounded-xl">
+            <div className="text-red-400 absolute inset-0 backdrop-blur-3xl text-center grid place-content-center gap-2 overflow-y-scroll rounded-xl text-xs max-h-44">
               <Icon
                 className="mx-auto text-zinc-500"
                 icon={alien}
@@ -179,11 +188,19 @@ export default function ResponsesTypesComponent({
           );
         }
       case 'html':
-        return <pre className="text-xs whitespace-pre-wrap text-gray-500 dark:text-zinc-200">{JSON.stringify(data)}</pre>;
+        return (
+          <pre className="text-xs whitespace-pre-wrap text-gray-500 dark:text-zinc-200">
+            {JSON.stringify(data)}
+          </pre>
+        );
       case 'base64':
         try {
           const base64Content = btoa(data);
-          return <pre className="text-xs break-all text-gray-700">{base64Content}</pre>;
+          return (
+            <pre className="text-xs break-all text-gray-700">
+              {base64Content}
+            </pre>
+          );
         } catch (e) {
           return <p className="text-red-400">Error al codificar a Base64.</p>;
         }
@@ -214,11 +231,8 @@ export default function ResponsesTypesComponent({
                 onClick={() => setActiveTab(tab)}
               />
             ))}
-            
           </div>
           <div className="flex items-center gap-2 mr-4 text-zinc-300 text-xs">
-
-            
             <span
               className={`text-xs font-bold px-1 rounded ${getStatusCodeClass(statusCode)}`}
             >
@@ -237,7 +251,10 @@ export default function ResponsesTypesComponent({
                   className="inline-flex justify-center w-full rounded-md border border-gray-300 dark:border-zinc-700 shadow-sm px-4 py-1 bg-white dark:bg-zinc-900 text-sm font-medium text-gray-700 dark:text-zinc-200 hover:bg-gray-50 dark:hover:bg-zinc-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
                   {activeResponseType}
-                  <Icon icon="tabler:chevron-down" className="-mr-1 ml-2 h-5 w-5" />
+                  <Icon
+                    icon="tabler:chevron-down"
+                    className="-mr-1 ml-2 h-5 w-5"
+                  />
                 </button>
                 <AnimatePresence>
                   {showResponseMenu && (
@@ -248,7 +265,11 @@ export default function ResponsesTypesComponent({
                       exit={{ opacity: 0, y: -10 }}
                       transition={{ duration: 0.2 }}
                     >
-                      <div className="py-1" role="menu" aria-orientation="vertical">
+                      <div
+                        className="py-1"
+                        role="menu"
+                        aria-orientation="vertical"
+                      >
                         {responseViewTypes.map((type) => (
                           <button
                             key={type}

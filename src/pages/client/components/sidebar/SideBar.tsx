@@ -1,18 +1,15 @@
+import { Icon } from '@iconify/react/dist/iconify.js';
 import { AnimatePresence, motion } from 'framer-motion';
 import { nanoid } from 'nanoid';
-import { useState } from 'react';
 import type React from 'react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
-import LazyListPerform from '../../../../ui/LazyListPerform';
 import ToolTipButton from '../../../../ui/tooltip/TooltipButton';
-import type { Collection, CollectionItem } from '../../db';
+import type { Collection } from '../../db';
 import { useRequestStore } from '../../stores/request.store';
 import type { SavedRequestsSidebarProps } from '../../types/types';
 import { useEnviromentStore } from '../enviroment/store.enviroment';
 import ItemNode from '../itemnode/item-node';
-import { Icon } from '@iconify/react/dist/iconify.js';
-import { BaseModalLazy } from '../../../../ui/lazy-components';
 
 // Componente ResizableSidebar
 interface ResizableSidebarProps {
@@ -100,7 +97,6 @@ export const ResizableSidebar: React.FC<ResizableSidebarProps> = ({
   );
 };
 
-
 // 🚀 Componente de modal Base para el sidebar
 interface ModalProps {
   isOpen: boolean;
@@ -116,7 +112,10 @@ const SidebarModal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
       className="absolute inset-0 z-50 flex items-center justify-center bg-zinc-950/70 backdrop-blur-sm"
       onClick={onClose}
     >
-      <div className="w-96 rounded-lg border border-zinc-700 bg-zinc-900 p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="w-96 rounded-lg border border-zinc-700 bg-zinc-900 p-6 shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
         {children}
       </div>
     </div>
@@ -130,7 +129,12 @@ interface RenameModalProps {
   initialName: string;
   onRename: (newName: string) => void;
 }
-const RenameModal: React.FC<RenameModalProps> = ({ isOpen, onClose, initialName, onRename }) => {
+const RenameModal: React.FC<RenameModalProps> = ({
+  isOpen,
+  onClose,
+  initialName,
+  onRename,
+}) => {
   const [newName, setNewName] = useState(initialName);
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -176,10 +180,17 @@ interface DeleteModalProps {
   itemName: string;
   onDelete: () => void;
 }
-const DeleteModal: React.FC<DeleteModalProps> = ({ isOpen, onClose, itemName, onDelete }) => (
+const DeleteModal: React.FC<DeleteModalProps> = ({
+  isOpen,
+  onClose,
+  itemName,
+  onDelete,
+}) => (
   <SidebarModal isOpen={isOpen} onClose={onClose}>
     <h3 className="mb-2 text-xl font-bold text-white">Confirmar eliminación</h3>
-    <p className="text-zinc-400">¿Estás seguro de que quieres eliminar "{itemName}"?</p>
+    <p className="text-zinc-400">
+      ¿Estás seguro de que quieres eliminar "{itemName}"?
+    </p>
     <div className="mt-6 flex justify-end space-x-2">
       <button
         onClick={onClose}
@@ -204,7 +215,13 @@ interface NewItemModalProps {
   label: string;
   onSubmit: (name: string) => void;
 }
-const NewItemModal: React.FC<NewItemModalProps> = ({ isOpen, onClose, title, label, onSubmit }) => {
+const NewItemModal: React.FC<NewItemModalProps> = ({
+  isOpen,
+  onClose,
+  title,
+  label,
+  onSubmit,
+}) => {
   const [name, setName] = useState('');
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -284,14 +301,9 @@ const ExportModal = ({ isOpen, onClose, onExport }) => {
   );
 };
 
-
 export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
-  const {
-    collections,
-    addCollection,
-    importCollections,
-    exportCollections,
-  } = useRequestStore();
+  const { collections, addCollection, importCollections, exportCollections } =
+    useRequestStore();
 
   const enviromentList = useEnviromentStore((state) => state.listEntorno);
   const setNameEntornoActual = useEnviromentStore(
@@ -312,12 +324,12 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
     };
     addCollection(newCollection);
   };
-  
+
   const handleExport = (collectionId: string) => {
-      toast.success(collectionId)
-      exportCollections(collectionId);
-      setShowExportModal(false);
-  }
+    toast.success(collectionId);
+    exportCollections(collectionId);
+    setShowExportModal(false);
+  };
 
   return (
     <ResizableSidebar minWidth={100} maxWidth={800} initialWidth={470}>
@@ -334,7 +346,11 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
           >
             <div className="flex flex-row gap-2 mb-6 justify-between">
               <div>
-                <ToolTipButton ariaText='Nueva' tooltipText='Añadir coleccion, request, enviroment' onClick={handleAddCollection}>
+                <ToolTipButton
+                  ariaText="Nueva"
+                  tooltipText="Añadir coleccion, request, enviroment"
+                  onClick={handleAddCollection}
+                >
                   Nueva
                 </ToolTipButton>
                 {/* <button
@@ -479,8 +495,6 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
         onClose={() => setShowExportModal(false)}
         onExport={handleExport}
       />
-
-
     </ResizableSidebar>
   );
 }

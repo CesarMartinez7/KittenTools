@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import Modal from './modal';
+import type React from 'react';
+import { useState } from 'react';
 import { BaseModalLazy } from '../../../../../ui/lazy-components';
+import Modal from './modal';
 
 interface NewItemModalProps {
   isOpen: boolean;
@@ -10,7 +11,13 @@ interface NewItemModalProps {
   onSubmit: (name: string) => void;
 }
 
-const NewItemModal: React.FC<NewItemModalProps> = ({ isOpen, onClose, title, label, onSubmit }) => {
+const NewItemModal: React.FC<NewItemModalProps> = ({
+  isOpen,
+  onClose,
+  title,
+  label,
+  onSubmit,
+}) => {
   const [name, setName] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {

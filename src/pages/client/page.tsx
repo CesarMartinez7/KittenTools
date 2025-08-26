@@ -3,6 +3,7 @@ import { Icon } from '@iconify/react';
 import arrowsMaximize from '@iconify-icons/tabler/arrows-maximize';
 import arrowsMinimize from '@iconify-icons/tabler/arrows-minimize';
 import chevronRight from '@iconify-icons/tabler/chevron-right';
+import substack from '@iconify-icons/tabler/subtask';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
@@ -18,12 +19,9 @@ import { SideBar } from './components/sidebar/SideBar';
 import RequestHook from './hooks/request.client';
 import { VariantsAnimation } from './mapper-ops';
 import RequestForm from './request.form';
-import { type RequestData, useRequestStore } from './stores/request.store';
 import ResponsePanel from './response-panel';
+import { type RequestData, useRequestStore } from './stores/request.store';
 import type { EventRequest } from './types/types';
-import substack from "@iconify-icons/tabler/subtask"
-
-
 
 // Componente Header
 // eslint-disable-next-line react/display-name
@@ -37,18 +35,14 @@ const Header = React.memo(
     toogleFullScreen: () => void;
     nombreEntorno: string | null;
   }) => {
-  
-    
-  const tauriApi = window.__TAURI_IPC__ ? true : false
+    const tauriApi = window.__TAURI_IPC__ ? true : false;
 
-  const isRunningInTauri = window.__TAURI_IPC__ !== undefined;
+    const isRunningInTauri = window.__TAURI_IPC__ !== undefined;
 
- useEffect(() => 
-    {
-      console.log(tauriApi)
-      console.log(isRunningInTauri)
-    }, []) 
-  
+    useEffect(() => {
+      console.log(tauriApi);
+      console.log(isRunningInTauri);
+    }, []);
 
     return (
       <div className="flex dark items-center text-xs gap-2 justify-end px-4 border-gray-100  dark:border-zinc-800 backdrop-blur-sm py-1">
@@ -73,7 +67,9 @@ const Header = React.memo(
             width={14}
           />
         </button>
-        <p className='dark:text-zinc-200 text-gray-600'>{!isRunningInTauri ? "Version Web" : "Version Tauri"}</p>
+        <p className="dark:text-zinc-200 text-gray-600">
+          {!isRunningInTauri ? 'Version Web' : 'Version Tauri'}
+        </p>
       </div>
     );
   },
@@ -95,14 +91,13 @@ const TabNavigation = React.memo(
       <div className="relative flex text-gray-800 dark:text-white border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
         {Opciones.map((opcion, index) => {
           const isSelected = index === selectedIdx;
-
           return (
             <button
               key={opcion.name}
               type="button"
               onClick={() => setMimeSelected(index)}
               className={`
-            relative btn btn-sm text-sm py-2 px-4 z-10
+            relative btn btn-sm text-sm py-2 px-4 z-10 max-w-fit truncate
             ${
               isSelected
                 ? 'font-semibold text-gray-800 dark:text-white dark:bg-zinc-950 bg-gray-200'
@@ -204,7 +199,9 @@ const ContentPanel = React.memo(
             <div className="flex-1 overflow-auto">
               {currentTab?.headers['Content-Type'] === 'none' ? (
                 <div className="h-full flex items-center justify-center text-gray-500 dark:text-zinc-500">
-                  <p className="text-lg font-medium">No body for this request.</p>
+                  <p className="text-lg font-medium">
+                    No body for this request.
+                  </p>
                 </div>
               ) : (
                 <CodeEditorLazy
@@ -218,7 +215,7 @@ const ContentPanel = React.memo(
               )}
             </div>
           </motion.div>
-    
+
           <motion.div
             key="query-params-section"
             variants={VariantsAnimation}
@@ -228,7 +225,7 @@ const ContentPanel = React.memo(
           >
             <AddQueryParam />
           </motion.div>
-    
+
           <motion.div
             key="headers-section"
             variants={VariantsAnimation}
@@ -238,7 +235,7 @@ const ContentPanel = React.memo(
           >
             <HeadersAddRequest />
           </motion.div>
-    
+
           <motion.div
             key="env-section"
             variants={VariantsAnimation}
@@ -246,16 +243,22 @@ const ContentPanel = React.memo(
           >
             <EnviromentComponent />
           </motion.div>
-    
+
           <motion.div
             key="scripts-section"
             variants={VariantsAnimation}
             className={`absolute inset-0 ${selectedIdx === 4 ? 'block' : 'hidden'}`}
           >
-            <ScriptComponent value={scriptsValues} setValue={setScriptsValues} />
-            <ScriptComponent value={scriptsValues} setValue={setScriptsValues} />
+            <ScriptComponent
+              value={scriptsValues}
+              setValue={setScriptsValues}
+            />
+            <ScriptComponent
+              value={scriptsValues}
+              setValue={setScriptsValues}
+            />
           </motion.div>
-    
+
           <motion.div
             key="auth-section"
             variants={VariantsAnimation}
@@ -268,7 +271,6 @@ const ContentPanel = React.memo(
         </div>
       );
     };
-    
 
     return (
       <div className="h-full bg-white/90 dark:bg-zinc-900/80 p-4 border-gray-200 dark:border-zinc-800 relative flex flex-col shadow-lg overflow-hidden">
@@ -277,7 +279,6 @@ const ContentPanel = React.memo(
     );
   },
 );
-
 
 export default function AppClient() {
   const {
@@ -299,10 +300,7 @@ export default function AppClient() {
   const [showMethods, setShowMethods] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-
-  const [newShow, setNewShow] = useState(true)
-
-
+  const [newShow, setNewShow] = useState(true);
 
   useEffect(() => {
     const handlerSendWwindos = (e: KeyboardEvent) => {
@@ -386,8 +384,14 @@ export default function AppClient() {
 
   const Opciones = [
     { name: 'Cuerpo de Petición', icon: !!currentTab?.body },
-    { name: 'Parámetros', icon: !!currentTab?.query && Object.keys(currentTab.query).length > 0 },
-    { name: 'Cabeceras', icon: !!currentTab?.headers && Object.keys(currentTab.headers).length > 0 },
+    {
+      name: 'Parámetros',
+      icon: !!currentTab?.query && Object.keys(currentTab.query).length > 0,
+    },
+    {
+      name: 'Cabeceras',
+      icon: !!currentTab?.headers && Object.keys(currentTab.headers).length > 0,
+    },
     { name: 'Entorno', icon: !!listEntornos && listEntornos.length > 0 },
     // { name: 'Scripts', icon: false }, // No implementado aún
     // { name: 'Auth', icon: false }, // No implementado aún
@@ -435,29 +439,33 @@ export default function AppClient() {
     }
   };
 
-
-  const NewMappers = [ {name: "HTTP", icon: substack, method: () => console.log("dsfdsf")} ,{name: "Enviroment", icon: substack, method: () => console.log("dsfdsf")}, {name: "Coleccion", icon: substack,  method: () => console.log("dsfdsf")} ]
+  const NewMappers = [
+    { name: 'HTTP', icon: substack, method: () => console.log('dsfdsf') },
+    { name: 'Enviroment', icon: substack, method: () => console.log('dsfdsf') },
+    { name: 'Coleccion', icon: substack, method: () => console.log('dsfdsf') },
+  ];
 
   return (
     <div className="min-h-screen flex overflow-hidden h-screen text-xs relative text-gray-600 dark:text-zinc-200">
-
-
       <AnimatePresence>
-        
-          <BaseModalLazy isOpen={newShow} onClose={() => setNewShow(false)}>
-            <div className='bg-white p-2 border-gray-800 text-gray-600 dark:text-zinc-200'>
-              <p>Opciones</p>
-                <div className='flex-row flex gap-2'>
-                  {NewMappers.map((ne) => (
-                    <button onClick={ne.method} className='p-4 hover:bg-gray-200 rounded-2xl flex justify-center items-center min-w-2xs flex-col' title={ne.name} key={ne.name}>
-                      <Icon  icon={ne.icon} height={20} width={20} />
-                      {ne.name}
-                    </button>
-                  ) )}
-                </div>
+        <BaseModalLazy isOpen={newShow} onClose={() => setNewShow(false)}>
+          <div className="bg-white p-2 dark:bg-zinc-900 border-gray-800 text-gray-600 dark:text-zinc-200 ">
+            <p>Opciones</p>
+            <div className="flex-row flex gap-2">
+              {NewMappers.map((ne) => (
+                <button
+                  onClick={ne.method}
+                  className="p-4 hover:bg-gray-200 dark:hover:bg-zinc-950 transition-all duration-300 rounded-2xl flex justify-center items-center  flex-col"
+                  title={ne.name}
+                  key={ne.name}
+                >
+                  <Icon icon={ne.icon} height={20} width={20} />
+                  {ne.name}
+                </button>
+              ))}
             </div>
-          </BaseModalLazy>
-        
+          </div>
+        </BaseModalLazy>
       </AnimatePresence>
 
       <div className="dark:bg-zinc-900 border-t dark:border-zinc-800 border-gray-200 bg-white text-gray-600 w-screen bottom-0 fixed z-50">
@@ -568,18 +576,18 @@ export default function AppClient() {
         </div>
 
         {/* Paneles de solicitud y respuesta */}
-              <RequestForm
-                refForm={refForm}
-                onSubmit={handleRequestSubmit}
-                selectedMethod={currentTab?.method || 'GET'}
-                handleClickShowMethod={handleClickShowMethod}
-                showMethods={showMethods}
-                setSelectedMethod={handleMethodChange}
-                setShowMethods={setShowMethods}
-                endpointUrl={currentTab?.url || ''}
-                handlerChangeInputRequest={handleUrlChange}
-                isLoading={isLoading}
-              />
+        <RequestForm
+          refForm={refForm}
+          onSubmit={handleRequestSubmit}
+          selectedMethod={currentTab?.method || 'GET'}
+          handleClickShowMethod={handleClickShowMethod}
+          showMethods={showMethods}
+          setSelectedMethod={handleMethodChange}
+          setShowMethods={setShowMethods}
+          endpointUrl={currentTab?.url || ''}
+          handlerChangeInputRequest={handleUrlChange}
+          isLoading={isLoading}
+        />
         <PanelGroup direction="horizontal" className="flex-grow">
           {/* Panel de solicitud */}
           <Panel defaultSize={50} minSize={20} className="h-full">

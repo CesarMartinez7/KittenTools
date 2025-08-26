@@ -1,11 +1,13 @@
+
 import { Icon } from '@iconify/react';
 import chevronDown from '@iconify-icons/tabler/chevron-down';
 import chevronRight from '@iconify-icons/tabler/chevron-right';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import type React from 'react';
 import { useState } from 'react';
 import LazyListItem from '../LazyListPerform.tsx';
 import FormatDataTypeLabel from './formatlabel.tsx';
+import { useIsImageUrl } from './hooks/useisImageUrl.tsx';
 
 type JsonValue =
   | string
@@ -34,10 +36,14 @@ export const JsonNode: React.FC<JsonNodeProps> = ({
   depth = 2,
 }) => {
   const [collapsed, setCollapsed] = useState<boolean>(false);
+  const [isHovered, setIsHovered] = useState<boolean>(false);
   const isObject = typeof data === 'object' && data !== null;
   const isArray = Array.isArray(data);
-
+  const isString = typeof data === 'string';
   const toggle = () => setCollapsed((prev) => !prev);
+
+  // Usa el hook para validar si la URL es una imagen
+  const isImageUrl = useIsImageUrl(isString ? String(data) : '');
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -77,8 +83,8 @@ export const JsonNode: React.FC<JsonNodeProps> = ({
                 ? `[`
                 : `[...]`
               : !collapsed && !isArray
-                ? `{`
-                : `{...}`}
+              ? `{`
+              : `{...}`}
           </span>
           {!collapsed && (
             <motion.div
@@ -95,6 +101,8 @@ export const JsonNode: React.FC<JsonNodeProps> = ({
                         key={i}
                         data={item}
                         depth={depth}
+                        isChange={true}
+                        isInterface={true}
                       />
                     </LazyListItem>
                   ))
@@ -106,6 +114,8 @@ export const JsonNode: React.FC<JsonNodeProps> = ({
                         name={key}
                         data={val}
                         depth={depth}
+                        isChange={true}
+                        isInterface={true}
                       />
                     </LazyListItem>
                   ))}
@@ -117,7 +127,34 @@ export const JsonNode: React.FC<JsonNodeProps> = ({
         </>
       ) : (
         <>
-          <FormatDataTypeLabel data={data} />
+          {isImageUrl ? (
+            <span
+              className="relative text-sky-500 underline cursor-pointer"
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+            >
+              &quot;{data}&quot;
+              <AnimatePresence>
+                {isHovered && (
+                  <motion.div
+                    className="absolute z-10 p-2 bg-gray-900/90 backdrop-blur-md rounded-lg shadow-xl"
+                    style={{ top: '1rem', left: '13rem' }}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                  >
+                    <img
+                      src={String(data)}
+                      alt="Preview"
+                      className="w-24 h-24 object-cover rounded-md"
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </span>
+          ) : (
+            <FormatDataTypeLabel data={data} />
+          )}
         </>
       )}
     </motion.div>

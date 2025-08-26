@@ -49,7 +49,6 @@ const CodeEditor = ({
     [entornoActual],
   );
 
-
   const { JsonSchema, minifyJson } = useJsonHook({
     code: code,
     setCode: setCode,
@@ -206,8 +205,8 @@ const CodeEditor = ({
       lineNumbersRef.current!.scrollTop = scrollTop;
       highlightRef.current!.scrollTop = scrollTop;
       highlightRef.current!.scrollLeft = scrollLeft;
-      console.log(lineNumbersRef.current.scrollTop)
-      console.log(highlightRef.current.scrollTop)
+      console.log(lineNumbersRef.current.scrollTop);
+      console.log(highlightRef.current.scrollTop);
     });
   };
 
@@ -359,45 +358,48 @@ const CodeEditor = ({
                 </button>
               </div>
               <AnimatePresence>
-              {isOpenBar && (
+                {isOpenBar && (
+                  // Entradas de remplazo
 
-                // Entradas de remplazo
+                  <motion.div
+                    className="space-y-2"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                  >
+                    <div className="flex">
+                      <input
+                        ref={inputRefTextOld}
+                        type="text"
+                        autoFocus
+                        className="input-base-editor text-xs w-40 px-2 py-1"
+                        placeholder="Valor a buscar"
+                      />
+                      <input
+                        ref={inputRefTextNew}
+                        type="text"
+                        className="input-base-editor text-xs w-40 px-2 py-1"
+                        placeholder="Valor a Reemplazar"
+                      />
+                    </div>
 
-                <motion.div className='space-y-2' initial={{opacity: 0}} animate={{opacity: 1}} >
-                  <div className="flex">
-                    <input
-                      ref={inputRefTextOld}
-                      type="text"
-                      autoFocus
-                      className="input-base-editor text-xs w-40 px-2 py-1"
-                      placeholder="Valor a buscar"
-                    />
-                    <input
-                      ref={inputRefTextNew}
-                      type="text"
-                      className="input-base-editor text-xs w-40 px-2 py-1"
-                      placeholder="Valor a Reemplazar"
-                    />
-                  </div>
+                    {/* Botones de busqueda */}
 
-                  {/* Botones de busqueda */}
-
-                  <div className="flex h-6 gap-2">
-                    <button
-                      className="bg-gradient-to-r flex-1 from-green-400 to-green-500 p-1  text-xs truncate text-white"
-                      onClick={handleCLickReplaceTextFirst}
-                    >
-                      Reemplazar primero
-                    </button>
-                    <button
-                      className="bg-gradient-to-r flex-1 from-sky-400 to-sky-700 p-1 rounded-md text-xs truncate text-white"
-                      onClick={handleCLickReplaceText}
-                    >
-                      Reemplazar todo
-                    </button>
-                  </div>
-                </motion.div>
-              )}
+                    <div className="flex h-6 gap-2">
+                      <button
+                        className="bg-gradient-to-r flex-1 from-green-400 to-green-500 p-1  text-xs truncate text-white"
+                        onClick={handleCLickReplaceTextFirst}
+                      >
+                        Reemplazar primero
+                      </button>
+                      <button
+                        className="bg-gradient-to-r flex-1 from-sky-400 to-sky-700 p-1 rounded-md text-xs truncate text-white"
+                        onClick={handleCLickReplaceText}
+                      >
+                        Reemplazar todo
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
               </AnimatePresence>
             </motion.div>
           )}
