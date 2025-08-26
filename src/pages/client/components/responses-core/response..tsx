@@ -133,7 +133,7 @@ export default function ResponsesTypesComponent({
           return (
             <iframe
               srcDoc={data}
-              className="w-full h-full border-none text-wrap"
+              className="w-full h-full border-none text-wrap bg-black"
               title="Preview"
             />
           );
@@ -197,7 +197,7 @@ export default function ResponsesTypesComponent({
         try {
           const base64Content = btoa(data);
           return (
-            <pre className="text-xs break-all text-gray-700">
+            <pre className="text-xs break-all text-gray-700 dark:text-gray-200">
               {base64Content}
             </pre>
           );

@@ -18,7 +18,7 @@ const ResponsePanel = ({
             <span className="svg-spinners--90-ring-with-bg block"></span>
           </div>
         ) : (
-          <div className="flex-1 overflow-hiddenm max-w-5xl">
+          <div className="flex-1 overflow-hidden max-w-5xl">
             <ResponsesTypesComponent
               setTypeResponse={setTypeResponse}
               typeResponse={typeResponse}
