@@ -241,7 +241,9 @@ export default function ResponsesTypesComponent({
             <span className="text-xs dark:bg-zinc-800/90 bg-gray-200 text-gray-600 dark:text-zinc-200 py-0.5 px-2 rounded text-r whitespace-nowrap">
               {currentTab?.response?.time || timeResponse} ms
             </span>
-            <span className="text-gray-600 dark:text-zinc-400 ">{size}</span>
+            <span className="text-gray-600 dark:text-zinc-400 truncate ">
+              {size}
+            </span>
 
             {activeTab === 'Respuesta' && (
               <div className="relative inline-block text-left ">

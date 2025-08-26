@@ -1,6 +1,6 @@
 // src/components/request/requestForm.tsx
 import { AnimatePresence, motion } from 'framer-motion';
-import { useCallback, useMemo, useState, useEffect } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useFormattedUrlStore } from './components/addqueryparams/addQueryParams';
 import { useEnviromentStore } from './components/enviroment/store.enviroment';
@@ -117,7 +117,14 @@ const RequestForm = ({
         newQuery[key] = value;
       });
       // Verifica si los parámetros extraídos son diferentes a los del store antes de actualizar
-      if (JSON.stringify(newQuery) !== JSON.stringify(useRequestStore.getState().listTabs.find(tab => tab.id === currentTabId)?.query)) {
+      if (
+        JSON.stringify(newQuery) !==
+        JSON.stringify(
+          useRequestStore
+            .getState()
+            .listTabs.find((tab) => tab.id === currentTabId)?.query,
+        )
+      ) {
         updateTab(currentTabId, { query: newQuery });
       }
     } catch (error) {

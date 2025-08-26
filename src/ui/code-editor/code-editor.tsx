@@ -104,15 +104,15 @@ const CodeEditor = ({
 
   const [caretCoords, setCaretCoords] = useState<{ top: number; left: number } | null>(null);
 
+  const caretCoord = useMemo(() => null, [])
+
 const handleCaretPosition = () => {
   if (textareaRef.current) {
     const pos = textareaRef.current.selectionStart || 0;
     const coords = getCaretCoordinates(textareaRef.current, pos);
     setCaretCoords(coords);
-    console.log("Caret coords:", coords);
   }
 };
-
 
   const lineCount = useMemo(() => {
     if (code.length > 0) {
@@ -513,7 +513,7 @@ const handleCaretPosition = () => {
               </ul>
             )} */}
             <LazyListItem>
-            <div className=' z-20 absolute' style={{top: caretCoords?.top, left: caretCoords?.left}} >
+            <div className=' z-20 absolute' style={{top: caretCoords?.top + 20, left: caretCoords?.left }} >
             {autocompleteSuggestions.length > 0 && (
               <ul className=" bg-white dark:bg-zinc-800/40 shadow-lg z-10 w-53 max-h-40 overflow-y-auto">
                 {autocompleteSuggestions.map((suggestion, index) => (

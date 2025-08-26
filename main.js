@@ -9,7 +9,6 @@ const dataFilePath = path.join(app.getPath('userData'), 'datos.json');
 function guardarJSON(data) {
   try {
     fs.writeFileSync(dataFilePath, JSON.stringify(data, null, 2), 'utf-8');
-    console.log('Datos guardados');
   } catch (err) {
     console.error('Error guardando datos:', err);
   }

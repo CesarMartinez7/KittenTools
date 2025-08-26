@@ -36,8 +36,6 @@ const ScriptComponent: React.FC<ScriptComponentProps> = ({
       const script = new Function(value);
       const executionResult = script();
       setResult(String(executionResult));
-      console.log('Script executed:', value);
-      console.log('Script result:', executionResult);
     } catch (error) {
       setResult(`Error: ${error}`);
       console.error('Script error:', error);

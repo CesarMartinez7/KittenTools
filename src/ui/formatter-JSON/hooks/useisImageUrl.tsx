@@ -1,6 +1,12 @@
 import { useEffect, useState } from 'react';
 
-const imageMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml', 'image/webp'];
+const imageMimeTypes = [
+  'image/jpeg',
+  'image/png',
+  'image/gif',
+  'image/svg+xml',
+  'image/webp',
+];
 
 export const useIsImageUrl = (url: string) => {
   const [isImage, setIsImage] = useState(false);

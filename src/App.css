@@ -576,7 +576,7 @@ button:disabled {
 
 @media (prefers-color-scheme: light) {
   * {
-   scrollbar-color: #787171 #989898 ;
+   scrollbar-color: #929090 #d9d9d9 ;
   }
 }
 

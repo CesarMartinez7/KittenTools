@@ -1,10 +1,10 @@
 // src/components/addqueryparams/addQueryParams.tsx
 
+import { Icon } from '@iconify/react/dist/iconify.js';
+import { motion } from 'framer-motion';
 import { useCallback, useMemo } from 'react';
 import { toast } from 'react-hot-toast';
 import { create } from 'zustand';
-import { Icon } from '@iconify/react/dist/iconify.js';
-import { motion } from 'framer-motion';
 import { useRequestStore } from '../../stores/request.store';
 
 // Define el estado y las acciones del mini-store

@@ -8,7 +8,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
-import { BaseModalLazy, CodeEditorLazy } from '../../ui/lazy-components';
+import CodeEditor from '../../ui/code-editor/code-editor';
+import { BaseModalLazy } from '../../ui/lazy-components';
 import AddQueryParam from './components/addqueryparams/addQueryParams';
 import EnviromentComponent from './components/enviroment/enviroment.component';
 import { useEnviromentStore } from './components/enviroment/store.enviroment';
@@ -22,6 +23,14 @@ import RequestForm from './request.form';
 import ResponsePanel from './response-panel';
 import { type RequestData, useRequestStore } from './stores/request.store';
 import type { EventRequest } from './types/types';
+
+interface ContentTypeProps {
+  selectedIdx: number;
+  currentTab: RequestData | undefined;
+  updateTab: (id: string, changes: Partial<RequestData>) => void;
+  scriptsValues: EventRequest;
+  setScriptsValues: React.Dispatch<React.SetStateAction<EventRequest>>;
+}
 
 // Componente Header
 // eslint-disable-next-line react/display-name
@@ -40,8 +49,7 @@ const Header = React.memo(
     const isRunningInTauri = window.__TAURI_IPC__ !== undefined;
 
     useEffect(() => {
-      console.log(tauriApi);
-      console.log(isRunningInTauri);
+      return null
     }, []);
 
     return (
@@ -125,13 +133,7 @@ const TabNavigation = React.memo(
   },
 );
 
-interface ContentTypeProps {
-  selectedIdx: number;
-  currentTab: RequestData | undefined;
-  updateTab: (id: string, changes: Partial<RequestData>) => void;
-  scriptsValues: EventRequest;
-  setScriptsValues: React.Dispatch<React.SetStateAction<EventRequest>>;
-}
+
 
 // eslint-disable-next-line react/display-name
 const ContentPanel = React.memo(
@@ -205,15 +207,14 @@ const ContentPanel = React.memo(
                 </div>
               ) : (
                 <>
-                <p>{JSON.stringify(currentTab?.body)}</p>
-                <CodeEditorLazy
-                  value={currentTab?.body}
-                  maxHeight="85vh"
-                  onChange={onCodeChange}
-                  language={currentTab?.headers['Content-Type'] || 'json'}
-                  height="73vh"
-                  minHeight="65vh"
-                />
+                  <CodeEditor
+                    value={currentTab?.body}
+                    maxHeight="85vh"
+                    onChange={onCodeChange}
+                    language={currentTab?.headers['Content-Type'] || 'json'}
+                    height="73vh"
+                    minHeight="65vh"
+                  />
                 </>
               )}
             </div>
@@ -298,6 +299,8 @@ export default function AppClient() {
   const listEntornos = useEnviromentStore((state) => state.listEntorno);
   const nombreEntorno = useEnviromentStore((state) => state.nameEntornoActual);
   const refForm = useRef<HTMLFormElement>(null);
+
+  
 
   const [isOpenSiderBar, setIsOpenSiderbar] = useState(true);
   const [showMethods, setShowMethods] = useState(false);
@@ -513,14 +516,14 @@ export default function AppClient() {
                       key={tab.id}
                       onClick={() => handleTabClick(tab)}
                       className={`
-                        relative px-4 py-2 cursor-pointer text-xs font-medium whitespace-nowrap transition-colors duration-200 flex-shrink-0 bg-white dark:bg-transparent border-gray-200
-                        border-r dark:border-zinc-700 last:border-r-0
-                        ${
-                          isActive
-                            ? 'dark:text-green-primary'
-                            : 'dark:text-zinc-400 dark:hover:text-zinc-900 text-gray-900'
-                        }
-                      `}
+                          relative px-4 py-2 cursor-pointer text-xs font-medium whitespace-nowrap transition-colors duration-200 flex-shrink-0 bg-white dark:bg-transparent border-gray-200
+                          border-r dark:border-zinc-700 last:border-r-0
+                          ${
+                            isActive
+                              ? 'dark:text-green-primary'
+                              : 'dark:text-zinc-400 dark:hover:text-zinc-900 text-gray-900'
+                          }
+                        `}
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0 }}
@@ -624,6 +627,7 @@ export default function AppClient() {
           </Panel>
         </PanelGroup>
       </div>
+
     </div>
   );
 }

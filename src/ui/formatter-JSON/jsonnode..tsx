@@ -1,4 +1,3 @@
-
 import { Icon } from '@iconify/react';
 import chevronDown from '@iconify-icons/tabler/chevron-down';
 import chevronRight from '@iconify-icons/tabler/chevron-right';
@@ -83,8 +82,8 @@ export const JsonNode: React.FC<JsonNodeProps> = ({
                 ? `[`
                 : `[...]`
               : !collapsed && !isArray
-              ? `{`
-              : `{...}`}
+                ? `{`
+                : `{...}`}
           </span>
           {!collapsed && (
             <motion.div

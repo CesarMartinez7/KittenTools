@@ -4,12 +4,13 @@ import { nanoid } from 'nanoid';
 import type React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
-import ToolTipButton from '../../../../ui/tooltip/TooltipButton';
 import type { Collection } from '../../db';
 import { useRequestStore } from '../../stores/request.store';
 import type { SavedRequestsSidebarProps } from '../../types/types';
 import { useEnviromentStore } from '../enviroment/store.enviroment';
 import ItemNode from '../itemnode/item-node';
+import SidebarModal from '../../modals/modal.template';
+import ToolTipButton from '../../../../ui/tooltip/TooltipButton';
 
 // Componente ResizableSidebar
 interface ResizableSidebarProps {
@@ -98,172 +99,11 @@ export const ResizableSidebar: React.FC<ResizableSidebarProps> = ({
 };
 
 // 🚀 Componente de modal Base para el sidebar
-interface ModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  children: React.ReactNode;
-}
 
-const SidebarModal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
-  if (!isOpen) return null;
-  return (
-    <div
-      // 🚀 Posicionamiento absoluto para confinarlo al sidebar
-      className="absolute inset-0 z-50 flex items-center justify-center bg-zinc-950/70 backdrop-blur-sm"
-      onClick={onClose}
-    >
-      <div
-        className="w-96 rounded-lg border border-zinc-700 bg-zinc-900 p-6 shadow-2xl"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {children}
-      </div>
-    </div>
-  );
-};
-
-// 🚀 Modales específicas
-interface RenameModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  initialName: string;
-  onRename: (newName: string) => void;
-}
-const RenameModal: React.FC<RenameModalProps> = ({
-  isOpen,
-  onClose,
-  initialName,
-  onRename,
-}) => {
-  const [newName, setNewName] = useState(initialName);
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (newName.trim()) {
-      onRename(newName.trim());
-      onClose();
-    }
-  };
-  return (
-    <SidebarModal isOpen={isOpen} onClose={onClose}>
-      <h3 className="mb-4 text-xl font-bold text-white">Renombrar</h3>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={newName}
-          onChange={(e) => setNewName(e.target.value)}
-          className="w-full rounded-md border border-zinc-700 bg-zinc-800 p-2 text-white outline-none focus:ring-2 focus:ring-green-primary"
-          autoFocus
-        />
-        <div className="mt-6 flex justify-end space-x-2">
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-md border border-zinc-700 px-4 py-2 font-semibold text-zinc-400 transition-colors hover:bg-zinc-800"
-          >
-            Cancelar
-          </button>
-          <button
-            type="submit"
-            className="rounded-md bg-green-primary px-4 py-2 font-semibold text-white transition-colors hover:bg-green-600"
-          >
-            Aceptar
-          </button>
-        </div>
-      </form>
-    </SidebarModal>
-  );
-};
-
-interface DeleteModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  itemName: string;
-  onDelete: () => void;
-}
-const DeleteModal: React.FC<DeleteModalProps> = ({
-  isOpen,
-  onClose,
-  itemName,
-  onDelete,
-}) => (
-  <SidebarModal isOpen={isOpen} onClose={onClose}>
-    <h3 className="mb-2 text-xl font-bold text-white">Confirmar eliminación</h3>
-    <p className="text-zinc-400">
-      ¿Estás seguro de que quieres eliminar "{itemName}"?
-    </p>
-    <div className="mt-6 flex justify-end space-x-2">
-      <button
-        onClick={onClose}
-        className="rounded-md border border-zinc-700 px-4 py-2 font-semibold text-zinc-400 transition-colors hover:bg-zinc-800"
-      >
-        Cancelar
-      </button>
-      <button
-        onClick={onDelete}
-        className="rounded-md bg-red-600 px-4 py-2 font-semibold text-white transition-colors hover:bg-red-700"
-      >
-        Eliminar
-      </button>
-    </div>
-  </SidebarModal>
-);
-
-interface NewItemModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  title: string;
-  label: string;
-  onSubmit: (name: string) => void;
-}
-const NewItemModal: React.FC<NewItemModalProps> = ({
-  isOpen,
-  onClose,
-  title,
-  label,
-  onSubmit,
-}) => {
-  const [name, setName] = useState('');
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (name.trim()) {
-      onSubmit(name.trim());
-      onClose();
-    }
-  };
-  return (
-    <SidebarModal isOpen={isOpen} onClose={onClose}>
-      <h3 className="mb-4 text-xl font-bold text-white">{title}</h3>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder={label}
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="w-full rounded-md border border-zinc-700 bg-zinc-800 p-2 text-white outline-none focus:ring-2 focus:ring-green-primary"
-          autoFocus
-        />
-        <div className="mt-6 flex justify-end space-x-2">
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-md border border-zinc-700 px-4 py-2 font-semibold text-zinc-400 transition-colors hover:bg-zinc-800"
-          >
-            Cancelar
-          </button>
-          <button
-            type="submit"
-            className="rounded-md bg-green-primary px-4 py-2 font-semibold text-white transition-colors hover:bg-green-600"
-          >
-            Crear
-          </button>
-        </div>
-      </form>
-    </SidebarModal>
-  );
-};
+// Remplazado ///✅
 
 // 🚀 Nuevo componente Modal de Exportación
-const ExportModal = ({ isOpen, onClose, onExport }) => {
+const ExportModal = ({ isOpen, onClose, onExport } : any) => {
   const collections = useRequestStore((state) => state.collections);
 
   if (!isOpen) return null;

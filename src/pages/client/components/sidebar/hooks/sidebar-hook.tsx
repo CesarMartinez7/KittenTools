@@ -65,8 +65,7 @@ export default function SidebarHook() {
       const newId = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
 
       // Actualizar estados
-      setParsed(parsedData);
-      console.log(parsedData?.info);
+      setParsed(parsedData); 
       setInformacionColeccion(parsedData?.info);
       setListColeccion((prev) => [
         ...prev,

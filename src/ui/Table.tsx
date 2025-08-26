@@ -71,7 +71,7 @@ export default function TableData({ data }: TableDataProps) {
       {!error ? (
         <div className="relative shadow-lg rounded-lg overflow-hidden">
           <table className="w-full text-xs text-left text-slate-700 dark:text-zinc-300">
-            <thead className="text-xs uppercase text-slate-600 dark:text-zinc-400 bg-slate-200 dark:bg-zinc-800 sticky top-0 shadow-sm z-10">
+            <thead className="text-xs uppercase text-slate-600 dark:text-zinc-400 bg-slate-200 dark:bg-zinc-800 sticky py-2 top-0 shadow-sm z-10">
               <tr>
                 {columnNames?.map((col, idx) => (
                   <th scope="col" key={idx} className="px-6 py-1 font-semibold">
@@ -90,7 +90,7 @@ export default function TableData({ data }: TableDataProps) {
                     {row.map((cell: any, cellIndex: number) => (
                       <td
                         key={`${rowIndex}-${cellIndex}`}
-                        className={`px-6 py-4 ${
+                        className={`px-6 py-2 ${
                           cellIndex === 0
                             ? 'font-medium text-slate-900 whitespace-nowrap dark:text-white'
                             : 'text-ellipsis'

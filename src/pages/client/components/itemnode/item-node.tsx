@@ -1,17 +1,15 @@
+// Refactorización del componente ItemNode.tsx
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { AnimatePresence, motion } from 'framer-motion';
 import type React from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import toast from 'react-hot-toast';
 import LazyListPerform from '../../../../ui/LazyListPerform';
 import { useRequestStore } from '../../stores/request.store';
-import DeleteModal from './component/delete.modal';
-import NewItemModal from './component/newitem.modal';
-// 🚀 Importamos los nuevos componentes de modal
-import RenameModal from './component/rename.modal';
 import type { ItemNodeProps } from './types';
+// 🚀 Importamos el nuevo store de Zustand
 
-// El componente ResizableSidebar se mantiene sin cambios, así que no lo incluimos para brevedad.
+import { useModalStore } from '../../modals/store.modal';
 
 const ItemNode: React.FC<ItemNodeProps> = ({
   data,
@@ -27,13 +25,17 @@ const ItemNode: React.FC<ItemNodeProps> = ({
     handleAddNewItem,
     handleAddNewFolder,
   } = useRequestStore();
+
+  // 🚀 Obtenemos las funciones para abrir las modales del store
+  const {
+    openRenameModal,
+    openDeleteModal,
+    openNewRequestModal,
+    openNewFolderModal,
+  } = useModalStore();
+
   const [collapsed, setCollapsed] = useState(true);
   const [showBar, setShowBar] = useState(false);
-  const [showRenameModal, setShowRenameModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showNewRequestModal, setShowNewRequestModal] = useState(false);
-  const [showNewFolderModal, setShowNewFolderModal] = useState(false);
-
   const nodeData = data;
   const isFolder = !!nodeData?.item;
   const indent = 1 * (level || 0);
@@ -112,18 +114,19 @@ const ItemNode: React.FC<ItemNodeProps> = ({
     }
   };
 
+  // 🚀 Las acciones llaman a las funciones del store
   const mapperFolder = [
-    { name: 'Renombrar', action: () => setShowRenameModal(true) },
+    { name: 'Renombrar', action: () => openRenameModal() },
     { name: 'Duplicar', action: handleClickDuplicar },
-    { name: 'Eliminar', action: () => setShowDeleteModal(true) },
-    { name: 'Nueva petición', action: () => setShowNewRequestModal(true) },
-    { name: 'Nueva carpeta', action: () => setShowNewFolderModal(true) },
+    { name: 'Eliminar', action: () => openDeleteModal() },
+    { name: 'Nueva petición', action: () => openNewRequestModal() },
+    { name: 'Nueva carpeta', action: () => openNewFolderModal() },
   ];
 
   const mapperRequest = [
-    { name: 'Renombrar', action: () => setShowRenameModal(true) },
+    { name: 'Renombrar', action: () => openRenameModal() },
     { name: 'Duplicar', action: handleClickDuplicar },
-    { name: 'Eliminar', action: () => setShowDeleteModal(true) },
+    { name: 'Eliminar', action: () => openDeleteModal() },
   ];
 
   return (
@@ -148,12 +151,12 @@ const ItemNode: React.FC<ItemNodeProps> = ({
                   level === 0
                     ? 'text-green-primary/85'
                     : level === 1
-                      ? 'text-green-primary'
-                      : level === 2
-                        ? 'text-green-300'
-                        : level === 3
-                          ? 'text-green-200'
-                          : 'text-green-100'
+                    ? 'text-green-primary'
+                    : level === 2
+                    ? 'text-green-300'
+                    : level === 3
+                    ? 'text-green-200'
+                    : 'text-green-100'
                 }`}
               />
             )}
@@ -220,36 +223,6 @@ const ItemNode: React.FC<ItemNodeProps> = ({
           </div>
         )}
       </div>
-
-      <RenameModal
-        isOpen={showRenameModal}
-        onClose={() => setShowRenameModal(false)}
-        initialName={getDisplayName()}
-        onRename={handleChangeName}
-      />
-
-      <DeleteModal
-        isOpen={showDeleteModal}
-        onClose={() => setShowDeleteModal(false)}
-        itemName={getDisplayName()}
-        onDelete={handleClickDelete}
-      />
-
-      <NewItemModal
-        isOpen={showNewRequestModal}
-        onClose={() => setShowNewRequestModal(false)}
-        title="Crear nueva petición"
-        label="Nombre de la petición"
-        onSubmit={handleNuevaPeticion}
-      />
-
-      <NewItemModal
-        isOpen={showNewFolderModal}
-        onClose={() => setShowNewFolderModal(false)}
-        title="Crear nueva carpeta"
-        label="Nombre de la carpeta"
-        onSubmit={handleNuevaCarpeta}
-      />
     </>
   );
 };
