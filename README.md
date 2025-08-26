@@ -1,6 +1,7 @@
 # <p align="center">Elisa </p>
-<p align="center"><a href="https://elisaland.vercel.app/">Elisa Web</a> </p>
-<p align="center"> <img src="./src/assets/images/elisa-client-0.0.3.png" alt="Elisa client preview" width="600"/> </p>
+<img src="./src/assets/images/elisa-client-0.0.3.png" alt="Elisa client preview" width="600"/> 
+![dsfsd](./src/assets/images/elisa-client-0.0.3.png)
+<p align="center"><a href="https://elisaland.vercel.app/" >Pagina web de Elisa</a> </p>
 
 `Elisa` es una herramienta independiente de Jade, sencilla pero poderosa, diseñada para funcionar como un cliente API moderno. Inspirada por la filosofía de `Frontend`, Elisa permite consumir, formatear y trabajar con datos JSON directamente desde el navegador, sin necesidad de backends ni servicios externos.
 
@@ -34,7 +35,7 @@ React
           Vite
 ```
 
-# 🧪 Instalación y uso local
+# 🧪 Instalación y uso
 #### Clonar el repositorio
 
 ```bash
@@ -53,6 +54,11 @@ npm install
 npm run dev
 ```
 
+#### Construir Desktop App
+
+```bash
+npm run tauri build
+```
 
 
 # 📄 Licencia
