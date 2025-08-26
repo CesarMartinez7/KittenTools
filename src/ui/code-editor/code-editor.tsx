@@ -13,6 +13,48 @@ import { useJsonHook } from './methods-json/method';
 import { useXmlHook } from './methos-xml/method.xml';
 import type { CodeEditorProps } from './types';
 
+
+function getCaretCoordinates(textarea: HTMLTextAreaElement, position: number) {
+  const style = window.getComputedStyle(textarea);
+  const div = document.createElement("div");
+
+  // copiar estilos críticos
+  Array.from(style).forEach((prop) => {
+    div.style.setProperty(prop, style.getPropertyValue(prop));
+  });
+
+  div.style.position = "absolute";
+  div.style.visibility = "hidden";
+  div.style.whiteSpace = "pre-wrap";
+  div.style.wordWrap = "break-word";
+  div.style.overflow = "hidden";
+  div.style.height = "auto";
+  div.style.width = textarea.offsetWidth + "px";
+
+  // texto antes del cursor
+  const textBefore = textarea.value.substring(0, position);
+  div.textContent = textBefore;
+
+  // span marcador en el caret
+  const span = document.createElement("span");
+  span.textContent = textarea.value.substring(position) || ".";
+  div.appendChild(span);
+
+  document.body.appendChild(div);
+  const rect = span.getBoundingClientRect();
+  document.body.removeChild(div);
+
+  // ajustar con posición del textarea
+  const taRect = textarea.getBoundingClientRect();
+  return {
+    top: rect.top + window.scrollY,
+    left: rect.left + window.scrollX,
+    relativeTop: rect.top - taRect.top,
+    relativeLeft: rect.left - taRect.left,
+  };
+}
+
+
 const CodeEditor = ({
   value = '',
   language = 'json',
@@ -58,6 +100,19 @@ const CodeEditor = ({
     code: code,
     setCode: setCode,
   });
+
+
+  const [caretCoords, setCaretCoords] = useState<{ top: number; left: number } | null>(null);
+
+const handleCaretPosition = () => {
+  if (textareaRef.current) {
+    const pos = textareaRef.current.selectionStart || 0;
+    const coords = getCaretCoordinates(textareaRef.current, pos);
+    setCaretCoords(coords);
+    console.log("Caret coords:", coords);
+  }
+};
+
 
   const lineCount = useMemo(() => {
     if (code.length > 0) {
@@ -214,6 +269,7 @@ const CodeEditor = ({
     if (autocompleteSuggestions.length > 0) {
       if (e.key === 'ArrowDown') {
         e.preventDefault();
+        e.
         setActiveSuggestionIndex(
           (prevIndex) => (prevIndex + 1) % autocompleteSuggestions.length,
         );
@@ -304,17 +360,34 @@ const CodeEditor = ({
     );
   };
 
+  const [isBodyNull, setIsBodyNull] = useState<null | boolean>(null);
+
+  useEffect(() => {
+    setCode(value);
+    console.log(value);
+    if (Object.entries(value).length < 0) {
+      console.log(Object.entries(value).length);
+      console.log(Object.entries(value));
+      setIsBodyNull(false);
+      return;
+    } else {
+      setIsBodyNull(true);
+    }
+  }, [value]);
+
   return (
     <>
+      {/* {String(isBodyNull)} */}
       <main className="overflow-hidden relative">
         <AnimatePresence mode="wait">
           {isOpenFindBar && (
             <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="absolute right-2 top-2 z-[778] p-2 bg-gray-100 border dark:border-zinc-800 border-gray-200 dark:bg-zinc-950/90 rounded-md shadow-lg flex items-center gap-2 flex-col"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="absolute right-2 top-2 z-[778] p-2 bg-gray-100 border dark:border-zinc-800 border-gray-200 dark:bg-zinc-950/90 rounded-md shadow-lg flex items-center gap-2 flex-col"
             >
+              
               <div className=" flex justify-center items-center gap-2">
                 <button
                   onClick={() => setIsOpenBar((prev) => !prev)}
@@ -419,8 +492,30 @@ const CodeEditor = ({
 
           {/* Editor Container */}
           <div className="flex-1 relative">
+            {/* {autocompleteSuggestions.length > 0 && (
+              <ul className="absolute top-0 left-0 bg-white dark:bg-zinc-800 shadow-lg z-10 w-53 max-h-40 overflow-y-auto">
+                {autocompleteSuggestions.map((suggestion, index) => (
+                  <li
+                    key={suggestion}
+                    onClick={() => {
+                      const newCode =
+                        code.substring(0, code.lastIndexOf('{{')) +
+                        `{{${suggestion}}}`;
+                      setCode(newCode);
+                      onChange?.(newCode);
+                      setAutocompleteSuggestions([]);
+                    }}
+                    className={`cursor-pointer px-4 py-2 hover:bg-gray-200 dark:hover:bg-zinc-700 ${index === activeSuggestionIndex ? 'bg-gray-300 dark:bg-zinc-700' : ''}`}
+                  >
+                    {suggestion}
+                  </li>
+                ))}
+              </ul>
+            )} */}
+            <LazyListItem>
+            <div className=' z-20 absolute' style={{top: caretCoords?.top, left: caretCoords?.left}} >
             {autocompleteSuggestions.length > 0 && (
-              <ul className="absolute top-0 left-0 bg-white dark:bg-zinc-800 shadow-lg z-10 w-full max-h-40 overflow-y-auto">
+              <ul className=" bg-white dark:bg-zinc-800/40 shadow-lg z-10 w-53 max-h-40 overflow-y-auto">
                 {autocompleteSuggestions.map((suggestion, index) => (
                   <li
                     key={suggestion}
@@ -439,7 +534,7 @@ const CodeEditor = ({
                 ))}
               </ul>
             )}
-            <LazyListItem>
+              </div>
               <div
                 ref={highlightRef}
                 className="absolute  inset-0 p-2 text-sm font-mono leading-6 pointer-events-no overflow-hidden whitespace-pre-wrap break-words"
@@ -460,7 +555,10 @@ const CodeEditor = ({
               <textarea
                 ref={textareaRef}
                 value={code}
-                onChange={handleChange}
+                onChange={(e) => {
+                  handleChange(e);
+                  handleCaretPosition();
+                } }
                 onScroll={handleScroll}
                 onKeyDown={handleKeyDown}
                 className="absolute inset-0 transition-colors p-2 text-sm font-mono leading-6 resize-none outline-none placeholder-lime-600  dark:placeholder-lime-200"
