@@ -1,5 +1,8 @@
+
+// src/pages/client/hooks/request.client.tsx
+
 import axios from "axios";
-import { getClient } from "@tauri-apps/api/http";
+import { fetch } from "@tauri-apps/plugin-http";
 import { useEnviromentStore } from "../components/enviroment/store.enviroment";
 
 const replaceEnvVariables = (text, variables) => {
@@ -10,6 +13,25 @@ const replaceEnvVariables = (text, variables) => {
     );
     return variable?.value ?? `{{${key}}}`;
   });
+};
+
+const deepReplaceEnvVariables = (data, variables) => {
+  if (typeof data === 'string') {
+    return replaceEnvVariables(data, variables);
+  }
+  if (Array.isArray(data)) {
+    return data.map(item => deepReplaceEnvVariables(item, variables));
+  }
+  if (typeof data === 'object' && data !== null) {
+    const newObject = {};
+    for (const key in data) {
+      if (Object.prototype.hasOwnProperty.call(data, key)) {
+        newObject[key] = deepReplaceEnvVariables(data[key], variables);
+      }
+    }
+    return newObject;
+  }
+  return data;
 };
 
 const detectResponseType = (headers: any) => {
@@ -29,7 +51,6 @@ const axiosInstance = axios.create({
   validateStatus: () => true,
 });
 
-// interceptores como ya los tienes 👌
 axiosInstance.interceptors.request.use((config) => {
   config.meta = { startTime: performance.now() };
   const { entornoActual } = useEnviromentStore.getState();
@@ -49,14 +70,18 @@ axiosInstance.interceptors.request.use((config) => {
     });
   }
 
+  // Ahora, también formateamos el cuerpo de la petición
+  if (config.data) {
+    config.data = deepReplaceEnvVariables(config.data, entornoActual);
+  }
+
   return config;
 });
 
 axiosInstance.interceptors.response.use((response) => {
   const endTime = performance.now();
   response.timeResponse = (
-    (endTime - response.config.meta.startTime) /
-    1000
+    (endTime - response.config.meta.startTime) / 1000
   ).toFixed(3);
   response.typeResponse = detectResponseType(response.headers);
   response.isError = response.status >= 400;
@@ -70,25 +95,40 @@ export async function httpRequest(config) {
     const { entornoActual } = useEnviromentStore.getState();
     let url = replaceEnvVariables(config.url, entornoActual);
 
-    const client = await getClient();
     const startTime = performance.now();
+    
+    // Formatea las variables de entorno en el cuerpo antes de la petición
+    const formattedBody = deepReplaceEnvVariables(config.data, entornoActual);
 
-    const response = await client.request({
-      url,
+    const fetchConfig = {
       method: config.method || "GET",
       headers: config.headers,
-      body: config.data,
+      body: formattedBody, // Usa el cuerpo ya formateado
       query: config.params,
-      responseType: "text", // siempre texto y luego parseamos
-    });
-
+    };
+    
+    // Convertir el cuerpo a un formato compatible con fetch
+    if (fetchConfig.body) {
+        if (typeof fetchConfig.body === 'string') {
+            // No hacemos nada, ya está en el formato correcto
+        } else {
+            // Convierte objetos a JSON string
+            fetchConfig.body = JSON.stringify(fetchConfig.body);
+        }
+    }
+    
+    const response = await fetch(url, fetchConfig);
     const endTime = performance.now();
 
+    // El objeto de respuesta de Tauri fetch es diferente al de axios.
+    // Lo reconstruimos para que sea consistente.
+    const responseData = await response.text();
+    const finalData = detectResponseType(response.headers) === "json"
+        ? JSON.parse(responseData)
+        : responseData;
+
     return {
-      data:
-        detectResponseType(response.headers) === "json"
-          ? JSON.parse(response.data)
-          : response.data,
+      data: finalData,
       status: response.status,
       headers: response.headers,
       timeResponse: ((endTime - startTime) / 1000).toFixed(3),
@@ -98,6 +138,10 @@ export async function httpRequest(config) {
     };
   } else {
     // --- Modo Web (Axios normal) ---
-    return axiosInstance(config);
+    const formattedConfig = { ...config };
+    if (formattedConfig.data) {
+        formattedConfig.data = deepReplaceEnvVariables(formattedConfig.data, useEnviromentStore.getState().entornoActual);
+    }
+    return axiosInstance(formattedConfig);
   }
 }

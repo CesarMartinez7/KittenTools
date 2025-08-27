@@ -191,10 +191,10 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
             <div className="flex flex-row gap-2 mb-6 justify-between">
               <div>
                 <ToolTipButton
-                  ariaText="Nueva"
+                  ariaText="Nueva opciones"
                   tooltipText="Añadir coleccion, request, enviroment"
                   onClick={openModalNews}
-                  className="base-btn"
+                  className="base-btn truncate"
                 >
                   Nueva
                 </ToolTipButton>
@@ -222,7 +222,7 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
               </div>
             </div>
             <div className="flex justify-start items-center my-4 space-x-3 relative">
-              <span className="pixel--bolt-solid text-gray-900 dark:text-zinc-200"></span>
+              <span className="pixelarticons--coffee-alt text-gray-900 dark:text-zinc-200"></span>
               <h3 className="text-4xl  bg-gradient-to-tr text-gray-700 dark:text-lime-50 share-tech-mono-regular ">
                 Elisa
               </h3>

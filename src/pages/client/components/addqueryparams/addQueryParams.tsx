@@ -105,7 +105,7 @@ const AddQueryParam: React.FC<AddQueryParamProps> = () => {
   return (
     <div className="p-4 bg-transparent  relative">
       <table className="min-w-full table-fixed">
-        <thead className="border-b bg-gray-200 text-gray-700 border-gray-200 dark:border-zinc-700 uppercase dark:bg-zinc-950 dark:text-zinc-200">
+        <thead className="border-b bg-gray-200 dark:bg-transparent text-gray-700 border-gray-200 dark:border-zinc-700 uppercase  dark:text-zinc-200">
           <tr>
             <th className="px-2 py-2 text-left text-xs font-medium tracking-wider w-1/3">
               PARÁMETRO
