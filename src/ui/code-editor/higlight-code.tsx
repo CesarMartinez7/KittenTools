@@ -17,11 +17,11 @@ const highlightCode = (
   currentMatchIndex = -1,
 ) => {
   if (code === null || code === undefined) return '';
-
+  
   // 🔥 Escapamos SOLO el código crudo
   const rawCode = String(code);
   let highlightedHTML = escapeHTML(rawCode);
-
+  
   // --- 🎨 Resaltado por lenguaje ---
   if (language === 'json') {
     highlightedHTML = highlightedHTML
@@ -62,25 +62,40 @@ const highlightCode = (
       .replace(/&gt;/g, `<span style="color:${colors.tag}">&gt;</span>`);
   } else {
     const langKeywords = keywords[language] || keywords.javascript;
-
+    
     highlightedHTML = highlightedHTML
+      // 💬 Comentarios (// y /* */)
       .replace(
         /(\/\/.*$|\/\*[\s\S]*?\*\/)/gm,
         `<span style="color:${colors.comment}">$1</span>`,
       )
+      // 🔍 Expresiones regulares /pattern/flags
+      .replace(
+        /\/([^\/\n\r*]([^\/\n\r\\]|\\.)*)\/([gimuy]*)/g,
+        `<span style="color:${colors.string}; font-style:italic">/$1/$2</span>`,
+      )
+      // 🌍 Variables de entorno {{variable}}
+      .replace(
+        /\{\{([^}]+)\}\}/g,
+        `<span style="color:${colors.attribute}; background-color:rgba(255,193,7,0.2); padding:1px 3px; border-radius:3px">\{\{$1\}\}</span>`,
+      )
+      // 📝 Strings ('', "", ``)
       .replace(
         /(['"`])((?:(?!\1)[^\\]|\\.)*)(\1)/g,
         `<span style="color:${colors.string}">$1$2$3</span>`,
       )
+      // 🔢 Números
       .replace(
         /\b(\d+\.?\d*)\b/g,
         `<span style="color:${colors.number}">$1</span>`,
       )
+      // 🔧 Funciones
       .replace(
         /\b(\w+)(?=\s*\()/g,
         `<span style="color:${colors.function}">$1</span>`,
       );
-
+    
+    // 🔑 Keywords del lenguaje
     langKeywords.forEach((keyword: string) => {
       const regex = new RegExp(`\\b(${keyword})\\b`, 'g');
       highlightedHTML = highlightedHTML.replace(
@@ -89,20 +104,19 @@ const highlightCode = (
       );
     });
   }
-
+  
   // 🔍 Búsqueda
-  // Nuevo paso antes del return
   if (findResults.length > 0 && searchValue) {
     const regex = new RegExp(searchValue, 'gi');
     highlightedHTML = highlightedHTML.replace(regex, (match, offset) => {
-      const isCurrent = findResults[currentMatchIndex] === offset; // posición actual
+      const isCurrent = findResults[currentMatchIndex] === offset;
       const matchClass = isCurrent
         ? 'highlight-match highlight-match-active'
         : 'highlight-match';
       return `<span class="${matchClass}">${match}</span>`;
     });
   }
-
+  
   return highlightedHTML;
 };
 

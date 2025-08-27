@@ -1,46 +1,49 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
+import bolt from '@iconify-icons/tabler/bolt';
 import { AnimatePresence, motion } from 'framer-motion';
 import type React from 'react';
-import { memo, useEffect, useMemo, useRef, useState, useCallback } from 'react';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
-import { useDebounce } from 'use-debounce';
+import LazyListItem from '../LazyListPerform';
 import highlightCode from './higlight-code';
 import './Code.css';
-import ICONS_EDITOR from './icons';
+
 import { useEnviromentStore } from '../../pages/client/components/enviroment/store.enviroment';
 import { useJsonHook } from './methods-json/method';
 import { useXmlHook } from './methos-xml/method.xml';
 import type { CodeEditorProps } from './types';
 
-
-// Función para obtener coordenadas del cursor
 function getCaretCoordinates(textarea: HTMLTextAreaElement, position: number) {
-  const div = document.createElement("div");
-
   const style = window.getComputedStyle(textarea);
+  const div = document.createElement('div');
+
+  // copiar estilos críticos
   Array.from(style).forEach((prop) => {
     div.style.setProperty(prop, style.getPropertyValue(prop));
   });
 
-  div.style.position = "absolute";
-  div.style.visibility = "hidden";
-  div.style.whiteSpace = "pre-wrap";
-  div.style.wordWrap = "break-word";
-  div.style.overflow = "hidden";
-  div.style.height = "auto";
-  div.style.width = textarea.offsetWidth + "px";
+  div.style.position = 'absolute';
+  div.style.visibility = 'hidden';
+  div.style.whiteSpace = 'pre-wrap';
+  div.style.wordWrap = 'break-word';
+  div.style.overflow = 'hidden';
+  div.style.height = 'auto';
+  div.style.width = textarea.offsetWidth + 'px';
 
+  // texto antes del cursor
   const textBefore = textarea.value.substring(0, position);
   div.textContent = textBefore;
 
-  const span = document.createElement("span");
-  span.textContent = textarea.value.substring(position) || ".";
+  // span marcador en el caret
+  const span = document.createElement('span');
+  span.textContent = textarea.value.substring(position) || '.';
   div.appendChild(span);
 
   document.body.appendChild(div);
   const rect = span.getBoundingClientRect();
   document.body.removeChild(div);
 
+  // ajustar con posición del textarea
   const taRect = textarea.getBoundingClientRect();
   return {
     top: rect.top + window.scrollY,
@@ -60,21 +63,26 @@ const CodeEditor = ({
   placeholder = '',
   classNameContainer = '',
 }: CodeEditorProps) => {
+  const inputRefTextOld = useRef<HTMLInputElement>(null);
+  const inputRefTextNew = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const highlightRef = useRef<HTMLDivElement>(null);
   const lineNumbersRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const inputRefTextOld = useRef<HTMLInputElement>(null);
-  const inputRefTextNew = useRef<HTMLInputElement>(null);
 
-  const [code, setCode] = useState(value);
   const [isOpenBar, setIsOpenBar] = useState<boolean>(false);
+  const [code, setCode] = useState(value);
+
   const [isOpenFindBar, setIsOpenFindBar] = useState(false);
   const [searchValue, setSearchValue] = useState('');
+  const [findResults, setFindResults] = useState<number[]>([]);
   const [currentMatchIndex, setCurrentMatchIndex] = useState(-1);
-  const [autocompleteSuggestions, setAutocompleteSuggestions] = useState<string[]>([]);
+  const [autocompleteSuggestions, setAutocompleteSuggestions] = useState<
+    string[]
+  >([]);
   const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(0);
 
+  // ✅ Conectamos al store de entornos para obtener los valores
   const entornoActual = useEnviromentStore((state) => state.entornoActual);
   const currentEntornoList = useMemo(
     () => (Array.isArray(entornoActual) ? entornoActual : []),
@@ -91,39 +99,21 @@ const CodeEditor = ({
     setCode: setCode,
   });
 
-  const [caretCoords, setCaretCoords] = useState<{ top: number; left: number } | null>(null);
+  const [caretCoords, setCaretCoords] = useState<{
+    top: number;
+    left: number;
+  } | null>(null);
 
-  // Optimización: useDebounce para el resaltado y la búsqueda
-  const [debouncedCode] = useDebounce(code, 200);
-  const [debouncedSearchValue] = useDebounce(searchValue, 200);
+  const caretCoord = useMemo(() => null, []);
 
-  // Optimización: Memoizar el cálculo de los resultados de búsqueda
-  const findResults = useMemo(() => {
-    if (!debouncedSearchValue || !debouncedCode) {
-      return [];
+  const handleCaretPosition = () => {
+    if (textareaRef.current) {
+      const pos = textareaRef.current.selectionStart || 0;
+      const coords = getCaretCoordinates(textareaRef.current, pos);
+      setCaretCoords(coords);
     }
-    const results: number[] = [];
-    let index = debouncedCode.indexOf(debouncedSearchValue);
-    while (index !== -1) {
-      results.push(index);
-      index = debouncedCode.indexOf(debouncedSearchValue, index + 1);
-    }
-    return results;
-  }, [debouncedSearchValue, debouncedCode]);
+  };
 
-  // Optimización: Memoizar el HTML resaltado
-  const highlightedCodeHtml = useMemo(() => {
-    return highlightCode(
-      debouncedCode,
-      language,
-      findResults,
-      debouncedSearchValue,
-      currentMatchIndex,
-      currentEntornoList,
-    );
-  }, [debouncedCode, language, findResults, debouncedSearchValue, currentMatchIndex, currentEntornoList]);
-
-  // Optimización: Memoizar el cálculo de los números de línea
   const lineCount = useMemo(() => {
     if (code.length > 0) {
       return code.split('\n').length;
@@ -131,42 +121,65 @@ const CodeEditor = ({
     return 1;
   }, [code]);
 
-  const lineNumberElements = useMemo(
-    () =>
-      Array.from({ length: lineCount }, (_, i) => (
-        <div key={i} className="leading-6 text-right min-w-[2rem] font-mono">
-          {i + 1}
-        </div>
-      )),
-    [lineCount],
-  );
-
-  // Sincronización de scroll usando requestAnimationFrame
-  const handleScroll = useCallback(() => {
-    if (!textareaRef.current || !lineNumbersRef.current || !highlightRef.current) return;
-
-    const scrollTop = textareaRef.current.scrollTop;
-    const scrollLeft = textareaRef.current.scrollLeft;
-
-    requestAnimationFrame(() => {
-      lineNumbersRef.current!.scrollTop = scrollTop;
-      highlightRef.current!.scrollTop = scrollTop;
-      highlightRef.current!.scrollLeft = scrollLeft;
-    });
-  }, []);
-
-  const handleCaretPosition = useCallback(() => {
-    if (textareaRef.current) {
-      const pos = textareaRef.current.selectionStart || 0;
-      const coords = getCaretCoordinates(textareaRef.current, pos);
-      setCaretCoords(coords);
-    }
-  }, []);
-
-  // UseEffect para manejar la sincronización del estado y props.
   useEffect(() => {
-    setCode(value);
-  }, [value]);
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+        e.preventDefault();
+        setIsOpenFindBar((prev) => !prev);
+        if (!isOpenFindBar) {
+          setTimeout(() => searchInputRef.current?.focus(), 100);
+        }
+      }
+
+      if ((e.ctrlKey || e.metaKey) && (e.key === 'b' || e.key === 'B')) {
+        e.preventDefault();
+        setIsOpenBar((prev) => !prev);
+      }
+
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        HandlersIdentarBody();
+      }
+
+      if (isOpenFindBar && e.key === 'Enter') {
+        e.preventDefault();
+        if (findResults.length > 0) {
+          if (e.shiftKey) {
+            setCurrentMatchIndex(
+              (prevIndex) =>
+                (prevIndex - 1 + findResults.length) % findResults.length,
+            );
+          } else {
+            setCurrentMatchIndex(
+              (prevIndex) => (prevIndex + 1) % findResults.length,
+            );
+          }
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleGlobalKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleGlobalKeyDown);
+    };
+  }, [isOpenFindBar, findResults.length]);
+
+  useEffect(() => {
+    if (searchValue && code) {
+      const results: number[] = [];
+      let index = code.indexOf(searchValue);
+      while (index !== -1) {
+        results.push(index);
+        index = code.indexOf(searchValue, index + 1);
+      }
+      setFindResults(results);
+      setCurrentMatchIndex(results.length > 0 ? 0 : -1);
+    } else {
+      setFindResults([]);
+      setCurrentMatchIndex(-1);
+    }
+  }, [searchValue, code]);
 
   useEffect(() => {
     if (
@@ -195,25 +208,26 @@ const CodeEditor = ({
     }
   }, [currentMatchIndex, findResults, code]);
 
-
-  const HandlersMinifyBody = useCallback(() => {
+  const HandlersMinifyBody = () => {
     if (language === 'json') return minifyJson();
     if (language === 'xml') return minifyXml();
     return toast.error('El formato no es JSON ni XML, no se puede minificar.');
-  }, [language, minifyJson, minifyXml]);
+  };
 
-  const HandlersIdentarBody = useCallback(() => {
+  const HandlersIdentarBody = () => {
     if (language === 'json') return JsonSchema();
     if (language === 'xml') return XmlScheme();
-  }, [language, JsonSchema, XmlScheme]);
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value;
     setCode(newValue);
     onChange?.(newValue);
+
     const cursorPosition = e.target.selectionStart;
     const textBeforeCursor = newValue.substring(0, cursorPosition);
     const lastBracesIndex = textBeforeCursor.lastIndexOf('{{');
+
     if (
       lastBracesIndex !== -1 &&
       textBeforeCursor.lastIndexOf('}}') < lastBracesIndex
@@ -221,11 +235,78 @@ const CodeEditor = ({
       const searchText = textBeforeCursor.substring(lastBracesIndex + 2);
       const suggestions = currentEntornoList
         .map((env) => env.key)
-        .filter((key) => key.toLowerCase().startsWith(searchText.toLowerCase()));
+        .filter((key) =>
+          key.toLowerCase().startsWith(searchText.toLowerCase()),
+        );
       setAutocompleteSuggestions(suggestions);
       setActiveSuggestionIndex(0);
     } else {
       setAutocompleteSuggestions([]);
+    }
+  };
+
+  const handleScroll = () => {
+    if (
+      !textareaRef.current ||
+      !lineNumbersRef.current ||
+      !highlightRef.current
+    )
+      return;
+
+    const scrollTop = textareaRef.current.scrollTop;
+    const scrollLeft = textareaRef.current.scrollLeft;
+
+    requestAnimationFrame(() => {
+      lineNumbersRef.current!.scrollTop = scrollTop;
+      highlightRef.current!.scrollTop = scrollTop;
+      highlightRef.current!.scrollLeft = scrollLeft;
+      console.log(lineNumbersRef.current.scrollTop);
+      console.log(highlightRef.current.scrollTop);
+    });
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (autocompleteSuggestions.length > 0) {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        e.setActiveSuggestionIndex(
+          (prevIndex) => (prevIndex + 1) % autocompleteSuggestions.length,
+        );
+        return;
+      }
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        setActiveSuggestionIndex(
+          (prevIndex) =>
+            (prevIndex - 1 + autocompleteSuggestions.length) %
+            autocompleteSuggestions.length,
+        );
+        return;
+      }
+      if (e.key === 'Enter' || e.key === 'Tab') {
+        e.preventDefault();
+        const suggestion = autocompleteSuggestions[activeSuggestionIndex];
+        const newCode =
+          code.substring(0, code.lastIndexOf('{{')) + `{{${suggestion}}}`;
+        setCode(newCode);
+        onChange?.(newCode);
+        setAutocompleteSuggestions([]);
+        return;
+      }
+    }
+
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      const start = e.currentTarget.selectionStart;
+      const end = e.currentTarget.selectionEnd;
+      const newValue = code.substring(0, start) + '  ' + code.substring(end);
+      setCode(newValue);
+      onChange?.(newValue);
+
+      if (textareaRef.current) {
+        textareaRef.current.selectionStart = textareaRef.current.selectionEnd =
+          start + 2;
+      }
     }
   };
 
@@ -258,6 +339,16 @@ const CodeEditor = ({
     toast.success('Reemplazo realizado');
   };
 
+  const lineNumberElements = useMemo(
+    () =>
+      Array.from({ length: lineCount }, (_, i) => (
+        <div key={i} className="leading-6 text-right min-w-[2rem] font-mono">
+          {i + 1}
+        </div>
+      )),
+    [lineCount],
+  );
+
   const handleNextMatch = () => {
     setCurrentMatchIndex((prevIndex) => (prevIndex + 1) % findResults.length);
   };
@@ -267,101 +358,25 @@ const CodeEditor = ({
       (prevIndex) => (prevIndex - 1 + findResults.length) % findResults.length,
     );
   };
-  
-  // Handle KEY DOWN ARROW CODE EDITORS
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (autocompleteSuggestions.length > 0) {
-      if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        setActiveSuggestionIndex(
-          (prevIndex) => (prevIndex + 1) % autocompleteSuggestions.length,
-        );
-        return;
-      }
-      if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        setActiveSuggestionIndex(
-          (prevIndex) =>
-            (prevIndex - 1 + autocompleteSuggestions.length) %
-            autocompleteSuggestions.length,
-        );
-        return;
-      }
-      if (e.key === 'Enter' || e.key === 'Tab') {
-        e.preventDefault();
-        const suggestion = autocompleteSuggestions[activeSuggestionIndex];
-        const newCode =
-          code.substring(0, code.lastIndexOf('{{')) + `{{${suggestion}}}`;
-        setCode(newCode);
-        onChange?.(newCode);
-        setAutocompleteSuggestions([]);
-        return;
-      }
-    }
 
-    if (e.key === 'Tab') {
-      e.preventDefault();
-      const start = e.currentTarget.selectionStart;
-      const end = e.currentTarget.selectionEnd;
-      const newValue = code.substring(0, start) + '  ' + code.substring(end);
-      setCode(newValue);
-      onChange?.(newValue);
-
-      if (textareaRef.current) {
-        textareaRef.current.selectionStart = textareaRef.current.selectionEnd =
-          start + 2;
-      }
-    }
-  };
-
+  const [isBodyNull, setIsBodyNull] = useState<null | boolean>(null);
 
   useEffect(() => {
-    const handleGlobalKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
-        e.preventDefault();
-        setIsOpenFindBar((prev) => !prev);
-        if (!isOpenFindBar) {
-          setTimeout(() => searchInputRef.current?.focus(), 100);
-        }
-      }
-
-      if ((e.ctrlKey || e.metaKey) && (e.key === 'b' || e.key === 'B')) {
-        e.preventDefault();
-        setIsOpenBar((prev) => !prev);
-      }
-
-      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-        e.preventDefault();
-        console.log("buetify")
-        HandlersIdentarBody();
-      }
-
-      if (isOpenFindBar && e.key === 'Enter') {
-        e.preventDefault();
-        if (findResults.length > 0) {
-          if (e.shiftKey) {
-            setCurrentMatchIndex(
-              (prevIndex) =>
-                (prevIndex - 1 + findResults.length) % findResults.length,
-            );
-          } else {
-            setCurrentMatchIndex(
-              (prevIndex) => (prevIndex + 1) % findResults.length,
-            );
-          }
-        }
-      }
-    };
-
-    window.addEventListener('keydown', handleGlobalKeyDown);
-
-    return () => {
-      window.removeEventListener('keydown', handleGlobalKeyDown);
-    };
-  }, [isOpenFindBar, findResults.length, HandlersIdentarBody]);
+    setCode(value);
+    console.log(value);
+    if (Object.entries(value).length < 0) {
+      console.log(Object.entries(value).length);
+      console.log(Object.entries(value));
+      setIsBodyNull(false);
+      return;
+    } else {
+      setIsBodyNull(true);
+    }
+  }, [value]);
 
   return (
     <>
+      {/* {String(isBodyNull)} */}
       <main className="overflow-hidden relative">
         <AnimatePresence mode="wait">
           {isOpenFindBar && (
@@ -415,6 +430,8 @@ const CodeEditor = ({
               </div>
               <AnimatePresence>
                 {isOpenBar && (
+                  // Entradas de remplazo
+
                   <motion.div
                     className="space-y-2"
                     initial={{ opacity: 0 }}
@@ -436,9 +453,11 @@ const CodeEditor = ({
                       />
                     </div>
 
+                    {/* Botones de busqueda */}
+
                     <div className="flex h-6 gap-2">
                       <button
-                        className="bg-gradient-to-r flex-1 from-green-400 to-green-500 p-1  text-xs truncate text-white"
+                        className="bg-gradient-to-r flex-1 from-green-400 to-green-500 p-1  text-xs truncate text-white"
                         onClick={handleCLickReplaceTextFirst}
                       >
                         Reemplazar primero
@@ -471,31 +490,67 @@ const CodeEditor = ({
 
           {/* Editor Container */}
           <div className="flex-1 relative">
-            <div
-              ref={highlightRef}
-              className="absolute inset-0 p-2 text-sm font-mono leading-6 pointer-events-none overflow-hidden whitespace-pre-wrap break-words"
-              dangerouslySetInnerHTML={{
-                __html: highlightedCodeHtml,
-              }}
-            />
+            <LazyListItem>
+              <div
+                className=" z-20 absolute"
+                style={{ top: caretCoords?.top + 20, left: caretCoords?.left }}
+              >
+                {autocompleteSuggestions.length > 0 && (
+                  <ul className=" bg-white dark:bg-zinc-800/40 shadow-lg z-10 w-53 max-h-40 overflow-y-auto">
+                    {autocompleteSuggestions.map((suggestion, index) => (
+                      <li
+                        key={suggestion}
+                        onClick={() => {
+                          const newCode =
+                            code.substring(0, code.lastIndexOf('{{')) +
+                            `{{${suggestion}}}`;
+                          setCode(newCode);
+                          onChange?.(newCode);
+                          setAutocompleteSuggestions([]);
+                        }}
+                        className={`cursor-pointer px-4 py-2 hover:bg-gray-200 dark:hover:bg-zinc-700 ${index === activeSuggestionIndex ? 'bg-gray-300 dark:bg-zinc-700' : ''}`}
+                      >
+                        {suggestion}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+              <div
+                ref={highlightRef}
+                className="absolute  inset-0 p-2 text-sm font-mono leading-6 pointer-events-no overflow-hidden whitespace-pre-wrap break-words"
+                dangerouslySetInnerHTML={{
+                  __html: highlightCode(
+                    code,
+                    language,
+                    findResults,
+                    searchValue,
+                    currentMatchIndex,
+                    currentEntornoList,
+                  ),
+                }}
+              />
+            </LazyListItem>
 
-            <textarea
-              ref={textareaRef}
-              value={code}
-              onChange={(e) => {
-                handleChange(e);
-                handleCaretPosition();
-              }}
-              onScroll={handleScroll}
-              onKeyDown={handleKeyDown}
-              className="absolute inset-0 transition-colors p-2 text-sm font-mono leading-6 resize-none outline-none placeholder-lime-600  dark:placeholder-lime-200"
-              style={{
-                color: 'transparent',
-                caretColor: 'var(--caret-color, gray)',
-              }}
-              spellCheck={false}
-              placeholder={placeholder}
-            />
+            <LazyListItem>
+              <textarea
+                ref={textareaRef}
+                value={code}
+                onChange={(e) => {
+                  handleChange(e);
+                  handleCaretPosition();
+                }}
+                onScroll={handleScroll}
+                onKeyDown={handleKeyDown}
+                className="absolute inset-0 transition-colors p-2 text-sm font-mono leading-6 resize-none outline-none placeholder-lime-600  dark:placeholder-lime-200"
+                style={{
+                  color: 'transparent',
+                  caretColor: 'var(--caret-color, gray)',
+                }}
+                spellCheck={false}
+                placeholder={placeholder}
+              />
+            </LazyListItem>
           </div>
         </div>
 
@@ -508,7 +563,7 @@ const CodeEditor = ({
             </button>
 
             <button className="button-code-tools" onClick={HandlersMinifyBody}>
-              <Icon icon={ICONS_EDITOR.bolt} width={14} />
+              <Icon icon={bolt} width={14} />
               <span className="hidden sm:inline">Minify</span>
             </button>
 
@@ -516,7 +571,7 @@ const CodeEditor = ({
               className="button-code-tools"
               onClick={() => setIsOpenBar(!isOpenBar)}
             >
-              <Icon icon={ICONS_EDITOR.replace} width={14} />
+              <Icon icon="tabler:replace" width={14} />
               <span className="hidden sm:inline">Reemplazar</span>
             </button>
           </div>
@@ -527,7 +582,7 @@ const CodeEditor = ({
               onClick={() => setIsOpenFindBar(!isOpenFindBar)}
               aria-label="Buscar"
             >
-              <Icon icon={ICONS_EDITOR.search} width={14} />
+              <Icon icon="tabler:search" width={14} />
             </button>
             <span className="text-green-500 dark:text-green-400">
               {(() => {
@@ -536,7 +591,7 @@ const CodeEditor = ({
                   return <Icon icon="tabler:check" width={15} height={15} />;
                 } catch {
                   return (
-                    <Icon icon={ICONS_EDITOR.x} width={13} height={13} color="red" />
+                    <Icon icon="tabler:x" width={13} height={13} color="red" />
                   );
                 }
               })()}
