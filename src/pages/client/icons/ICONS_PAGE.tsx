@@ -11,6 +11,7 @@ import search from "@iconify-icons/tabler/search";
 import trash from "@iconify-icons/tabler/trash";
 import x from "@iconify-icons/tabler/x";
 import packageimport from "@iconify-icons/tabler/package-import";
+import plus from "@iconify-icons/tabler/plus";
 
 const ICONS_PAGES = {
   chevronleft,
@@ -26,6 +27,7 @@ const ICONS_PAGES = {
   search,
   check,
   packageimport,
+  plus
 };
 
 export default ICONS_PAGES;

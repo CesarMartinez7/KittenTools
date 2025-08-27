@@ -220,14 +220,15 @@ export default function ResponsesTypesComponent({
         return <HtmlNode node={parseHtmlString(data)} />;
       case 'base64':
         try {
-          const base64Content = btoa(data);
+          const base64Content = btoa(JSON.stringify(data, null, 2));
           return (
             <pre className="text-xs break-all text-gray-700 dark:text-gray-200">
               {base64Content}
+              {atob(base64Content)}
             </pre>
           );
         } catch (e) {
-          return <p className="text-red-400">Error al codificar a Base64.</p>;
+          return <p className="text-red-400">Error al codificar a Base64. {JSON.stringify(e)}</p>;
         }
       case 'raw':
       default:
@@ -243,7 +244,7 @@ export default function ResponsesTypesComponent({
     <div className="h-full flex flex-col ma overflow-y-scroll bg-white dark:bg-transparent ">
       <div className="flex-1 flex flex-col justify-between">
         <nav
-          className="flex border-b justify-between border-zinc-400 dark:border-zinc-700 items-center pt-1 sticky top-0 dark:bg-zinc-950/50 backdrop-blur-2xl bg-white"
+          className="flex border-b justify-between border-gray-200 dark:border-zinc-700 items-center pt-1 sticky top-0 dark:bg-zinc-950/50 backdrop-blur-2xl bg-white"
           role="tablist"
           aria-label="Tipos de respuesta"
         >

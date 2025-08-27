@@ -3,7 +3,7 @@ import type React from 'react';
 import { useCallback, useMemo, useState } from 'react';
 import { useRequestStore } from '../../stores/request.store';
 import { useEnviromentStore } from '../enviroment/store.enviroment';
-import './header.css';
+import './header.css'; // Asegúrate de que esta hoja de estilos exista
 import ICONS_PAGES from '../../icons/ICONS_PAGE';
 
 type HeaderInputProps = {
@@ -54,7 +54,7 @@ const ColoredInput: React.FC<HeaderInputProps> = ({
         parts.push({
           text: match[0],
           isVariable: true,
-          color: isDefinedAndEnabled ? '#7bb4ff' : '#D2042D',
+          color: isDefinedAndEnabled ? '#7bb4ff' : '#D2042D', // Colores de variable
         });
 
         lastIndex = match.index + match[0].length;
@@ -82,7 +82,8 @@ const ColoredInput: React.FC<HeaderInputProps> = ({
     setIsFocused(true);
   };
 
-  const onChangeComp = (any) => {
+  // Corrección: el evento 'e' debe ser de tipo React.ChangeEvent<HTMLInputElement>
+  const onChangeComp = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange(e.target.value);
   };
 
@@ -93,7 +94,7 @@ const ColoredInput: React.FC<HeaderInputProps> = ({
   // Mostrar el texto coloreado solo cuando no está enfocado
   if (!isFocused && value && value.includes('{{')) {
     return (
-      <div className="relative">
+      <div className="relative input-container">
         <input
           type="text"
           placeholder={placeholder}
@@ -101,14 +102,14 @@ const ColoredInput: React.FC<HeaderInputProps> = ({
           onChange={onChangeComp}
           onFocus={onFocus}
           onBlur={onBlur}
-          className="input- absolute text-transparent inset-0"
+          className="absolute inset-0 input-table input-transparent"
         />
-        <div className="input-table">
+        <div className="">
           {formattedParts.map((part, index) => (
             <span
               key={index}
               style={part.isVariable ? { color: part.color } : {}}
-              className={`${part.isVariable ? '' : ''} text-zinc-200`}
+              className="text-zinc-200"
             >
               {part.text}
             </span>
@@ -127,7 +128,7 @@ const ColoredInput: React.FC<HeaderInputProps> = ({
       onChange={(e) => onChange(e.target.value)}
       onFocus={() => setIsFocused(true)}
       onBlur={() => setIsFocused(false)}
-      className="p-1 bg-gray-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-200 outline-none placeholder:text-zinc-500 w-full"
+      className=" p-1 w-full" // Estilos ajustados para el tema oscuro
     />
   );
 };
@@ -193,26 +194,52 @@ export const HeadersAddRequest: React.FC<HeadersAddRequestProps> = () => {
     return headersArray;
   }, [headersArray]);
 
+  // Función para añadir una nueva cabecera (explicita)
+  const handleAddHeader = useCallback(() => {
+    const currentHeaders = currentTab?.headers || {};
+    const newHeadersArray = Object.entries(currentHeaders).map(([key, value]) => ({ key, value }));
+    newHeadersArray.push({ key: '', value: '' });
+    handleUpdateHeaders(newHeadersArray);
+  }, [currentTab, handleUpdateHeaders]);
+
+
   return (
-    <div className="p-4">
-      <table className="min-w-full divide-y border-gray-200 dark:border-zinc-700  border-collapse text-gray-600">
-        <thead className="dark:bg-zinc-900 bg-gray-200 text-gray-700">
+    <div className="p-4 bg-transparent "> {/* Contenedor principal con fondo oscuro */}
+      <div className="flex justify-between items-center mb-4 text-sm font-semibold text-gray-400">
+        <button
+          onClick={handleAddHeader}
+          className="px-3 py-1 text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200 flex items-center"
+        >
+          <Icon icon={ICONS_PAGES.plus} className="mr-2" />
+          Añadir Cabecera
+        </button>
+        {/* Aquí puedes añadir los otros botones como "Importar Entornos" y "Crear entorno" */}
+      </div>
+
+      <table className="min-w-full table-fixed">
+        <thead className=" border-b bg-gray-200 text-gray-700 border-gray-200 dark:border-zinc-700 uppercase dark:bg-zinc-950 dark:text-zinc-200">
           <tr>
-            <th className="px-3 py-2 text-left text-xs font-medium text-zinc-400 uppercase tracking-wider border-b border-zinc-700">
-              Cabecera
+            <th className="px-2 py-2 text-left text-xs font-medium tracking-wider w-1/3">
+              LLAVE
             </th>
-            <th className="px-3 py-2 text-left text-xs font-medium text-zinc-400 uppercase tracking-wider border-b border-zinc-700">
-              Valor
+            <th className="px-2 py-2 text-left text-xs font-medium tracking-wider w-1/3">
+              VALOR
             </th>
-            <th className="px-3 py-2 text-left text-xs font-medium text-zinc-400 uppercase tracking-wider border-b border-zinc-700">
-              Acción
+            <th className="px-2 py-2 text-left text-xs font-medium tracking-wider w-1/6">
+              HABILITAR
+            </th>
+            <th className="px-2 py-2 text-left text-xs font-medium tracking-wider w-1/6">
+              ACCIONES
             </th>
           </tr>
         </thead>
-        <tbody className=" bg-g dark:bg-zinc-800 divide-y divide-gray-200 dark:divide-zinc-700">
+        <tbody className="divide-y divide-gray-200 dark:divide-zinc-800">
           {displayedHeaders.map((header, index) => (
-            <tr key={index}>
-              <td className="px-3  whitespace-nowrap">
+            <tr
+              key={index}
+              className={`${index % 2 === 0 ? 'dark:bg-zinc-950 ' : 'dark:bg-zinc-900'} `} 
+            >
+              <td className="px-2 py-1">
                 <input
                   type="text"
                   placeholder="Key"
@@ -220,10 +247,10 @@ export const HeadersAddRequest: React.FC<HeadersAddRequestProps> = () => {
                   onChange={(e) =>
                     handleInputChange(index, 'key', e.target.value)
                   }
-                  className="input-table"
+                  className="input-table-2" // Estilos ajustados para el tema oscuro
                 />
               </td>
-              <td className="px-3  whitespace-nowrap">
+              <td className="px-2 py-1">
                 <ColoredInput
                   value={header.value || ''}
                   onChange={(value) => handleInputChange(index, 'value', value)}
@@ -231,16 +258,22 @@ export const HeadersAddRequest: React.FC<HeadersAddRequestProps> = () => {
                   entornoActual={entornoActual || []}
                 />
               </td>
-              <td className="px-3 py- whitespace-nowrap text-right text-sm font-medium">
-                {index < headersArray.length && (
-                  <button
-                    onClick={() => handleRemoveHeader(index)}
-                    className="w-8 h-8 flex items-center justify-center text-red-500 hover:bg-zinc-600 rounded-full transition-colors"
-                    aria-label="Eliminar cabecera"
-                  >
-                    <Icon icon={ICONS_PAGES.x} />
-                  </button>
-                )}
+              <td className="px-2 py-1 text-center">
+                <input
+                  type="checkbox"
+                  defaultChecked // Considera si este debe ser el valor por defecto
+                  className="form-checkbox h-4 w-4 text-blue-600 rounded-full cursor-pointer "
+                />
+              </td>
+              <td className="px-2 py-1 text-center">
+                {/* Modificamos el botón para usar el icono de la papelera y el mismo estilo que la imagen */}
+                <button
+                  onClick={() => handleRemoveHeader(index)}
+                  className="text-red-500 hover:text-red-400 transition-colors"
+                  aria-label="Eliminar cabecera"
+                >
+                  <Icon icon={ICONS_PAGES.trash}  width={17} height={17} />
+                </button>
               </td>
             </tr>
           ))}

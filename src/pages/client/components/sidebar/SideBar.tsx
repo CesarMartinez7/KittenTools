@@ -193,7 +193,7 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
                   ariaText="Nueva"
                   tooltipText="Añadir coleccion, request, enviroment"
                   onClick={openModalNews}
-                  className="bg-emerald-500/10"
+                  className="base-btn"
                 >
                   Nueva
                 </ToolTipButton>
@@ -209,10 +209,12 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
                 <ToolTipButton
                   ariaText="Importar"
                   tooltipText="Importar coleccion"
+                  className='base-btn-2'
                   onClick={importCollections}
                 />
                 <ToolTipButton
                   ariaText="Exportar"
+                  className='base-btn-2'
                   tooltipText="Exportar coleccion"
                   onClick={() => setShowExportModal(true)}
                 />

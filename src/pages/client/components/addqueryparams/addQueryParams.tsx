@@ -103,25 +103,34 @@ const AddQueryParam: React.FC<AddQueryParamProps> = () => {
   }, [formattedUrl]);
 
   return (
-    <div className="p-4 overflow-auto">
-      <table className="table-auto w-full border-collapse">
-        <thead>
-          <tr className="dark:bg-zinc-900 bg-gray-200 text-gray-600 dark:text-zinc-300">
-            <th className="px-3 py-2 text-left">Parámetro</th>
-            <th className="px-3 py-2 text-left">Valor</th>
-            <th className="px-3 py-2 text-left">Acción</th>
+    <div className="p-4 bg-transparent  relative">
+      <table className="min-w-full table-fixed">
+        <thead className="border-b bg-gray-200 text-gray-700 border-gray-200 dark:border-zinc-700 uppercase dark:bg-zinc-950 dark:text-zinc-200">
+          <tr>
+            <th className="px-2 py-2 text-left text-xs font-medium tracking-wider w-1/3">
+              PARÁMETRO
+            </th>
+            <th className="px-2 py-2 text-left text-xs font-medium tracking-wider w-1/3">
+              VALOR
+            </th>
+            <th className="px-2 py-2 text-left text-xs font-medium tracking-wider w-1/6">
+              HABILITAR
+            </th>
+            <th className="px-2 py-2 text-left text-xs font-medium tracking-wider w-1/6">
+              ACCIONES
+            </th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="divide-y divide-gray-200 dark:divide-zinc-800">
           {displayedQueryArray.map((param, index) => (
             <motion.tr
               key={index}
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.2 }}
-              className="border-b dark:border-zinc-800 border-gray-300"
+              className={`${index % 2 === 0 ? 'dark:bg-zinc-950' : 'dark:bg-zinc-900'}`}
             >
-              <td className="px-3 ">
+              <td className="px-2 py-1">
                 <input
                   type="text"
                   placeholder="Key"
@@ -129,10 +138,10 @@ const AddQueryParam: React.FC<AddQueryParamProps> = () => {
                   onChange={(e) =>
                     handleInputChange(index, 'key', e.target.value)
                   }
-                  className="w-full p-1 bg-gray-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 outline-none placeholder:text-zinc-500"
+                  className="input-table-2"
                 />
               </td>
-              <td className="px-3 ">
+              <td className="px-2 py-1">
                 <input
                   type="text"
                   placeholder="Value"
@@ -140,17 +149,24 @@ const AddQueryParam: React.FC<AddQueryParamProps> = () => {
                   onChange={(e) =>
                     handleInputChange(index, 'value', e.target.value)
                   }
-                  className="w-full p-1 bg-gray-200 dark:bg-zinc-800 text-zinc-200 outline-none placeholder:text-zinc-500"
+                  className="input-table-2"
                 />
               </td>
-              <td className="px-3 py-2 text-center">
+              <td className="px-2 py-1 text-center">
+                <input
+                  type="checkbox"
+                  defaultChecked
+                  className="form-checkbox h-4 w-4 text-blue-600  cursor-pointer"
+                />
+              </td>
+              <td className="px-2 py-1 text-center">
                 {displayedQueryArray.length > 1 && (
                   <button
                     onClick={() => handleRemoveParam(index)}
-                    className=" flex items-center justify-center text-red-500 hover:bg-zinc-800 rounded"
+                    className="text-red-500 hover:text-red-400 transition-colors"
                     aria-label="Eliminar Parámetro"
                   >
-                    <Icon icon={ICONS_PAGES.trash} />
+                    <Icon icon={ICONS_PAGES.trash} width={17} height={17} />
                   </button>
                 )}
               </td>
@@ -160,7 +176,7 @@ const AddQueryParam: React.FC<AddQueryParamProps> = () => {
       </table>
 
       {formattedUrl.length > 0 && (
-        <div className="mb-4 absolute bottom-0 w px-2 py-1 text-xs bg-gray-200 dark:bg-zinc-800 rounded-lg flex justify-between items-center text-gray-700">
+        <div className="mt-4 px-2 py-1 text-xs bg-zinc-800 rounded-lg flex justify-between items-center text-zinc-400 fixed">
           <p className="font-mono text-inherit break-all">{formattedUrl}</p>
           <button
             onClick={handleCopy}

@@ -881,7 +881,7 @@ export default function AppClient() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                 >
-                  No hay tabs disponibles ⚛️
+                  Añadir tab ⚛️
                 </motion.div>
               )}
             </AnimatePresence>

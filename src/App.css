@@ -528,9 +528,17 @@ body {
   @apply bg-sky-500 text-white;
 }
 
+.input-table-2{
+  @apply w-full bg-transparent outline-none border-0 focus:ring-1 focus:ring-zinc-600 
+}
+
 
 .base-btn{
-  @apply px-3 py-1.5 bg-gray-300 dark:bg-zinc-800 hover:bg-sky-600 dark:hover:bg-sky-600 rounded-md text-zinc-800 dark:text-zinc-300 hover:text-white transition-colors text-xs font-semibold shadow-md
+  @apply px-3 py-1.5 bg-gray-300 dark:bg-zinc-800 hover:bg-sky-600 dark:hover:bg-sky-600 rounded-md text-zinc-800 dark:text-zinc-300 hover:text-white transition-colors text-xs font-semibold shadow-md flex items-center
+}
+
+.base-btn-2{
+  @apply px-3 py-1.5 bg-gray-200 dark:bg-zinc-800 hover:bg-sky-600 dark:hover:bg-sky-600 rounded-md text-zinc-800 dark:text-zinc-300 hover:text-white transition-colors text-xs font-semibold shadow-md
 }
 
 .tabler--bolt-off {

@@ -46,11 +46,11 @@ export const JsonNode: React.FC<JsonNodeProps> = ({
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.05 } },
+    visible: { opacity: 1, transition: { staggerChildren: 0.3 } },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, x: -20 },
+    hidden: { opacity: 0, x: -10 },
     visible: { opacity: 1, x: 0 },
   };
 
@@ -136,16 +136,17 @@ export const JsonNode: React.FC<JsonNodeProps> = ({
               <AnimatePresence>
                 {isHovered && (
                   <motion.div
-                    className="absolute z-10 p-2 bg-gray-900/90 backdrop-blur-md rounded-lg shadow-xl"
+                    className="absolute z-10 p-2 bg-gray-200 border-gray-300 backdrop-blur-md rounded-lg shadow-xl"
                     style={{ top: '1rem', left: '13rem' }}
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.8 }}
                   >
+                    
                     <img
                       src={String(data)}
-                      alt="Preview"
-                      className="w-24 h-24 object-cover rounded-md"
+                      alt={data?.valueOf()}
+                      className="w-34 h-34 object-cover"
                     />
                   </motion.div>
                 )}
