@@ -1,16 +1,7 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { AnimatePresence, motion } from 'framer-motion';
 import type React from 'react';
-import { 
-  memo, 
-  useEffect, 
-  useMemo, 
-  useRef, 
-  useState, 
-  useCallback, 
-  startTransition,
-  useDeferredValue
-} from 'react';
+import { memo, useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import toast from 'react-hot-toast';
 import { useDebounce } from 'use-debounce';
 import highlightCode from './higlight-code';
@@ -21,28 +12,13 @@ import { useJsonHook } from './methods-json/method';
 import { useXmlHook } from './methos-xml/method.xml';
 import type { CodeEditorProps } from './types';
 
-// Cache para coordenadas del cursor
-const coordinatesCache = new Map<string, { top: number; left: number }>();
 
-// Función optimizada para obtener coordenadas del cursor
+// Función para obtener coordenadas del cursor
 function getCaretCoordinates(textarea: HTMLTextAreaElement, position: number) {
-  const cacheKey = `${textarea.offsetWidth}-${position}-${textarea.value.length}`;
-  
-  if (coordinatesCache.has(cacheKey)) {
-    return coordinatesCache.get(cacheKey)!;
-  }
-
   const div = document.createElement("div");
+
   const style = window.getComputedStyle(textarea);
-  
-  // Solo copiar las propiedades esenciales
-  const essentialProps = [
-    'fontSize', 'fontFamily', 'fontWeight', 'letterSpacing', 'lineHeight',
-    'paddingTop', 'paddingLeft', 'paddingBottom', 'paddingRight',
-    'borderTopWidth', 'borderLeftWidth', 'borderBottomWidth', 'borderRightWidth'
-  ];
-  
-  essentialProps.forEach(prop => {
+  Array.from(style).forEach((prop) => {
     div.style.setProperty(prop, style.getPropertyValue(prop));
   });
 
@@ -53,7 +29,6 @@ function getCaretCoordinates(textarea: HTMLTextAreaElement, position: number) {
   div.style.overflow = "hidden";
   div.style.height = "auto";
   div.style.width = textarea.offsetWidth + "px";
-  div.style.top = "-9999px";
 
   const textBefore = textarea.value.substring(0, position);
   div.textContent = textBefore;
@@ -67,82 +42,13 @@ function getCaretCoordinates(textarea: HTMLTextAreaElement, position: number) {
   document.body.removeChild(div);
 
   const taRect = textarea.getBoundingClientRect();
-  const result = {
+  return {
     top: rect.top + window.scrollY,
     left: rect.left + window.scrollX,
     relativeTop: rect.top - taRect.top,
     relativeLeft: rect.left - taRect.left,
   };
-
-  // Cache con límite de tamaño
-  if (coordinatesCache.size > 50) {
-    const firstKey = coordinatesCache.keys().next().value;
-    coordinatesCache.delete(firstKey);
-  }
-  coordinatesCache.set(cacheKey, result);
-
-  return result;
 }
-
-// Componente memoizado para números de línea
-const LineNumbers = memo(({ lineCount }: {
-  lineCount: number;
-}) => {
-  const lineNumberElements = useMemo(
-    () =>
-      Array.from({ length: lineCount }, (_, i) => (
-        <div key={i} className="leading-6 text-right min-w-[2rem] font-mono">
-          {i + 1}
-        </div>
-      )),
-    [lineCount],
-  );
-
-  return <>{lineNumberElements}</>;
-});
-
-LineNumbers.displayName = 'LineNumbers';
-
-// Componente memoizado para autocompletado
-const AutocompletePopup = memo(({ 
-  suggestions, 
-  activeSuggestionIndex, 
-  caretCoords,
-  onSelect 
-}: {
-  suggestions: string[];
-  activeSuggestionIndex: number;
-  caretCoords: { top: number; left: number } | null;
-  onSelect: (suggestion: string) => void;
-}) => {
-  if (suggestions.length === 0 || !caretCoords) return null;
-
-  return (
-    <div
-      className="absolute z-50 bg-white dark:bg-zinc-800 border dark:border-zinc-700 rounded-md shadow-lg max-h-40 overflow-y-auto"
-      style={{
-        top: caretCoords.relativeTop + 20,
-        left: caretCoords.relativeLeft,
-      }}
-    >
-      {suggestions.map((suggestion, index) => (
-        <button
-          key={suggestion}
-          className={`block w-full px-3 py-1 text-left text-sm hover:bg-gray-100 dark:hover:bg-zinc-700 ${
-            index === activeSuggestionIndex 
-              ? 'bg-blue-100 dark:bg-blue-900' 
-              : ''
-          }`}
-          onClick={() => onSelect(suggestion)}
-        >
-          {suggestion}
-        </button>
-      ))}
-    </div>
-  );
-});
-
-AutocompletePopup.displayName = 'AutocompletePopup';
 
 const CodeEditor = ({
   value = '',
@@ -160,7 +66,6 @@ const CodeEditor = ({
   const searchInputRef = useRef<HTMLInputElement>(null);
   const inputRefTextOld = useRef<HTMLInputElement>(null);
   const inputRefTextNew = useRef<HTMLInputElement>(null);
-  const scrollTimeoutRef = useRef<number>();
 
   const [code, setCode] = useState(value);
   const [isOpenBar, setIsOpenBar] = useState<boolean>(false);
@@ -169,10 +74,6 @@ const CodeEditor = ({
   const [currentMatchIndex, setCurrentMatchIndex] = useState(-1);
   const [autocompleteSuggestions, setAutocompleteSuggestions] = useState<string[]>([]);
   const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(0);
-  const [caretCoords, setCaretCoords] = useState<{ top: number; left: number } | null>(null);
-
-  // Usar useDeferredValue para diferir actualizaciones no críticas
-  const deferredCode = useDeferredValue(code);
 
   const entornoActual = useEnviromentStore((state) => state.entornoActual);
   const currentEntornoList = useMemo(
@@ -181,37 +82,36 @@ const CodeEditor = ({
   );
 
   const { JsonSchema, minifyJson } = useJsonHook({
-    code: deferredCode,
+    code: code,
     setCode: setCode,
   });
 
   const { XmlScheme, minifyXml } = useXmlHook({
-    code: deferredCode,
+    code: code,
     setCode: setCode,
   });
 
-  // Optimización: useDebounce más agresivo para búsqueda
-  const [debouncedCode] = useDebounce(deferredCode, 100);
-  const [debouncedSearchValue] = useDebounce(searchValue, 150);
+  const [caretCoords, setCaretCoords] = useState<{ top: number; left: number } | null>(null);
+
+  // Optimización: useDebounce para el resaltado y la búsqueda
+  const [debouncedCode] = useDebounce(code, 200);
+  const [debouncedSearchValue] = useDebounce(searchValue, 200);
 
   // Optimización: Memoizar el cálculo de los resultados de búsqueda
   const findResults = useMemo(() => {
-    if (!debouncedSearchValue || !debouncedCode || typeof debouncedCode !== 'string') {
+    if (!debouncedSearchValue || !debouncedCode) {
       return [];
     }
     const results: number[] = [];
-    const searchLower = debouncedSearchValue.toLowerCase();
-    const codeLower = debouncedCode.toLowerCase();
-    
-    let index = codeLower.indexOf(searchLower);
-    while (index !== -1 && results.length < 1000) { // Límite para evitar rendimiento
+    let index = debouncedCode.indexOf(debouncedSearchValue);
+    while (index !== -1) {
       results.push(index);
-      index = codeLower.indexOf(searchLower, index + 1);
+      index = debouncedCode.indexOf(debouncedSearchValue, index + 1);
     }
     return results;
   }, [debouncedSearchValue, debouncedCode]);
 
-  // Optimización: Memoizar el HTML resaltado usando deferredCode
+  // Optimización: Memoizar el HTML resaltado
   const highlightedCodeHtml = useMemo(() => {
     return highlightCode(
       debouncedCode,
@@ -225,205 +125,151 @@ const CodeEditor = ({
 
   // Optimización: Memoizar el cálculo de los números de línea
   const lineCount = useMemo(() => {
-    if (typeof deferredCode !== 'string') return 1;
-    return Math.max(1, (deferredCode.match(/\n/g) || []).length + 1);
-  }, [deferredCode]);
+    if (code.length > 0) {
+      return code.split('\n').length;
+    }
+    return 1;
+  }, [code]);
 
-  // Sincronización de scroll optimizada con throttling
+  const lineNumberElements = useMemo(
+    () =>
+      Array.from({ length: lineCount }, (_, i) => (
+        <div key={i} className="leading-6 text-right min-w-[2rem] font-mono">
+          {i + 1}
+        </div>
+      )),
+    [lineCount],
+  );
+
+  // Sincronización de scroll usando requestAnimationFrame
   const handleScroll = useCallback(() => {
     if (!textareaRef.current || !lineNumbersRef.current || !highlightRef.current) return;
 
     const scrollTop = textareaRef.current.scrollTop;
     const scrollLeft = textareaRef.current.scrollLeft;
 
-    // Cancelar timeout anterior
-    if (scrollTimeoutRef.current) {
-      cancelAnimationFrame(scrollTimeoutRef.current);
-    }
-
-    scrollTimeoutRef.current = requestAnimationFrame(() => {
-      if (lineNumbersRef.current && highlightRef.current) {
-        lineNumbersRef.current.scrollTop = scrollTop;
-        highlightRef.current.scrollTop = scrollTop;
-        highlightRef.current.scrollLeft = scrollLeft;
-      }
+    requestAnimationFrame(() => {
+      lineNumbersRef.current!.scrollTop = scrollTop;
+      highlightRef.current!.scrollTop = scrollTop;
+      highlightRef.current!.scrollLeft = scrollLeft;
     });
   }, []);
 
   const handleCaretPosition = useCallback(() => {
     if (textareaRef.current) {
       const pos = textareaRef.current.selectionStart || 0;
-      try {
-        const coords = getCaretCoordinates(textareaRef.current, pos);
-        setCaretCoords(coords);
-      } catch (error) {
-        console.warn('Error calculating caret coordinates:', error);
-      }
+      const coords = getCaretCoordinates(textareaRef.current, pos);
+      setCaretCoords(coords);
     }
   }, []);
 
   // UseEffect para manejar la sincronización del estado y props.
   useEffect(() => {
-    if (typeof value === 'string' && value !== code) {
-      startTransition(() => {
-        setCode(value);
-      });
-    }
-  }, [value, code]);
+    setCode(value);
+  }, [value]);
 
-  // Scroll automático optimizado para resultados de búsqueda
   useEffect(() => {
     if (
       currentMatchIndex !== -1 &&
       textareaRef.current &&
-      findResults.length > 0 &&
-      typeof deferredCode === 'string'
+      highlightRef.current
     ) {
       const matchPos = findResults[currentMatchIndex];
-      const lines = deferredCode.substring(0, matchPos).split('\n');
+      const lines = code.substring(0, matchPos).split('\n');
       const lineIndex = lines.length - 1;
 
-      requestAnimationFrame(() => {
-        if (!textareaRef.current) return;
-        
-        const computedStyle = getComputedStyle(textareaRef.current);
-        const lineHeight = parseInt(computedStyle.lineHeight, 10) || 20;
-        
-        const scrollPosition = Math.max(0,
-          lineIndex * lineHeight - textareaRef.current.clientHeight / 2 + lineHeight / 2
-        );
-        
+      const lineHeight = parseInt(
+        getComputedStyle(textareaRef.current).lineHeight,
+        10,
+      );
+      if (!isNaN(lineHeight)) {
+        const scrollPosition =
+          lineIndex * lineHeight -
+          textareaRef.current.clientHeight / 2 +
+          lineHeight / 2;
         textareaRef.current.scrollTo({
           top: scrollPosition,
           behavior: 'smooth',
         });
-      });
+      }
     }
-  }, [currentMatchIndex, findResults, deferredCode]);
+  }, [currentMatchIndex, findResults, code]);
+
 
   const HandlersMinifyBody = useCallback(() => {
-    startTransition(() => {
-      if (language === 'json') return minifyJson();
-      if (language === 'xml') return minifyXml();
-      return toast.error('El formato no es JSON ni XML, no se puede minificar.');
-    });
+    if (language === 'json') return minifyJson();
+    if (language === 'xml') return minifyXml();
+    return toast.error('El formato no es JSON ni XML, no se puede minificar.');
   }, [language, minifyJson, minifyXml]);
 
   const HandlersIdentarBody = useCallback(() => {
-    startTransition(() => {
-      if (language === 'json') return JsonSchema();
-      if (language === 'xml') return XmlScheme();
-    });
+    if (language === 'json') return JsonSchema();
+    if (language === 'xml') return XmlScheme();
   }, [language, JsonSchema, XmlScheme]);
 
-  // Optimización: Memoizar sugerencias de autocompletado
-  const getSuggestions = useCallback((searchText: string) => {
-    if (!searchText) return [];
-    
-    const searchLower = searchText.toLowerCase();
-    return currentEntornoList
-      .map((env) => env.key)
-      .filter((key) => key.toLowerCase().startsWith(searchLower))
-      .slice(0, 10); // Limitar resultados
-  }, [currentEntornoList]);
-
-  const handleChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value;
-    const cursorPosition = e.target.selectionStart;
-    
-    // Actualización inmediata del estado local
     setCode(newValue);
-    
-    // Diferir la llamada a onChange
-    startTransition(() => {
-      onChange?.(newValue);
-    });
-
-    // Autocompletado optimizado
+    onChange?.(newValue);
+    const cursorPosition = e.target.selectionStart;
     const textBeforeCursor = newValue.substring(0, cursorPosition);
     const lastBracesIndex = textBeforeCursor.lastIndexOf('{{');
-    
     if (
       lastBracesIndex !== -1 &&
       textBeforeCursor.lastIndexOf('}}') < lastBracesIndex
     ) {
       const searchText = textBeforeCursor.substring(lastBracesIndex + 2);
-      const suggestions = getSuggestions(searchText);
+      const suggestions = currentEntornoList
+        .map((env) => env.key)
+        .filter((key) => key.toLowerCase().startsWith(searchText.toLowerCase()));
       setAutocompleteSuggestions(suggestions);
       setActiveSuggestionIndex(0);
-      handleCaretPosition();
     } else {
       setAutocompleteSuggestions([]);
     }
-  }, [onChange, getSuggestions, handleCaretPosition]);
+  };
 
-  const handleAutocompleteSelect = useCallback((suggestion: string) => {
-    if (typeof code !== 'string') return;
-    
-    const cursorPos = textareaRef.current?.selectionStart || 0;
-    const textBefore = code.substring(0, cursorPos);
-    const lastBracesIndex = textBefore.lastIndexOf('{{');
-    
-    if (lastBracesIndex !== -1) {
-      const newCode = 
-        code.substring(0, lastBracesIndex) + 
-        `{{${suggestion}}}` + 
-        code.substring(cursorPos);
-      
-      setCode(newCode);
-      startTransition(() => {
-        onChange?.(newCode);
-      });
-      setAutocompleteSuggestions([]);
-    }
-  }, [code, onChange]);
-
-  const handleCLickReplaceTextFirst = useCallback(() => {
+  const handleCLickReplaceTextFirst = () => {
     const from = inputRefTextOld.current?.value || '';
     const to = inputRefTextNew.current?.value || '';
 
     if (!from) return toast.error('Ingresa un valor a buscar');
-    if (typeof code !== 'string' || !code?.includes(from)) {
+
+    if (!code?.includes(from)) {
       return toast.error('El valor a buscar no se encuentra en el texto');
     }
 
-    startTransition(() => {
-      const result = code?.replace(from, to);
-      setCode(result);
-      onChange?.(result);
-      toast.success('Reemplazo realizado');
-    });
-  }, [code, onChange]);
+    const result = code?.replace(from, to);
+    setCode(result);
+    toast.success('Reemplazo realizado');
+  };
 
-  const handleCLickReplaceText = useCallback(() => {
+  const handleCLickReplaceText = () => {
     const from = inputRefTextOld.current?.value || '';
     const to = inputRefTextNew.current?.value || '';
 
-    if (!from) return toast.error('Ingresa un valor a buscar');
-    if (typeof code !== 'string' || !code?.includes(from)) {
+    if (!code?.includes(from)) {
       return toast.error('El valor a buscar no se encuentra en el texto');
     }
 
-    startTransition(() => {
-      const result = code?.replaceAll(from, to);
-      setCode(result);
-      onChange?.(result);
-      toast.success('Reemplazo realizado');
-    });
-  }, [code, onChange]);
+    if (!from) return toast.error('Ingresa un valor a buscar');
+    const result = code?.replaceAll(from, to);
+    setCode(result);
+    toast.success('Reemplazo realizado');
+  };
 
-  const handleNextMatch = useCallback(() => {
+  const handleNextMatch = () => {
     setCurrentMatchIndex((prevIndex) => (prevIndex + 1) % findResults.length);
-  }, [findResults.length]);
+  };
 
-  const handlePrevMatch = useCallback(() => {
+  const handlePrevMatch = () => {
     setCurrentMatchIndex(
       (prevIndex) => (prevIndex - 1 + findResults.length) % findResults.length,
     );
-  }, [findResults.length]);
+  };
   
-  // Handle KEY DOWN ARROW CODE EDITORS optimizado
-  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  // Handle KEY DOWN ARROW CODE EDITORS
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (autocompleteSuggestions.length > 0) {
       if (e.key === 'ArrowDown') {
         e.preventDefault();
@@ -444,10 +290,10 @@ const CodeEditor = ({
       if (e.key === 'Enter' || e.key === 'Tab') {
         e.preventDefault();
         const suggestion = autocompleteSuggestions[activeSuggestionIndex];
-        handleAutocompleteSelect(suggestion);
-        return;
-      }
-      if (e.key === 'Escape') {
+        const newCode =
+          code.substring(0, code.lastIndexOf('{{')) + `{{${suggestion}}}`;
+        setCode(newCode);
+        onChange?.(newCode);
         setAutocompleteSuggestions([]);
         return;
       }
@@ -457,36 +303,17 @@ const CodeEditor = ({
       e.preventDefault();
       const start = e.currentTarget.selectionStart;
       const end = e.currentTarget.selectionEnd;
-      
-      if (typeof code !== 'string') return;
-      
       const newValue = code.substring(0, start) + '  ' + code.substring(end);
-      
       setCode(newValue);
-      startTransition(() => {
-        onChange?.(newValue);
-      });
+      onChange?.(newValue);
 
-      requestAnimationFrame(() => {
-        if (textareaRef.current) {
-          textareaRef.current.selectionStart = textareaRef.current.selectionEnd =
-            start + 2;
-        }
-      });
+      if (textareaRef.current) {
+        textareaRef.current.selectionStart = textareaRef.current.selectionEnd =
+          start + 2;
+      }
     }
-  }, [autocompleteSuggestions, activeSuggestionIndex, handleAutocompleteSelect, code, onChange]);
+  };
 
-  // Validación JSON memoizada
-  const jsonValidation = useMemo(() => {
-    if (language !== 'json' || typeof deferredCode !== 'string') return null;
-    
-    try {
-      JSON.parse(deferredCode);
-      return <Icon icon="tabler:check" width={15} height={15} />;
-    } catch {
-      return <Icon icon={ICONS_EDITOR.x} width={13} height={13} color="red" />;
-    }
-  }, [deferredCode, language]);
 
   useEffect(() => {
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
@@ -505,6 +332,7 @@ const CodeEditor = ({
 
       if ((e.ctrlKey || e.metaKey) && e.key === 's') {
         e.preventDefault();
+        console.log("buetify")
         HandlersIdentarBody();
       }
 
@@ -529,9 +357,6 @@ const CodeEditor = ({
 
     return () => {
       window.removeEventListener('keydown', handleGlobalKeyDown);
-      if (scrollTimeoutRef.current) {
-        cancelAnimationFrame(scrollTimeoutRef.current);
-      }
     };
   }, [isOpenFindBar, findResults.length, HandlersIdentarBody]);
 
@@ -641,7 +466,7 @@ const CodeEditor = ({
             className="px-3 py-2 text-sm overflow-hidden bg-gray-200/50 border-r-zinc-200 dark:bg-zinc-950/70 dark:border-zinc-800 text-sky-600 dark:text-teal-200"
             style={{ height, minHeight, maxHeight }}
           >
-            <LineNumbers lineCount={lineCount} />
+            {lineNumberElements}
           </div>
 
           {/* Editor Container */}
@@ -657,11 +482,12 @@ const CodeEditor = ({
             <textarea
               ref={textareaRef}
               value={code}
-              onChange={handleChange}
+              onChange={(e) => {
+                handleChange(e);
+                handleCaretPosition();
+              }}
               onScroll={handleScroll}
               onKeyDown={handleKeyDown}
-              onClick={handleCaretPosition}
-              onKeyUp={handleCaretPosition}
               className="absolute inset-0 transition-colors p-2 text-sm font-mono leading-6 resize-none outline-none placeholder-lime-600  dark:placeholder-lime-200"
               style={{
                 color: 'transparent',
@@ -669,14 +495,6 @@ const CodeEditor = ({
               }}
               spellCheck={false}
               placeholder={placeholder}
-            />
-
-            {/* Autocompletado */}
-            <AutocompletePopup
-              suggestions={autocompleteSuggestions}
-              activeSuggestionIndex={activeSuggestionIndex}
-              caretCoords={caretCoords}
-              onSelect={handleAutocompleteSelect}
             />
           </div>
         </div>
@@ -712,11 +530,20 @@ const CodeEditor = ({
               <Icon icon={ICONS_EDITOR.search} width={14} />
             </button>
             <span className="text-green-500 dark:text-green-400">
-              {jsonValidation}
+              {(() => {
+                try {
+                  JSON.parse(value);
+                  return <Icon icon="tabler:check" width={15} height={15} />;
+                } catch {
+                  return (
+                    <Icon icon={ICONS_EDITOR.x} width={13} height={13} color="red" />
+                  );
+                }
+              })()}
             </span>
 
             <span className="hidden sm:inline">
-              {language.toUpperCase()} | {typeof deferredCode === 'string' ? deferredCode.length : 0} caracteres | {lineCount}{' '}
+              {language.toUpperCase()} | {code.length} caracteres | {lineCount}{' '}
               líneas
             </span>
           </div>

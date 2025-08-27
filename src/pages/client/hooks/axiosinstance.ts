@@ -11,7 +11,7 @@ const replaceEnvVariables = (text, variables) => {
   });
 };
 
-const detectResponseType = (headers) => {
+const detectResponseType = (headers: any) => {
   const contentType = headers?.['content-type'] || '';
   if (contentType.includes('application/json')) return 'json';
   if (contentType.includes('text/html')) return 'html';

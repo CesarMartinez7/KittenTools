@@ -4,13 +4,14 @@ import { nanoid } from 'nanoid';
 import type React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
+import ToolTipButton from '../../../../ui/tooltip/TooltipButton';
 import type { Collection } from '../../db';
+import SidebarModal from '../../modals/modal.template';
+import { useModalStore } from '../../modals/store.modal';
 import { useRequestStore } from '../../stores/request.store';
 import type { SavedRequestsSidebarProps } from '../../types/types';
 import { useEnviromentStore } from '../enviroment/store.enviroment';
 import ItemNode from '../itemnode/item-node';
-import SidebarModal from '../../modals/modal.template';
-import ToolTipButton from '../../../../ui/tooltip/TooltipButton';
 
 // Componente ResizableSidebar
 interface ResizableSidebarProps {
@@ -103,7 +104,7 @@ export const ResizableSidebar: React.FC<ResizableSidebarProps> = ({
 // Remplazado ///✅
 
 // 🚀 Nuevo componente Modal de Exportación
-const ExportModal = ({ isOpen, onClose, onExport } : any) => {
+const ExportModal = ({ isOpen, onClose, onExport }: any) => {
   const collections = useRequestStore((state) => state.collections);
 
   if (!isOpen) return null;
@@ -156,20 +157,22 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
   const [currenIdx, setCurrentIdx] = useState<number>(1);
   const [showExportModal, setShowExportModal] = useState(false);
 
-  const handleAddCollection = () => {
-    const newCollection: Collection = {
-      id: nanoid(),
-      name: 'Nueva Colección',
-      item: [],
-    };
-    addCollection(newCollection);
-  };
+  // const handleAddCollection = () => {
+  //   const newCollection: Collection = {
+  //     id: nanoid(),
+  //     name: 'Nueva Colección',
+  //     item: [],
+  //   };
+  //   addCollection(newCollection);
+  // };
 
   const handleExport = (collectionId: string) => {
     toast.success(collectionId);
     exportCollections(collectionId);
     setShowExportModal(false);
   };
+
+  const openModalNews = useModalStore((state) => state.openNewsShowModal);
 
   return (
     <ResizableSidebar minWidth={100} maxWidth={800} initialWidth={470}>
@@ -189,7 +192,7 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
                 <ToolTipButton
                   ariaText="Nueva"
                   tooltipText="Añadir coleccion, request, enviroment"
-                  onClick={handleAddCollection}
+                  onClick={openModalNews}
                 >
                   Nueva
                 </ToolTipButton>

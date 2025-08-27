@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
+import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { BaseModalLazy } from '../../../../ui/lazy-components';
 import useEnviromentHook from './enviromentHook';
@@ -9,16 +10,32 @@ export default function EnviromentComponent() {
     (state) => state.createAndSetNewEnviroment,
   );
 
+  // Estados para el modal de crear entorno
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [newEnvironmentName, setNewEnvironmentName] = useState('');
+
   const handleClickCrearEntorno = () => {
-    const name = window.prompt('Nombre del entorno');
-    if (name) {
-      if (name?.trim().length > 0) {
-        createEntornoFunction(name as string);
-        return;
-      }
-      toast.error('Asegurese de asignar un nombre al entorno');
+    setIsCreateModalOpen(true);
+    setNewEnvironmentName('');
+  };
+
+  const handleCreateEnvironment = () => {
+    const trimmedName = newEnvironmentName.trim();
+
+    if (trimmedName.length === 0) {
+      toast.error('Asegúrese de asignar un nombre al entorno');
+      return;
     }
-    toast.error('Asegurese de asignar un nombre al entorno');
+
+    createEntornoFunction(trimmedName);
+    setIsCreateModalOpen(false);
+    setNewEnvironmentName('');
+    toast.success(`Entorno "${trimmedName}" creado exitosamente`);
+  };
+
+  const handleCancelCreate = () => {
+    setIsCreateModalOpen(false);
+    setNewEnvironmentName('');
   };
 
   const {
@@ -45,6 +62,7 @@ export default function EnviromentComponent() {
 
   return (
     <div className=" h-full p-4">
+      {/* Modal para importar entornos */}
       <BaseModalLazy isOpen={isOpen} onClose={toggleModal}>
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
@@ -97,6 +115,102 @@ export default function EnviromentComponent() {
         </motion.div>
       </BaseModalLazy>
 
+      {/* Modal para crear nuevo entorno */}
+      <BaseModalLazy isOpen={isCreateModalOpen} onClose={handleCancelCreate}>
+        <motion.div
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.9, opacity: 0 }}
+          className="bg-white/95 dark:bg-zinc-900/95 backdrop-blur-sm rounded-xl border border-zinc-300/50 dark:border-zinc-800/50 p-6 max-w-md w-full mx-4 shadow-2xl"
+        >
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-[#4ec9b0] to-[#45b7aa] rounded-lg flex items-center justify-center">
+                <svg
+                  className="w-5 h-5 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                  />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100">
+                  Crear Nuevo Entorno
+                </h3>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                  Ingresa el nombre para tu entorno
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={handleCancelCreate}
+              className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors p-1"
+            >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fillRule="evenodd"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </button>
+          </div>
+
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+                Nombre del Entorno
+              </label>
+              <input
+                type="text"
+                value={newEnvironmentName}
+                onChange={(e) => setNewEnvironmentName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleCreateEnvironment();
+                  } else if (e.key === 'Escape') {
+                    handleCancelCreate();
+                  }
+                }}
+                placeholder="Ej: Desarrollo, Producción, Testing..."
+                className="w-full px-3 py-2.5 bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-300 dark:border-zinc-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4ec9b0]/50 focus:border-[#4ec9b0] transition-all text-zinc-800 dark:text-zinc-200 placeholder-zinc-500 dark:placeholder-zinc-400"
+                autoFocus
+              />
+              <div className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+                El nombre debe tener al menos 1 caracter
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end space-x-3 pt-4 border-t border-zinc-200 dark:border-zinc-700">
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={handleCancelCreate}
+                className="px-4 py-2 text-sm font-medium text-zinc-600 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-lg transition-colors"
+              >
+                Cancelar
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={handleCreateEnvironment}
+                disabled={newEnvironmentName.trim().length === 0}
+                className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-[#4ec9b0] to-[#45b7aa] hover:from-[#45b7aa] to-[#3ea89d] disabled:from-zinc-400 disabled:to-zinc-500 disabled:cursor-not-allowed rounded-lg transition-all shadow-md hover:shadow-lg disabled:shadow-none"
+              >
+                Crear Entorno
+              </motion.button>
+            </div>
+          </div>
+        </motion.div>
+      </BaseModalLazy>
+
       <AnimatePresence mode="wait">
         {entornoActual.length > 0 ? (
           <motion.div
@@ -128,10 +242,7 @@ export default function EnviromentComponent() {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => {
-                    handleClickCrearEntorno();
-                  }}
-                  title="En desarrollo"
+                  onClick={handleClickCrearEntorno}
                   className="px-3 py-1.5 bg-gray-300 dark:bg-zinc-800 hover:bg-sky-600 dark:hover:bg-sky-600 rounded-md text-zinc-800 dark:text-zinc-300 hover:text-white transition-colors text-xs font-semibold shadow-md"
                 >
                   Crear entorno
@@ -165,7 +276,7 @@ export default function EnviromentComponent() {
                     <motion.tr
                       key={i}
                       variants={rowVariants}
-                      className={`dark:hover:bg-zinc-900 dark:bg-zinc-950 hover:bg-gray-50  text-gray-600 dark:text-zinc-300 transition-colors border-gray-100 dark:border-zinc-800 bg-white ${i % 2 === 0 ? 'dark:bg-red-950/30  bg-gray-200' : ''} `}
+                      className={`dark:hover:bg-zinc-900 dark:bg-zinc-900 hover:bg-gray-50  text-gray-600 dark:text-zinc-300 transition-colors border-gray-100 dark:border-zinc-800 bg-white ${i % 2 === 0 ? 'dark:bg-zinc-950  bg-gray-200' : ''} `}
                     >
                       <td className="px-2 py-1 whitespace-nowrap">
                         <input

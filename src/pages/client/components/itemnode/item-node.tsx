@@ -151,12 +151,12 @@ const ItemNode: React.FC<ItemNodeProps> = ({
                   level === 0
                     ? 'text-green-primary/85'
                     : level === 1
-                    ? 'text-green-primary'
-                    : level === 2
-                    ? 'text-green-300'
-                    : level === 3
-                    ? 'text-green-200'
-                    : 'text-green-100'
+                      ? 'text-green-primary'
+                      : level === 2
+                        ? 'text-green-300'
+                        : level === 3
+                          ? 'text-green-200'
+                          : 'text-green-100'
                 }`}
               />
             )}

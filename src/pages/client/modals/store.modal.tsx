@@ -7,6 +7,8 @@ interface ModalState {
   isNewRequestModalOpen: boolean;
   isNewFolderModalOpen: boolean;
 
+  isNewsShowModal: boolean;
+
   openRenameModal: () => void;
   closeRenameModal: () => void;
   openDeleteModal: () => void;
@@ -14,6 +16,8 @@ interface ModalState {
   openNewRequestModal: () => void;
   closeNewRequestModal: () => void;
   openNewFolderModal: () => void;
+  openNewsShowModal: () => void;
+  closeNewsShowModal: () => void;
   closeNewFolderModal: () => void;
 }
 
@@ -22,6 +26,10 @@ export const useModalStore = create<ModalState>((set) => ({
   isDeleteModalOpen: false,
   isNewRequestModalOpen: false,
   isNewFolderModalOpen: false,
+  isNewsShowModal: false,
+
+  openNewsShowModal: () => set({ isNewsShowModal: true }),
+  closeNewsShowModal: () => set({ isNewsShowModal: false }),
 
   openRenameModal: () => set({ isRenameModalOpen: true }),
   closeRenameModal: () => set({ isRenameModalOpen: false }),
