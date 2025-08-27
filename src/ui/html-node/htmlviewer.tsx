@@ -1,6 +1,6 @@
-import React, { useState, useMemo } from 'react';
 import { Icon } from '@iconify/react';
 import searchIcon from '@iconify-icons/tabler/search';
+import React, { useMemo, useState } from 'react';
 import HtmlNode from '../html';
 
 interface HtmlViewerProps {

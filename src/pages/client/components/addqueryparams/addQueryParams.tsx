@@ -5,9 +5,9 @@ import { motion } from 'framer-motion';
 import { useCallback, useMemo } from 'react';
 import { toast } from 'react-hot-toast';
 import { create } from 'zustand';
+import ICONS_PAGES from '../../icons/ICONS_PAGE';
 import { useRequestStore } from '../../stores/request.store';
 
-import ICONS_PAGES from '../../icons/ICONS_PAGE';
 // Define el estado y las acciones del mini-store
 type FormattedUrlStore = {
   formattedUrl: string;

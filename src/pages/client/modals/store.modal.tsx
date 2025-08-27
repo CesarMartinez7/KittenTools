@@ -9,6 +9,10 @@ interface ModalState {
 
   isNewsShowModal: boolean;
 
+  isExportCollection: boolean;
+  openExportCollection: () => void;
+  closeExportCollection: () => void;
+
   openRenameModal: () => void;
   closeRenameModal: () => void;
   openDeleteModal: () => void;
@@ -28,8 +32,10 @@ export const useModalStore = create<ModalState>((set) => ({
   isNewFolderModalOpen: false,
   isNewsShowModal: false,
 
-  openNewsShowModal: () => set({ isNewsShowModal: true }),
-  closeNewsShowModal: () => set({ isNewsShowModal: false }),
+  isExportCollection: false,
+
+  openExportCollection: () => set({ isExportCollection: true }),
+  closeExportCollection: () => set({ isExportCollection: false }),
 
   openRenameModal: () => set({ isRenameModalOpen: true }),
   closeRenameModal: () => set({ isRenameModalOpen: false }),
@@ -39,4 +45,8 @@ export const useModalStore = create<ModalState>((set) => ({
   closeNewRequestModal: () => set({ isNewRequestModalOpen: false }),
   openNewFolderModal: () => set({ isNewFolderModalOpen: true }),
   closeNewFolderModal: () => set({ isNewFolderModalOpen: false }),
+
+  // Aquí se agregan las funciones que faltaban
+  openNewsShowModal: () => set({ isNewsShowModal: true }),
+  closeNewsShowModal: () => set({ isNewsShowModal: false }),
 }));

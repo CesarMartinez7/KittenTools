@@ -12,6 +12,7 @@ import { useRequestStore } from '../../stores/request.store';
 import type { SavedRequestsSidebarProps } from '../../types/types';
 import { useEnviromentStore } from '../enviroment/store.enviroment';
 import ItemNode from '../itemnode/item-node';
+import { BaseModalLazy } from '../../../../ui/lazy-components';
 
 // Componente ResizableSidebar
 interface ResizableSidebarProps {
@@ -110,7 +111,7 @@ const ExportModal = ({ isOpen, onClose, onExport }: any) => {
   if (!isOpen) return null;
 
   return (
-    <SidebarModal isOpen={isOpen} onClose={onClose}>
+    <BaseModalLazy isOpen={isOpen} onClose={onClose}>
       <h3 className="mb-4 text-xl font-bold text-white">
         Selecciona una colección para exportar
       </h3>
@@ -138,7 +139,7 @@ const ExportModal = ({ isOpen, onClose, onExport }: any) => {
           Cerrar
         </button>
       </div>
-    </SidebarModal>
+    </BaseModalLazy>
   );
 };
 
@@ -209,12 +210,12 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
                 <ToolTipButton
                   ariaText="Importar"
                   tooltipText="Importar coleccion"
-                  className='base-btn-2'
+                  className="base-btn-2"
                   onClick={importCollections}
                 />
                 <ToolTipButton
                   ariaText="Exportar"
-                  className='base-btn-2'
+                  className="base-btn-2"
                   tooltipText="Exportar coleccion"
                   onClick={() => setShowExportModal(true)}
                 />

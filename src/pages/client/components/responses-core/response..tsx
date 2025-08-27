@@ -4,11 +4,11 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { JsonNode } from '../../../../ui/formatter-JSON/jsonnode.';
+import HtmlNode from '../../../../ui/html-node/html';
 import TableData from '../../../../ui/Table';
+import ToolTipButton from '../../../../ui/tooltip/TooltipButton';
 import XmlNode from '../../../../ui/xml-node/xmlnode';
 import { useRequestStore } from '../../stores/request.store';
-import HtmlNode from '../../../../ui/html-node/html';
-import ToolTipButton from '../../../../ui/tooltip/TooltipButton';
 
 const parseHtmlString = (htmlString: string): Node | null => {
   try {
@@ -228,7 +228,11 @@ export default function ResponsesTypesComponent({
             </pre>
           );
         } catch (e) {
-          return <p className="text-red-400">Error al codificar a Base64. {JSON.stringify(e)}</p>;
+          return (
+            <p className="text-red-400">
+              Error al codificar a Base64. {JSON.stringify(e)}
+            </p>
+          );
         }
       case 'raw':
       default:

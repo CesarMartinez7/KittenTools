@@ -30,12 +30,13 @@ import ScriptComponent from './components/scripts/script-component';
 import { SideBar } from './components/sidebar/SideBar';
 import type { Collection } from './db';
 import RequestHook from './hooks/request.client';
+import ICONS_PAGES from './icons/ICONS_PAGE';
 import { VariantsAnimation } from './mapper-ops';
+import ExportModal from './modals/export.modal';
 import { useModalStore } from './modals/store.modal';
 import RequestForm from './request.form';
 import ResponsePanel from './response-panel';
 import { type RequestData, useRequestStore } from './stores/request.store';
-import ICONS_PAGES from './icons/ICONS_PAGE';
 import type { EventRequest } from './types/types';
 
 interface ContentTypeProps {
@@ -484,6 +485,12 @@ export default function AppClient() {
   const refForm = useRef<HTMLFormElement>(null);
   const tabsContainerRef = useRef<HTMLDivElement>(null);
 
+  const isOpenModalExport = useModalStore((state) => state.isExportCollection);
+  const openModalExport = useModalStore((state) => state.openExportCollection);
+  const closeModalExport = useModalStore(
+    (state) => state.closeExportCollection,
+  );
+
   const { addCollection } = useRequestStore();
 
   const handleAddCollection = () => {
@@ -548,6 +555,7 @@ export default function AppClient() {
     [currentTab, listEntornos],
   );
 
+  const { importCollections, exportCollections } = useRequestStore();
   // Memoizar mappers
   const NewMappers = useMemo(
     () => [
@@ -565,12 +573,14 @@ export default function AppClient() {
       {
         name: 'Importar coleccion',
         icon: substack,
-        method: handleAddCollection,
+        method: importCollections,
       },
       {
         name: 'Exportar coleccion',
         icon: substack,
-        method: handleAddCollection,
+        method: () => {
+          openModalExport();
+        },
       },
     ],
     [],
@@ -782,7 +792,6 @@ export default function AppClient() {
                         damping: 20,
                       },
                     }}
-                    
                     className="group relative p-5 bg-white/60 dark:bg-zinc-800/60 hover:bg-gradient-to-br hover:from-white hover:to-zinc-50 dark:hover:from-zinc-800 dark:hover:to-zinc-900 backdrop-blur-sm border border-zinc-200/60 dark:border-zinc-700/60 hover:border-[#4ec9b0]/40 dark:hover:border-[#4ec9b0]/50 rounded-2xl flex justify-center items-center flex-col transition-all duration-300 shadow-sm hover:shadow-xl hover:shadow-[#4ec9b0]/10 dark:hover:shadow-[#4ec9b0]/5 min-h-[120px] overflow-hidden"
                     title={ne.name}
                   >
@@ -939,6 +948,12 @@ export default function AppClient() {
           </Panel>
         </PanelGroup>
       </div>
+
+      <ExportModal
+        isOpen={isOpenModalExport}
+        onExport={exportCollections}
+        onClose={closeModalExport}
+      />
     </div>
   );
 }

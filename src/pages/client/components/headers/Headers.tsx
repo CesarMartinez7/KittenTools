@@ -197,14 +197,17 @@ export const HeadersAddRequest: React.FC<HeadersAddRequestProps> = () => {
   // Función para añadir una nueva cabecera (explicita)
   const handleAddHeader = useCallback(() => {
     const currentHeaders = currentTab?.headers || {};
-    const newHeadersArray = Object.entries(currentHeaders).map(([key, value]) => ({ key, value }));
+    const newHeadersArray = Object.entries(currentHeaders).map(
+      ([key, value]) => ({ key, value }),
+    );
     newHeadersArray.push({ key: '', value: '' });
     handleUpdateHeaders(newHeadersArray);
   }, [currentTab, handleUpdateHeaders]);
 
-
   return (
-    <div className="p-4 bg-transparent "> {/* Contenedor principal con fondo oscuro */}
+    <div className="p-4 bg-transparent ">
+      {' '}
+      {/* Contenedor principal con fondo oscuro */}
       <div className="flex justify-between items-center mb-4 text-sm font-semibold text-gray-400">
         <button
           onClick={handleAddHeader}
@@ -215,7 +218,6 @@ export const HeadersAddRequest: React.FC<HeadersAddRequestProps> = () => {
         </button>
         {/* Aquí puedes añadir los otros botones como "Importar Entornos" y "Crear entorno" */}
       </div>
-
       <table className="min-w-full table-fixed">
         <thead className=" border-b bg-gray-200 text-gray-700 border-gray-200 dark:border-zinc-700 uppercase dark:bg-zinc-950 dark:text-zinc-200">
           <tr>
@@ -237,7 +239,7 @@ export const HeadersAddRequest: React.FC<HeadersAddRequestProps> = () => {
           {displayedHeaders.map((header, index) => (
             <tr
               key={index}
-              className={`${index % 2 === 0 ? 'dark:bg-zinc-950 ' : 'dark:bg-zinc-900'} `} 
+              className={`${index % 2 === 0 ? 'dark:bg-zinc-950 ' : 'dark:bg-zinc-900'} `}
             >
               <td className="px-2 py-1">
                 <input
@@ -272,7 +274,7 @@ export const HeadersAddRequest: React.FC<HeadersAddRequestProps> = () => {
                   className="text-red-500 hover:text-red-400 transition-colors"
                   aria-label="Eliminar cabecera"
                 >
-                  <Icon icon={ICONS_PAGES.trash}  width={17} height={17} />
+                  <Icon icon={ICONS_PAGES.trash} width={17} height={17} />
                 </button>
               </td>
             </tr>

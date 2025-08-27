@@ -221,7 +221,7 @@ export default function EnviromentComponent() {
             variants={tableVariants}
             className="space-y-4 h-full"
           >
-            <div className="flex justify-between items-center p-2 text-xs">
+            <div className="flex justify-between items-center p-2 text-xs truncate">
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -230,7 +230,7 @@ export default function EnviromentComponent() {
               >
                 + Añadir Variable
               </motion.button>
-              <div className="space-x-2.5">
+              <div className="space-x-2.5 flex flex-row truncate">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}

@@ -142,7 +142,6 @@ export const JsonNode: React.FC<JsonNodeProps> = ({
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.8 }}
                   >
-                    
                     <img
                       src={String(data)}
                       alt={data?.valueOf()}

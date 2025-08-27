@@ -1,7 +1,7 @@
 import { useRequestStore } from '../stores/request.store';
 import SidebarModal from './modal.template';
 
-const ExportModal = ({ isOpen, onClose, onExport }: any) => {
+const ExportModal = ({ isOpen, onClose, onExport }) => {
   const collections = useRequestStore((state) => state.collections);
 
   if (!isOpen) return null;
