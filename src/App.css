@@ -32,6 +32,14 @@
 }
 
 
+tr::nth-child(even) {
+  background-color: red;
+}
+
+tr::nth-child(odd){
+  background-color: black;
+}
+
 .pixel--bolt-solid {
   display: inline-block;
   width: 55px;

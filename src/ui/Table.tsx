@@ -69,12 +69,12 @@ export default function TableData({ data }: TableDataProps) {
       className=" h-full overflow-auto bg-slate-50 dark:bg-zinc-900 transition-colors duration-300"
     >
       {!error ? (
-        <div className="relative shadow-lg rounded-lg overflow-hidden">
-          <table className="w-full text-xs text-left text-slate-700 dark:text-zinc-300">
+        <div className="relative shadow-lg  overflow-hidden">
+          <table className="w-full text-xs text-left text-slate-700 dark:text-zinc-300 table-auto">
             <thead className="text-xs uppercase text-slate-600 dark:text-zinc-400 bg-slate-200 dark:bg-zinc-800 sticky py-2 top-0 shadow-sm z-10">
               <tr>
                 {columnNames?.map((col, idx) => (
-                  <th scope="col" key={idx} className="px-6 py-1 font-semibold">
+                  <th scope="col" key={idx} className="px-6 py-4 font-semibold">
                     {col}
                   </th>
                 ))}

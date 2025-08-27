@@ -35,7 +35,7 @@ import { useModalStore } from './modals/store.modal';
 import RequestForm from './request.form';
 import ResponsePanel from './response-panel';
 import { type RequestData, useRequestStore } from './stores/request.store';
-import ICONS_PAGES from './types/ICONS_PAGE';
+import ICONS_PAGES from './icons/ICONS_PAGE';
 import type { EventRequest } from './types/types';
 
 interface ContentTypeProps {
@@ -113,7 +113,7 @@ const TabNavigation = memo(
     setMimeSelected: (index: number) => void;
   }) => {
     return (
-      <div className="relative flex text-gray-800 dark:text-white border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+      <div className="relative flex text-gray-800 dark:text-white border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
         {Opciones.map((opcion, index) => {
           const isSelected = index === selectedIdx;
           return (
@@ -122,10 +122,10 @@ const TabNavigation = memo(
               type="button"
               onClick={() => setMimeSelected(index)}
               className={`
-              relative btn btn-sm text-sm py-2 px-4 z-10 max-w-fit truncate transition-colors
+              relative btn btn-sm text-xs py-2 px-4 z-10 max-w-fit truncate transition-colors
               ${
                 isSelected
-                  ? 'font-semibold text-gray-800 dark:text-white dark:bg-zinc-950 bg-gray-200'
+                  ? ' text-gray-800 dark:text-white dark:bg-zinc-950 bg-gray-200'
                   : 'text-gray-500 dark:text-zinc-400 hover:text-gray-800 dark:hover:text-white'
               }
             `}
@@ -558,7 +558,17 @@ export default function AppClient() {
         method: () => console.log('Environment'),
       },
       {
-        name: 'Coleccion',
+        name: 'Coleccion nueva coleccion',
+        icon: substack,
+        method: handleAddCollection,
+      },
+      {
+        name: 'Importar coleccion',
+        icon: substack,
+        method: handleAddCollection,
+      },
+      {
+        name: 'Exportar coleccion',
         icon: substack,
         method: handleAddCollection,
       },
@@ -740,22 +750,6 @@ export default function AppClient() {
                     </p>
                   </div>
                 </div>
-                <button
-                  onClick={() => setNewShow(false)}
-                  className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </button>
               </div>
 
               {/* Grid de Opciones Mejorado */}
@@ -767,7 +761,7 @@ export default function AppClient() {
                       ne.method();
                       setNewShow(false); // Cierra el modal después de seleccionar
                     }}
-                    initial={{ opacity: 0, y: 20, scale: 0.9 }}
+                    initial={{ opacity: 0, y: 20, scale: 0.8 }}
                     animate={{
                       opacity: 1,
                       y: 0,
@@ -775,24 +769,20 @@ export default function AppClient() {
                       transition: {
                         delay: index * 0.1,
                         type: 'spring',
-                        stiffness: 400,
-                        damping: 25,
+                        stiffness: 300,
+                        damping: 15,
                       },
                     }}
                     whileHover={{
-                      scale: 1.05,
+                      scale: 1.01,
                       y: -4,
                       transition: {
                         type: 'spring',
-                        stiffness: 400,
+                        stiffness: 200,
                         damping: 20,
                       },
                     }}
-                    whileTap={{
-                      scale: 0.95,
-                      y: 0,
-                      transition: { duration: 0.1 },
-                    }}
+                    
                     className="group relative p-5 bg-white/60 dark:bg-zinc-800/60 hover:bg-gradient-to-br hover:from-white hover:to-zinc-50 dark:hover:from-zinc-800 dark:hover:to-zinc-900 backdrop-blur-sm border border-zinc-200/60 dark:border-zinc-700/60 hover:border-[#4ec9b0]/40 dark:hover:border-[#4ec9b0]/50 rounded-2xl flex justify-center items-center flex-col transition-all duration-300 shadow-sm hover:shadow-xl hover:shadow-[#4ec9b0]/10 dark:hover:shadow-[#4ec9b0]/5 min-h-[120px] overflow-hidden"
                     title={ne.name}
                   >

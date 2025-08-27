@@ -370,7 +370,7 @@ export const useRequestStore = create<RequestState>((set, get) => ({
           id: nanoid(),
           name: 'Nueva Petición',
           method: 'GET',
-          url: 'https://',
+          url: 'https://api.github.com/users/CesarMartinez7',
           headers: {},
           body: {},
           query: {},

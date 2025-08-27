@@ -9,7 +9,7 @@ import highlightCode from './higlight-code';
 import './Code.css';
 
 import { useEnviromentStore } from '../../pages/client/components/enviroment/store.enviroment';
-import ICONS_PAGES from '../../pages/client/types/ICONS_PAGE';
+import ICONS_PAGES from '../../pages/client/icons/ICONS_PAGE';
 import { useJsonHook } from './methods-json/method';
 import { useXmlHook } from './methos-xml/method.xml';
 import type { CodeEditorProps } from './types';
@@ -458,13 +458,13 @@ const CodeEditor = ({
 
                     <div className="flex h-6 gap-2">
                       <button
-                        className="bg-gradient-to-r flex-1 from-green-400 to-green-500 p-1  text-xs truncate text-white"
+                        className="bg-gradient-to-r flex-1 from-emerald-400 to-emerald-500 p-1  text-xs truncate text-white"
                         onClick={handleCLickReplaceTextFirst}
                       >
                         Reemplazar primero
                       </button>
                       <button
-                        className="bg-gradient-to-r flex-1 from-sky-400 to-sky-700 p-1 rounded-md text-xs truncate text-white"
+                        className="bg-gradient-to-r flex-1 from-sky-500 to-sky-600 p-1 text-xs truncate text-white"
                         onClick={handleCLickReplaceText}
                       >
                         Reemplazar todo
@@ -589,10 +589,17 @@ const CodeEditor = ({
               {(() => {
                 try {
                   JSON.parse(value);
-                  return <Icon icon={ICONS_PAGES.check} width={15} height={15} />;
+                  return (
+                    <Icon icon={ICONS_PAGES.check} width={15} height={15} />
+                  );
                 } catch {
                   return (
-                    <Icon icon={ICONS_PAGES.x} width={13} height={13} color="red" />
+                    <Icon
+                      icon={ICONS_PAGES.x}
+                      width={13}
+                      height={13}
+                      color="red"
+                    />
                   );
                 }
               })()}

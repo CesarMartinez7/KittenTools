@@ -3,7 +3,7 @@ import { useState } from 'react';
 import './tooltip.css';
 
 export default function ToolTipButton({
-  ariaText,
+  ariaText = 'Default text',
   tooltipText,
   className = '',
   onClick,
@@ -16,7 +16,7 @@ export default function ToolTipButton({
   const [show, setShow] = useState(false);
 
   return (
-    <div className={`relative flex flex-col items-center ${className}`}>
+    <div className={`relative flex flex-col items-center`}>
       <motion.button
         onHoverStart={() => setShow(true)}
         onHoverEnd={() => setShow(false)}
@@ -25,9 +25,7 @@ export default function ToolTipButton({
         onClick={onClick}
         className={`tooltip ${className} flex font-bold items-center gap-2 px-3 py-0.5 
           text-sm rounded-md transition-colors duration-200
-          bg-gray-200 text-gray-800 
-          hover:bg-gray-300 
-          dark:bg-zinc-950 dark:text-zinc-200 dark:hover:bg-zinc-800`}
+          // 0`}
       >
         {ariaText}
       </motion.button>

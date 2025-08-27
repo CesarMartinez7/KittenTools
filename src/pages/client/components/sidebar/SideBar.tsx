@@ -193,6 +193,7 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
                   ariaText="Nueva"
                   tooltipText="Añadir coleccion, request, enviroment"
                   onClick={openModalNews}
+                  className="bg-emerald-500/10"
                 >
                   Nueva
                 </ToolTipButton>

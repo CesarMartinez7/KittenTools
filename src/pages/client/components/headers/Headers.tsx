@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { useRequestStore } from '../../stores/request.store';
 import { useEnviromentStore } from '../enviroment/store.enviroment';
 import './header.css';
-import ICONS_PAGES from '../../types/ICONS_PAGE';
+import ICONS_PAGES from '../../icons/ICONS_PAGE';
 
 type HeaderInputProps = {
   value: string;

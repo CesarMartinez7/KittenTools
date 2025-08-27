@@ -2,7 +2,7 @@ import { Icon } from '@iconify/react/dist/iconify.js';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef } from 'react';
 import toast from 'react-hot-toast';
-import ICONS_PAGES from '../../pages/client/types/ICONS_PAGE';
+import ICONS_PAGES from '../../pages/client/icons/ICONS_PAGE';
 import type BaseModalProps from './types';
 import modalVariants from './variants';
 

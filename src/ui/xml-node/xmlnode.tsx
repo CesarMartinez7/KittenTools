@@ -1,4 +1,3 @@
-import { Icon } from '@iconify/react/dist/iconify.js';
 import type React from 'react';
 import { useState } from 'react';
 
@@ -41,7 +40,7 @@ const XmlNode: React.FC<XmlNodeProps> = ({ node, depth = 0 }) => {
           {' '}
           {attr.name}=
           <span className="text-orange-600 dark:text-orange-400">
-            "{attr.value}"
+            &quot;{attr.value}&quot;
           </span>
         </span>
       ));
@@ -51,7 +50,7 @@ const XmlNode: React.FC<XmlNodeProps> = ({ node, depth = 0 }) => {
       <div style={{ marginLeft: depth * 16 }} className="text-xs">
         <span className="text-gray-400">{'<'}</span>
         <span
-          className="text-purple-600 dark:text-purple-400 cursor-pointer"
+          className="text-purple-600 dark:text-purple-400 cursor-pointer lowercase"
           onClick={hasChildrenToRender ? toggleCollapse : undefined}
         >
           {element.nodeName}
@@ -69,7 +68,7 @@ const XmlNode: React.FC<XmlNodeProps> = ({ node, depth = 0 }) => {
                 ))}
                 <div style={{ marginLeft: depth * 16 }} className="text-sm">
                   <span className="text-gray-400">{'</'}</span>
-                  <span className="text-purple-600 dark:text-purple-400">
+                  <span className="text-purple-600 dark:text-purple-400 lowercase">
                     {element.nodeName}
                   </span>
                   <span className="text-gray-400">{'>'}</span>

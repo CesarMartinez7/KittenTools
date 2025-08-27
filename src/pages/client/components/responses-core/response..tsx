@@ -7,6 +7,19 @@ import { JsonNode } from '../../../../ui/formatter-JSON/jsonnode.';
 import TableData from '../../../../ui/Table';
 import XmlNode from '../../../../ui/xml-node/xmlnode';
 import { useRequestStore } from '../../stores/request.store';
+import HtmlNode from '../../../../ui/html-node/html';
+import ToolTipButton from '../../../../ui/tooltip/TooltipButton';
+
+const parseHtmlString = (htmlString: string): Node | null => {
+  try {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlString, 'text/html');
+    return doc.documentElement;
+  } catch (error) {
+    console.error('Failed to parse HTML string:', error);
+    return null;
+  }
+};
 
 // Define los tipos de respuesta del dropdown
 const responseViewTypes = ['Raw', 'Preview', 'JSON', 'XML', 'HTML', 'Base64'];
@@ -114,7 +127,7 @@ export default function ResponsesTypesComponent({
 
   const getStatusCodeClass = (status: number) => {
     if (status >= 200 && status < 300)
-      return 'dark:bg-green-500/40 dark:text-green-200 bg-emerald-400 text-white';
+      return 'dark:bg-green-500/40 px-2 dark:text-green-200 bg-emerald-400 text-white';
     if (status >= 300 && status < 400)
       return 'bg-yellow-500/40 text-yellow-200';
     if (status >= 400 && status < 500)
@@ -122,6 +135,22 @@ export default function ResponsesTypesComponent({
     if (status >= 500 && status < 600)
       return 'bg-orange-500/40 text-orange-200';
     return 'bg-gray-500';
+  };
+
+  const getStatusCodeText = (status: number): string => {
+    if (status >= 200 && status < 300) {
+      return 'Petición procesada correctamente';
+    }
+    if (status >= 300 && status < 400) {
+      return 'Redirección necesaria';
+    }
+    if (status >= 400 && status < 500) {
+      return 'Petición con error de cliente';
+    }
+    if (status >= 500 && status < 600) {
+      return 'Error interno del servidor';
+    }
+    return 'Respuesta informativa del servidor';
   };
 
   const renderResponseContent = () => {
@@ -145,7 +174,7 @@ export default function ResponsesTypesComponent({
             open={true}
             isChange={false}
             isInterface={false}
-            INDENT={4}
+            INDENT={2}
             data={parsedData}
           />
         );
@@ -188,11 +217,7 @@ export default function ResponsesTypesComponent({
           );
         }
       case 'html':
-        return (
-          <pre className="text-xs whitespace-pre-wrap text-gray-500 dark:text-zinc-200">
-            {JSON.stringify(data)}
-          </pre>
-        );
+        return <HtmlNode node={parseHtmlString(data)} />;
       case 'base64':
         try {
           const base64Content = btoa(data);
@@ -232,13 +257,14 @@ export default function ResponsesTypesComponent({
               />
             ))}
           </div>
+
           <div className="flex items-center gap-2 mr-4 text-zinc-300 text-xs">
-            <span
+            <ToolTipButton
               className={`text-xs font-bold px-1 rounded ${getStatusCodeClass(statusCode)}`}
-            >
-              {statusCode || currentTab?.response?.status}
-            </span>
-            <span className="text-xs dark:bg-zinc-800/90 bg-gray-200 text-gray-600 dark:text-zinc-200 py-0.5 px-2 rounded text-r whitespace-nowrap">
+              ariaText={String(statusCode)}
+              tooltipText={getStatusCodeText(statusCode)}
+            />
+            <span className="text-xs dark:bg-zinc-900/90 bg-gray-200 text-gray-600  dark:text-zinc-400 py-0.5 px-2 rounded text-r whitespace-nowrap ">
               {currentTab?.response?.time || timeResponse} ms
             </span>
             <span className="text-gray-600 dark:text-zinc-400 truncate ">
