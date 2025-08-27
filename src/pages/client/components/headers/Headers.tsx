@@ -4,6 +4,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { useRequestStore } from '../../stores/request.store';
 import { useEnviromentStore } from '../enviroment/store.enviroment';
 import './header.css';
+import ICONS_PAGES from '../../types/ICONS_PAGE';
 
 type HeaderInputProps = {
   value: string;
@@ -237,7 +238,7 @@ export const HeadersAddRequest: React.FC<HeadersAddRequestProps> = () => {
                     className="w-8 h-8 flex items-center justify-center text-red-500 hover:bg-zinc-600 rounded-full transition-colors"
                     aria-label="Eliminar cabecera"
                   >
-                    <Icon icon="tabler:trash" />
+                    <Icon icon={ICONS_PAGES.x} />
                   </button>
                 )}
               </td>

@@ -10,6 +10,7 @@ import type { ItemNodeProps } from './types';
 // 🚀 Importamos el nuevo store de Zustand
 
 import { useModalStore } from '../../modals/store.modal';
+import ICONS_PAGES from '../../types/ICONS_PAGE';
 
 const ItemNode: React.FC<ItemNodeProps> = ({
   data,
@@ -144,7 +145,7 @@ const ItemNode: React.FC<ItemNodeProps> = ({
           <div className="flex items-center gap-2">
             {isFolder && (
               <Icon
-                icon={collapsed ? 'tabler:folder' : 'tabler:folder-open'}
+                icon={collapsed ? ICONS_PAGES.folder : ICONS_PAGES.folderopen}
                 width="15"
                 height="15"
                 className={`${

@@ -1,40 +1,42 @@
-import "./App.css";
-import { Icon } from "@iconify/react";
-import arrowsMaximize from "@iconify-icons/tabler/arrows-maximize";
-import arrowsMinimize from "@iconify-icons/tabler/arrows-minimize";
-import chevronRight from "@iconify-icons/tabler/chevron-right";
-import substack from "@iconify-icons/tabler/subtask";
-import { AnimatePresence, motion } from "framer-motion";
-import React, {
+import './App.css';
+import { Icon } from '@iconify/react';
+import arrowsMaximize from '@iconify-icons/tabler/arrows-maximize';
+import arrowsMinimize from '@iconify-icons/tabler/arrows-minimize';
+import chevronRight from '@iconify-icons/tabler/chevron-right';
+import substack from '@iconify-icons/tabler/subtask';
+import { AnimatePresence, motion } from 'framer-motion';
+import { nanoid } from 'nanoid';
+import type React from 'react';
+import {
+  memo,
+  startTransition,
   useCallback,
+  useDeferredValue,
   useEffect,
+  useMemo,
   useRef,
   useState,
-  useMemo,
-  startTransition,
-  useDeferredValue,
-  memo,
-} from "react";
-import toast from "react-hot-toast";
-import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
-import CodeEditor from "../../ui/code-editor/code-editor";
-import { BaseModalLazy } from "../../ui/lazy-components";
-import AddQueryParam from "./components/addqueryparams/addQueryParams";
-import EnviromentComponent from "./components/enviroment/enviroment.component";
-import { useEnviromentStore } from "./components/enviroment/store.enviroment";
-import { HeadersAddRequest } from "./components/headers/Headers";
-import MethodFormater from "./components/method-formatter/method-formatter";
-import ScriptComponent from "./components/scripts/script-component";
-import { SideBar } from "./components/sidebar/SideBar";
-import RequestHook from "./hooks/request.client";
-import { VariantsAnimation } from "./mapper-ops";
-import RequestForm from "./request.form";
-import ResponsePanel from "./response-panel";
-import { type RequestData, useRequestStore } from "./stores/request.store";
-import type { EventRequest } from "./types/types";
-import { useModalStore } from "./modals/store.modal";
-import { nanoid } from "nanoid";
-import type { Collection } from "./db";
+} from 'react';
+import toast from 'react-hot-toast';
+import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
+import CodeEditor from '../../ui/code-editor/code-editor';
+import { BaseModalLazy } from '../../ui/lazy-components';
+import AddQueryParam from './components/addqueryparams/addQueryParams';
+import EnviromentComponent from './components/enviroment/enviroment.component';
+import { useEnviromentStore } from './components/enviroment/store.enviroment';
+import { HeadersAddRequest } from './components/headers/Headers';
+import MethodFormater from './components/method-formatter/method-formatter';
+import ScriptComponent from './components/scripts/script-component';
+import { SideBar } from './components/sidebar/SideBar';
+import type { Collection } from './db';
+import RequestHook from './hooks/request.client';
+import { VariantsAnimation } from './mapper-ops';
+import { useModalStore } from './modals/store.modal';
+import RequestForm from './request.form';
+import ResponsePanel from './response-panel';
+import { type RequestData, useRequestStore } from './stores/request.store';
+import ICONS_PAGES from './types/ICONS_PAGE';
+import type { EventRequest } from './types/types';
 
 interface ContentTypeProps {
   selectedIdx: number;
@@ -65,9 +67,9 @@ const Header = memo(
         isEmpty: nombreEntorno === null,
         className:
           nombreEntorno === null
-            ? "bg-red-200 dark:bg-red-950 text-red-500"
-            : "bg-green-200 dark:bg-green-700 text-green-600",
-        text: nombreEntorno ?? "No hay entornos activos",
+            ? 'bg-red-200 dark:bg-red-950 text-red-500'
+            : 'bg-green-200 dark:bg-green-700 text-green-600',
+        text: nombreEntorno ?? 'No hay entornos activos',
       }),
       [nombreEntorno],
     );
@@ -90,14 +92,14 @@ const Header = memo(
           />
         </button>
         <p className="dark:text-zinc-200 text-gray-600">
-          {!isRunningInTauri ? "Version Web" : "Version Tauri"}
+          {!isRunningInTauri ? 'Version Web' : 'Version Tauri'}
         </p>
       </div>
     );
   },
 );
 
-Header.displayName = "Header";
+Header.displayName = 'Header';
 
 // Componente de navegación por pestañas optimizado
 const TabNavigation = memo(
@@ -123,8 +125,8 @@ const TabNavigation = memo(
               relative btn btn-sm text-sm py-2 px-4 z-10 max-w-fit truncate transition-colors
               ${
                 isSelected
-                  ? "font-semibold text-gray-800 dark:text-white dark:bg-zinc-950 bg-gray-200"
-                  : "text-gray-500 dark:text-zinc-400 hover:text-gray-800 dark:hover:text-white"
+                  ? 'font-semibold text-gray-800 dark:text-white dark:bg-zinc-950 bg-gray-200'
+                  : 'text-gray-500 dark:text-zinc-400 hover:text-gray-800 dark:hover:text-white'
               }
             `}
             >
@@ -137,7 +139,7 @@ const TabNavigation = memo(
                   layoutId="tab-background"
                   className="absolute inset-0"
                   initial={false}
-                  transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                  transition={{ type: 'spring', stiffness: 350, damping: 30 }}
                 />
               )}
             </button>
@@ -148,7 +150,7 @@ const TabNavigation = memo(
   },
 );
 
-TabNavigation.displayName = "TabNavigation";
+TabNavigation.displayName = 'TabNavigation';
 
 // Componente de Content Type Selection
 const ContentTypeSelection = memo(
@@ -159,7 +161,7 @@ const ContentTypeSelection = memo(
     currentContentType: string | undefined;
     onContentTypeChange: (type: string) => void;
   }) => {
-    const contentTypes = useMemo(() => ["json", "form", "xml", "none"], []);
+    const contentTypes = useMemo(() => ['json', 'form', 'xml', 'none'], []);
 
     return (
       <div className="flex gap-4 mb-3">
@@ -185,80 +187,82 @@ const ContentTypeSelection = memo(
   },
 );
 
-ContentTypeSelection.displayName = "ContentTypeSelection";
+ContentTypeSelection.displayName = 'ContentTypeSelection';
 
 // Componente de Body Editor
 //... (El resto de tus imports y código se mantiene igual)
 
 // Componente de Body Editor
 const BodyEditor = memo(
-    ({
-      currentTab,
-      onCodeChange,
-    }: {
-      currentTab: RequestData | undefined;
-      onCodeChange: (value: string) => void;
-    }) => {
-      const isNoneContent = currentTab?.headers["Content-Type"] === "none";
-  
-      // 1. Estado local para el valor del editor
-      const [localCode, setLocalCode] = useState(currentTab?.body || "");
-  
-      // 2. Sincronizar el estado local cuando cambia la pestaña
-      useEffect(() => {
-        // Si el `currentTab` cambia, actualizamos el estado local
-        setLocalCode(currentTab?.body || "");
-      }, [currentTab?.body]); // Solo se activa cuando el `body` de la pestaña actual cambia
-  
-      // 3. Usar un efecto para "debouce" las actualizaciones
-      useEffect(() => {
-        // Creamos un temporizador
-        const timeoutId = setTimeout(() => {
-          // Solo si el valor local es diferente del valor global
-          if (localCode !== currentTab?.body) {
-            // 4. Llamamos a la función de actualización global
-            onCodeChange(localCode);
-          }
-        }, 500); // Espera 500ms después de la última pulsación de tecla
-  
-        // 5. Función de limpieza para cancelar el temporizador si el usuario sigue escribiendo
-        return () => clearTimeout(timeoutId);
-      }, [localCode, onCodeChange, currentTab?.body]);
-  
-      // 6. Manejador de cambio local
-      const handleLocalChange = useCallback((value: string) => {
-        // Actualizamos el estado local de forma inmediata
-        setLocalCode(value);
-      }, []);
-  
-      if (isNoneContent) {
-        return (
-          <div className="h-full flex items-center justify-center text-gray-500 dark:text-zinc-500">
-            <p className="text-lg font-medium">No body for this request.</p>
-          </div>
-        );
-      }
-  
-      return (
-        <CodeEditor
-          // 7. Pasamos el valor del estado local
-          value={localCode}
-          maxHeight="85vh"
-          // 8. Pasamos el manejador de cambio local
-          onChange={handleLocalChange}
-          language={currentTab?.headers["Content-Type"] || "json"}
-          height="73vh"
-          minHeight="65vh"
-        />
-      );
-    },
-  );
-  
-  BodyEditor.displayName = "BodyEditor";
-  
-  // ... (El resto de tu código, incluyendo ContentPanel, se mantiene sin cambios)
+  ({
+    currentTab,
+    onCodeChange,
+  }: {
+    currentTab: RequestData | undefined;
+    onCodeChange: (value: string) => void;
+  }) => {
+    const isNoneContent = currentTab?.headers['Content-Type'] === 'none';
 
-BodyEditor.displayName = "BodyEditor";
+    // 1. Estado local para el valor del editor
+    const [localCode, setLocalCode] = useState(currentTab?.body || '');
+
+    // 2. Sincronizar el estado local cuando cambia la pestaña
+    useEffect(() => {
+      // Si el `currentTab` cambia, actualizamos el estado local
+      setLocalCode(currentTab?.body || '');
+    }, [currentTab?.body]); // Solo se activa cuando el `body` de la pestaña actual cambia
+
+    // 3. Usar un efecto para "debouce" las actualizaciones
+    useEffect(() => {
+      // Creamos un temporizador
+      const timeoutId = setTimeout(() => {
+        // Solo si el valor local es diferente del valor global
+        if (localCode !== currentTab?.body) {
+          // 4. Llamamos a la función de actualización global
+          onCodeChange(localCode);
+        }
+      }, 500); // Espera 500ms después de la última pulsación de tecla
+
+      // 5. Función de limpieza para cancelar el temporizador si el usuario sigue escribiendo
+      return () => clearTimeout(timeoutId);
+    }, [localCode, onCodeChange, currentTab?.body]);
+
+    // 6. Manejador de cambio local
+    const handleLocalChange = useCallback((value: string) => {
+      // Actualizamos el estado local de forma inmediata
+      setLocalCode(value);
+    }, []);
+
+    if (isNoneContent) {
+      return (
+        <div className="h-full flex items-center justify-center text-gray-500 dark:text-zinc-500">
+                   {' '}
+          <p className="text-lg font-medium">No body for this request.</p>     
+           {' '}
+        </div>
+      );
+    }
+
+    return (
+      <CodeEditor
+        // 7. Pasamos el valor del estado local
+        value={localCode}
+        maxHeight="85vh"
+        // 8. Pasamos el manejador de cambio local
+        onChange={handleLocalChange}
+        language={currentTab?.headers['Content-Type'] || 'json'}
+        height="73vh"
+        minHeight="65vh"
+      />
+    );
+  },
+);
+
+BodyEditor.displayName = 'BodyEditor';
+
+// ... (El resto de tu código, incluyendo ContentPanel, se mantiene sin cambios)
+
+BodyEditor.displayName = 'BodyEditor';
 
 // Panel de contenido optimizado
 const ContentPanel = memo(
@@ -285,8 +289,8 @@ const ContentPanel = memo(
         if (currentTab?.id) {
           startTransition(() => {
             updateTab(currentTab.id, {
-              headers: { ...currentTab.headers, "Content-Type": type },
-              body: type === "none" ? null : currentTab.body,
+              headers: { ...currentTab.headers, 'Content-Type': type },
+              body: type === 'none' ? null : currentTab.body,
             });
           });
         }
@@ -296,8 +300,8 @@ const ContentPanel = memo(
 
     const currentContentType = useMemo(
       () =>
-        currentTab?.headers["Content-Type"] ||
-        currentTab?.headers["content-type"],
+        currentTab?.headers['Content-Type'] ||
+        currentTab?.headers['content-type'],
       [currentTab?.headers],
     );
 
@@ -308,7 +312,7 @@ const ContentPanel = memo(
           <motion.div
             key="body-section-body"
             variants={VariantsAnimation}
-            className={`absolute inset-0 flex flex-col flex-1 min-h-0 ${selectedIdx === 0 ? "block" : "hidden"}`}
+            className={`absolute inset-0 flex flex-col flex-1 min-h-0 ${selectedIdx === 0 ? 'block' : 'hidden'}`}
           >
             <ContentTypeSelection
               currentContentType={currentContentType}
@@ -323,7 +327,7 @@ const ContentPanel = memo(
           <motion.div
             key="query-params-section"
             variants={VariantsAnimation}
-            className={`absolute inset-0 flex-1 overflow-auto ${selectedIdx === 1 ? "block" : "hidden"}`}
+            className={`absolute inset-0 flex-1 overflow-auto ${selectedIdx === 1 ? 'block' : 'hidden'}`}
           >
             <AddQueryParam />
           </motion.div>
@@ -332,7 +336,7 @@ const ContentPanel = memo(
           <motion.div
             key="headers-section"
             variants={VariantsAnimation}
-            className={`absolute inset-0 flex-1 overflow-auto ${selectedIdx === 2 ? "block" : "hidden"}`}
+            className={`absolute inset-0 flex-1 overflow-auto ${selectedIdx === 2 ? 'block' : 'hidden'}`}
           >
             <HeadersAddRequest />
           </motion.div>
@@ -341,7 +345,7 @@ const ContentPanel = memo(
           <motion.div
             key="env-section"
             variants={VariantsAnimation}
-            className={`absolute inset-0 h-full ${selectedIdx === 3 ? "block" : "hidden"}`}
+            className={`absolute inset-0 h-full ${selectedIdx === 3 ? 'block' : 'hidden'}`}
           >
             <EnviromentComponent />
           </motion.div>
@@ -350,7 +354,7 @@ const ContentPanel = memo(
           <motion.div
             key="scripts-section"
             variants={VariantsAnimation}
-            className={`absolute inset-0 ${selectedIdx === 4 ? "block" : "hidden"}`}
+            className={`absolute inset-0 ${selectedIdx === 4 ? 'block' : 'hidden'}`}
           >
             <ScriptComponent
               value={scriptsValues}
@@ -362,7 +366,7 @@ const ContentPanel = memo(
           <motion.div
             key="auth-section"
             variants={VariantsAnimation}
-            className={`absolute inset-0 flex-1 flex items-center justify-center text-gray-500 dark:text-zinc-500 ${selectedIdx === 5 ? "block" : "hidden"}`}
+            className={`absolute inset-0 flex-1 flex items-center justify-center text-gray-500 dark:text-zinc-500 ${selectedIdx === 5 ? 'block' : 'hidden'}`}
           >
             <p className="text-lg">Próximamente</p>
           </motion.div>
@@ -389,7 +393,7 @@ const ContentPanel = memo(
   },
 );
 
-ContentPanel.displayName = "ContentPanel";
+ContentPanel.displayName = 'ContentPanel';
 
 // Componente Tab optimizado
 const Tab = memo(
@@ -419,8 +423,8 @@ const Tab = memo(
         border-r dark:border-zinc-700 last:border-r-0
         ${
           isActive
-            ? "dark:text-green-primary"
-            : "dark:text-zinc-400 dark:hover:text-zinc-900 text-gray-900"
+            ? 'dark:text-green-primary'
+            : 'dark:text-zinc-400 dark:hover:text-zinc-900 text-gray-900'
         }
       `}
         initial={{ opacity: 0, scale: 0.8 }}
@@ -443,7 +447,7 @@ const Tab = memo(
               title={`Eliminar ${tab.name}`}
               onClick={handleRemove}
             >
-              <Icon icon="tabler:x" width="12" height="12" />
+              <Icon icon={ICONS_PAGES.x} width="12" height="12" />
             </button>
           </motion.div>
         </div>
@@ -452,7 +456,7 @@ const Tab = memo(
             layoutId="tab-underline"
             className="absolute bottom-0 left-0 right-0 h-0.5 bg-green-primary z-0"
             initial={false}
-            transition={{ type: "spring", stiffness: 200, damping: 10 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 10 }}
           />
         )}
       </motion.div>
@@ -460,7 +464,7 @@ const Tab = memo(
   },
 );
 
-Tab.displayName = "Tab";
+Tab.displayName = 'Tab';
 
 // Componente principal optimizado
 export default function AppClient() {
@@ -485,7 +489,7 @@ export default function AppClient() {
   const handleAddCollection = () => {
     const newCollection: Collection = {
       id: nanoid(),
-      name: "Nueva Colección",
+      name: 'Nueva Colección',
       item: [],
     };
     addCollection(newCollection);
@@ -496,7 +500,7 @@ export default function AppClient() {
   const [isLoading, setIsLoading] = useState(false);
   const [newShow, setNewShow] = useState(true);
   const [selectedIdx, setMimeSelected] = useState(
-    () => Number(sessionStorage.getItem("selectedIdx")) || 0,
+    () => Number(sessionStorage.getItem('selectedIdx')) || 0,
   );
   const [isFullScreen, setIsFullScreen] = useState(false);
 
@@ -518,8 +522,8 @@ export default function AppClient() {
       bodyRequest: currentTab?.body,
       endpointUrl: currentTab?.url,
       contentType:
-        currentTab?.headers?.["Content-Type"] ||
-        currentTab?.headers?.["content-type"],
+        currentTab?.headers?.['Content-Type'] ||
+        currentTab?.headers?.['content-type'],
     }),
     [currentTab],
   );
@@ -529,17 +533,17 @@ export default function AppClient() {
   // Memoizar opciones de navegación
   const Opciones = useMemo(
     () => [
-      { name: "Cuerpo de Petición", icon: !!currentTab?.body },
+      { name: 'Cuerpo de Petición', icon: !!currentTab?.body },
       {
-        name: "Parámetros",
+        name: 'Parámetros',
         icon: !!currentTab?.query && Object.keys(currentTab.query).length > 0,
       },
       {
-        name: "Cabeceras",
+        name: 'Cabeceras',
         icon:
           !!currentTab?.headers && Object.keys(currentTab.headers).length > 0,
       },
-      { name: "Entorno", icon: !!listEntornos && listEntornos.length > 0 },
+      { name: 'Entorno', icon: !!listEntornos && listEntornos.length > 0 },
     ],
     [currentTab, listEntornos],
   );
@@ -547,14 +551,14 @@ export default function AppClient() {
   // Memoizar mappers
   const NewMappers = useMemo(
     () => [
-      { name: "HTTP", icon: substack, method: () => console.log("HTTP") },
+      { name: 'HTTP', icon: substack, method: () => console.log('HTTP') },
       {
-        name: "Enviroment",
+        name: 'Enviroment',
         icon: substack,
-        method: () => console.log("Environment"),
+        method: () => console.log('Environment'),
       },
       {
-        name: "Coleccion",
+        name: 'Coleccion',
         icon: substack,
         method: handleAddCollection,
       },
@@ -596,7 +600,7 @@ export default function AppClient() {
       setIsFullScreen(true);
     } else {
       document.exitFullscreen();
-      document.body.style.userSelect = "";
+      document.body.style.userSelect = '';
       setIsFullScreen(false);
     }
   }, []);
@@ -629,7 +633,7 @@ export default function AppClient() {
         finalResponse = await handleRequest();
       } catch (error: any) {
         finalResponse = error;
-        toast.error("Error al realizar la petición");
+        toast.error('Error al realizar la petición');
       } finally {
         if (finalResponse && currentTabId) {
           startTransition(() => {
@@ -650,14 +654,14 @@ export default function AppClient() {
     [handleRequest, currentTabId, updateTab],
   );
 
-  const scrollTabs = useCallback((direction: "left" | "right") => {
+  const scrollTabs = useCallback((direction: 'left' | 'right') => {
     if (tabsContainerRef.current) {
       const scrollAmount = 300;
       tabsContainerRef.current.scrollTo({
         left:
           tabsContainerRef.current.scrollLeft +
-          (direction === "left" ? -scrollAmount : scrollAmount),
-        behavior: "smooth",
+          (direction === 'left' ? -scrollAmount : scrollAmount),
+        behavior: 'smooth',
       });
     }
   }, []);
@@ -666,23 +670,23 @@ export default function AppClient() {
   const handleMimeSelectedChange = useCallback((index: number) => {
     startTransition(() => {
       setMimeSelected(index);
-      sessionStorage.setItem("selectedIdx", index.toString());
+      sessionStorage.setItem('selectedIdx', index.toString());
     });
   }, []);
 
   // Effects optimizados
   useEffect(() => {
     const handlerSendWindows = (e: KeyboardEvent) => {
-      if (e.key === "Enter" && e.ctrlKey) {
+      if (e.key === 'Enter' && e.ctrlKey) {
         refForm.current?.requestSubmit();
       }
-      if (e.key.toLowerCase() === "e" && e.ctrlKey) {
+      if (e.key.toLowerCase() === 'e' && e.ctrlKey) {
         e.preventDefault();
         handleMimeSelectedChange(3);
       }
     };
-    window.addEventListener("keydown", handlerSendWindows);
-    return () => window.removeEventListener("keydown", handlerSendWindows);
+    window.addEventListener('keydown', handlerSendWindows);
+    return () => window.removeEventListener('keydown', handlerSendWindows);
   }, [handleMimeSelectedChange]);
 
   useEffect(() => {
@@ -706,7 +710,7 @@ export default function AppClient() {
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: -20 }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
               className="bg-white/95 dark:bg-zinc-900/95 backdrop-blur-sm rounded-2xl border border-zinc-300/50 dark:border-zinc-800/50 p-6 max-w-2xl w-full mx-4 shadow-2xl"
             >
               {/* Header del Modal */}
@@ -770,7 +774,7 @@ export default function AppClient() {
                       scale: 1,
                       transition: {
                         delay: index * 0.1,
-                        type: "spring",
+                        type: 'spring',
                         stiffness: 400,
                         damping: 25,
                       },
@@ -779,7 +783,7 @@ export default function AppClient() {
                       scale: 1.05,
                       y: -4,
                       transition: {
-                        type: "spring",
+                        type: 'spring',
                         stiffness: 400,
                         damping: 20,
                       },
@@ -826,10 +830,10 @@ export default function AppClient() {
               {/* Footer opcional con información adicional */}
               <div className="mt-6 pt-4 border-t border-zinc-200/60 dark:border-zinc-700/60">
                 <p className="text-xs text-zinc-500 dark:text-zinc-400 text-center">
-                  💡 Selecciona una opción para comenzar o presiona{" "}
+                  💡 Selecciona una opción para comenzar o presiona{' '}
                   <kbd className="px-1.5 py-0.5 bg-zinc-200 dark:bg-zinc-700 rounded text-xs font-mono">
                     Esc
-                  </kbd>{" "}
+                  </kbd>{' '}
                   para cerrar
                 </p>
               </div>
@@ -859,21 +863,20 @@ export default function AppClient() {
         {/* Panel de pestañas optimizado */}
         <div className="flex relative border-b border-gray-200 dark:border-zinc-700 min-h-[37px]">
           <button
-            onClick={() => scrollTabs("left")}
+            onClick={() => scrollTabs('left')}
             className="z-20 p-2 text-zinc-400 hover:text-zinc-600 bg-gradient-to-r bg-white dark:bg-zinc-900 border-r border-gray-200 dark:border-zinc-800 absolute left-0 h-full flex items-center shadow-[28px_6px_29px_11px_rgba(0,_0,_0,_0.1)]"
           >
-            <Icon icon="tabler:chevron-left" width="20" height="20" />
+            <Icon icon={ICONS_PAGES.chevronleft} width="20" height="20" />
           </button>
 
           <div
             ref={tabsContainerRef}
             className="flex overflow-x-scroll max-w-[75vw] no-scrollbar scroll-smooth w-full px-10"
-            style={{ scrollbarWidth: "none" }}
+            style={{ scrollbarWidth: 'none' }}
           >
             <AnimatePresence mode="wait">
               {listTabs.length > 0 ? (
                 listTabs.map((tab) => (
-                  
                   <Tab
                     key={tab.id}
                     tab={tab}
@@ -881,7 +884,6 @@ export default function AppClient() {
                     onTabClick={handleTabClick}
                     onRemoveTab={handleRemoveTab}
                   />
-                  
                 ))
               ) : (
                 <motion.div
@@ -896,7 +898,7 @@ export default function AppClient() {
           </div>
 
           <button
-            onClick={() => scrollTabs("right")}
+            onClick={() => scrollTabs('right')}
             className="z-20 p-2 text-zinc-400 hover:text-zinc-600 bg-white dark:bg-zinc-900 border-l border-gray-200 dark:border-zinc-800 absolute right-0 h-full flex items-center shadow-[-31px_-1px_23px_0px_rgba(0,_0,_0,_0.1)]"
           >
             <Icon icon={chevronRight} width="20" height="20" />
@@ -906,12 +908,12 @@ export default function AppClient() {
         <RequestForm
           refForm={refForm}
           onSubmit={handleRequestSubmit}
-          selectedMethod={currentTab?.method || "GET"}
+          selectedMethod={currentTab?.method || 'GET'}
           handleClickShowMethod={handleClickShowMethod}
           showMethods={showMethods}
           setSelectedMethod={handleMethodChange}
           setShowMethods={setShowMethods}
-          endpointUrl={currentTab?.url || ""}
+          endpointUrl={currentTab?.url || ''}
           handlerChangeInputRequest={handleUrlChange}
           isLoading={isLoading}
         />

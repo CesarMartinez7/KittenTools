@@ -2,6 +2,7 @@ import { Icon } from '@iconify/react/dist/iconify.js';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef } from 'react';
 import toast from 'react-hot-toast';
+import ICONS_PAGES from '../../pages/client/types/ICONS_PAGE';
 import type BaseModalProps from './types';
 import modalVariants from './variants';
 
@@ -44,7 +45,7 @@ const BaseModal = ({ isOpen, onClose, children }: BaseModalProps) => {
             className="absolute top-4 dark:bg-zinc-900 bg-zinc-200 p-2 rounded-full right-4 text-zinc-800 dark:text-zinc-300 dark:hover:text-white transition z-[888]"
             aria-label="Cerrar modal"
           >
-            <Icon icon="tabler:currency-xrp" width="20" height="20" />
+            <Icon icon={ICONS_PAGES.x} width="20" height="20" />
           </button>
 
           {/* Modal como estaba */}

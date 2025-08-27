@@ -9,6 +9,7 @@ import highlightCode from './higlight-code';
 import './Code.css';
 
 import { useEnviromentStore } from '../../pages/client/components/enviroment/store.enviroment';
+import ICONS_PAGES from '../../pages/client/types/ICONS_PAGE';
 import { useJsonHook } from './methods-json/method';
 import { useXmlHook } from './methos-xml/method.xml';
 import type { CodeEditorProps } from './types';
@@ -412,20 +413,20 @@ const CodeEditor = ({
                   disabled={findResults.length === 0}
                   className="p-1 rounded-md hover:bg-gray-300 dark:hover:bg-zinc-700 disabled:opacity-50 text-gray-800 dark:text-zinc-300 disabled:text-red-500"
                 >
-                  <Icon icon="tabler:chevron-up" width={16} />
+                  <Icon icon={ICONS_PAGES.chevronup} width={16} />
                 </button>
                 <button
                   onClick={handleNextMatch}
                   disabled={findResults.length === 0}
                   className="p-1 rounded-md hover:bg-gray-300 dark:hover:bg-zinc-700 disabled:opacity-50 text-gray-800 dark:text-zinc-300 disabled:text-red-500"
                 >
-                  <Icon icon="tabler:chevron-down" width={16} />
+                  <Icon icon={ICONS_PAGES.chevrondown} width={16} />
                 </button>
                 <button
                   onClick={() => setIsOpenFindBar(false)}
                   className="p-1 rounded-md hover:bg-gray-300 dark:hover:bg-zinc-700 text-gray-800 dark:text-zinc-300"
                 >
-                  <Icon icon="tabler:x" width={16} />
+                  <Icon icon={ICONS_PAGES.X} width={16} />
                 </button>
               </div>
               <AnimatePresence>
@@ -558,7 +559,7 @@ const CodeEditor = ({
         <div className="relative flex justify-between items-center text-[8px] text-gray-500 dark:text-zinc-400 bg-gray-200/70 dark:bg-zinc-950/50 border-t border-gray-300 dark:border-zinc-800 px-2 py-1.5 shadow-sm">
           <div className="flex items-center gap-1">
             <button className="button-code-tools" onClick={HandlersIdentarBody}>
-              <Icon icon="tabler:braces" width={14} />
+              <Icon icon={ICONS_PAGES.braces} width={14} />
               <span className="hidden sm:inline font-black">Beuttify</span>
             </button>
 
@@ -571,7 +572,7 @@ const CodeEditor = ({
               className="button-code-tools"
               onClick={() => setIsOpenBar(!isOpenBar)}
             >
-              <Icon icon="tabler:replace" width={14} />
+              <Icon icon={ICONS_PAGES.replace} width={14} />
               <span className="hidden sm:inline">Reemplazar</span>
             </button>
           </div>
@@ -582,16 +583,16 @@ const CodeEditor = ({
               onClick={() => setIsOpenFindBar(!isOpenFindBar)}
               aria-label="Buscar"
             >
-              <Icon icon="tabler:search" width={14} />
+              <Icon icon={ICONS_PAGES.search} width={14} />
             </button>
             <span className="text-green-500 dark:text-green-400">
               {(() => {
                 try {
                   JSON.parse(value);
-                  return <Icon icon="tabler:check" width={15} height={15} />;
+                  return <Icon icon={ICONS_PAGES.check} width={15} height={15} />;
                 } catch {
                   return (
-                    <Icon icon="tabler:x" width={13} height={13} color="red" />
+                    <Icon icon={ICONS_PAGES.x} width={13} height={13} color="red" />
                   );
                 }
               })()}

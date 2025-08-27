@@ -6,6 +6,7 @@ import { useCallback, useMemo } from 'react';
 import { toast } from 'react-hot-toast';
 import { create } from 'zustand';
 import { useRequestStore } from '../../stores/request.store';
+import ICONS_PAGES from '../../types/ICONS_PAGE';
 
 // Define el estado y las acciones del mini-store
 type FormattedUrlStore = {
@@ -149,7 +150,7 @@ const AddQueryParam: React.FC<AddQueryParamProps> = () => {
                     className=" flex items-center justify-center text-red-500 hover:bg-zinc-800 rounded"
                     aria-label="Eliminar Parámetro"
                   >
-                    <Icon icon="tabler:trash" />
+                    <Icon icon={ICONS_PAGES.trash} />
                   </button>
                 )}
               </td>

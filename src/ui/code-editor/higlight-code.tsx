@@ -17,11 +17,11 @@ const highlightCode = (
   currentMatchIndex = -1,
 ) => {
   if (code === null || code === undefined) return '';
-  
+
   // 🔥 Escapamos SOLO el código crudo
   const rawCode = String(code);
   let highlightedHTML = escapeHTML(rawCode);
-  
+
   // --- 🎨 Resaltado por lenguaje ---
   if (language === 'json') {
     highlightedHTML = highlightedHTML
@@ -62,7 +62,7 @@ const highlightCode = (
       .replace(/&gt;/g, `<span style="color:${colors.tag}">&gt;</span>`);
   } else {
     const langKeywords = keywords[language] || keywords.javascript;
-    
+
     highlightedHTML = highlightedHTML
       // 💬 Comentarios (// y /* */)
       .replace(
@@ -71,7 +71,7 @@ const highlightCode = (
       )
       // 🔍 Expresiones regulares /pattern/flags
       .replace(
-        /\/([^\/\n\r*]([^\/\n\r\\]|\\.)*)\/([gimuy]*)/g,
+        /\/([^/\n\r*]([^/\n\r\\]|\\.)*)\/([gimuy]*)/g,
         `<span style="color:${colors.string}; font-style:italic">/$1/$2</span>`,
       )
       // 🌍 Variables de entorno {{variable}}
@@ -94,7 +94,7 @@ const highlightCode = (
         /\b(\w+)(?=\s*\()/g,
         `<span style="color:${colors.function}">$1</span>`,
       );
-    
+
     // 🔑 Keywords del lenguaje
     langKeywords.forEach((keyword: string) => {
       const regex = new RegExp(`\\b(${keyword})\\b`, 'g');
@@ -104,7 +104,7 @@ const highlightCode = (
       );
     });
   }
-  
+
   // 🔍 Búsqueda
   if (findResults.length > 0 && searchValue) {
     const regex = new RegExp(searchValue, 'gi');
@@ -116,7 +116,7 @@ const highlightCode = (
       return `<span class="${matchClass}">${match}</span>`;
     });
   }
-  
+
   return highlightedHTML;
 };
 

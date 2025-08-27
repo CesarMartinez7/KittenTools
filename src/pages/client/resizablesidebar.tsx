@@ -1,5 +1,6 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { useEffect, useRef, useState } from 'react';
+import ICONS_PAGES from './types/ICONS_PAGE';
 
 interface ResizableSidebarProps {
   children: React.ReactNode;
@@ -78,7 +79,7 @@ const ResizableSidebar: React.FC<ResizableSidebarProps> = ({
         <div className="absolute right-0 top-1/2 transform translate-x-full -translate-y-1/2">
           <div className="bg-zinc-800 border border-zinc-600 rounded-md p-1 opacity-0 group-hover:opacity-100 transition-opacity">
             <Icon
-              icon="tabler:grip-vertical"
+              icon={ICONS_PAGES.grip}
               width="12"
               height="12"
               className="text-zinc-400"
