@@ -248,7 +248,7 @@ export default function ResponsesTypesComponent({
     <div className="h-full flex flex-col ma overflow-y-scroll bg-white dark:bg-transparent ">
       <div className="flex-1 flex flex-col justify-between">
         <nav
-          className="flex border-b justify-between border-gray-200 dark:border-zinc-700 items-center pt-1 sticky top-0 dark:bg-zinc-950/50 backdrop-blur-2xl bg-white"
+          className="flex border-b justify-between border-gray-200 dark:border-zinc-700 items-center sticky top-0 dark:bg-zinc-950/50 backdrop-blur-2xl bg-white"
           role="tablist"
           aria-label="Tipos de respuesta"
         >

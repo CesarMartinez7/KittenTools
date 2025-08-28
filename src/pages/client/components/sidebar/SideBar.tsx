@@ -1,15 +1,16 @@
-import { Icon } from "@iconify/react/dist/iconify.js";
-import { AnimatePresence, motion } from "framer-motion";
-import type React from "react";
-import { useEffect, useRef, useState } from "react";
-import toast from "react-hot-toast";
-import ToolTipButton from "../../../../ui/tooltip/TooltipButton";
-import { useModalStore } from "../../modals/store.modal";
-import { useRequestStore } from "../../stores/request.store";
-import type { SavedRequestsSidebarProps } from "../../types/types";
-import { useEnviromentStore } from "../enviroment/store.enviroment";
-import ItemNode from "../itemnode/item-node";
-import ExportModal from "../../modals/export.modal";
+import { Icon } from '@iconify/react/dist/iconify.js';
+import { AnimatePresence, motion } from 'framer-motion';
+import type React from 'react';
+import { useEffect, useRef, useState } from 'react';
+import toast from 'react-hot-toast';
+import ToolTipButton from '../../../../ui/tooltip/TooltipButton';
+import { useModalStore } from '../../modals/store.modal';
+import { useRequestStore } from '../../stores/request.store';
+import type { SavedRequestsSidebarProps } from '../../types/types';
+import { useEnviromentStore } from '../enviroment/store.enviroment';
+import ItemNode from '../itemnode/item-node';
+import ExportModal from '../../modals/export.modal';
+import PostmanCollectionExplorer from '../itemnode/item-node';
 
 // Componente ResizableSidebar
 interface ResizableSidebarProps {
@@ -25,7 +26,7 @@ export const ResizableSidebar: React.FC<ResizableSidebarProps> = ({
   initialWidth = 300,
   minWidth = 200,
   maxWidth = 800,
-  className = "",
+  className = '',
 }) => {
   const [width, setWidth] = useState(initialWidth);
   const [isResizing, setIsResizing] = useState(false);
@@ -54,17 +55,17 @@ export const ResizableSidebar: React.FC<ResizableSidebarProps> = ({
     };
 
     if (isResizing) {
-      document.addEventListener("mousemove", handleMouseMove);
-      document.addEventListener("mouseup", handleMouseUp);
-      document.body.style.cursor = "col-resize";
-      document.body.style.userSelect = "none";
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = 'col-resize';
+      document.body.style.userSelect = 'none';
     }
 
     return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-      document.body.style.cursor = "";
-      document.body.style.userSelect = "";
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
     };
   }, [isResizing, minWidth, maxWidth]);
 
@@ -78,7 +79,7 @@ export const ResizableSidebar: React.FC<ResizableSidebarProps> = ({
       <div
         className={`
           absolute top-0 right-0 w-1 h-full cursor-col-resize group z-10
-          ${isResizing ? "bg-green-primary" : "hover:bg-green-primary/50"}
+          ${isResizing ? 'bg-green-primary' : 'hover:bg-green-primary/50'}
         `}
         onMouseDown={handleMouseDown}
       >
@@ -96,7 +97,6 @@ export const ResizableSidebar: React.FC<ResizableSidebarProps> = ({
     </div>
   );
 };
-
 
 export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
   const { collections, addCollection, importCollections, exportCollections } =
@@ -133,7 +133,7 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
 
   return (
     <ResizableSidebar minWidth={100} maxWidth={800} initialWidth={470}>
-      <AnimatePresence key={"gokuuu"}>
+      <AnimatePresence key={'gokuuu'}>
         {isOpen && (
           <motion.div
             className="
@@ -182,8 +182,8 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
               <div
                 className={`p-2 cursor-pointer transition-colors flex-2 ${
                   currenIdx === 1
-                    ? "bg-green-500/10 dark:hover:bg-zinc-950 dark:text-green-primary dark:bg-green-primary "
-                    : " dark:hover:bg-green-primary/30 text-gray-600 dark:text-zinc-300"
+                    ? 'bg-green-500/10 dark:hover:bg-zinc-950 dark:text-green-primary dark:bg-green-primary '
+                    : ' dark:hover:bg-green-primary/30 text-gray-600 dark:text-zinc-300'
                 }`}
                 onClick={() => setCurrentIdx(1)}
               >
@@ -197,8 +197,8 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
               <div
                 className={`p-2 flex-1 cursor-pointer transition-colors ${
                   currenIdx === 2
-                    ? "bg-green-500/10 dark:text-green-primary dark:bg-green-primary/10"
-                    : "hover:bg dark:hover:bg-green-primary/90 text-gray-600 dark:text-zinc-300"
+                    ? 'bg-green-500/10 dark:text-green-primary dark:bg-green-primary/10'
+                    : 'hover:bg dark:hover:bg-green-primary/90 text-gray-600 dark:text-zinc-300'
                 }`}
                 onClick={() => setCurrentIdx(2)}
               >
@@ -212,9 +212,9 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
               <div
                 className="
               flex-1 rounded-lg p-4 overflow-hidden h-full flex flex-col no-scrollbar scroll-smooth
-              bg-gray-100 dark:bg-zinc-900
+              bg-gray-50 dark:bg-zinc-900
             "
-                style={{ scrollbarWidth: "none" }}
+                style={{ scrollbarWidth: 'none' }}
               >
                 {currenIdx === 2 && (
                   <div className="flex flex-col gap-2 h-full">
@@ -251,7 +251,7 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
                 {currenIdx === 1 && (
                   <div
                     className="overflow-y-auto flex-1 pr-2 custom-scrollbar no-scrollbar"
-                    style={{ scrollbarWidth: "none" }}
+                    style={{ scrollbarWidth: 'none' }}
                   >
                     <div className="flex justify-end mb-4"></div>
                     {collections.length === 0 && (
@@ -270,11 +270,11 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
                         key={collection.id}
                         className="p-1 rounded-md shadow-xl transition-colors cursor-pointer bg-gray-50 border-gray-200 text-gray-800 dark:bg-transparent dark:border-zinc-800 dark:text-zinc-200"
                       >
-                        <ItemNode
-                          data={collection}
+                        <PostmanCollectionExplorer />
+                        {/* data={collection}
                           level={0}
                           parentCollectionId={collection.id}
-                        />
+                        /> */}
                       </div>
                     ))}
                   </div>

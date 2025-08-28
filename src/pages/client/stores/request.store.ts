@@ -55,17 +55,18 @@ interface RequestState {
   handleDuplicateItem: (collectionId: string, itemId: string) => void;
   handleAddNewItem: (
     collectionId: string,
-    itemId: string,
+    parentItemId: string | null,
     name: string,
   ) => void;
   handleAddNewFolder: (
     collectionId: string,
-    itemId: string,
+    parentItemId: string | null,
     name: string,
   ) => void;
   initTab: () => void;
 }
 
+// Funciones auxiliares para la lógica de la store
 const findAndUpdateItem = (
   items: any[],
   targetId: string,
@@ -115,6 +116,44 @@ const assignIdsRecursively = (items: any[]): any[] => {
     }
     return newItem;
   });
+};
+
+const findItemById = (items: any[], targetId: string): any | null => {
+  for (const item of items) {
+    if (item.id === targetId) {
+      return item;
+    }
+    if (item.item) {
+      const found = findItemById(item.item, targetId);
+      if (found) {
+        return found;
+      }
+    }
+  }
+  return null;
+};
+
+const insertItemAfter = (
+  items: any[],
+  targetId: string,
+  newItem: any,
+): any[] => {
+  const result: any[] = [];
+  let found = false;
+  items.forEach((item) => {
+    result.push(item);
+    if (item.id === targetId) {
+      result.push(newItem);
+      found = true;
+    } else if (item.item) {
+      const subItems = insertItemAfter(item.item, targetId, newItem);
+      if (subItems.length > item.item.length) {
+        result[result.length - 1] = { ...item, item: subItems };
+        found = true;
+      }
+    }
+  });
+  return found ? result : items;
 };
 
 export const useRequestStore = create<RequestState>((set, get) => ({
@@ -169,7 +208,7 @@ export const useRequestStore = create<RequestState>((set, get) => ({
     get().executeRequest(newTab.id);
   },
 
-  executeRequest: async (tabId: string) => {
+  executeRequest: async (tabId) => {
     const state = get();
     const currentTab = state.listTabs.find((tab) => tab.id === tabId);
     if (!currentTab) {
@@ -213,153 +252,39 @@ export const useRequestStore = create<RequestState>((set, get) => ({
     }
   },
 
-  handleUpdateItem: (collectionId, itemId, changes) => {
+  removeTab: (id) => {
+    db.tabs.delete(id);
     set((state) => {
-      const collectionToUpdate = state.collections.find(
-        (col) => col.id === collectionId,
-      );
-      if (!collectionToUpdate) return state;
-
-      const updatedItems = findAndUpdateItem(
-        collectionToUpdate.item,
-        itemId,
-        (item) => ({ ...item, ...changes }),
-      );
-
-      db.collections.update(collectionId, { item: updatedItems });
-
+      const remainingTabs = state.listTabs.filter((t) => t.id !== id);
+      const newCurrentTabId =
+        state.currentTabId === id
+          ? remainingTabs[0]?.id || null
+          : state.currentTabId;
       return {
-        collections: state.collections.map((col) =>
-          col.id === collectionId ? { ...col, item: updatedItems } : col,
-        ),
+        listTabs: remainingTabs,
+        currentTabId: newCurrentTabId,
       };
     });
   },
 
-  handleRemoveItem: (collectionId, itemId) => {
-    set((state) => {
-      const collectionToUpdate = state.collections.find(
-        (col) => col.id === collectionId,
-      );
-      if (!collectionToUpdate) return state;
+  setCurrentTab: (id) => set({ currentTabId: id }),
 
-      const newItems = findAndRemoveItem(collectionToUpdate.item, itemId);
-
-      db.collections.update(collectionId, { item: newItems });
-
-      return {
-        collections: state.collections.map((col) =>
-          col.id === collectionId ? { ...col, item: newItems } : col,
-        ),
-      };
-    });
+  updateTab: (id, changes) => {
+    db.tabs.update(id, changes);
+    set((state) => ({
+      listTabs: state.listTabs.map((tab) =>
+        tab.id === id ? { ...tab, ...changes } : tab,
+      ),
+    }));
   },
 
-  handleDuplicateItem: (collectionId, itemId) => {
-    set((state) => {
-      const collectionToUpdate = state.collections.find(
-        (col) => col.id === collectionId,
-      );
-      if (!collectionToUpdate) return state;
-
-      const findAndInsert = (items: any[], targetId: string): any[] => {
-        return items.flatMap((item) => {
-          if (item.id === targetId) {
-            const duplicatedItem = JSON.parse(JSON.stringify(item));
-            duplicatedItem.id = nanoid();
-            duplicatedItem.name = `${item.name} (Copia)`;
-            return [item, duplicatedItem];
-          }
-          if (item.item) {
-            const updatedSubItems = findAndInsert(item.item, targetId);
-            if (updatedSubItems.length !== item.item.length) {
-              return [{ ...item, item: updatedSubItems }];
-            }
-          }
-          return [item];
-        });
-      };
-      const updatedItems = findAndInsert(collectionToUpdate.item, itemId);
-
-      db.collections.update(collectionId, { item: updatedItems });
-
-      return {
-        collections: state.collections.map((col) =>
-          col.id === collectionId ? { ...col, item: updatedItems } : col,
-        ),
-      };
-    });
-  },
-
-  handleAddNewItem: (collectionId, folderId, name) => {
-    set((state) => {
-      const collectionToUpdate = state.collections.find(
-        (col) => col.id === collectionId,
-      );
-      if (!collectionToUpdate) return state;
-
-      const newItem = {
-        id: nanoid(),
-        name: name,
-        request: {
-          id: nanoid(),
-          name: name,
-          method: 'GET',
-          headers: [],
-          body: { mode: 'raw', raw: '' },
-          url: { raw: '', query: [] },
-        },
-      };
-
-      const updatedItems = findAndUpdateItem(
-        collectionToUpdate.item,
-        folderId,
-        (item) => ({
-          ...item,
-          item: item.item ? [...item.item, newItem] : [newItem],
-        }),
-      );
-
-      db.collections.update(collectionId, { item: updatedItems });
-
-      return {
-        collections: state.collections.map((col) =>
-          col.id === collectionId ? { ...col, item: updatedItems } : col,
-        ),
-      };
-    });
-  },
-
-  handleAddNewFolder: (collectionId, parentFolderId, name) => {
-    set((state) => {
-      const collectionToUpdate = state.collections.find(
-        (col) => col.id === collectionId,
-      );
-      if (!collectionToUpdate) return state;
-
-      const newFolder = {
-        id: nanoid(),
-        name: name,
-        item: [],
-      };
-
-      const updatedItems = findAndUpdateItem(
-        collectionToUpdate.item,
-        parentFolderId,
-        (item) => ({
-          ...item,
-          item: item.item ? [...item.item, newFolder] : [newFolder],
-        }),
-      );
-
-      db.collections.update(collectionId, { item: updatedItems });
-
-      return {
-        collections: state.collections.map((col) =>
-          col.id === collectionId ? { ...col, item: updatedItems } : col,
-        ),
-      };
-    });
+  setResponse: (id, response) => {
+    db.tabs.update(id, { response });
+    set((state) => ({
+      listTabs: state.listTabs.map((tab) =>
+        tab.id === id ? { ...tab, response } : tab,
+      ),
+    }));
   },
 
   loadTabs: async () => {
@@ -440,7 +365,6 @@ export const useRequestStore = create<RequestState>((set, get) => ({
   importCollections: async () => {
     const isTauri = '__TAURI__' in window;
     if (isTauri) {
-      // Lógica para Tauri
       try {
         const selected = await open({
           multiple: false,
@@ -479,7 +403,6 @@ export const useRequestStore = create<RequestState>((set, get) => ({
         console.error('Error en la importación de Tauri:', error);
       }
     } else {
-      // Lógica para Navegador
       try {
         const input = document.createElement('input');
         input.type = 'file';
@@ -558,7 +481,6 @@ export const useRequestStore = create<RequestState>((set, get) => ({
     const dataStr = JSON.stringify(exportData, null, 2);
 
     if (isTauri) {
-      // Lógica para Tauri
       try {
         const filePath = await save({
           defaultPath: `${collectionToExport.name}_export.json`,
@@ -577,7 +499,6 @@ export const useRequestStore = create<RequestState>((set, get) => ({
         console.error('Error en la exportación de Tauri:', error);
       }
     } else {
-      // Lógica para Navegador
       const downloadAnchorNode = document.createElement('a');
       downloadAnchorNode.setAttribute(
         'href',
@@ -594,38 +515,160 @@ export const useRequestStore = create<RequestState>((set, get) => ({
     }
   },
 
-  removeTab: (id) => {
-    db.tabs.delete(id);
+  handleUpdateItem: (collectionId, itemId, changes) => {
     set((state) => {
-      const remainingTabs = state.listTabs.filter((t) => t.id !== id);
-      const newCurrentTabId =
-        state.currentTabId === id
-          ? remainingTabs[0]?.id || null
-          : state.currentTabId;
+      const collectionToUpdate = state.collections.find(
+        (col) => col.id === collectionId,
+      );
+      if (!collectionToUpdate) return state;
+
+      const updatedItems = findAndUpdateItem(
+        collectionToUpdate.item,
+        itemId,
+        (item) => ({ ...item, ...changes }),
+      );
+
+      db.collections.update(collectionId, { item: updatedItems });
+
       return {
-        listTabs: remainingTabs,
-        currentTabId: newCurrentTabId,
+        collections: state.collections.map((col) =>
+          col.id === collectionId ? { ...col, item: updatedItems } : col,
+        ),
       };
     });
   },
 
-  setCurrentTab: (id) => set({ currentTabId: id }),
+  handleRemoveItem: (collectionId, itemId) => {
+    set((state) => {
+      const collectionToUpdate = state.collections.find(
+        (col) => col.id === collectionId,
+      );
+      if (!collectionToUpdate) return state;
 
-  updateTab: (id, changes) => {
-    db.tabs.update(id, changes);
-    set((state) => ({
-      listTabs: state.listTabs.map((tab) =>
-        tab.id === id ? { ...tab, ...changes } : tab,
-      ),
-    }));
+      const newItems = findAndRemoveItem(collectionToUpdate.item, itemId);
+
+      db.collections.update(collectionId, { item: newItems });
+
+      return {
+        collections: state.collections.map((col) =>
+          col.id === collectionId ? { ...col, item: newItems } : col,
+        ),
+      };
+    });
   },
 
-  setResponse: (id, response) => {
-    db.tabs.update(id, { response });
-    set((state) => ({
-      listTabs: state.listTabs.map((tab) =>
-        tab.id === id ? { ...tab, response } : tab,
-      ),
-    }));
+  handleDuplicateItem: (collectionId, itemId) => {
+    set((state) => {
+      const collectionToUpdate = state.collections.find(
+        (col) => col.id === collectionId,
+      );
+      if (!collectionToUpdate) return state;
+
+      const itemToDuplicate = findItemById(collectionToUpdate.item, itemId);
+      if (!itemToDuplicate) return state;
+
+      const duplicatedItem = {
+        ...JSON.parse(JSON.stringify(itemToDuplicate)),
+        id: nanoid(),
+        name: `${itemToDuplicate.name} (Copia)`,
+      };
+
+      const newItems = insertItemAfter(
+        collectionToUpdate.item,
+        itemId,
+        duplicatedItem,
+      );
+
+      db.collections.update(collectionId, { item: newItems });
+
+      return {
+        collections: state.collections.map((col) =>
+          col.id === collectionId ? { ...col, item: newItems } : col,
+        ),
+      };
+    });
+  },
+
+  handleAddNewItem: (collectionId, parentItemId, name) => {
+    set((state) => {
+      const collectionToUpdate = state.collections.find(
+        (col) => col.id === collectionId,
+      );
+      if (!collectionToUpdate) return state;
+
+      const newItem = {
+        id: nanoid(),
+        name: name,
+        request: {
+          id: nanoid(),
+          name: name,
+          method: 'GET',
+          headers: [],
+          body: { mode: 'raw', raw: '' },
+          url: { raw: '', query: [] },
+        },
+      };
+
+      let updatedItems;
+      if (parentItemId) {
+        updatedItems = findAndUpdateItem(
+          collectionToUpdate.item,
+          parentItemId,
+          (item) => ({
+            ...item,
+            item: item.item ? [...item.item, newItem] : [newItem],
+          }),
+        );
+      } else {
+        updatedItems = [...(collectionToUpdate.item || []), newItem];
+      }
+
+      db.collections.update(collectionId, { item: updatedItems });
+      toast.success(`'${name}' agregado.`);
+
+      return {
+        collections: state.collections.map((col) =>
+          col.id === collectionId ? { ...col, item: updatedItems } : col,
+        ),
+      };
+    });
+  },
+
+  handleAddNewFolder: (collectionId, parentItemId, name) => {
+    set((state) => {
+      const collectionToUpdate = state.collections.find(
+        (col) => col.id === collectionId,
+      );
+      if (!collectionToUpdate) return state;
+
+      const newFolder = {
+        id: nanoid(),
+        name: name,
+        item: [],
+      };
+
+      let updatedItems;
+      if (parentItemId) {
+        updatedItems = findAndUpdateItem(
+          collectionToUpdate.item,
+          parentItemId,
+          (item) => ({
+            ...item,
+            item: item.item ? [...item.item, newFolder] : [newFolder],
+          }),
+        );
+      } else {
+        updatedItems = [...(collectionToUpdate.item || []), newFolder];
+      }
+
+      db.collections.update(collectionId, { item: updatedItems });
+      toast.success(`'${name}' agregado.`);
+
+      return {
+        collections: state.collections.map((col) =>
+          col.id === collectionId ? { ...col, item: updatedItems } : col,
+        ),
+      };
+    });
   },
 }));

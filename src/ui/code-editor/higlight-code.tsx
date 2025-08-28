@@ -23,7 +23,7 @@ const highlightCode = (
   let highlightedHTML = escapeHTML(rawCode);
 
   // --- 🎨 Resaltado por lenguaje ---
-  if (language === 'json' || language === "application/json") {
+  if (language === 'json' || language === 'application/json') {
     highlightedHTML = highlightedHTML
       // keys
       .replace(
@@ -45,7 +45,7 @@ const highlightCode = (
         /\b(-?\d+\.?\d*)\b/g,
         `<span style="color:${colors.number}">$1</span>`,
       );
-  } else if (language === 'xml' || language === "application/xml") {
+  } else if (language === 'xml' || language === 'application/xml') {
     highlightedHTML = highlightedHTML
       .replace(
         /&lt;!--[\s\S]*?--&gt;/g,

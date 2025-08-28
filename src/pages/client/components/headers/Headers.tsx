@@ -102,7 +102,7 @@ const ColoredInput: React.FC<HeaderInputProps> = ({
           onChange={onChangeComp}
           onFocus={onFocus}
           onBlur={onBlur}
-          className="absolute inset-0 input-table input-transparent"
+          className="absolute inset-0  input-transparent text-transparent"
         />
         <div className="">
           {formattedParts.map((part, index) => (

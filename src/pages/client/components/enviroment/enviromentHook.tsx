@@ -12,7 +12,7 @@ export default function useEnviromentHook() {
   const setListEntorno = useEnviromentStore((state) => state.setListEntorno);
   const addEntorno = useEnviromentStore((state) => state.addEntorno);
 
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(true);
 
   // Cargar desde localStorage al inicio
   useEffect(() => {

@@ -10,7 +10,7 @@ const ResponsePanel = ({
   statusCode,
   setTypeResponse,
 }) => (
-  <div className="h-full bg-white/90 dark:bg-zinc-900/80 p-4 border-gray-200 dark:border-zinc-800 flex flex-col overflow-hidden shadow-lg">
+  <div className="h-full bg-white/90 dark:bg-zinc-900/80  border-gray-200 dark:border-zinc-800 flex flex-col overflow-hidden shadow-lg">
     {response || isLoading ? (
       <>
         {isLoading || response === null ? (

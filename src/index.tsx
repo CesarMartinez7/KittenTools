@@ -6,6 +6,7 @@ import { Suspense } from 'react';
 import { Toaster } from 'react-hot-toast';
 import AppClient from './pages/client/page.tsx';
 import { AppClientRouteLazy } from './pages/lazy-pages.tsx';
+import PostmanCollectionExplorer from './pages/client/components/itemnode/item-node-2.tsx';
 
 const LoadingElement = () => (
   <div className="h-screen w-screen flex justify-center items-center backdrop-blur-xl flex-col">
@@ -33,6 +34,7 @@ ReactDOM.createRoot(root).render(
       <Router>
         <Routes>
           <Route index path="/" element={<AppClient />} />
+
           <Route
             path="*"
             element={

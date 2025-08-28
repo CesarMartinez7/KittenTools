@@ -210,14 +210,18 @@ const CodeEditor = ({
   }, [currentMatchIndex, findResults, code]);
 
   const HandlersMinifyBody = () => {
-    if (language === 'json' || language === "application/json") return minifyJson();
-    if (language === 'xml' || language === "application/xml") return minifyXml();
+    if (language === 'json' || language === 'application/json')
+      return minifyJson();
+    if (language === 'xml' || language === 'application/xml')
+      return minifyXml();
     return toast.error('El formato no es JSON ni XML, no se puede minificar.');
   };
 
   const HandlersIdentarBody = () => {
-    if (language === 'json'  || language === "application/json") return JsonSchema();
-    if (language === 'xml' || language === "application/xml") return XmlScheme();
+    if (language === 'json' || language === 'application/json')
+      return JsonSchema();
+    if (language === 'xml' || language === 'application/xml')
+      return XmlScheme();
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
