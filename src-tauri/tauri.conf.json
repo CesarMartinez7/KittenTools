@@ -10,10 +10,14 @@
     "beforeBuildCommand": "npm run build"
   },
   "app": {
+    "withGlobalTauri": true,
     "windows": [
       {
         "title": "Elisa",
+        "width": 1200,
+        "height": 800,
         "fullscreen": true,
+        "devtools": true,
         "resizable": true
       }
     ],
@@ -43,6 +47,11 @@
       "removeDir": true,
       "exists": true,
       "scope": ["$APPCONFIG/**"]
+    },
+    "http": {
+      "headers": {
+        "User-Agent": "Tauri App"
+      }
     }
   }
 }
