@@ -38,6 +38,7 @@ import RequestForm from './request.form';
 import ResponsePanel from './response-panel';
 import { type RequestData, useRequestStore } from './stores/request.store';
 import type { EventRequest } from './types/types';
+import { fetch } from '@tauri-apps/plugin-http';
 
 interface ContentTypeProps {
   selectedIdx: number;
@@ -59,7 +60,7 @@ const Header = memo(
     nombreEntorno: string | null;
   }) => {
     const isRunningInTauri = useMemo(
-      () => window.__TAURI_IPC__ !== undefined,
+      () => window.__TAURI__ !== undefined,
       [],
     );
 
@@ -653,6 +654,7 @@ export default function AppClient() {
         finalResponse = await handleRequest();
       } catch (error: any) {
         finalResponse = error;
+        toast.error( JSON.stringify(error));
         toast.error('Error al realizar la petición');
       } finally {
         if (finalResponse && currentTabId) {
@@ -721,9 +723,25 @@ export default function AppClient() {
     (state) => state.closeNewsShowModal,
   );
 
+  const [response,setResponse] = useState(null)
+
+  useEffect(() => {
+    if(window.__TAURI__){
+      fetch("https://jsonplaceholder.typicode.com/posts").then((r) => r.json()).then((data) => {
+        console.log(data);
+        setResponse(data);
+      });
+    }
+  }, [])
+
+
   return (
-    <div className="min-h-screen flex overflow-hidden h-screen text-xs relative text-gray-600 dark:text-zinc-200">
+    <div className="min-h-screen flex overflow-hidden h-screen text-xs relative text-gray-600 dark:|text-zinc-200">
+      
       <AnimatePresence>
+
+
+
         {newShow && (
           <BaseModalLazy isOpen={newsShowModal} onClose={toogleNewsShowModal}>
             <motion.div
@@ -938,6 +956,19 @@ export default function AppClient() {
           <PanelResizeHandle className="w-1 bg-gray-300 dark:bg-zinc-700 cursor-col-resize" />
 
           <Panel defaultSize={50} minSize={20} className="h-full">
+
+
+            {response && response.map((post) => (
+              <>
+              
+        <div key={post.id}>
+          <h3>{post.title}</h3>
+          <p>{post.body}</p>
+        </div>
+        </>
+      ))}
+
+      <p>sdflskdflwd</p>
             <ResponsePanel
               isLoading={isLoading}
               headersResponse={currentTab?.response?.headers}

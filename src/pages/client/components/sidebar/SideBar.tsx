@@ -1,12 +1,9 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { AnimatePresence, motion } from 'framer-motion';
-import { nanoid } from 'nanoid';
 import type React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import ToolTipButton from '../../../../ui/tooltip/TooltipButton';
-import type { Collection } from '../../db';
-import SidebarModal from '../../modals/modal.template';
 import { useModalStore } from '../../modals/store.modal';
 import { useRequestStore } from '../../stores/request.store';
 import type { SavedRequestsSidebarProps } from '../../types/types';
