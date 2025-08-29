@@ -95,8 +95,8 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
   return (
     <div key={item.id} className="relative">
       <div
-        className="flex items-center py-1 px-2 cursor-pointer  rounded group"
-        style={{ paddingLeft: `${level * 10 + 8}px` }}
+        className="flex items-center py-1 px-2 cursor-pointer rounded group shadow bg-gray-50 gap-5"
+        style={{ paddingLeft: `${level * 40 + 8}px` }}
         onClick={handleClick}
         onContextMenu={handleClickContextMenu}
       >
@@ -106,7 +106,7 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
               e.stopPropagation();
               handleClick();
             }}
-            className="p-1 hover:bg-gray-200 rounded mr-1"
+            className="p-1 hover:bg-slate-200 dark:hover:bg-zinc-800 rounded mr-1 flex BG-RE"
           >
             {collapsed ? <ChevronRight size={16} /> : <ChevronDown size={16} />}
           </button>
@@ -139,14 +139,14 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
             className="flex-1 px-1 py-0 border rounded text-sm"
           />
         ) : (
-          <span className="flex-1 text-sm ">{getDisplayName()}</span>
+          <span className="flex-1 text-xs truncate" title={getDisplayName()} >{getDisplayName()}</span>
         )}
 
         {!isFolder && nodeData.request && (
+          
           <span
-            className={`px-2 py-0 text-xs rounded ml-2 ${getMethodColor(nodeData.request.method).replace('text-', 'bg-')}`
-              .replace('bg-', 'bg-100 ')
-              .replace('text-', 't ')}
+            className={`px-2 py-0 text-[13px] rounded ml-2 ${getMethodColor(nodeData.request.method)}`
+              }
           >
             {nodeData.request.method}
           </span>
@@ -183,7 +183,7 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
       {showBar && (
         <div
           ref={menuRef}
-          className="absolute z-10 top-full right-2 mt-2 w-48  rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5 focus:outline-none"
+          className="absolute z-10 top-full right-2 mt-2 w-48  text-xs rounded-md shadow-lg py-1  focus:outline-none bg-gray-100 dark:bg-zinc-900! text-white!"
         >
           {menuActions.map((action, index) => (
             <button
@@ -193,7 +193,7 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
                 if (action.action) action.action();
                 setShowBar(false);
               }}
-              className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              className="w-full text-left px-4 py-2  text-gray-700 dark:text-zinc-200 "
             >
               {action.name}
             </button>
@@ -271,42 +271,45 @@ const PostmanCollectionExplorer = () => {
   return (
     <div className="w-full h-screen text-gray-700 dark:text-zinc-200 flex flex-col font-sans dark:bg-zinc-800/30">
       {/* Header */}
-      <div className="border-b p-4 rounded-b-lg">
+      <div className="p-4">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between">
           <div>
+            
             {/* <h1 className="text-xl font-bold text-gray-900">{currentCollection.info.name}</h1>
             <p className="text-sm text-gray-600 mt-1">{currentCollection.info.description}</p> */}
           </div>
         </div>
 
-        <div className="flex gap-2 mt-4 flex-wrap">
+        <div className="flex gap-2 mt-4 flex-wrap justify-end">
           <button
             onClick={handleCreateRootFolder}
             className="base-btn-2 flex gap-2 items-center"
+            title='Nueva Carpeta'
           >
             <Icon icon={ICONS_PAGES.folder} className="size-4" />
-            Nueva Carpeta
+            
           </button>
 
           <button
             onClick={handleCreateRootRequest}
             className="base-btn-2 flex gap-2"
+            title='Nuevo Request'
           >
             <Icon icon={ICONS_PAGES.check} />
-            Nuevo Request
+            
           </button>
           <button
             onClick={() => exportCollections(currentCollection.id)}
             className="base-btn-2 flex gap-2"
+            title='Exportar'
           >
             <Download size={16} />
-            Exportar
           </button>
         </div>
       </div>
 
       {/* Explorer */}
-      <div className="flex-1 overflow-y-auto p-4">
+      <div className="flex-1 overflow-y-auto p-4 gap-1 flex flex-col">
         {currentCollection.item.length > 0 ? (
           currentCollection.item.map((item) => (
             <CollectionItemNode

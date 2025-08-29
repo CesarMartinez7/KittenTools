@@ -211,7 +211,7 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
             <div className="flex w-full gap-4 flex-1 overflow-hidden">
               <div
                 className="
-              flex-1 rounded-lg p-4 overflow-hidden h-full flex flex-col no-scrollbar scroll-smooth
+              flex-1 rounded-lg overflow-hidden h-full flex flex-col no-scrollbar scroll-smooth
               bg-gray-50 dark:bg-zinc-900
             "
                 style={{ scrollbarWidth: 'none' }}

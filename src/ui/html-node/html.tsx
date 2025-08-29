@@ -1,5 +1,6 @@
 import type React from 'react';
 import { useState } from 'react';
+import LazyListPerform from '../LazyListPerform';
 
 interface HtmlNodeProps {
   node: Node;
@@ -91,6 +92,7 @@ const HtmlNode: React.FC<HtmlNodeProps> = ({
     const displayStyle = searchTerm && !isMatch ? 'none' : 'block';
 
     return (
+      <LazyListPerform>
       <div
         style={{ marginLeft: depth * 5, display: displayStyle }}
         className="text-xs"
@@ -141,6 +143,7 @@ const HtmlNode: React.FC<HtmlNodeProps> = ({
           <span className="text-gray-400">{' />'}</span>
         )}
       </div>
+      </LazyListPerform>
     );
   }
 

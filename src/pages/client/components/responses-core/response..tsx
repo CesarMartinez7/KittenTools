@@ -156,6 +156,7 @@ export default function ResponsesTypesComponent({
   const renderResponseContent = () => {
     const finalType = activeResponseType.toLowerCase();
 
+    
     switch (finalType) {
       case 'preview':
         if (typeResponse.includes('html') || typeResponse.includes('xml')) {
@@ -224,7 +225,6 @@ export default function ResponsesTypesComponent({
           return (
             <pre className="text-xs break-all text-gray-700 dark:text-gray-200">
               {base64Content}
-              {atob(base64Content)}
             </pre>
           );
         } catch (e) {
@@ -281,7 +281,7 @@ export default function ResponsesTypesComponent({
                 <button
                   type="button"
                   onClick={() => setShowResponseMenu(!showResponseMenu)}
-                  className="inline-flex justify-center w-full rounded-md border border-gray-300 dark:border-zinc-700 shadow-sm px-4 py-1 bg-white dark:bg-zinc-900 text-sm font-medium text-gray-700 dark:text-zinc-200 hover:bg-gray-50 dark:hover:bg-zinc-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  className="inline-flex justify-center w-full rounded-md border border-gray-200 dark:border-zinc-700  px-4 py-1 bg-white dark:bg-zinc-900 text-sm font-medium text-gray-700 dark:text-zinc-200 hover:bg-gray-50 dark:hover:bg-zinc-700  "
                 >
                   {activeResponseType}
                   <Icon

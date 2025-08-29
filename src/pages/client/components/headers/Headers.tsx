@@ -211,7 +211,7 @@ export const HeadersAddRequest: React.FC<HeadersAddRequestProps> = () => {
       <div className="flex justify-between items-center mb-4 text-sm font-semibold text-gray-400">
         <button
           onClick={handleAddHeader}
-          className="px-3 py-1 text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200 flex items-center"
+          className="px-3 py-1 text-white bg-sky-500 rounded-md hover:bg-sky-700 transition-colors duration-200 flex items-center"
         >
           <Icon icon={ICONS_PAGES.plus} className="mr-2" />
           Añadir Cabecera
