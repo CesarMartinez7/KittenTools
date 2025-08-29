@@ -77,6 +77,12 @@ const Header = memo(
 
     return (
       <div className="flex dark items-center text-xs gap-2 justify-end px-4 border-gray-100 dark:border-zinc-800 backdrop-blur-sm py-1">
+        <button className='base-btn px-2! py-0.5!' onClick={() => {
+          const state = matchMedia("(prefers-color-scheme: dark)")
+          console.log(state)
+        }}>
+        <Icon icon="tabler:moon" width="14" height="14" />
+        </button>
         <div
           className={`font-medium text-zinc-800 dark:text-zinc-300 truncate max-w-[250px] px-3 rounded-full ${entornoStatus.className}`}
         >
