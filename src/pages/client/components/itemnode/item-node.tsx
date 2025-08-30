@@ -1,35 +1,26 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from "react";
 import {
   ChevronDown,
   ChevronRight,
-  Download,
   Edit2,
-  File,
-  Folder,
-  FolderOpen,
   Plus,
   Trash2,
-  Upload,
-} from 'lucide-react';
-import { Icon } from '@iconify/react/dist/iconify.js';
-import toast from 'react-hot-toast';
-import { nanoid } from 'nanoid';
-import ICONS_PAGES from '../../icons/ICONS_PAGE';
+  Download,
+} from "lucide-react";
+import { Icon } from "@iconify/react/dist/iconify.js";
+import toast from "react-hot-toast";
+import { nanoid } from "nanoid";
+import ICONS_PAGES from "../../icons/ICONS_PAGE";
 
-import { useRequestStore } from '../../stores/request.store';
-import useItemNodeLogic from './item.hook';
+import { useRequestStore } from "../../stores/request.store";
+import useItemNodeLogic from "../itemnode/item.hook";
 
-// --- Mocking external dependencies for self-contained code ---
-const toastMock = {
-  success: (message) => console.log(`Toast (success): ${message}`),
-  error: (message) => console.error(`Toast (error): ${message}`),
-  info: (message) => console.log(`Toast (info): ${message}`),
-};
-
-const nanoidMock = () => Math.random().toString(36).substr(2, 9);
-
-// --- Componente recursivo para renderizar los items de la colección ---
+// Componente recursivo para renderizar los items de la colección
 const CollectionItemNode = ({ item, collectionId, level }) => {
+  if (!item) {
+    return null;
+  }
+
   const {
     nodeData,
     collapsed,
@@ -42,7 +33,8 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
     setShowBar,
     handleClickContextMenu,
     handleClick,
-    handleClickDelete,
+    handleEdit,
+    handleDelete,
   } = useItemNodeLogic({
     data: item,
     level,
@@ -66,21 +58,14 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
         setShowBar(false);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [setShowBar]);
 
   const saveEdit = () => {
-    if (editValue.trim() && editValue !== nodeData.name) {
-      useRequestStore
-        .getState()
-        .handleUpdateItem(collectionId, nodeData.id, {
-          name: editValue.trim(),
-        });
-      toast.success(`"${nodeData.name}" renombrado a "${editValue.trim()}"`);
-    }
+    handleEdit(editValue);
     setIsEditing(false);
   };
 
@@ -133,51 +118,53 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
             onChange={(e) => setEditValue(e.target.value)}
             onBlur={saveEdit}
             onKeyDown={(e) => {
-              if (e.key === 'Enter') saveEdit();
-              if (e.key === 'Escape') setIsEditing(false);
+              if (e.key === "Enter") saveEdit();
+              if (e.key === "Escape") setIsEditing(false);
             }}
             className="flex-1 px-1 py-0 border rounded text-sm"
           />
         ) : (
-          <span className="flex-1 text-xs truncate" title={getDisplayName()} >{getDisplayName()}</span>
+          <span className="flex-1 text-xs truncate" title={getDisplayName()}>
+            {getDisplayName()}
+          </span>
         )}
 
         {!isFolder && nodeData.request && (
-          
           <span
-            className={`px-2 py-0 text-[13px] rounded ml-2 ${getMethodColor(nodeData.request.method)}`
-              }
+            className={`px-2 py-0 text-[13px] rounded ml-2 ${getMethodColor(nodeData.request.method)}`}
           >
             {nodeData.request.method}
           </span>
         )}
 
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            useRequestStore
-              .getState()
-              .handleAddNewItem(collectionId, nodeData.id, 'Nueva Petición');
-          }}
-          className="p-1 ml-auto hover:bg-gray-200 rounded text-gray-400 hover:text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity"
-        >
-          <Plus size={14} />
-        </button>
-        <button
-          onClick={handleEditClick}
-          className="p-1 hover:bg-gray-200 rounded text-gray-400 hover:text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity"
-        >
-          <Edit2 size={14} />
-        </button>
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            handleClickDelete();
-          }}
-          className="p-1 hover:bg-gray-200 rounded text-gray-400 hover:text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity"
-        >
-          <Trash2 size={14} />
-        </button>
+        <div>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              useRequestStore
+                .getState()
+                .handleAddNewItem(collectionId, nodeData.id, "Nueva Petición");
+            }}
+            className="p-1 ml-auto hover:bg-gray-200 rounded text-gray-400 hover:text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity"
+          >
+            <Plus size={14} />
+          </button>
+          <button
+            onClick={handleEditClick}
+            className="p-1 hover:bg-gray-200 rounded text-gray-400 hover:text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity"
+          >
+            <Edit2 size={14} />
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDelete();
+            }}
+            className="p-1 hover:bg-gray-200 rounded text-gray-400 hover:text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity"
+          >
+            <Trash2 size={14} />
+          </button>
+        </div>
       </div>
 
       {showBar && (
@@ -207,8 +194,8 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
             <CollectionItemNode
               key={subItem.id}
               item={subItem}
-              level={level + 1}
               collectionId={collectionId}
+              level={level + 1}
             />
           ))}
         </div>
@@ -217,116 +204,87 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
   );
 };
 
-// --- Main App Component ---
-const PostmanCollectionExplorer = () => {
+// Componente principal que lista todas las colecciones
+const PostmanCollectionsList = () => {
   const {
     collections,
     loadCollections,
-    addCollection,
-    importCollections,
     exportCollections,
+    handleAddNewItem,
+    handleAddNewFolder,
   } = useRequestStore();
 
   useEffect(() => {
     loadCollections();
   }, [loadCollections]);
 
-  const currentCollection = collections[0] || {
-    id: nanoid(),
-    info: {
-      name: 'Mi API Collection',
-      description: 'Colección de ejemplo para testing',
-      schema:
-        'https://schema.getpostman.com/json/collection/v2.1.0/collection.json',
-    },
-    item: [],
-  };
-
-  const handleCreateRootFolder = () => {
-    const newFolder = { id: nanoid(), name: 'Nueva Carpeta', item: [] };
-    if (currentCollection.item.length === 0) {
-      addCollection({ ...currentCollection, item: [newFolder] });
-    } else {
-      useRequestStore
-        .getState()
-        .handleAddNewFolder(currentCollection.id, null, 'Nueva Carpeta');
-    }
-  };
-
-  const handleCreateRootRequest = () => {
-    const newRequest = {
-      id: nanoid(),
-      name: 'Nuevo Request',
-      request: { method: 'GET', url: 'new-endpoint' },
-    };
-    if (currentCollection.item.length === 0) {
-      addCollection({ ...currentCollection, item: [newRequest] });
-    } else {
-      useRequestStore
-        .getState()
-        .handleAddNewItem(currentCollection.id, null, 'Nueva Petición');
-    }
-  };
-
-  return (
-    <div className="w-full h-screen text-gray-700 dark:text-zinc-200 flex flex-col font-sans dark:bg-zinc-800/30">
-      {/* Header */}
-      <div className="p-4">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between">
-          <div>
-            
-            {/* <h1 className="text-xl font-bold text-gray-900">{currentCollection.info.name}</h1>
-            <p className="text-sm text-gray-600 mt-1">{currentCollection.info.description}</p> */}
-          </div>
-        </div>
-
-        <div className="flex gap-2 mt-4 flex-wrap justify-end">
-          <button
-            onClick={handleCreateRootFolder}
-            className="base-btn-2 flex gap-2 items-center"
-            title='Nueva Carpeta'
-          >
-            <Icon icon={ICONS_PAGES.folder} className="size-4" />
-            
-          </button>
-
-          <button
-            onClick={handleCreateRootRequest}
-            className="base-btn-2 flex gap-2"
-            title='Nuevo Request'
-          >
-            <Icon icon={ICONS_PAGES.check} />
-            
-          </button>
-          <button
-            onClick={() => exportCollections(currentCollection.id)}
-            className="base-btn-2 flex gap-2"
-            title='Exportar'
-          >
-            <Download size={16} />
-          </button>
+  if (collections.length === 0) {
+    return (
+      <div className="flex-1 overflow-y-auto  gap-1 flex flex-col">
+        <div className="text-center p-8 text-gray-500">
+          No hay colecciones. ¡Importa una o crea una nueva!
         </div>
       </div>
+    );
+  }
 
-      {/* Explorer */}
-      <div className="flex-1 overflow-y-auto p-4 gap-1 flex flex-col">
-        {currentCollection.item.length > 0 ? (
-          currentCollection.item.map((item) => (
-            <CollectionItemNode
-              key={item.id}
-              item={item}
-              collectionId={currentCollection.id}
-              level={0}
-            />
-          ))
-        ) : (
-          <div className="text-center p-8 text-gray-500">
-            No hay elementos en la colección. ¡Importa una o crea una nueva!
+  return (
+    <div className="w-full h-full text-gray-700 dark:text-zinc-200 flex flex-col font-sans dark:bg-zinc-800/30">
+      <div className="flex-1 overflow-y-auto gap-1 flex flex-col">
+        {collections.map((collection) => (
+          <div
+            key={collection.id}
+            className="p-1 rounded-md shadow-xl transition-colors cursor-pointer bg-gray-50 border-gray-200 text-gray-800 dark:bg-transparent dark:border-zinc-800 dark:text-zinc-200 flex gap-2 flex-col"
+          >
+            <div className="flex items-center justify-between p-2">
+              <h2 className="text-sm font-bold truncate">{collection.name}</h2>
+              <div className="flex gap-2">
+                <button
+                  onClick={() =>
+                    handleAddNewFolder(collection.id, null, "Nueva Carpeta")
+                  }
+                  className="base-btn-2 flex gap-2 items-center"
+                  title="Nueva Carpeta"
+                >
+                  <Icon icon={ICONS_PAGES.folder} className="size-4" />
+                </button>
+                <button
+                  onClick={() =>
+                    handleAddNewItem(collection.id, null, "Nueva Petición")
+                  }
+                  className="base-btn-2 flex gap-2"
+                  title="Nuevo Request"
+                >
+                  <Icon icon={ICONS_PAGES.check} />
+                </button>
+                <button
+                  onClick={() => exportCollections(collection.id)}
+                  className="base-btn-2 flex gap-2"
+                  title="Exportar"
+                >
+                  <Download size={16} />
+                </button>
+              </div>
+            </div>
+            {collection.item.length > 0 ? (
+              collection.item.map((item) => (
+                <CollectionItemNode
+                  key={item.id}
+                  item={item}
+                  collectionId={collection.id}
+                  level={0}
+                />
+              ))
+            ) : (
+              <div className="text-center p-4 text-gray-500">
+                Esta colección no tiene elementos.
+              </div>
+            )}
           </div>
-        )}
+        ))}
       </div>
     </div>
   );
 };
 
-export default PostmanCollectionExplorer;
+export default PostmanCollectionsList;

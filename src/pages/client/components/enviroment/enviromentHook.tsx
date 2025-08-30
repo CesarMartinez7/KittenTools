@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
-import toast from 'react-hot-toast';
-import { useEnviromentStore } from './store.enviroment';
-import type { EnviromentLayout, Value } from './types';
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { useEnviromentStore } from "./store.enviroment";
+import type { EnviromentLayout, Value } from "./types";
 
 export default function useEnviromentHook() {
   const entornoActual = useEnviromentStore((state) => state.entornoActual);
@@ -12,11 +12,11 @@ export default function useEnviromentHook() {
   const setListEntorno = useEnviromentStore((state) => state.setListEntorno);
   const addEntorno = useEnviromentStore((state) => state.addEntorno);
 
-  const [isOpen, setIsOpen] = useState<boolean>(true);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   // Cargar desde localStorage al inicio
   useEffect(() => {
-    const savedEnvironments = localStorage.getItem('environments');
+    const savedEnvironments = localStorage.getItem("environments");
     if (savedEnvironments) {
       const parsed = JSON.parse(savedEnvironments);
       setListEntorno(parsed);
@@ -30,7 +30,7 @@ export default function useEnviromentHook() {
   // Guardar en localStorage cada vez que entornoActual cambie
   useEffect(() => {
     if (listEntorno.length > 0) {
-      localStorage.setItem('environments', JSON.stringify(listEntorno));
+      localStorage.setItem("environments", JSON.stringify(listEntorno));
     }
   }, [listEntorno]);
 
@@ -46,7 +46,7 @@ export default function useEnviromentHook() {
         );
 
         if (!json._postman_exported_using) {
-          toast.error('El archivo no contiene la estructura esperada');
+          toast.error("El archivo no contiene la estructura esperada");
           return;
         }
 
@@ -55,8 +55,8 @@ export default function useEnviromentHook() {
 
         toast.success(`"${json.name}" cargado exitosamente`);
       } catch (error) {
-        console.error('Error leyendo el JSON:', error);
-        toast.error('El archivo no es un JSON válido de Postman Environment');
+        console.error("Error leyendo el JSON:", error);
+        toast.error("El archivo no es un JSON válido de Postman Environment");
       }
     };
     reader.readAsText(file);
@@ -72,7 +72,7 @@ export default function useEnviromentHook() {
   const handleAddVariable = () => {
     setEntornoActual([
       ...entornoActual,
-      { key: '', value: '', type: 'default', enabled: true },
+      { key: "", value: "", type: "default", enabled: true },
     ]);
   };
 
@@ -82,7 +82,7 @@ export default function useEnviromentHook() {
   };
 
   const toggleModal = () => {
-    setIsOpen((prev) => !prev);
+    setIsOpen(!isOpen);
   };
 
   return {

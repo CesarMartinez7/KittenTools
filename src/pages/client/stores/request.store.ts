@@ -1,16 +1,17 @@
-import { isTauri } from '@tauri-apps/api/core';
-import { open, save } from '@tauri-apps/api/dialog';
+// El código del store se mantiene sin cambios
+import { isTauri } from "@tauri-apps/api/core";
+import { open, save } from "@tauri-apps/api/dialog";
 import {
   BaseDirectory,
   exists,
   readTextFile,
   writeFile,
-} from '@tauri-apps/api/fs';
-import axios from 'axios';
-import { nanoid } from 'nanoid';
-import toast from 'react-hot-toast';
-import { create } from 'zustand';
-import { type Collection, db } from '../db';
+} from "@tauri-apps/api/fs";
+import axios from "axios";
+import { nanoid } from "nanoid";
+import toast from "react-hot-toast";
+import { create } from "zustand";
+import { type Collection, db } from "../db";
 
 export interface RequestData {
   id: string;
@@ -37,7 +38,7 @@ interface RequestState {
   removeTab: (id: string) => void;
   setCurrentTab: (id: string) => void;
   updateTab: (id: string, changes: Partial<RequestData>) => void;
-  setResponse: (id: string, response: RequestData['response']) => void;
+  setResponse: (id: string, response: RequestData["response"]) => void;
   loadTabs: () => Promise<void>;
   loadCollections: () => Promise<void>;
   addCollection: (collection: Collection) => void;
@@ -78,9 +79,6 @@ const findAndUpdateItem = (
     }
     if (item.item) {
       const updatedSubItems = findAndUpdateItem(item.item, targetId, updateFn);
-      if (updatedSubItems === item.item) {
-        return item;
-      }
       return { ...item, item: updatedSubItems };
     }
     return item;
@@ -88,18 +86,45 @@ const findAndUpdateItem = (
 };
 
 const findAndRemoveItem = (items: any[], targetId: string): any[] => {
-  return items.flatMap((item) => {
+  return items
+    .filter((item) => item.id !== targetId)
+    .map((item) => {
+      if (item.item) {
+        return {
+          ...item,
+          item: findAndRemoveItem(item.item, targetId),
+        };
+      }
+      return item;
+    });
+};
+
+const findItemById = (items: any[], targetId: string): any | null => {
+  for (const item of items) {
     if (item.id === targetId) {
-      return [];
+      return item;
     }
     if (item.item) {
-      const updatedSubItems = findAndRemoveItem(item.item, targetId);
-      if (updatedSubItems.length !== item.item.length) {
-        return [{ ...item, item: updatedSubItems }];
+      const found = findItemById(item.item, targetId);
+      if (found) {
+        return found;
       }
     }
-    return [item];
-  });
+  }
+  return null;
+};
+
+const findItemParent = (items, targetId) => {
+  for (const item of items) {
+    if (item.item && item.item.some((child) => child.id === targetId)) {
+      return item;
+    }
+    if (item.item) {
+      const parent = findItemParent(item.item, targetId);
+      if (parent) return parent;
+    }
+  }
+  return null;
 };
 
 const assignIdsRecursively = (items: any[]): any[] => {
@@ -118,44 +143,6 @@ const assignIdsRecursively = (items: any[]): any[] => {
   });
 };
 
-const findItemById = (items: any[], targetId: string): any | null => {
-  for (const item of items) {
-    if (item.id === targetId) {
-      return item;
-    }
-    if (item.item) {
-      const found = findItemById(item.item, targetId);
-      if (found) {
-        return found;
-      }
-    }
-  }
-  return null;
-};
-
-const insertItemAfter = (
-  items: any[],
-  targetId: string,
-  newItem: any,
-): any[] => {
-  const result: any[] = [];
-  let found = false;
-  items.forEach((item) => {
-    result.push(item);
-    if (item.id === targetId) {
-      result.push(newItem);
-      found = true;
-    } else if (item.item) {
-      const subItems = insertItemAfter(item.item, targetId, newItem);
-      if (subItems.length > item.item.length) {
-        result[result.length - 1] = { ...item, item: subItems };
-        found = true;
-      }
-    }
-  });
-  return found ? result : items;
-};
-
 export const useRequestStore = create<RequestState>((set, get) => ({
   listTabs: [],
   currentTabId: null,
@@ -164,12 +151,12 @@ export const useRequestStore = create<RequestState>((set, get) => ({
   initTab: async () => {
     const newTab: RequestData = {
       id: nanoid(),
-      name: 'Nueva Peticion',
-      method: 'POST',
-      url: 'https://dsfsdf',
+      name: "Nueva Peticion",
+      method: "POST",
+      url: "https://dsfsdf",
       headers: {},
       body: {
-        cesar: 'martinez',
+        cesar: "martinez",
       },
       query: {},
     };
@@ -181,9 +168,9 @@ export const useRequestStore = create<RequestState>((set, get) => ({
     if (!nodeData.request) return;
     const newTab: RequestData = {
       id: nanoid(),
-      name: nodeData.name || 'Nueva Request',
-      method: nodeData.request?.method || 'GET',
-      url: nodeData.request?.url?.raw || '',
+      name: nodeData.name || "Nueva Request",
+      method: nodeData.request?.method || "GET",
+      url: nodeData.request?.url?.raw || "",
       headers: (nodeData.request?.header || []).reduce(
         (acc: Record<string, string>, h: any) => {
           acc[h.key] = h.value;
@@ -212,7 +199,7 @@ export const useRequestStore = create<RequestState>((set, get) => ({
     const state = get();
     const currentTab = state.listTabs.find((tab) => tab.id === tabId);
     if (!currentTab) {
-      toast.error('Pestaña no encontrada para ejecutar la petición.');
+      toast.error("Pestaña no encontrada para ejecutar la petición.");
       return;
     }
     const { method, url, headers, body } = currentTab;
@@ -231,7 +218,7 @@ export const useRequestStore = create<RequestState>((set, get) => ({
         headers: response.headers as Record<string, string>,
         status: response.status,
         time: `${responseTime}ms`,
-        type: response.headers['content-type'] || 'unknown',
+        type: response.headers["content-type"] || "unknown",
       };
       get().setResponse(tabId, newResponse);
       toast.success(`Petición ${method} a ${url} exitosa!`);
@@ -240,12 +227,12 @@ export const useRequestStore = create<RequestState>((set, get) => ({
       const responseTime = endTime - startTime;
       const errorResponse = {
         data: error.response?.data || {
-          message: 'Error de red o del servidor',
+          message: "Error de red o del servidor",
         },
         headers: error.response?.headers || {},
         status: error.response?.status || 0,
         time: `${responseTime}ms`,
-        type: error.response?.headers['content-type'] || 'unknown',
+        type: error.response?.headers["content-type"] || "unknown",
       };
       get().setResponse(tabId, errorResponse);
       toast.error(`Petición ${method} a ${url} fallida.`);
@@ -293,9 +280,9 @@ export const useRequestStore = create<RequestState>((set, get) => ({
       if (tabs.length === 0) {
         const newTab: RequestData = {
           id: nanoid(),
-          name: 'Nueva Petición',
-          method: 'GET',
-          url: 'https://api.github.com/users/CesarMartinez7',
+          name: "Nueva Petición",
+          method: "GET",
+          url: "https://api.github.com/users/CesarMartinez7",
           headers: {},
           body: {},
           query: {},
@@ -306,7 +293,7 @@ export const useRequestStore = create<RequestState>((set, get) => ({
         set({ listTabs: tabs, currentTabId: tabs[0]?.id || null });
       }
     } catch (error) {
-      console.error('Failed to load tabs from Dexie:', error);
+      console.error("Failed to load tabs from Dexie:", error);
     }
   },
 
@@ -316,7 +303,7 @@ export const useRequestStore = create<RequestState>((set, get) => ({
       if (collections.length === 0) {
         const defaultCollection: Collection = {
           id: nanoid(),
-          name: 'My Collection',
+          name: "My Collection",
           item: [],
         };
         await db.collections.add(defaultCollection);
@@ -325,7 +312,7 @@ export const useRequestStore = create<RequestState>((set, get) => ({
         set({ collections });
       }
     } catch (error) {
-      console.error('Failed to load collections:', error);
+      console.error("Failed to load collections:", error);
     }
   },
 
@@ -334,7 +321,7 @@ export const useRequestStore = create<RequestState>((set, get) => ({
       await db.collections.add(newCollection);
       set((state) => ({ collections: [...state.collections, newCollection] }));
     } catch (error) {
-      console.error('Failed to add collection:', error);
+      console.error("Failed to add collection:", error);
     }
   },
 
@@ -347,7 +334,7 @@ export const useRequestStore = create<RequestState>((set, get) => ({
         ),
       }));
     } catch (error) {
-      console.error('Failed to update collection:', error);
+      console.error("Failed to update collection:", error);
     }
   },
 
@@ -358,20 +345,20 @@ export const useRequestStore = create<RequestState>((set, get) => ({
         collections: state.collections.filter((col) => col.id !== id),
       }));
     } catch (error) {
-      console.error('Failed to remove collection:', error);
+      console.error("Failed to remove collection:", error);
     }
   },
 
   importCollections: async () => {
-    const isTauri = '__TAURI__' in window;
+    const isTauri = "__TAURI__" in window;
     if (isTauri) {
       try {
         const selected = await open({
           multiple: false,
-          filters: [{ name: 'JSON', extensions: ['json'] }],
+          filters: [{ name: "JSON", extensions: ["json"] }],
         });
         if (Array.isArray(selected) || !selected) {
-          toast.error('No se seleccionó ningún archivo');
+          toast.error("No se seleccionó ningún archivo");
           return;
         }
         const fileContent = await readTextFile(selected);
@@ -383,7 +370,7 @@ export const useRequestStore = create<RequestState>((set, get) => ({
           !Array.isArray(parsedData.item)
         ) {
           toast.error(
-            'La estructura del archivo no coincide con una colección válida',
+            "La estructura del archivo no coincide con una colección válida",
           );
           return;
         }
@@ -399,15 +386,15 @@ export const useRequestStore = create<RequestState>((set, get) => ({
         }));
         toast.success(`"${parsedData.info.name}" cargado exitosamente`);
       } catch (error) {
-        toast.error('Error al cargar el archivo de colección.');
-        console.error('Error en la importación de Tauri:', error);
+        toast.error("Error al cargar el archivo de colección.");
+        console.error("Error en la importación de Tauri:", error);
       }
     } else {
       try {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = '.json, .txt';
-        input.style.display = 'none';
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = ".json, .txt";
+        input.style.display = "none";
         const file = await new Promise<File | null>((resolve) => {
           input.onchange = () => {
             resolve(input.files?.[0] || null);
@@ -417,7 +404,7 @@ export const useRequestStore = create<RequestState>((set, get) => ({
           input.click();
         });
         if (!file) {
-          toast.error('No se seleccionó ningún archivo');
+          toast.error("No se seleccionó ningún archivo");
           return;
         }
         const fileContent = await file.text();
@@ -425,8 +412,8 @@ export const useRequestStore = create<RequestState>((set, get) => ({
         try {
           parsedData = JSON.parse(fileContent);
         } catch (parseError) {
-          toast.error('El archivo no tiene un formato JSON válido');
-          console.error('Error de parsing:', parseError);
+          toast.error("El archivo no tiene un formato JSON válido");
+          console.error("Error de parsing:", parseError);
           return;
         }
         if (
@@ -436,7 +423,7 @@ export const useRequestStore = create<RequestState>((set, get) => ({
           !Array.isArray(parsedData.item)
         ) {
           toast.error(
-            'La estructura del archivo no coincide con una colección válida',
+            "La estructura del archivo no coincide con una colección válida",
           );
           return;
         }
@@ -452,19 +439,19 @@ export const useRequestStore = create<RequestState>((set, get) => ({
         }));
         toast.success(`"${parsedData.info.name}" cargado exitosamente`);
       } catch (error) {
-        toast.error('Error inesperado al cargar el archivo');
-        console.error('Error general:', error);
+        toast.error("Error inesperado al cargar el archivo");
+        console.error("Error general:", error);
       }
     }
   },
 
   exportCollections: async (collectionId: string) => {
-    const isTauri = '__TAURI__' in window;
+    const isTauri = "__TAURI__" in window;
     const collectionToExport = get().collections.find(
       (col) => col.id === collectionId,
     );
     if (!collectionToExport) {
-      toast.error('Colección no encontrada para exportar.');
+      toast.error("Colección no encontrada para exportar.");
       return;
     }
 
@@ -473,7 +460,7 @@ export const useRequestStore = create<RequestState>((set, get) => ({
         _postman_id: collectionToExport.id,
         name: collectionToExport.name,
         schema:
-          'https://schema.getpostman.com/json/collection/v2.1.0/collection.json',
+          "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
       },
       item: collectionToExport.item,
     };
@@ -484,28 +471,28 @@ export const useRequestStore = create<RequestState>((set, get) => ({
       try {
         const filePath = await save({
           defaultPath: `${collectionToExport.name}_export.json`,
-          filters: [{ name: 'JSON', extensions: ['json'] }],
+          filters: [{ name: "JSON", extensions: ["json"] }],
         });
 
         if (!filePath) {
-          toast.error('Guardado cancelado.');
+          toast.error("Guardado cancelado.");
           return;
         }
 
         await writeFile(filePath, dataStr);
         toast.success(`"${collectionToExport.name}" exportada exitosamente.`);
       } catch (error) {
-        toast.error('Error al exportar la colección.');
-        console.error('Error en la exportación de Tauri:', error);
+        toast.error("Error al exportar la colección.");
+        console.error("Error en la exportación de Tauri:", error);
       }
     } else {
-      const downloadAnchorNode = document.createElement('a');
+      const downloadAnchorNode = document.createElement("a");
       downloadAnchorNode.setAttribute(
-        'href',
-        'data:text/json;charset=utf-8,' + encodeURIComponent(dataStr),
+        "href",
+        "data:text/json;charset=utf-8," + encodeURIComponent(dataStr),
       );
       downloadAnchorNode.setAttribute(
-        'download',
+        "download",
         `${collectionToExport.name}_export.json`,
       );
       document.body.appendChild(downloadAnchorNode);
@@ -545,13 +532,13 @@ export const useRequestStore = create<RequestState>((set, get) => ({
       );
       if (!collectionToUpdate) return state;
 
-      const newItems = findAndRemoveItem(collectionToUpdate.item, itemId);
+      const updatedItems = findAndRemoveItem(collectionToUpdate.item, itemId);
 
-      db.collections.update(collectionId, { item: newItems });
+      db.collections.update(collectionId, { item: updatedItems });
 
       return {
         collections: state.collections.map((col) =>
-          col.id === collectionId ? { ...col, item: newItems } : col,
+          col.id === collectionId ? { ...col, item: updatedItems } : col,
         ),
       };
     });
@@ -567,23 +554,35 @@ export const useRequestStore = create<RequestState>((set, get) => ({
       const itemToDuplicate = findItemById(collectionToUpdate.item, itemId);
       if (!itemToDuplicate) return state;
 
+      const parentItem = findItemParent(collectionToUpdate.item, itemId);
       const duplicatedItem = {
         ...JSON.parse(JSON.stringify(itemToDuplicate)),
         id: nanoid(),
         name: `${itemToDuplicate.name} (Copia)`,
       };
 
-      const newItems = insertItemAfter(
-        collectionToUpdate.item,
-        itemId,
-        duplicatedItem,
-      );
+      let updatedItems;
+      if (parentItem) {
+        updatedItems = findAndUpdateItem(
+          collectionToUpdate.item,
+          parentItem.id,
+          (item) => {
+            const index = item.item.findIndex((i) => i.id === itemId);
+            item.item.splice(index + 1, 0, duplicatedItem);
+            return item;
+          },
+        );
+      } else {
+        const index = collectionToUpdate.item.findIndex((i) => i.id === itemId);
+        updatedItems = [...collectionToUpdate.item];
+        updatedItems.splice(index + 1, 0, duplicatedItem);
+      }
 
-      db.collections.update(collectionId, { item: newItems });
+      db.collections.update(collectionId, { item: updatedItems });
 
       return {
         collections: state.collections.map((col) =>
-          col.id === collectionId ? { ...col, item: newItems } : col,
+          col.id === collectionId ? { ...col, item: updatedItems } : col,
         ),
       };
     });
@@ -596,17 +595,10 @@ export const useRequestStore = create<RequestState>((set, get) => ({
       );
       if (!collectionToUpdate) return state;
 
-      const newItem = {
+      const newRequest = {
         id: nanoid(),
         name: name,
-        request: {
-          id: nanoid(),
-          name: name,
-          method: 'GET',
-          headers: [],
-          body: { mode: 'raw', raw: '' },
-          url: { raw: '', query: [] },
-        },
+        request: { method: "GET", url: "new-endpoint" },
       };
 
       let updatedItems;
@@ -614,17 +606,13 @@ export const useRequestStore = create<RequestState>((set, get) => ({
         updatedItems = findAndUpdateItem(
           collectionToUpdate.item,
           parentItemId,
-          (item) => ({
-            ...item,
-            item: item.item ? [...item.item, newItem] : [newItem],
-          }),
+          (item) => ({ ...item, item: [...(item.item || []), newRequest] }),
         );
       } else {
-        updatedItems = [...(collectionToUpdate.item || []), newItem];
+        updatedItems = [...collectionToUpdate.item, newRequest];
       }
 
       db.collections.update(collectionId, { item: updatedItems });
-      toast.success(`'${name}' agregado.`);
 
       return {
         collections: state.collections.map((col) =>
@@ -652,17 +640,13 @@ export const useRequestStore = create<RequestState>((set, get) => ({
         updatedItems = findAndUpdateItem(
           collectionToUpdate.item,
           parentItemId,
-          (item) => ({
-            ...item,
-            item: item.item ? [...item.item, newFolder] : [newFolder],
-          }),
+          (item) => ({ ...item, item: [...(item.item || []), newFolder] }),
         );
       } else {
-        updatedItems = [...(collectionToUpdate.item || []), newFolder];
+        updatedItems = [...collectionToUpdate.item, newFolder];
       }
 
       db.collections.update(collectionId, { item: updatedItems });
-      toast.success(`'${name}' agregado.`);
 
       return {
         collections: state.collections.map((col) =>

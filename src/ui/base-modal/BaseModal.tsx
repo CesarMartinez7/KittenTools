@@ -1,10 +1,10 @@
-import { Icon } from '@iconify/react/dist/iconify.js';
-import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect, useRef } from 'react';
-import toast from 'react-hot-toast';
-import ICONS_PAGES from '../../pages/client/icons/ICONS_PAGE';
-import type BaseModalProps from './types';
-import modalVariants from './variants';
+import { Icon } from "@iconify/react/dist/iconify.js";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useRef } from "react";
+import toast from "react-hot-toast";
+import ICONS_PAGES from "../../pages/client/icons/ICONS_PAGE";
+import type BaseModalProps from "./types";
+import modalVariants from "./variants";
 
 const BaseModal = ({ isOpen, onClose, children }: BaseModalProps) => {
   const modalRef = useRef<HTMLDivElement>(null);
@@ -13,19 +13,19 @@ const BaseModal = ({ isOpen, onClose, children }: BaseModalProps) => {
     const target = modalRef.current;
     if (target) {
       target.focus();
-      console.log('Modal focused');
-      toast.success('Modal focused');
+      console.log("Modal focused");
+      toast.success("Modal focused");
     }
 
     const keyDownHandler = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
+      if (event.key === "Escape") {
         onClose();
       }
     };
 
-    document.addEventListener('keydown', keyDownHandler);
+    document.addEventListener("keydown", keyDownHandler);
     return () => {
-      document.removeEventListener('keydown', keyDownHandler);
+      document.removeEventListener("keydown", keyDownHandler);
     };
   }, [onClose]);
 
@@ -42,7 +42,7 @@ const BaseModal = ({ isOpen, onClose, children }: BaseModalProps) => {
           {/* Botón cerrar fuera del modal */}
           <button
             onClick={onClose}
-            className="absolute top-4 dark:bg-zinc-900 bg-zinc-200 p-2 rounded-full right-4 text-zinc-800 dark:text-zinc-300 dark:hover:text-white transition z-[888]"
+            className="absolute top-4 dark:bg-zinc-600  bg-red-300 p-2 rounded-full right-4 text-zinc-800 dark:text-zinc-300 dark:hover:text-white transition z-[888]"
             aria-label="Cerrar modal"
           >
             <Icon icon={ICONS_PAGES.x} width="20" height="20" />
