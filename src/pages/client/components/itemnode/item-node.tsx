@@ -80,7 +80,7 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
   return (
     <div key={item.id} className="relative">
       <div
-        className="flex items-center py-1 px-2 cursor-pointer rounded group shadow bg-gray-50 gap-5"
+        className="flex items-center py-1 px-2 cursor-pointer rounded group shadow dark:bg-zinc-900 dark:border-zinc-900 bg-gray-50 gap-5"
         style={{ paddingLeft: `${level * 40 + 8}px` }}
         onClick={handleClick}
         onContextMenu={handleClickContextMenu}
@@ -243,7 +243,7 @@ const PostmanCollectionsList = () => {
                   onClick={() =>
                     handleAddNewFolder(collection.id, null, "Nueva Carpeta")
                   }
-                  className="base-btn-2 flex gap-2 items-center"
+                  className="base-btn-2' flex gap-2 items-center"
                   title="Nueva Carpeta"
                 >
                   <Icon icon={ICONS_PAGES.folder} className="size-4" />

@@ -1,7 +1,5 @@
 @import "tailwindcss";
-@view-transition {
-  navigation: auto;
-}
+@custom-variant dark (&:where(.dark, .dark *));
 
 /* Create a custom animation */
 @keyframes move-out {
@@ -12,6 +10,10 @@
   to {
     transform: translateY(-100%);
   }
+}
+
+.base-request-container {
+  @apply flex flex-col h-full w-full dark:bg-zinc-900 bg-white;
 }
 
 @keyframes move-in {
