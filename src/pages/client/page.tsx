@@ -75,17 +75,14 @@ const Header = memo(
       [nombreEntorno],
     );
 
-
     const toogleTheme = useCallback(() => {
       document.body.classList.toggle("dark");
     }, []);
 
-
     return (
       <div className="flex dark items-center text-xs gap-2 justify-end px-4 border-gray-100 dark:border-zinc-800 backdrop-blur-sm py-1">
         <button
-          title
-          ="Cambiar tema"
+          title="Cambiar tema"
           className="bg-gray-200 transition-colors p-1 dark:bg-zinc-800 dark:text-zinc-200 rounded-md hover:bg-gray-300 dark:hover:bg-zinc-700"
           onClick={toogleTheme}
         >
@@ -674,6 +671,7 @@ export default function AppClient() {
         finalResponse = error;
         toast.error("Error al realizar la petición");
       } finally {
+        toast.success("Petición realizada");
         if (finalResponse && currentTabId) {
           startTransition(() => {
             updateTab(currentTabId, {

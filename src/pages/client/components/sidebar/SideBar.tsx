@@ -125,7 +125,7 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
     <ResizableSidebar minWidth={100} maxWidth={800} initialWidth={470}>
       <AnimatePresence key={"gokuuu"}>
         {isOpen && (
-          <motion.div 
+          <motion.div
             className="
               h-svh max-h-svh
             bg-white/90 text-gray-800
@@ -137,7 +137,7 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
             <div className="flex flex-row gap-2 mb-6 justify-between">
               <div>
                 <ToolTipButton
-                  ariaText="Nueva opciones"
+                  ariaText="Nueva opciones sdfsdsdfdsfff"
                   tooltipText="Añadir coleccion, request, enviroment"
                   onClick={closeModalsNews}
                   className="base-btn truncate"

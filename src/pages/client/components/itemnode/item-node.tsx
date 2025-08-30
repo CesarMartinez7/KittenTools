@@ -15,6 +15,26 @@ import ICONS_PAGES from "../../icons/ICONS_PAGE";
 import { useRequestStore } from "../../stores/request.store";
 import useItemNodeLogic from "../itemnode/item.hook";
 
+// --- Clases de estilo reutilizables ---
+const itemStyles =
+  "flex items-center w-full py-1.5 px-2 cursor-pointer rounded-md transition-colors duration-200 group dark:hover:bg-zinc-700/50 hover:bg-gray-200/50";
+const actionButtonStyles =
+  "p-1 rounded transition-opacity text-gray-400 hover:text-gray-700 dark:hover:text-white dark:text-zinc-500 opacity-0 group-hover:opacity-100";
+const methodBadgeStyles = (method) => {
+  switch (method) {
+    case "GET":
+      return "bg-green-600/20 text-green-600 dark:bg-green-400/20 dark:text-green-400";
+    case "POST":
+      return "bg-blue-600/20 text-blue-600 dark:bg-blue-400/20 dark:text-blue-400";
+    case "PUT":
+      return "bg-yellow-600/20 text-yellow-600 dark:bg-yellow-400/20 dark:text-yellow-400";
+    case "DELETE":
+      return "bg-red-600/20 text-red-600 dark:bg-red-400/20 dark:text-red-400";
+    default:
+      return "bg-gray-500/20 text-gray-500 dark:bg-zinc-500/20 dark:text-zinc-400";
+  }
+};
+
 // Componente recursivo para renderizar los items de la colección
 const CollectionItemNode = ({ item, collectionId, level }) => {
   if (!item) {
@@ -78,10 +98,10 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
   const menuActions = isFolder ? mapperFolder : mapperRequest;
 
   return (
-    <div key={item.id} className="relative">
+    <div key={item.id} className="relative text-gray-600">
       <div
-        className="flex items-center py-1 px-2 cursor-pointer rounded group shadow dark:bg-zinc-900 dark:border-zinc-900 bg-gray-50 gap-5"
-        style={{ paddingLeft: `${level * 40 + 8}px` }}
+        className={itemStyles}
+        style={{ paddingLeft: `${level * 16 + 8}px` }}
         onClick={handleClick}
         onContextMenu={handleClickContextMenu}
       >
@@ -91,7 +111,7 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
               e.stopPropagation();
               handleClick();
             }}
-            className="p-1 hover:bg-slate-200 dark:hover:bg-zinc-800 rounded mr-1 flex BG-RE"
+            className="p-1 hover:bg-zinc-300 dark:hover:bg-zinc-800 rounded mr-1 flex items-center justify-center transition-colors"
           >
             {collapsed ? <ChevronRight size={16} /> : <ChevronDown size={16} />}
           </button>
@@ -101,13 +121,18 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
           collapsed ? (
             <Icon
               icon={ICONS_PAGES.folderopen}
-              className="text-green-primary mr-2"
+              className="text-green-500 mr-2"
             />
           ) : (
-            <Icon icon={ICONS_PAGES.folder} className="text-emerald-800 mr-2" />
+            <Icon icon={ICONS_PAGES.folder} className="text-green-500 mr-2" />
           )
         ) : (
-          <Icon icon="material-symbols:http" width="25px" height="25px" />
+          <Icon
+            icon="material-symbols:http"
+            width="22px"
+            height="22px"
+            className="text-green-500 mr-2"
+          />
         )}
 
         {isEditing ? (
@@ -121,23 +146,26 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
               if (e.key === "Enter") saveEdit();
               if (e.key === "Escape") setIsEditing(false);
             }}
-            className="flex-1 px-1 py-0 border rounded text-sm"
+            className="flex-1 px-1 py-0 border-b border-green-500 bg-transparent text-sm outline-none"
           />
         ) : (
-          <span className="flex-1 text-xs truncate" title={getDisplayName()}>
+          <span
+            className="flex-1 text-sm truncate font-medium"
+            title={getDisplayName()}
+          >
             {getDisplayName()}
           </span>
         )}
 
         {!isFolder && nodeData.request && (
           <span
-            className={`px-2 py-0 text-[13px] rounded ml-2 ${getMethodColor(nodeData.request.method)}`}
+            className={`px-2 py-0.5 text-[11px] rounded-full font-bold ml-2 ${methodBadgeStyles(nodeData.request.method)}`}
           >
             {nodeData.request.method}
           </span>
         )}
 
-        <div>
+        <div className="flex items-center gap-2 ml-auto">
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -145,13 +173,15 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
                 .getState()
                 .handleAddNewItem(collectionId, nodeData.id, "Nueva Petición");
             }}
-            className="p-1 ml-auto hover:bg-gray-200 rounded text-gray-400 hover:text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity"
+            className={actionButtonStyles}
+            title="Añadir Petición"
           >
             <Plus size={14} />
           </button>
           <button
             onClick={handleEditClick}
-            className="p-1 hover:bg-gray-200 rounded text-gray-400 hover:text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity"
+            className={actionButtonStyles}
+            title="Editar"
           >
             <Edit2 size={14} />
           </button>
@@ -160,7 +190,8 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
               e.stopPropagation();
               handleDelete();
             }}
-            className="p-1 hover:bg-gray-200 rounded text-gray-400 hover:text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity"
+            className={actionButtonStyles}
+            title="Eliminar"
           >
             <Trash2 size={14} />
           </button>
@@ -170,7 +201,7 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
       {showBar && (
         <div
           ref={menuRef}
-          className="absolute z-10 top-full right-2 mt-2 w-48  text-xs rounded-md shadow-lg py-1  focus:outline-none bg-gray-100 dark:bg-zinc-900! text-white!"
+          className="absolute z-10 top-full right-2 mt-2 w-48 text-xs rounded-md shadow-lg py-1 focus:outline-none bg-white dark:bg-zinc-800 border dark:border-zinc-700"
         >
           {menuActions.map((action, index) => (
             <button
@@ -180,7 +211,7 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
                 if (action.action) action.action();
                 setShowBar(false);
               }}
-              className="w-full text-left px-4 py-2  text-gray-700 dark:text-zinc-200 "
+              className="w-full text-left px-4 py-2 text-gray-800 dark:text-zinc-200 hover:bg-gray-100 dark:hover:bg-zinc-700"
             >
               {action.name}
             </button>
@@ -189,7 +220,7 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
       )}
 
       {isFolder && !collapsed && item.item && (
-        <div className="pl-4">
+        <div className="pl-4 border-l dark:border-zinc-700 ml-2 border-gray-200">
           {item.item.map((subItem) => (
             <CollectionItemNode
               key={subItem.id}
@@ -220,30 +251,31 @@ const PostmanCollectionsList = () => {
 
   if (collections.length === 0) {
     return (
-      <div className="flex-1 overflow-y-auto  gap-1 flex flex-col">
-        <div className="text-center p-8 text-gray-500">
-          No hay colecciones. ¡Importa una o crea una nueva!
+      <div className="flex-1 overflow-y-auto p-4 flex flex-col items-center justify-center dark:bg-zinc-900 bg-white">
+        <div className="text-center p-8 text-gray-500 dark:text-zinc-400 border border-dashed border-gray-300 dark:border-zinc-600 rounded-md">
+          <p className="text-lg mb-2">No hay colecciones.</p>
+          <p>¡Importa una o crea una nueva para empezar!</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="w-full h-full text-gray-700 dark:text-zinc-200 flex flex-col font-sans dark:bg-zinc-800/30">
-      <div className="flex-1 overflow-y-auto gap-1 flex flex-col">
+    <div className="w-full h-full text-gray-800 dark:text-zinc-200 flex flex-col font-sans dark:bg-zinc-900 bg-white">
+      <div className="flex-1 overflow-y-auto p-2 space-y-4">
         {collections.map((collection) => (
           <div
             key={collection.id}
-            className="p-1 rounded-md shadow-xl transition-colors cursor-pointer bg-gray-50 border-gray-200 text-gray-800 dark:bg-transparent dark:border-zinc-800 dark:text-zinc-200 flex gap-2 flex-col"
+            className="p-3 rounded-xl shadow-lg transition-colors bg-white border border-gray-200 text-gray-800 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-200 flex flex-col"
           >
             <div className="flex items-center justify-between p-2">
               <h2 className="text-sm font-bold truncate">{collection.name}</h2>
-              <div className="flex gap-2">
+              <div className="flex gap-2 text-gray-500 dark:text-zinc-400">
                 <button
                   onClick={() =>
                     handleAddNewFolder(collection.id, null, "Nueva Carpeta")
                   }
-                  className="base-btn-2' flex gap-2 items-center"
+                  className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
                   title="Nueva Carpeta"
                 >
                   <Icon icon={ICONS_PAGES.folder} className="size-4" />
@@ -252,14 +284,14 @@ const PostmanCollectionsList = () => {
                   onClick={() =>
                     handleAddNewItem(collection.id, null, "Nueva Petición")
                   }
-                  className="base-btn-2 flex gap-2"
+                  className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
                   title="Nuevo Request"
                 >
-                  <Icon icon={ICONS_PAGES.check} />
+                  <Plus size={16} />
                 </button>
                 <button
                   onClick={() => exportCollections(collection.id)}
-                  className="base-btn-2 flex gap-2"
+                  className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
                   title="Exportar"
                 >
                   <Download size={16} />
@@ -276,7 +308,7 @@ const PostmanCollectionsList = () => {
                 />
               ))
             ) : (
-              <div className="text-center p-4 text-gray-500">
+              <div className="text-center p-4 text-gray-500 dark:text-zinc-400 text-xs italic">
                 Esta colección no tiene elementos.
               </div>
             )}
