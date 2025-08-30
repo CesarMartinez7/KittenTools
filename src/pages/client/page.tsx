@@ -75,13 +75,19 @@ const Header = memo(
       [nombreEntorno],
     );
 
+
+    const toogleTheme = useCallback(() => {
+      document.body.classList.toggle("dark");
+    }, []);
+
+
     return (
       <div className="flex dark items-center text-xs gap-2 justify-end px-4 border-gray-100 dark:border-zinc-800 backdrop-blur-sm py-1">
         <button
-          className="base-btn px-2! py-0.5!"
-          onClick={() => {
-            document.body.classList.toggle("dark");
-          }}
+          title
+          ="Cambiar tema"
+          className="bg-gray-200 transition-colors p-1 dark:bg-zinc-800 dark:text-zinc-200 rounded-md hover:bg-gray-300 dark:hover:bg-zinc-700"
+          onClick={toogleTheme}
         >
           <Icon icon="tabler:moon" width="14" height="14" />
         </button>
@@ -100,7 +106,7 @@ const Header = memo(
             width={14}
           />
         </button>
-        <p className="dark:text-zinc-200 text-gray-600">
+        <p className="dark:text-zinc0 text-gray-600">
           {!isRunningInTauri ? "Version Web" : "Version Tauri"}
         </p>
       </div>

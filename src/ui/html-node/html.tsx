@@ -52,7 +52,7 @@ const HtmlNode: React.FC<HtmlNodeProps> = ({
     const textContent = node.textContent?.trim();
     if (textContent) {
       return (
-        <span className="text-gray-700 dark:text-[#3bdbbc] ">
+        <span className="text-gray-700 text-[10px] dark:text-[#3bdbbc] ">
           {highlightTerm(textContent, searchTerm)}
         </span>
       );
@@ -122,7 +122,7 @@ const HtmlNode: React.FC<HtmlNodeProps> = ({
                     lineCounter={lineCounter}
                   />
                 ))}
-                <div style={{ marginLeft: depth * 16 }} className="text-sm">
+                <div style={{ marginLeft: depth * 16 }} className="text-xs">
                   <span className="text-gray-400">{'</'}</span>
                   <span className="text-purple-600 dark:text-purple-400 lowercase">
                     {highlightTerm(element.nodeName, searchTerm)}
@@ -132,7 +132,7 @@ const HtmlNode: React.FC<HtmlNodeProps> = ({
               </>
             )}
             {isCollapsed && (
-              <span className="text-gray-400">
+              <span className="text-gray-400 text-xs cursor-pointer">
                 ... {'</'}
                 {highlightTerm(element.nodeName, searchTerm)}
                 {'>'}
@@ -140,7 +140,7 @@ const HtmlNode: React.FC<HtmlNodeProps> = ({
             )}
           </>
         ) : (
-          <span className="text-gray-400">{' />'}</span>
+          <span className="text-gray-400 text-xs">{' />'}</span>
         )}
       </div>
       </LazyListPerform>

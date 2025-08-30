@@ -192,7 +192,7 @@ export const useRequestStore = create<RequestState>((set, get) => ({
       listTabs: [...state.listTabs, newTab],
       currentTabId: newTab.id,
     }));
-    get().executeRequest(newTab.id);
+    
   },
 
   executeRequest: async (tabId) => {
