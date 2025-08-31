@@ -1,9 +1,9 @@
-import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
-import toast from "react-hot-toast";
-import { BaseModalLazy } from "../../../../ui/lazy-components";
-import useEnviromentHook from "./enviromentHook";
-import { useEnviromentStore } from "./store.enviroment";
+import { AnimatePresence, motion } from 'framer-motion';
+import { useState } from 'react';
+import toast from 'react-hot-toast';
+import { BaseModalLazy } from '../../../../ui/lazy-components';
+import useEnviromentHook from './enviromentHook';
+import { useEnviromentStore } from './store.enviroment';
 
 export default function EnviromentComponent() {
   const createEntornoFunction = useEnviromentStore(
@@ -12,31 +12,31 @@ export default function EnviromentComponent() {
 
   // Estados para el modal de crear entorno
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [newEnvironmentName, setNewEnvironmentName] = useState("");
+  const [newEnvironmentName, setNewEnvironmentName] = useState('');
 
   const handleClickCrearEntorno = () => {
     setIsCreateModalOpen(true);
-    setNewEnvironmentName("");
+    setNewEnvironmentName('');
   };
 
   const handleCreateEnvironment = () => {
     const trimmedName = newEnvironmentName.trim();
 
     if (trimmedName.length === 0) {
-      toast.error("Asegúrese de asignar un nombre al entorno");
+      toast.error('Asegúrese de asignar un nombre al entorno');
       return;
     }
 
     createEntornoFunction(trimmedName);
     setIsCreateModalOpen(false);
-    setNewEnvironmentName("");
+    setNewEnvironmentName('');
     toast.success(`Entorno "${trimmedName}" creado exitosamente`);
     toggleModal();
   };
 
   const handleCancelCreate = () => {
     setIsCreateModalOpen(false);
-    setNewEnvironmentName("");
+    setNewEnvironmentName('');
   };
 
   const {
@@ -46,7 +46,8 @@ export default function EnviromentComponent() {
     handleFileUpload,
     isOpen,
     entornoActual,
-    toggleModalOpen, toggleModalClose
+    toggleModalOpen,
+    toggleModalClose,
   } = useEnviromentHook();
 
   const tableVariants = {
@@ -174,9 +175,9 @@ export default function EnviromentComponent() {
                 value={newEnvironmentName}
                 onChange={(e) => setNewEnvironmentName(e.target.value)}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter") {
+                  if (e.key === 'Enter') {
                     handleCreateEnvironment();
-                  } else if (e.key === "Escape") {
+                  } else if (e.key === 'Escape') {
                     handleCancelCreate();
                   }
                 }}
@@ -277,14 +278,14 @@ export default function EnviromentComponent() {
                     <motion.tr
                       key={i}
                       variants={rowVariants}
-                      className={`dark:hover:bg-zinc-900 dark:bg-zinc-900 hover:bg-gray-50  text-gray-600 dark:text-zinc-300 transition-colors border-gray-100 dark:border-zinc-800 bg-white ${i % 2 === 0 ? "dark:bg-zinc-950  bg-gray-200" : ""} `}
+                      className={`dark:hover:bg-zinc-900 dark:bg-zinc-900 hover:bg-gray-50  text-gray-600 dark:text-zinc-300 transition-colors border-gray-100 dark:border-zinc-800 bg-white ${i % 2 === 0 ? 'dark:bg-zinc-950  bg-gray-200' : ''} `}
                     >
                       <td className="px-2 py-1 whitespace-nowrap">
                         <input
                           type="text"
                           value={v.key}
                           onChange={(e) =>
-                            handleChange(i, "key", e.target.value)
+                            handleChange(i, 'key', e.target.value)
                           }
                           className="w-full bg-transparent outline-none border-0 focus:ring-1 focus:ring-zinc-600 rounded"
                         />
@@ -294,7 +295,7 @@ export default function EnviromentComponent() {
                           type="text"
                           value={v.value}
                           onChange={(e) =>
-                            handleChange(i, "value", e.target.value)
+                            handleChange(i, 'value', e.target.value)
                           }
                           className="w-full dark:bg-transparent accent-green-600 border-0 outline-none focus:ring-1 focus:ring-zinc-600 dark:focus:bg-zinc-800 focus:bg-gray-200"
                         />
@@ -304,7 +305,7 @@ export default function EnviromentComponent() {
                           type="checkbox"
                           checked={v.enabled}
                           onChange={(e) =>
-                            handleChange(i, "enabled", e.target.checked)
+                            handleChange(i, 'enabled', e.target.checked)
                           }
                           className="h-4 w-4 outline-none text-zinc-600 rounded border-zinc-700 focus:ring-zinc-600"
                         />

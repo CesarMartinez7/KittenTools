@@ -1,6 +1,6 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { useEffect, useRef, useState } from 'react';
-import ICONS_PAGES from './types/ICONS_PAGE';
+import ICONS_PAGES from './icons/ICONS_PAGE';
 
 interface ResizableSidebarProps {
   children: React.ReactNode;

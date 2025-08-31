@@ -1,10 +1,10 @@
-import { Icon } from "@iconify/react/dist/iconify.js";
-import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useRef } from "react";
-import toast from "react-hot-toast";
-import ICONS_PAGES from "../../pages/client/icons/ICONS_PAGE";
-import type BaseModalProps from "./types";
-import modalVariants from "./variants";
+import { Icon } from '@iconify/react/dist/iconify.js';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect, useRef } from 'react';
+import toast from 'react-hot-toast';
+import ICONS_PAGES from '../../pages/client/icons/ICONS_PAGE';
+import type BaseModalProps from './types';
+import modalVariants from './variants';
 
 const BaseModal = ({ isOpen, onClose, children }: BaseModalProps) => {
   const modalRef = useRef<HTMLDivElement>(null);
@@ -16,14 +16,14 @@ const BaseModal = ({ isOpen, onClose, children }: BaseModalProps) => {
     }
 
     const keyDownHandler = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
+      if (event.key === 'Escape') {
         onClose();
       }
     };
 
-    document.addEventListener("keydown", keyDownHandler);
+    document.addEventListener('keydown', keyDownHandler);
     return () => {
-      document.removeEventListener("keydown", keyDownHandler);
+      document.removeEventListener('keydown', keyDownHandler);
     };
   }, [onClose]);
 

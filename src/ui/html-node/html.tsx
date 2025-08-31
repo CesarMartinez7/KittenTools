@@ -93,56 +93,58 @@ const HtmlNode: React.FC<HtmlNodeProps> = ({
 
     return (
       <LazyListPerform>
-      <div
-        style={{ marginLeft: depth * 5, display: displayStyle }}
-        className="text-xs"
-      >
-        <span className="text-gray-400">{'<'}</span>
-        <span
-          className="text-purple-600 dark:text-purple-400 cursor-pointer lowercase"
-          onClick={
-            hasChildrenToRender ? () => setIsCollapsed(!isCollapsed) : undefined
-          }
+        <div
+          style={{ marginLeft: depth * 5, display: displayStyle }}
+          className="text-xs"
         >
-          {highlightTerm(element.nodeName, searchTerm)}
-        </span>
-        {renderAttributes(element)}
+          <span className="text-gray-400">{'<'}</span>
+          <span
+            className="text-purple-600 dark:text-purple-400 cursor-pointer lowercase"
+            onClick={
+              hasChildrenToRender
+                ? () => setIsCollapsed(!isCollapsed)
+                : undefined
+            }
+          >
+            {highlightTerm(element.nodeName, searchTerm)}
+          </span>
+          {renderAttributes(element)}
 
-        {hasChildrenToRender ? (
-          <>
-            <span className="text-gray-400">{'>'}</span>
-            {!isCollapsed && (
-              <>
-                {childNodes.map((child, index) => (
-                  <HtmlNode
-                    key={index}
-                    node={child}
-                    depth={depth + 1}
-                    searchTerm={searchTerm}
-                    lineCounter={lineCounter}
-                  />
-                ))}
-                <div style={{ marginLeft: depth * 16 }} className="text-xs">
-                  <span className="text-gray-400">{'</'}</span>
-                  <span className="text-purple-600 dark:text-purple-400 lowercase">
-                    {highlightTerm(element.nodeName, searchTerm)}
-                  </span>
-                  <span className="text-gray-400">{'>'}</span>
-                </div>
-              </>
-            )}
-            {isCollapsed && (
-              <span className="text-gray-400 text-xs cursor-pointer">
-                ... {'</'}
-                {highlightTerm(element.nodeName, searchTerm)}
-                {'>'}
-              </span>
-            )}
-          </>
-        ) : (
-          <span className="text-gray-400 text-xs">{' />'}</span>
-        )}
-      </div>
+          {hasChildrenToRender ? (
+            <>
+              <span className="text-gray-400">{'>'}</span>
+              {!isCollapsed && (
+                <>
+                  {childNodes.map((child, index) => (
+                    <HtmlNode
+                      key={index}
+                      node={child}
+                      depth={depth + 1}
+                      searchTerm={searchTerm}
+                      lineCounter={lineCounter}
+                    />
+                  ))}
+                  <div style={{ marginLeft: depth * 16 }} className="text-xs">
+                    <span className="text-gray-400">{'</'}</span>
+                    <span className="text-purple-600 dark:text-purple-400 lowercase">
+                      {highlightTerm(element.nodeName, searchTerm)}
+                    </span>
+                    <span className="text-gray-400">{'>'}</span>
+                  </div>
+                </>
+              )}
+              {isCollapsed && (
+                <span className="text-gray-400 text-xs cursor-pointer">
+                  ... {'</'}
+                  {highlightTerm(element.nodeName, searchTerm)}
+                  {'>'}
+                </span>
+              )}
+            </>
+          ) : (
+            <span className="text-gray-400 text-xs">{' />'}</span>
+          )}
+        </div>
       </LazyListPerform>
     );
   }

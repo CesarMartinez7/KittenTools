@@ -1,13 +1,16 @@
-import { nanoid } from "nanoid";
-import { useState } from "react";
-import toast from "react-hot-toast";
-
-import { useRequestStore } from "../../stores/request.store";
+import { nanoid } from 'nanoid';
+import { useState } from 'react';
+import toast from 'react-hot-toast';
+import { useModalStore } from '../../modals/store.modal';
+import { useRequestStore } from '../../stores/request.store';
 
 const useItemNodeLogic = ({ data, level, parentCollectionId }) => {
   const [collapsed, setCollapsed] = useState(true);
   const [showResponses, setShowResponses] = useState(false);
   const [showBar, setShowBar] = useState(false);
+
+  const { isDeleteModalOpen, closeDeleteModal, openDeleteModal } =
+    useModalStore.getState();
 
   // Asegurar que 'data' existe antes de desestructurar o usar sus propiedades
   const nodeData = data;
@@ -25,26 +28,26 @@ const useItemNodeLogic = ({ data, level, parentCollectionId }) => {
   } = useRequestStore.getState();
 
   const getDisplayName = () => {
-    if (!nodeData?.name || nodeData.name.trim() === "") {
-      return isFolder ? "Carpeta sin nombre" : "Request sin nombre";
+    if (!nodeData?.name || nodeData.name.trim() === '') {
+      return isFolder ? 'Carpeta sin nombre' : 'Request sin nombre';
     }
     return nodeData.name;
   };
 
   const getMethodColor = (method) => {
     switch (method?.toUpperCase()) {
-      case "GET":
-        return "text-teal-500";
-      case "POST":
-        return "text-sky-400";
-      case "PUT":
-        return "text-orange-400";
-      case "DELETE":
-        return "text-red-400";
-      case "PATCH":
-        return "text-purple-400";
+      case 'GET':
+        return 'text-teal-500';
+      case 'POST':
+        return 'text-sky-400';
+      case 'PUT':
+        return 'text-orange-400';
+      case 'DELETE':
+        return 'text-red-400';
+      case 'PATCH':
+        return 'text-purple-400';
       default:
-        return "text-gray-400";
+        return 'text-gray-400';
     }
   };
 
@@ -58,7 +61,12 @@ const useItemNodeLogic = ({ data, level, parentCollectionId }) => {
   };
 
   const handleDelete = () => {
-    if (confirm(`¿Eliminar "${getDisplayName()}"?`) && nodeData) {
+    openDeleteModal();
+
+    if (
+      confirm(`¿Eliminar ${isDeleteModalOpen} "${getDisplayName()}"?`) &&
+      nodeData
+    ) {
       handleRemoveItem(currentCollectionId, nodeData.id);
       toast.success(`"${getDisplayName()}" eliminado`);
     }
@@ -72,13 +80,13 @@ const useItemNodeLogic = ({ data, level, parentCollectionId }) => {
   };
 
   const handleNuevaPeticion = () => {
-    handleAddNewItem(currentCollectionId, nodeData.id, "Nueva Petición");
-    toast.success("Nueva petición creada.");
+    handleAddNewItem(currentCollectionId, nodeData.id, 'Nueva Petición');
+    toast.success('Nueva petición creada.');
   };
 
   const handleNuevaCarpeta = () => {
-    handleAddNewFolder(currentCollectionId, nodeData.id, "Nueva Carpeta");
-    toast.success("Nueva carpeta creada.");
+    handleAddNewFolder(currentCollectionId, nodeData.id, 'Nueva Carpeta');
+    toast.success('Nueva carpeta creada.');
   };
 
   const handleClickContextMenu = (e) => {
@@ -100,17 +108,17 @@ const useItemNodeLogic = ({ data, level, parentCollectionId }) => {
   };
 
   const mapperFolder = [
-    { name: "Renombrar", action: () => null },
-    { name: "Duplicar", action: handleDuplicar },
-    { name: "Eliminar", action: handleDelete },
-    { name: "Nueva petición", action: handleNuevaPeticion },
-    { name: "Nueva carpeta", action: handleNuevaCarpeta },
+    { name: 'Renombrar', action: () => null },
+    { name: 'Duplicar', action: handleDuplicar },
+    { name: 'Eliminar', action: handleDelete },
+    { name: 'Nueva petición', action: handleNuevaPeticion },
+    { name: 'Nueva carpeta', action: handleNuevaCarpeta },
   ];
 
   const mapperRequest = [
-    { name: "Renombrar", action: () => null },
-    { name: "Duplicar", action: handleDuplicar },
-    { name: "Eliminar", action: handleDelete },
+    { name: 'Renombrar', action: () => null },
+    { name: 'Duplicar', action: handleDuplicar },
+    { name: 'Eliminar', action: handleDelete },
   ];
 
   return {

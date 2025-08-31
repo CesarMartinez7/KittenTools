@@ -1,6 +1,5 @@
-import { BaseModalLazy } from "../../../ui/lazy-components";
-import { useRequestStore } from "../stores/request.store";
-
+import { BaseModalLazy } from '../../../ui/lazy-components';
+import { useRequestStore } from '../stores/request.store';
 
 const ExportModal = ({ isOpen, onClose, onExport }) => {
   const collections = useRequestStore((state) => state.collections);

@@ -5,8 +5,6 @@ import { create } from 'zustand';
 import type { EnviromentLayout, Value } from './types';
 
 interface EnviromentState {
-
-
   listEntorno: EnviromentLayout[];
   entornoActual: Value[];
   nameEntornoActual: string | null;
@@ -15,9 +13,6 @@ interface EnviromentState {
   setListEntorno: (list: EnviromentLayout[]) => void;
   setEntornoActual: (values: Value[]) => void;
   createAndSetNewEnviroment: (name: string) => void;
-
-
-  
 }
 
 export const useEnviromentStore = create<EnviromentState>((set) => ({

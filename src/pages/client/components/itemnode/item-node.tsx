@@ -1,37 +1,37 @@
-import React, { useEffect, useRef } from "react";
+import { Icon } from '@iconify/react/dist/iconify.js';
 import {
   ChevronDown,
   ChevronRight,
+  Download,
   Edit2,
   Plus,
   Trash2,
-  Download,
-} from "lucide-react";
-import { Icon } from "@iconify/react/dist/iconify.js";
-import toast from "react-hot-toast";
-import { nanoid } from "nanoid";
-import ICONS_PAGES from "../../icons/ICONS_PAGE";
+} from 'lucide-react';
+import { nanoid } from 'nanoid';
+import React, { useEffect, useRef } from 'react';
+import toast from 'react-hot-toast';
+import ICONS_PAGES from '../../icons/ICONS_PAGE';
 
-import { useRequestStore } from "../../stores/request.store";
-import useItemNodeLogic from "../itemnode/item.hook";
+import { useRequestStore } from '../../stores/request.store';
+import useItemNodeLogic from '../itemnode/item.hook';
 
 // --- Clases de estilo reutilizables ---
 const itemStyles =
-  "flex items-center w-full py-1.5 px-2 cursor-pointer rounded-md transition-colors duration-200 group dark:hover:bg-zinc-700/50 hover:bg-gray-200/50";
+  'flex items-center w-full py-1.5 px-2 cursor-pointer rounded-md transition-colors duration-200 group dark:hover:bg-zinc-700/50 hover:bg-gray-200/50';
 const actionButtonStyles =
-  "p-1 rounded transition-opacity text-gray-400 hover:text-gray-700 dark:hover:text-white dark:text-zinc-500 opacity-0 group-hover:opacity-100";
+  'p-1 rounded transition-opacity text-gray-400 hover:text-gray-700 dark:hover:text-white dark:text-zinc-500 opacity-0 group-hover:opacity-100';
 const methodBadgeStyles = (method) => {
   switch (method) {
-    case "GET":
-      return "bg-green-600/20 text-green-600 dark:bg-green-400/20 dark:text-green-400";
-    case "POST":
-      return "bg-blue-600/20 text-blue-600 dark:bg-blue-400/20 dark:text-blue-400";
-    case "PUT":
-      return "bg-yellow-600/20 text-yellow-600 dark:bg-yellow-400/20 dark:text-yellow-400";
-    case "DELETE":
-      return "bg-red-600/20 text-red-600 dark:bg-red-400/20 dark:text-red-400";
+    case 'GET':
+      return 'bg-green-600/20 text-green-600 dark:bg-green-400/20 dark:text-green-400';
+    case 'POST':
+      return 'bg-blue-600/20 text-blue-600 dark:bg-blue-400/20 dark:text-blue-400';
+    case 'PUT':
+      return 'bg-yellow-600/20 text-yellow-600 dark:bg-yellow-400/20 dark:text-yellow-400';
+    case 'DELETE':
+      return 'bg-red-600/20 text-red-600 dark:bg-red-400/20 dark:text-red-400';
     default:
-      return "bg-gray-500/20 text-gray-500 dark:bg-zinc-500/20 dark:text-zinc-400";
+      return 'bg-gray-500/20 text-gray-500 dark:bg-zinc-500/20 dark:text-zinc-400';
   }
 };
 
@@ -78,9 +78,9 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
         setShowBar(false);
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [setShowBar]);
 
@@ -98,7 +98,10 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
   const menuActions = isFolder ? mapperFolder : mapperRequest;
 
   return (
-    <div key={item.id} className="relative text-gray-600 text-xs dark:text-zinc-200">
+    <div
+      key={item.id}
+      className="relative text-gray-600 text-xs dark:text-zinc-200"
+    >
       <div
         className={itemStyles}
         style={{ paddingLeft: `${level * 16 + 8}px` }}
@@ -113,7 +116,11 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
             }}
             className="p-1 hover:bg-zinc-300 dark:hover:bg-zinc-800 rounded mr-1 flex items-center justify-center transition-colors"
           >
-            {collapsed ? <Icon icon={ICONS_PAGES.chevronleft}/> : <Icon icon={ICONS_PAGES.chevrondown}/>}
+            {collapsed ? (
+              <Icon icon={ICONS_PAGES.chevronleft} />
+            ) : (
+              <Icon icon={ICONS_PAGES.chevrondown} />
+            )}
           </button>
         )}
 
@@ -143,8 +150,8 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
             onChange={(e) => setEditValue(e.target.value)}
             onBlur={saveEdit}
             onKeyDown={(e) => {
-              if (e.key === "Enter") saveEdit();
-              if (e.key === "Escape") setIsEditing(false);
+              if (e.key === 'Enter') saveEdit();
+              if (e.key === 'Escape') setIsEditing(false);
             }}
             className="flex-1 px-1 py-0 border-b border-green-500 bg-transparent text-sm outline-none"
           />
@@ -171,7 +178,7 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
               e.stopPropagation();
               useRequestStore
                 .getState()
-                .handleAddNewItem(collectionId, nodeData.id, "Nueva Petición");
+                .handleAddNewItem(collectionId, nodeData.id, 'Nueva Petición');
             }}
             className={actionButtonStyles}
             title="Añadir Petición"
@@ -244,8 +251,6 @@ const PostmanCollectionsList = () => {
     handleAddNewFolder,
   } = useRequestStore();
 
-
-
   if (collections.length === 0) {
     return (
       <div className="flex-1 overflow-y-auto p-4 flex flex-col items-center justify-center dark:bg-zinc-900 bg-white">
@@ -270,7 +275,7 @@ const PostmanCollectionsList = () => {
               <div className="flex gap-2 text-gray-500 dark:text-zinc-400">
                 <button
                   onClick={() =>
-                    handleAddNewFolder(collection.id, null, "Nueva Carpeta")
+                    handleAddNewFolder(collection.id, null, 'Nueva Carpeta')
                   }
                   className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
                   title="Nueva Carpeta"
@@ -279,7 +284,7 @@ const PostmanCollectionsList = () => {
                 </button>
                 <button
                   onClick={() =>
-                    handleAddNewItem(collection.id, null, "Nueva Petición")
+                    handleAddNewItem(collection.id, null, 'Nueva Petición')
                   }
                   className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
                   title="Nuevo Request"

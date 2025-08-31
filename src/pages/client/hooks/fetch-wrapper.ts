@@ -1,11 +1,11 @@
-import axios from "axios";
 // The 'Body' import is removed as it's not exported by the current plugin version.
-import { fetch as fetchTauri } from "@tauri-apps/plugin-http";
-import { useEnviromentStore } from "../components/enviroment/store.enviroment";
-import toast from "react-hot-toast";
+import { fetch as fetchTauri } from '@tauri-apps/plugin-http';
+import axios from 'axios';
+import toast from 'react-hot-toast';
+import { useEnviromentStore } from '../components/enviroment/store.enviroment';
 
 const replaceEnvVariables = (text, variables) => {
-  if (typeof text !== "string") return text;
+  if (typeof text !== 'string') return text;
   return text.replace(/{{(.*?)}}/g, (_, key) => {
     const variable = variables.find(
       (v) => v.key.trim() === key.trim() && v.enabled,
@@ -15,16 +15,16 @@ const replaceEnvVariables = (text, variables) => {
 };
 
 const deepReplaceEnvVariables = (data, variables) => {
-  if (typeof data === "string") {
+  if (typeof data === 'string') {
     return replaceEnvVariables(data, variables);
   }
   if (Array.isArray(data)) {
     return data.map((item) => deepReplaceEnvVariables(item, variables));
   }
-  if (typeof data === "object" && data !== null) {
+  if (typeof data === 'object' && data !== null) {
     const newObject = {};
     for (const key in data) {
-      if (Object.prototype.hasOwnProperty.call(data, key)) {
+      if (Object.hasOwn(data, key)) {
         newObject[key] = deepReplaceEnvVariables(data[key], variables);
       }
     }
@@ -34,16 +34,16 @@ const deepReplaceEnvVariables = (data, variables) => {
 };
 
 const detectResponseType = (headers) => {
-  const contentType = headers?.["content-type"] || "";
-  if (contentType.includes("application/json")) return "json";
-  if (contentType.includes("text/html")) return "html";
+  const contentType = headers?.['content-type'] || '';
+  if (contentType.includes('application/json')) return 'json';
+  if (contentType.includes('text/html')) return 'html';
   if (
-    contentType.includes("application/xml") ||
-    contentType.includes("text/xml")
+    contentType.includes('application/xml') ||
+    contentType.includes('text/xml')
   )
-    return "xml";
-  if (contentType.includes("text/plain")) return "text";
-  return "unknown";
+    return 'xml';
+  if (contentType.includes('text/plain')) return 'text';
+  return 'unknown';
 };
 
 const createRequestConfig = (config) => {
@@ -103,7 +103,7 @@ export async function httpRequest(config) {
     const startTime = performance.now();
 
     const fetchConfig = {
-      method: processedConfig.method || "GET",
+      method: processedConfig.method || 'GET',
       headers: processedConfig.headers,
       // Pass the data object directly as the body.
       body: processedConfig.data,
@@ -115,7 +115,7 @@ export async function httpRequest(config) {
       const endTime = performance.now();
       const responseData = await response.text();
       const finalData =
-        detectResponseType(response.headers) === "json"
+        detectResponseType(response.headers) === 'json'
           ? JSON.parse(responseData)
           : responseData;
 
@@ -128,14 +128,14 @@ export async function httpRequest(config) {
         isError: response.status >= 400,
         config: processedConfig,
       };
-    } catch (error) { 
+    } catch (error) {
       toast.error(`Error en la solicitud Tauri: ${error.message}`);
       return {
         data: null,
         status: 0,
         headers: {},
-        timeResponse: "0.000",
-        typeResponse: "unknown",
+        timeResponse: '0.000',
+        typeResponse: 'unknown',
         isError: true,
         config: processedConfig,
       };

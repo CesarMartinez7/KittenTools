@@ -156,7 +156,6 @@ export default function ResponsesTypesComponent({
   const renderResponseContent = () => {
     const finalType = activeResponseType.toLowerCase();
 
-    
     switch (finalType) {
       case 'preview':
         if (typeResponse.includes('html') || typeResponse.includes('xml')) {
