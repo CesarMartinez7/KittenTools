@@ -98,7 +98,7 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
   const menuActions = isFolder ? mapperFolder : mapperRequest;
 
   return (
-    <div key={item.id} className="relative text-gray-600 dark:text-zinc-200">
+    <div key={item.id} className="relative text-gray-600 text-xs dark:text-zinc-200">
       <div
         className={itemStyles}
         style={{ paddingLeft: `${level * 16 + 8}px` }}
@@ -150,7 +150,7 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
           />
         ) : (
           <span
-            className="flex-1 text-sm truncate font-medium"
+            className="flex-1 text-xs truncate font-medium"
             title={getDisplayName()}
           >
             {getDisplayName()}
@@ -239,7 +239,6 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
 const PostmanCollectionsList = () => {
   const {
     collections,
-    loadCollections,
     exportCollections,
     handleAddNewItem,
     handleAddNewFolder,

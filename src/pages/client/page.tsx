@@ -83,7 +83,7 @@ const Header = memo(
 
 
     return (
-      <div className="flex dark items-center text-xs gap-2 justify-end px-4 border-gray-100 dark:border-zinc-800 backdrop-blur-sm py-1">
+      <div className="flex dark items-center text-xs gap-2 justify-end px-4 border-gray-100 dark:border-zinc-800 backdrop-blur-sm py-0.5">
         <button
           title
           ="Cambiar tema"

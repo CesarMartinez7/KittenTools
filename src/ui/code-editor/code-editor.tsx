@@ -488,7 +488,7 @@ const CodeEditor = ({
           {/* Line Numbers */}
           <div
             ref={lineNumbersRef}
-            className="px-3 py-2 text-sm overflow-hidden bg-gray-200/50 border-r-zinc-200 dark:bg-zinc-950/70 dark:border-zinc-800 text-sky-600 dark:text-teal-200"
+            className="px-3 py-2 text-xs overflow-hidden bg-gray-200/50 border-r-zinc-200 dark:bg-zinc-950/70 dark:border-zinc-800 text-sky-600 dark:text-teal-200"
             style={{ height, minHeight, maxHeight }}
           >
             {lineNumberElements}
@@ -524,7 +524,7 @@ const CodeEditor = ({
               </div>
               <div
                 ref={highlightRef}
-                className="absolute  inset-0 p-2 text-sm font-mono leading-6 pointer-events-no overflow-hidden whitespace-pre-wrap break-words"
+                className="absolute  inset-0 p-2 text-xs font-mono leading-6 pointer-events-no overflow-hidden whitespace-pre-wrap break-words"
                 dangerouslySetInnerHTML={{
                   __html: highlightCode(
                     code,
@@ -548,7 +548,7 @@ const CodeEditor = ({
                 }}
                 onScroll={handleScroll}
                 onKeyDown={handleKeyDown}
-                className="absolute inset-0 transition-colors p-2 text-sm font-mono leading-6 resize-none outline-none placeholder-lime-600  dark:placeholder-lime-200"
+                className="absolute inset-0 transition-colors p-2 text-xs font-mono leading-6 resize-none outline-none placeholder-lime-600  dark:placeholder-lime-200"
                 style={{
                   color: 'transparent',
                   caretColor: 'var(--caret-color, gray)',
