@@ -69,7 +69,7 @@ const Header = memo(
         isEmpty: nombreEntorno === null,
         className:
           nombreEntorno === null
-            ? "bg-red-200 dark:bg-red-950 text-red-500"
+            ? "bg-red-200 bg-red-400 dark:bg-red-600 text-red-500"
             : "bg-green-200 dark:bg-green-700 text-green-600",
         text: nombreEntorno ?? "No hay entornos activos",
       }),
@@ -130,7 +130,7 @@ const TabNavigation = memo(
     setMimeSelected: (index: number) => void;
   }) => {
     return (
-      <div className="relative flex text-gray-800 dark:text-white border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+      <div className="relative flex text-gray-800 dark:text-white border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-x-auto md:overflow-hidden">
         {Opciones.map((opcion, index) => {
           const isSelected = index === selectedIdx;
           return (
@@ -181,7 +181,7 @@ const ContentTypeSelection = memo(
     const contentTypes = useMemo(() => ["json", "form", "xml", "none"], []);
 
     return (
-      <div className="flex gap-4 mb-3">
+      <div className="flex gap-4 mb-3 flex-wrap">
         {contentTypes.map((type) => (
           <label
             key={type}
@@ -206,10 +206,6 @@ const ContentTypeSelection = memo(
 
 ContentTypeSelection.displayName = "ContentTypeSelection";
 
-// Componente de Body Editor
-//... (El resto de tus imports y código se mantiene igual)
-
-// Componente de Body Editor
 // Componente de Body Editor
 const BodyEditor = memo(
   ({
@@ -255,7 +251,6 @@ const BodyEditor = memo(
       return () => clearTimeout(timeoutId);
     }, [deferredLocalCode, onCodeChange, localCode]);
 
-    // ✅ FIXED: Add the handleLocalChange function.
     const handleLocalChange = useCallback((value: string) => {
       setLocalCode(value);
     }, []);
@@ -747,7 +742,12 @@ export default function AppClient() {
   );
 
   return (
-    <div className="min-h-screen flex overflow-hidden h-screen text-xs relative text-gray-600 dark:text-zinc-200">
+    <div className="min-h-screen flex flex-col md:flex-row overflow-hidden h-screen text-xs relative text-gray-600 dark:text-zinc-200">
+
+
+
+      {/* --- Modal de Nuevas Opciones --- */}
+
       <BaseModalLazy isOpen={newsShowModal} onClose={toogleNewsShowModal}>
         <motion.div
           initial={{ scale: 0.9, opacity: 0, y: 20 }}
@@ -759,7 +759,7 @@ export default function AppClient() {
           {/* Header del Modal */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-[#4ec9b0] to-[#45b7aa] rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-br from-[#4ec9b0] to-[#45b7aa] rounded-xl flex items-center justify-cenzzzzzter">
                 <svg
                   className="w-6 h-6 text-white"
                   fill="none"
@@ -786,7 +786,7 @@ export default function AppClient() {
           </div>
 
           {/* Grid de Opciones Mejorado */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
             {NewMappers.map((ne, index) => (
               <motion.button
                 key={ne.name}
@@ -862,6 +862,9 @@ export default function AppClient() {
         </motion.div>
       </BaseModalLazy>
 
+      {/* --- Fin Modal de Nuevas Opciones --- */}
+
+      {/* Header fijo en la parte superior */}
       <div className="dark:bg-zinc-900 border-t dark:border-zinc-800 border-gray-200 bg-white text-gray-600 w-screen bottom-0 fixed z-50">
         <Header
           isFullScreen={isFullScreen}
@@ -869,6 +872,8 @@ export default function AppClient() {
           toogleFullScreen={toogleFullScreen}
         />
       </div>
+    
+        
 
       <SideBar
         currentUrl={currentTab?.url}
@@ -891,7 +896,7 @@ export default function AppClient() {
 
           <div
             ref={tabsContainerRef}
-            className="flex overflow-x-scroll max-w-[75vw] no-scrollbar scroll-smooth w-full px-10"
+            className="flex overflow-x-scroll md:max-w-[75vw] max-w-full no-scrollbar scroll-smooth w-full px-10"
             style={{ scrollbarWidth: "none" }}
           >
             <AnimatePresence mode="sync">
@@ -968,13 +973,12 @@ export default function AppClient() {
             />
           </Panel>
         </PanelGroup>
-      </div>
+        
 
-      <ExportModal
-        isOpen={isOpenModalExport}
-        onExport={exportCollections}
-        onClose={closeModalExport}
-      />
+
+          <ExportModal onClose={closeModalExport} collections={collections} isOpen={isOpenModalExport} />
+        
+      </div>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { BaseModalLazy } from "../../../ui/lazy-components";
 import { useRequestStore } from "../stores/request.store";
-import SidebarModal from "./modal.template";
+
 
 const ExportModal = ({ isOpen, onClose, onExport }) => {
   const collections = useRequestStore((state) => state.collections);

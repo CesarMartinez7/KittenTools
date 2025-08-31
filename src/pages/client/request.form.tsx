@@ -188,7 +188,7 @@ const RequestForm = ({
           />
         </div>
 
-        <div className="flex divide-x divide-zinc-900 rounded-md overflow-hidden ">
+        <div className="flex divide-x divide-gray-400 dark:divide-zinc-900 rounded-md overflow-hidden ">
           <button
             type="submit"
             className="px-6 py-2 bg-sky-500 text-white transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"

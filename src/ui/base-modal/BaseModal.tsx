@@ -13,8 +13,6 @@ const BaseModal = ({ isOpen, onClose, children }: BaseModalProps) => {
     const target = modalRef.current;
     if (target) {
       target.focus();
-      console.log("Modal focused");
-      toast.success("Modal focused");
     }
 
     const keyDownHandler = (event: KeyboardEvent) => {

@@ -46,7 +46,7 @@ export default function EnviromentComponent() {
     handleFileUpload,
     isOpen,
     entornoActual,
-    toggleModal,
+    toggleModalOpen, toggleModalClose
   } = useEnviromentHook();
 
   const tableVariants = {
@@ -64,7 +64,7 @@ export default function EnviromentComponent() {
   return (
     <div className=" h-full p-4">
       {/* Modal para importar entornos */}
-      <BaseModalLazy isOpen={isOpen} onClose={toggleModal}>
+      <BaseModalLazy isOpen={isOpen} onClose={toggleModalClose}>
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -235,7 +235,7 @@ export default function EnviromentComponent() {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={toggleModal}
+                  onClick={toggleModalOpen}
                   className="px-3 py-1.5 bg-gray-300 dark:bg-zinc-800 hover:bg-sky-600 dark:hover:bg-sky-600 rounded-md text-zinc-800 dark:text-zinc-300 hover:text-white transition-colors text-xs font-semibold shadow-md"
                 >
                   Importar Entornos
@@ -371,7 +371,7 @@ export default function EnviromentComponent() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={toggleModal}
+              onClick={toggleModalOpen}
               className="mt-4 px-4 py-2 bg-gray-300 text-shadow-2xs dark:text-zinc-300 text-zinc-800 dark:bg-zinc-800 hover:bg-zinc-700 rounded-md hover:text-white transition-colors"
             >
               Importar entornos

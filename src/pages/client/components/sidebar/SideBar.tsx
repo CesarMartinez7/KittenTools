@@ -137,7 +137,7 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
             <div className="flex flex-row gap-2 mb-6 justify-between">
               <div>
                 <ToolTipButton
-                  ariaText="Nueva opciones"
+                  ariaText="Opciones"
                   tooltipText="Añadir coleccion, request, enviroment"
                   onClick={closeModalsNews}
                   className="base-btn truncate"
@@ -145,12 +145,6 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
               </div>
 
               <div className="space-x-1.5 flex text-nowrap items-center">
-                {/* <ToolTipButton
-                  ariaText="Importar"
-                  tooltipText="Importar coleccion"
-                  className="base-btn-2"
-                  onClick={importCollections}
-                /> */}
                 <ToolTipButton
                   ariaText="Exportar"
                   className="base-btn-2"
@@ -166,8 +160,7 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
               </h3>
             </div>
             <div
-              className="
-            bg-gray-100 dark:bg-zinc-950/60 px-2 py-1 flex w-full transition-all truncate"
+              className="bg-gray-100 dark:bg-zinc-950/60 px-2 py-1 flex w-full transition-all truncate"
             >
               <div
                 className={`p-2 cursor-pointer transition-colors flex-2 ${

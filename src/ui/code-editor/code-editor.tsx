@@ -127,6 +127,7 @@ const CodeEditor = ({
       if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
         e.preventDefault();
         setIsOpenFindBar((prev) => !prev);
+        setSearchValue('');
         if (!isOpenFindBar) {
           setTimeout(() => searchInputRef.current?.focus(), 100);
         }
@@ -397,11 +398,11 @@ const CodeEditor = ({
                   className="p-1 rounded-md hover:bg-gray-300 dark:hover:bg-zinc-700 disabled:opacity-50 text-gray-800 dark:text-zinc-300 disabled:text-red-500"
                 >
                   <Icon
-                    icon={`tabler:chevron-${isOpenBar ? 'down' : 'left'}`}
+                    icon={`tabler:chevron-${isOpenBar ? ICONS_PAGES.chevrondown :  ICONS_PAGES.chevronleft}`}
                     width={16}
                   />
                 </button>
-                <input
+                <input  
                   ref={searchInputRef}
                   type="text"
                   className="input-base-editor text-xs w-40 px-2 py-1"

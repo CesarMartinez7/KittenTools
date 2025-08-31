@@ -98,7 +98,7 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
   const menuActions = isFolder ? mapperFolder : mapperRequest;
 
   return (
-    <div key={item.id} className="relative text-gray-600">
+    <div key={item.id} className="relative text-gray-600 dark:text-zinc-200">
       <div
         className={itemStyles}
         style={{ paddingLeft: `${level * 16 + 8}px` }}
@@ -113,7 +113,7 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
             }}
             className="p-1 hover:bg-zinc-300 dark:hover:bg-zinc-800 rounded mr-1 flex items-center justify-center transition-colors"
           >
-            {collapsed ? <ChevronRight size={16} /> : <ChevronDown size={16} />}
+            {collapsed ? <Icon icon={ICONS_PAGES.chevronleft}/> : <Icon icon={ICONS_PAGES.chevrondown}/>}
           </button>
         )}
 
@@ -201,7 +201,7 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
       {showBar && (
         <div
           ref={menuRef}
-          className="absolute z-10 top-full right-2 mt-2 w-48 text-xs rounded-md shadow-lg py-1 focus:outline-none bg-white dark:bg-zinc-800 border dark:border-zinc-700"
+          className="absolute z-10 top-full right-2 mt-2 w-48 text-xs rounded-md shadow-lg py-1 focus:outline-none border-gray-200 bg-white dark:bg-zinc-800 border dark:border-zinc-700"
         >
           {menuActions.map((action, index) => (
             <button
@@ -245,9 +245,7 @@ const PostmanCollectionsList = () => {
     handleAddNewFolder,
   } = useRequestStore();
 
-  useEffect(() => {
-    loadCollections();
-  }, [loadCollections]);
+
 
   if (collections.length === 0) {
     return (
@@ -261,7 +259,7 @@ const PostmanCollectionsList = () => {
   }
 
   return (
-    <div className="w-full h-full text-gray-800 dark:text-zinc-200 flex flex-col font-sans dark:bg-zinc-900 bg-white">
+    <div className="w-full h-full text-gray-800 dark:text-zinc-200 flex flex-col dark:bg-zinc-900 bg-white">
       <div className="flex-1 overflow-y-auto p-2 space-y-4">
         {collections.map((collection) => (
           <div

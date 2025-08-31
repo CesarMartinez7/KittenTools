@@ -81,9 +81,15 @@ export default function useEnviromentHook() {
     setEntornoActual(updated);
   };
 
-  const toggleModal = () => {
-    setIsOpen(!isOpen);
-  };
+  
+  const toggleModalClose = () => {
+    setIsOpen(false);
+  }
+
+
+  const toggleModalOpen = () => {
+    setIsOpen(true);
+  }
 
   return {
     handleAddVariable,
@@ -94,6 +100,7 @@ export default function useEnviromentHook() {
     setIsOpen,
     entornoActual,
     setEntornoActual,
-    toggleModal,
+    toggleModalOpen,
+    toggleModalClose
   };
 }
