@@ -137,7 +137,7 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
             <div className="flex flex-row gap-2 mb-6 justify-between">
               <div>
                 <ToolTipButton
-                  ariaText="Nueva opciones sdfsdsdfdsfff"
+                  ariaText="Nueva opciones"
                   tooltipText="Añadir coleccion, request, enviroment"
                   onClick={closeModalsNews}
                   className="base-btn truncate"

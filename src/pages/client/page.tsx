@@ -59,9 +59,10 @@ const Header = memo(
     nombreEntorno: string | null;
   }) => {
     const isRunningInTauri = useMemo(
-      () => window.__TAURI_IPC__ !== undefined,
+      () => window.__TAURI__ !== undefined,
       [],
     );
+
 
     const entornoStatus = useMemo(
       () => ({
@@ -75,15 +76,18 @@ const Header = memo(
       [nombreEntorno],
     );
 
+    // no recreescribir la función en cada render del componente Header
     const toogleTheme = useCallback(() => {
       document.body.classList.toggle("dark");
     }, []);
 
+
     return (
       <div className="flex dark items-center text-xs gap-2 justify-end px-4 border-gray-100 dark:border-zinc-800 backdrop-blur-sm py-1">
         <button
-          title="Cambiar tema"
-          className="bg-gray-200 transition-colors p-1 dark:bg-zinc-800 dark:text-zinc-200 rounded-md hover:bg-gray-300 dark:hover:bg-zinc-700"
+          title
+          ="Cambiar tema"
+          className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
           onClick={toogleTheme}
         >
           <Icon icon="tabler:moon" width="14" height="14" />
@@ -95,8 +99,9 @@ const Header = memo(
         </div>
 
         <button
+          title="Pantalla completa | Salir de pantalla completa "
           onClick={toogleFullScreen}
-          className="flex items-center gap-2 px-3 text-xs rounded-md text-zinc-600 dark:text-zinc-200 font-medium shadow-sm hover:bg-gray-300 dark:bg-zinc-800 bg-gray-200 dark:hover:bg-blue-500 transition-colors"
+          className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
         >
           <Icon
             icon={isFullScreen ? arrowsMinimize : arrowsMaximize}
@@ -205,6 +210,7 @@ ContentTypeSelection.displayName = "ContentTypeSelection";
 //... (El resto de tus imports y código se mantiene igual)
 
 // Componente de Body Editor
+// Componente de Body Editor
 const BodyEditor = memo(
   ({
     currentTab,
@@ -215,64 +221,67 @@ const BodyEditor = memo(
   }) => {
     const isNoneContent = currentTab?.headers["Content-Type"] === "none";
 
-    // 1. Estado local para el valor del editor
-    const [localCode, setLocalCode] = useState(currentTab?.body || "");
+    const [localCode, setLocalCode] = useState(() => {
+      const body = currentTab?.body;
+      if (typeof body === 'object' && body !== null) {
+        return JSON.stringify(body, null, 2); 
+      }
+      return body || "";
+    });
 
-    // 2. Sincronizar el estado local cuando cambia la pestaña
     useEffect(() => {
-      // Si el `currentTab` cambia, actualizamos el estado local
-      setLocalCode(currentTab?.body || "");
-    }, [currentTab?.body]); // Solo se activa cuando el `body` de la pestaña actual cambia
+      const body = currentTab?.body;
+      let newLocalCode = "";
+      if (typeof body === 'object' && body !== null) {
+        newLocalCode = JSON.stringify(body, null, 2);
+      } else {
+        newLocalCode = body || "";
+      }
+      
+      if (localCode !== newLocalCode) {
+        setLocalCode(newLocalCode);
+      }
+    }, [currentTab?.body]);
 
-    // 3. Usar un efecto para "debouce" las actualizaciones
+    const deferredLocalCode = useDeferredValue(localCode);
+
     useEffect(() => {
-      // Creamos un temporizador
       const timeoutId = setTimeout(() => {
-        // Solo si el valor local es diferente del valor global
-        if (localCode !== currentTab?.body) {
-          // 4. Llamamos a la función de actualización global
-          onCodeChange(localCode);
+        if (deferredLocalCode !== localCode) {
+          onCodeChange(deferredLocalCode);
         }
-      }, 500); // Espera 500ms después de la última pulsación de tecla
+      }, 500);
 
-      // 5. Función de limpieza para cancelar el temporizador si el usuario sigue escribiendo
       return () => clearTimeout(timeoutId);
-    }, [localCode, onCodeChange, currentTab?.body]);
+    }, [deferredLocalCode, onCodeChange, localCode]);
 
-    // 6. Manejador de cambio local
+    // ✅ FIXED: Add the handleLocalChange function.
     const handleLocalChange = useCallback((value: string) => {
-      // Actualizamos el estado local de forma inmediata
       setLocalCode(value);
     }, []);
 
     if (isNoneContent) {
       return (
         <div className="h-full flex items-center justify-center text-gray-500 dark:text-zinc-500">
-                   {" "}
-          <p className="text-lg font-medium">No body for this request.</p>     
-           {" "}
+          <p className="text-lg font-medium">No body for this request.</p>
         </div>
       );
     }
 
     return (
-      <CodeEditor
-        // 7. Pasamos el valor del estado local
-        value={localCode}
-        maxHeight="85vh"
-        // 8. Pasamos el manejador de cambio local
-        onChange={handleLocalChange}
-        language={currentTab?.headers["Content-Type"] || "json"}
-        height="73vh"
-        minHeight="65vh"
-      />
+      <>
+        <CodeEditor
+          value={deferredLocalCode}
+          maxHeight="85vh"
+          onChange={handleLocalChange}
+          language={currentTab?.headers["Content-Type"] || "json"}
+          height="73vh"
+          minHeight="65vh"
+        />
+      </>
     );
   },
 );
-
-BodyEditor.displayName = "BodyEditor";
-
-// ... (El resto de tu código, incluyendo ContentPanel, se mantiene sin cambios)
 
 BodyEditor.displayName = "BodyEditor";
 
@@ -671,7 +680,6 @@ export default function AppClient() {
         finalResponse = error;
         toast.error("Error al realizar la petición");
       } finally {
-        toast.success("Petición realizada");
         if (finalResponse && currentTabId) {
           startTransition(() => {
             updateTab(currentTabId, {

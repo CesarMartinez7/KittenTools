@@ -266,7 +266,7 @@ const PostmanCollectionsList = () => {
         {collections.map((collection) => (
           <div
             key={collection.id}
-            className="p-3 rounded-xl shadow-lg transition-colors bg-white border border-gray-200 text-gray-800 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-200 flex flex-col"
+            className="p-3 rounded-xl shadow-lg transition-colors bg-white border border-gray-200 text-gray-800 dark:bg-zinc-800/10 dark:border-zinc-900 dark:text-zinc-200 flex flex-col"
           >
             <div className="flex items-center justify-between p-2">
               <h2 className="text-sm font-bold truncate">{collection.name}</h2>
