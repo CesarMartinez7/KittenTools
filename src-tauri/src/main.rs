@@ -1,8 +1,54 @@
-#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+#![cfg_attr(
+  all(not(debug_assertions), target_os = "windows"),
+  windows_subsystem = "windows"
+)]
 
+use tauri::command;
+use reqwest::{Client, Method};
+use std::collections::HashMap;
 
+// -------------------- COMANDOS --------------------
+#[command]
+async fn http_request(
+  url: String,
+  method: String,
+  headers: Option<HashMap<String, String>>,
+  body: Option<String>,
+) -> Result<String, String> {
+  let client = Client::new();
 
+  let method: Method = method
+      .parse::<Method>()
+      .map_err(|e| e.to_string())?;
 
+  let mut request = client.request(method, &url);
+
+  if let Some(h) = headers {
+      for (k, v) in h {
+          request = request.header(k, v);
+      }
+  }
+
+  if let Some(b) = body {
+      request = request.body(b);
+  }
+
+  let response = request.send().await.map_err(|e| e.to_string())?;
+  let text = response.text().await.map_err(|e| e.to_string())?;
+
+  Ok(text)
+}
+
+#[command]
+fn greet(name: &str) -> String {
+    format!("Hello, {}! You've been greeted from Rust!", name)
+}
+
+// -------------------- ENTRY POINT --------------------
 fn main() {
-  app_lib::run();
+  tauri::Builder::default()
+      .plugin(tauri_plugin_opener::init())
+      .invoke_handler(tauri::generate_handler![greet, http_request])
+      .run(tauri::generate_context!())
+      .expect("error while running tauri application");
 }
