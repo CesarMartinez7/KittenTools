@@ -10,33 +10,43 @@ use std::collections::HashMap;
 // -------------------- COMANDOS --------------------
 #[command]
 async fn http_request(
-  url: String,
-  method: String,
-  headers: Option<HashMap<String, String>>,
-  body: Option<String>,
+    url: String,
+    method: String,
+    headers: Option<HashMap<String, String>>,
+    body: Option<String>,
 ) -> Result<String, String> {
-  let client = Client::new();
+    let client = Client::new();
 
-  let method: Method = method
-      .parse::<Method>()
-      .map_err(|e| e.to_string())?;
+    let method: Method = method
+        .parse::<Method>()
+        .map_err(|e| e.to_string())?;
 
-  let mut request = client.request(method, &url);
+    let mut request = client.request(method, &url);
 
-  if let Some(h) = headers {
-      for (k, v) in h {
-          request = request.header(k, v);
-      }
-  }
+    // Añadimos headers del usuario
+    if let Some(h) = &headers {
+        for (k, v) in h {
+            request = request.header(k, v);
+        }
+    }
 
-  if let Some(b) = body {
-      request = request.body(b);
-  }
+    // Siempre asegurarse de tener un User-Agent
+    if headers
+        .as_ref()
+        .map_or(true, |h| !h.contains_key("User-Agent"))
+    {
+        request = request.header("User-Agent", "ELisa-App/0.1.0");
+    }
 
-  let response = request.send().await.map_err(|e| e.to_string())?;
-  let text = response.text().await.map_err(|e| e.to_string())?;
+    // Body opcional
+    if let Some(b) = body {
+        request = request.body(b);
+    }
 
-  Ok(text)
+    let response = request.send().await.map_err(|e| e.to_string())?;
+    let text = response.text().await.map_err(|e| e.to_string())?;
+
+    Ok(text)
 }
 
 #[command]
@@ -46,9 +56,9 @@ fn greet(name: &str) -> String {
 
 // -------------------- ENTRY POINT --------------------
 fn main() {
-  tauri::Builder::default()
-      .plugin(tauri_plugin_opener::init())
-      .invoke_handler(tauri::generate_handler![greet, http_request])
-      .run(tauri::generate_context!())
-      .expect("error while running tauri application");
+    tauri::Builder::default()
+        .plugin(tauri_plugin_opener::init())
+        .invoke_handler(tauri::generate_handler![greet, http_request])
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application");
 }
