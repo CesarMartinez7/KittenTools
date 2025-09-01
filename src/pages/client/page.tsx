@@ -96,6 +96,7 @@ export default function AppClient() {
           !!currentTab?.headers && Object.keys(currentTab.headers).length > 0,
       },
       { name: 'Entorno', icon: !!listEntornos && listEntornos.length > 0 },
+      { name: 'Auth', icon: null },
     ],
     [currentTab, listEntornos],
   );

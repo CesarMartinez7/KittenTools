@@ -209,13 +209,13 @@ export const HeadersAddRequest: React.FC<HeadersAddRequestProps> = () => {
       {' '}
       {/* Contenedor principal con fondo oscuro */}
       <div className="flex justify-between items-center mb-4 text-sm font-semibold text-gray-400">
-        <button
+        {/* <button
           onClick={handleAddHeader}
           className="px-3 py-1 text-white bg-sky-500 rounded-md hover:bg-sky-700 transition-colors duration-200 flex items-center"
         >
           <Icon icon={ICONS_PAGES.plus} className="mr-2" />
           Añadir Cabecera
-        </button>
+        </button> */}
         {/* Aquí puedes añadir los otros botones como "Importar Entornos" y "Crear entorno" */}
       </div>
       <table className="min-w-full table-fixed">

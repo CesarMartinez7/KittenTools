@@ -363,21 +363,10 @@ const CodeEditor = ({
     );
   };
 
-  const [isBodyNull, setIsBodyNull] = useState<null | boolean>(null);
-
-  useEffect(() => {
-    setCode(value);
-    if (Object.entries(value).length < 0) {
-      setIsBodyNull(false);
-      return;
-    } else {
-      setIsBodyNull(true);
-    }
-  }, [value]);
 
   return (
     <>
-      <main className="overflow-hidden relative">
+      <main className="overflow-hidden relative l">
         <AnimatePresence >
           {isOpenFindBar && (
             <motion.div

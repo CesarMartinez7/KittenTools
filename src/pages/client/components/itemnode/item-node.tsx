@@ -16,7 +16,7 @@ const actionButtonStyles =
 const methodBadgeStyles = (method) => {
   switch (method) {
     case 'GET':
-      return 'bg-green-600/20 text-green-600 dark:bg-green-400/20 dark:text-green-400';
+      return 'bg-emerald-600/20 text-emerald-600 dark:bg-emerald-400/20 dark:text-green-400';
     case 'POST':
       return 'bg-blue-600/20 text-blue-600 dark:bg-blue-400/20 dark:text-blue-400';
     case 'PUT':

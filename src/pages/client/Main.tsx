@@ -24,6 +24,7 @@ import { useRequestStore } from './stores/request.store';
 import x from '@iconify-icons/tabler/x';
 import moon from '@iconify-icons/tabler/moon';
 import sun from '@iconify-icons/tabler/sun';
+import { useEnviromentStore } from './components/enviroment/store.enviroment';
 
 const ICONS_PAGES_LOCAL = {
   moon: moon,
@@ -95,6 +96,10 @@ const Header = memo(
       [currentTab],
     );
 
+
+    const [isOpenEntornosList, setIsOpenEntornosList] = useState<boolean>(false)
+    const listEntornos = useEnviromentStore((state) => state.listEntorno)
+
     return (
       <div className="flex dark:text-zinc-200 text-gray-600 items-center text-xs gap-2 justify-end px-4 border-gray-100 dark:border-zinc-800 backdrop-blur-sm py-0.5">
         <button
@@ -118,10 +123,22 @@ const Header = memo(
             height="14"
           />
         </button>
+        <div>
+          <div className='absolute bottom-full bg-white dark:bg-zinc-900 shadow w-44 max-h-30 overflow-y-scroll rounded-t-xl overflow-hidden '>
+            {listEntornos.map((e, i) => (
+              <div key={i.toLocaleString()} className='p-2 hover:bg-gray-200 dark:hover:bg-zinc-800 transition-colors'>
+                {e.name}
+              </div>
+            ))}
+          
+          </div>
         <div
+          onClick={() => setIopen }
           className={`font-medium dark:text-zinc-200 text-gray-600 truncate max-w-[250px] px-3 rounded-full ${entornoStatus.className}`}
         >
           {entornoStatus.text}
+        </div>
+
         </div>
 
         <button
@@ -463,7 +480,7 @@ const ContentPanel = memo(
           <motion.div
             key="scripts-section"
             variants={VariantsAnimation}
-            className={`absolute inset-0 ${selectedIdx === 4 ? 'block' : 'hidden'}`}
+            className={`absolute inset-0 ${selectedIdx === 5 ? 'block' : 'hidden'}`}
           >
             <ScriptComponent
               value={scriptsValues}
@@ -475,9 +492,9 @@ const ContentPanel = memo(
           <motion.div
             key="auth-section"
             variants={VariantsAnimation}
-            className={`absolute inset-0 flex-1 flex items-center justify-center text-gray-500 dark:text-zinc-500 ${selectedIdx === 5 ? 'block' : 'hidden'}`}
+            className={`absolute inset-0 flex-1 flex items-center justify-center text-gray-500 dark:text-zinc-600 ${selectedIdx === 4 ? 'block' : 'hidden'}`}
           >
-            <p className="text-lg">Próximamente</p>
+            <p className="text-md">Próximamente, en desarollo</p>
           </motion.div>
         ),
       }),

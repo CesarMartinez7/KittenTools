@@ -135,17 +135,17 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
             border-r border-gray-200 dark:border-zinc-800
             "
           >
-            <div className="flex flex-row gap-2 mb-6 justify-between">
+            <div className="flex flex-row gap-2 mb-6 justify-end">
               <div>
                 <ToolTipButton
-                  ariaText="Opciones Disponibles"
+                  ariaText="Herramientas"
                   tooltipText="Añadir coleccion, request, enviroment"
                   onClick={closeModalsNews}
                   className="base-btn truncate"
                 />
               </div>
 
-              <div className="space-x-1.5 flex text-nowrap items-center"></div>
+              {/* <div className="space-x-1.5 flex text-nowrap items-center"></div> */}
             </div>
             <div className="flex justify-start items-center my-4 space-x-3 relative">
               <span className="pixelarticons--coffee-alt text-gray-900 dark:text-zinc-200"></span>
