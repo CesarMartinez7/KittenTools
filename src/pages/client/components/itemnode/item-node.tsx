@@ -93,7 +93,7 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
 
 
   const Skeleton = () => (
-    <div className='flex h-[36px] items-center animate-pulse bg-gray-50 w-full py-1.5 px-2 cursor-pointer rounded-md transition-colors duration-200 group dark:hover:bg-zinc-700/50 hover:bg-gray-200/50'/>
+    <div className='flex h-[36px] items-center animate-pulse bg-gray-50 dark:bg-zinc-900 w-full py-1.5 px-2 cursor-pointer rounded-md transition-colors duration-200 group dark:hover:bg-zinc-700/50 hover:bg-gray-200/50'/>
 
   )
 

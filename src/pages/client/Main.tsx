@@ -79,7 +79,7 @@ const Header = memo(
       if (document.body.classList.contains('dark')) {
         document.body.classList.remove('dark');
         setIsDark(true);
-        localStorage.setItem();
+        // localStorage.setItem();
       } else {
         document.body.classList.add('dark');
         setIsDark(false);
