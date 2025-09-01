@@ -342,6 +342,12 @@ export default function AppClient() {
               response={currentTab?.response?.data}
               statusCode={currentTab?.response?.status}
             />
+
+
+            <div className="flex-grow overflow-y-auto">
+              <pre className="whitespace-pre-wrap break-words">{JSON.stringify(currentTab?.response?.data, null, 2)}</pre>
+            </div>
+
           </Panel>
         </PanelGroup>
 

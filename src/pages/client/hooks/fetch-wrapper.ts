@@ -102,21 +102,41 @@ export async function httpRequest(config) {
     // --- Modo Tauri ---
     const startTime = performance.now();
     try {
-      // Ahora llamamos al nuevo comando dinámico `make_request` y le pasamos los parámetros.
+      // Ahora llamamos al nuevo comando dinámico `http_request` y le pasamos los parámetros.
       const apiResponse = await invoke("http_request", {
         url: processedConfig.url,
         method: processedConfig.method || "GET",
         body: JSON.stringify(processedConfig.data),
         headers: processedConfig.headers,
       });
+      
+      console.log("Api response abajo")
+      console.log(apiResponse)
+
       const endTime = performance.now();
 
       // Procesamos la respuesta del backend
-      const finalData = JSON.parse(apiResponse.body);
+      let finalData;
+      try {
+        if (
+          typeof apiResponse.body === "string" &&
+          apiResponse.body !== "" &&
+          apiResponse.body !== "undefined"
+        ) {
+          console.log(finalData)
+          finalData = JSON.parse(apiResponse.body);
+          console.log(finalData)
+        } else {
+          console.log(finalData)
+          finalData = apiResponse.body;
+        }
+      } catch (e) {
+        finalData = apiResponse.body;
+      }
       const headers = apiResponse.headers;
 
       return {
-        data: finalData,
+        data: apiResponse,
         status: apiResponse.status,
         headers: headers,
         timeResponse: ((endTime - startTime) / 1000).toFixed(3),
