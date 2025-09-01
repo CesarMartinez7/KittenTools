@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from "react";
-import { useParamsStore } from "../components/addqueryparams/queryparams-store";
+import { useEffect, useRef, useState } from 'react';
+import { useParamsStore } from '../components/addqueryparams/queryparams-store';
 
-import type { RetornoClient } from "./types";
+import type { RetornoClient } from './types';
 
 const useClientStore = (): RetornoClient => {
   // -------------- Esto actualment no esta en uso , proximamente deprecado  ---------------------------
@@ -10,29 +10,29 @@ const useClientStore = (): RetornoClient => {
   // ------------------------------ Proximamente deprecado arriba  ---------------------------
   // Estados Globales
 
-  const [scriptsValues, setScriptsValues] = useState<string>("");
+  const [scriptsValues, setScriptsValues] = useState<string>('');
   const [params2, setParams2] = useState<Record<string, string>[]>([]);
   // Los nuevos estados Headers response y cookies response
 
-  const [headersResponse, setHeadersResponse] = useState("");
-  const [cookiesResponse, setCookiesResponse] = useState("");
+  const [headersResponse, setHeadersResponse] = useState('');
+  const [cookiesResponse, setCookiesResponse] = useState('');
 
   const [isOpenSiderBar, setIsOpenSiderbar] = useState(true);
-  const [selectedMethod, setSelectedMethod] = useState("GET");
-  const [response, setResponse] = useState("");
+  const [selectedMethod, setSelectedMethod] = useState('GET');
+  const [response, setResponse] = useState('');
 
-  const [errorAxios, setErrorAxios] = useState<string>("");
+  const [errorAxios, setErrorAxios] = useState<string>('');
   const [errorRequest, setErrorRequest] = useState(false);
   const [timeResponse, setTimeResponse] = useState<number>(0);
 
-  const [bodyRequest, setBodyRequest] = useState("");
+  const [bodyRequest, setBodyRequest] = useState('');
   const [showMethods, setShowMethods] = useState(false);
   const [endpointUrl, setEndpointUrl] = useState(
-    "https://jsonplaceholder.typicode.com/comments",
+    'https://jsonplaceholder.typicode.com/comments',
   );
 
   const [isLoading, setIsLoading] = useState(false);
-  const [contentType, setContentType] = useState<string>("");
+  const [contentType, setContentType] = useState<string>('');
   const [statusCode, setStatusCode] = useState<number | null>();
 
   const refForm = useRef<HTMLFormElement | null>(null);
@@ -43,12 +43,12 @@ const useClientStore = (): RetornoClient => {
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Enter" && e.ctrlKey) {
+      if (e.key === 'Enter' && e.ctrlKey) {
         refForm.current?.requestSubmit(); // apredinedo sobre el nuevo submit que si respesta las validaciones de las entradsa o inputs en html y js nativo
       }
     };
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
   }, []);
 
   return {

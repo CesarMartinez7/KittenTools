@@ -9,6 +9,8 @@ import TableData from '../../../../ui/Table';
 import ToolTipButton from '../../../../ui/tooltip/TooltipButton';
 import XmlNode from '../../../../ui/xml-node/xmlnode';
 import { useRequestStore } from '../../stores/request.store';
+import ApiResponseTooltip from '../../../../ui/tooltip/ToolTipResponse';
+import CodeTooltip from '../../../../ui/tooltip/ToolTipResponse';
 
 const parseHtmlString = (htmlString: string): Node | null => {
   try {
@@ -131,7 +133,7 @@ export default function ResponsesTypesComponent({
     if (status >= 300 && status < 400)
       return 'bg-yellow-500/40 text-yellow-200';
     if (status >= 400 && status < 500)
-      return 'dark:bg-red-500/40 dark:text-red-200 bg-red-500 text-red-100';
+      return 'dark:bg-red-300/90 dark:text-red-200 bg-red-500 text-red-100';
     if (status >= 500 && status < 600)
       return 'bg-orange-500/40 text-orange-200';
     return 'bg-gray-500';
@@ -244,7 +246,7 @@ export default function ResponsesTypesComponent({
   };
 
   return (
-    <div className="h-full flex flex-col ma overflow-y-scroll bg-white dark:bg-transparent ">
+    <div className="h-full flex flex-col max-h-[85vh] overflow-y-scroll bg-white dark:bg-transparent ">
       <div className="flex-1 flex flex-col justify-between">
         <nav
           className="flex border-b justify-between border-gray-200 dark:border-zinc-700 items-center sticky top-0 dark:bg-zinc-950/50 backdrop-blur-2xl bg-white"
@@ -263,10 +265,16 @@ export default function ResponsesTypesComponent({
           </div>
 
           <div className="flex items-center gap-2 mr-4 text-zinc-300 text-xs">
-            <ToolTipButton
+            {/* <ApiResponseTooltip
               className={`text-xs font-bold px-1 rounded ${getStatusCodeClass(statusCode)}`}
               ariaText={String(statusCode)}
+              show={true}
               tooltipText={getStatusCodeText(statusCode)}
+            /> */}
+            <CodeTooltip
+              className={`text-xs ${getStatusCodeClass(statusCode)} `}
+              statusCode={statusCode}
+              ariaText={statusCode}
             />
             <span className="text-xs dark:bg-zinc-900/90 bg-gray-200 text-gray-600  dark:text-zinc-400 py-0.5 px-2 rounded text-r whitespace-nowrap ">
               {currentTab?.response?.time || timeResponse} ms

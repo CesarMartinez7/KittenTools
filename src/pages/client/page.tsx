@@ -342,8 +342,6 @@ export default function AppClient() {
               response={currentTab?.response?.data}
               statusCode={currentTab?.response?.status}
             />
-
-
           </Panel>
         </PanelGroup>
 

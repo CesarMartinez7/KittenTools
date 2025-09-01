@@ -1,10 +1,18 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
 import arrowsMaximize from '@iconify-icons/tabler/arrows-maximize';
 import arrowsMinimize from '@iconify-icons/tabler/arrows-minimize';
-import { memo, useCallback, useMemo, useEffect, useState, useDeferredValue, startTransition } from 'react';
+import {
+  memo,
+  useCallback,
+  useMemo,
+  useEffect,
+  useState,
+  useDeferredValue,
+  startTransition,
+} from 'react';
 import { type RequestData } from './stores/request.store';
-import {motion, AnimatePresence} from "motion/react"
-import CodeEditor from "../../ui/code-editor/code-editor"
+import { motion, AnimatePresence } from 'motion/react';
+import CodeEditor from '../../ui/code-editor/code-editor';
 import MethodFormater from './components/method-formatter/method-formatter';
 import ICONS_PAGES from './icons/ICONS_PAGE';
 import { type EventRequest } from './types/types';
@@ -21,8 +29,6 @@ interface ContentTypeProps {
   scriptsValues: EventRequest;
   setScriptsValues: React.Dispatch<React.SetStateAction<EventRequest>>;
 }
-
-
 
 // Componente Header Memorizado con mejor esctructura de displayName
 const Header = memo(
@@ -172,7 +178,6 @@ const ContentTypeSelection = memo(
   },
 );
 
-
 const BodyEditor = memo(
   ({
     currentTab,
@@ -244,8 +249,6 @@ const BodyEditor = memo(
   },
 );
 
-
-
 const Tab = memo(
   ({
     tab,
@@ -313,8 +316,6 @@ const Tab = memo(
     );
   },
 );
-
-
 
 // Componente de panel de contenido optimizado PARA LAS REQUEST
 const ContentPanel = memo(
@@ -445,8 +446,6 @@ const ContentPanel = memo(
   },
 );
 
-
-
 // DISPLAY NAMES
 Header.displayName = 'Header';
 TabNavigation.displayName = 'TabNavigation';
@@ -454,7 +453,6 @@ ContentTypeSelection.displayName = 'ContentTypeSelection';
 BodyEditor.displayName = 'BodyEditor';
 Tab.displayName = 'Tab';
 ContentPanel.displayName = 'ContentPanel';
-
 
 // IMPORTACION PRINCIPAL EN FORMA DE OBJECTO PARA MEJOR IMPORTACION
 const COMPONENTS_PAGE = {

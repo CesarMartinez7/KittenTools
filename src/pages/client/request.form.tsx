@@ -133,7 +133,7 @@ const RequestForm = ({
   }, [endpointUrl, currentTabId, updateTab]);
 
   return (
-    <form className="p-4 space-y-3" ref={refForm} onSubmit={onSubmit}>
+    <form className="p-3 space-y-3" ref={refForm} onSubmit={onSubmit}>
       <div className="flex flex-row md:flex-row gap-3 md:items-center">
         <div className="relative">
           <button

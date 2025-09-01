@@ -111,15 +111,15 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
   );
 
   const [currenIdx, setCurrentIdx] = useState<number>(1);
-  const [showExportModal, setShowExportModal] = useState(false);
+  // const [showExportModal, setShowExportModal] = useState(false);
 
-  const handleExport = (collectionId: string) => {
-    toast.success(collectionId);
-    exportCollections(collectionId);
-    setShowExportModal(false);
-  };
+  // const handleExport = (collectionId: string) => {
+  //   toast.success(collectionId);
+  //   exportCollections(collectionId);
+  //   setShowExportModal(false);
+  // };
 
-  const openModalNews = useModalStore((state) => state.openNewsShowModal);
+  // const openModalNews = useModalStore((state) => state.openNewsShowModal);
   const closeModalsNews = useModalStore((state) => state.openNewsShowModal);
 
   return (
@@ -128,7 +128,7 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
         {isOpen && (
           <motion.div
             className="
-              h-svh max-h-svh
+            h-svh max-h-svh
             bg-white/90 text-gray-800
             dark:bg-zinc-900/80 dark:text-slate-200
             backdrop-blur-3xl p-4 z-50 md:flex flex-col hidden shadow-xl
@@ -145,39 +145,32 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
                 />
               </div>
 
-              <div className="space-x-1.5 flex text-nowrap items-center">
-                <ToolTipButton
-                  ariaText="Exportar"
-                  className="base-btn-2"
-                  tooltipText="Exportar coleccion"
-                  onClick={() => setShowExportModal(true)}
-                />
-              </div>
+              <div className="space-x-1.5 flex text-nowrap items-center"></div>
             </div>
             <div className="flex justify-start items-center my-4 space-x-3 relative">
               <span className="pixelarticons--coffee-alt text-gray-900 dark:text-zinc-200"></span>
-              <h3 className="text-4xl  bg-gradient-to-tr text-gray-700 dark:text-lime-50 share-tech-mono-regular ">
+              <h3 className="text-4xl bg-gradient-to-t from-gray-700 to-gray-600 bg-clip-text text-transparent share-tech-mono-regular ">
                 Elisa
               </h3>
             </div>
-            <div className="bg-gray-100 dark:bg-zinc-950/60 px-2 py-1 flex w-full transition-all truncate">
+            <div className="bg-gray-50 dark:bg-zinc-950/60 px-1 py-1 rounded flex w-full transition-all truncate">
               <div
-                className={`p-2 cursor-pointer transition-colors flex-2 ${
+                className={`p-2 cursor-pointer rounded transition-colors flex-2 ${
                   currenIdx === 1
                     ? 'bg-green-500/10 dark:hover:bg-zinc-950 dark:text-green-primary dark:bg-green-primary '
-                    : ' dark:hover:bg-green-primary/30 text-gray-600 dark:text-zinc-300'
+                    : ' dark:hover:bg-green-primary/30 rounded text-gray-600 dark:text-zinc-200'
                 }`}
                 onClick={() => setCurrentIdx(1)}
               >
-                <div className="flex items-center gap-2 text-xs">
+                <div className="flex items-center gap-2 text-xs font-bold">
                   <span className="tabler--server"></span>
                   <span className="text-xs">
-                    Colecciones ({collections.length})
+                    Colecciónes ({collections.length})
                   </span>
                 </div>
               </div>
               <div
-                className={`p-2 flex-1 cursor-pointer transition-colors ${
+                className={`p-2 flex-1 cursor-pointer font-bold transition-colors ${
                   currenIdx === 2
                     ? 'bg-green-500/10 dark:text-green-primary dark:bg-green-primary/10'
                     : 'hover:bg dark:hover:bg-green-primary/90 text-gray-600 dark:text-zinc-300'
@@ -199,7 +192,7 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
                 style={{ scrollbarWidth: 'none' }}
               >
                 {currenIdx === 2 && (
-                  <div className="flex flex-col gap-2 h-full">
+                  <div className="flex flex-col gap-2 h-full p-2">
                     {enviromentList.length === 0 && (
                       <div className="h-full w-full flex flex-col justify-center items-center text-center space-y-2">
                         <span className="tabler--bolt-off text-zinc-600"></span>
@@ -236,11 +229,11 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
           </motion.div>
         )}
       </AnimatePresence>
-      <ExportModal
+      {/* <ExportModal
         isOpen={showExportModal}
         onClose={() => setShowExportModal(false)}
         onExport={handleExport}
-      />
+      /> */}
     </ResizableSidebar>
   );
 }

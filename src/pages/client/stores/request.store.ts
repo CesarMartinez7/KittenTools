@@ -1,6 +1,5 @@
-// El código del store se mantiene sin cambios
-import { isTauri } from '@tauri-apps/api/core';
-import { open, save } from '@tauri-apps/api/dialog';
+import { open, save } from '@tauri-apps/plugin-dialog';
+
 import {
   BaseDirectory,
   exists,

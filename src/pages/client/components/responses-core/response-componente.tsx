@@ -102,7 +102,7 @@ export default function ResponsesTypesComponent({
       </div>
 
       {/* ----------------------------------------------------------- Principio del contenido por tipos ---------------------- */}
-      <div className="w-full  max-h-[65vh] rounded-2xl  overflow-y-scroll">
+      <div className="w-full  max-h-[62vh] rounded-2xl  overflow-y-scroll">
         {contentType === 'JSON' && (
           <>
             <JsonNode

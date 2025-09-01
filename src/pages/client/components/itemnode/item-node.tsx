@@ -1,19 +1,12 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
-import {
-  ChevronDown,
-  ChevronRight,
-  Download,
-  Edit2,
-  Plus,
-  Trash2,
-} from 'lucide-react';
-import { nanoid } from 'nanoid';
+
 import React, { useEffect, useRef } from 'react';
-import toast from 'react-hot-toast';
+
 import ICONS_PAGES from '../../icons/ICONS_PAGE';
 
 import { useRequestStore } from '../../stores/request.store';
 import useItemNodeLogic from '../itemnode/item.hook';
+import LazyListPerform from '../../../../ui/LazyListPerform';
 
 // --- Clases de estilo reutilizables ---
 const itemStyles =
@@ -98,147 +91,153 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
   const menuActions = isFolder ? mapperFolder : mapperRequest;
 
   return (
-    <div
-      key={item.id}
-      className="relative text-gray-600 text-xs dark:text-zinc-200"
-    >
+    <LazyListPerform>
       <div
-        className={itemStyles}
-        style={{ paddingLeft: `${level * 16 + 8}px` }}
-        onClick={handleClick}
-        onContextMenu={handleClickContextMenu}
+        key={item.id || crypto.randomUUID()}
+        className="relative text-gray-600 text-xs dark:text-zinc-200"
       >
-        {isFolder && (
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleClick();
-            }}
-            className="p-1 hover:bg-zinc-300 dark:hover:bg-zinc-800 rounded mr-1 flex items-center justify-center transition-colors"
-          >
-            {collapsed ? (
-              <Icon icon={ICONS_PAGES.chevronleft} />
-            ) : (
-              <Icon icon={ICONS_PAGES.chevrondown} />
-            )}
-          </button>
-        )}
-
-        {isFolder ? (
-          collapsed ? (
-            <Icon
-              icon={ICONS_PAGES.folderopen}
-              className="text-green-500 mr-2"
-            />
-          ) : (
-            <Icon icon={ICONS_PAGES.folder} className="text-green-500 mr-2" />
-          )
-        ) : (
-          <Icon
-            icon="material-symbols:http"
-            width="22px"
-            height="22px"
-            className="text-green-500 mr-2"
-          />
-        )}
-
-        {isEditing ? (
-          <input
-            type="text"
-            ref={inputRef}
-            value={editValue}
-            onChange={(e) => setEditValue(e.target.value)}
-            onBlur={saveEdit}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') saveEdit();
-              if (e.key === 'Escape') setIsEditing(false);
-            }}
-            className="flex-1 px-1 py-0 border-b border-green-500 bg-transparent text-sm outline-none"
-          />
-        ) : (
-          <span
-            className="flex-1 text-xs truncate font-medium"
-            title={getDisplayName()}
-          >
-            {getDisplayName()}
-          </span>
-        )}
-
-        {!isFolder && nodeData.request && (
-          <span
-            className={`px-2 py-0.5 text-[11px] rounded-full font-bold ml-2 ${methodBadgeStyles(nodeData.request.method)}`}
-          >
-            {nodeData.request.method}
-          </span>
-        )}
-
-        <div className="flex items-center gap-2 ml-auto">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              useRequestStore
-                .getState()
-                .handleAddNewItem(collectionId, nodeData.id, 'Nueva Petición');
-            }}
-            className={actionButtonStyles}
-            title="Añadir Petición"
-          >
-            <Plus size={14} />
-          </button>
-          <button
-            onClick={handleEditClick}
-            className={actionButtonStyles}
-            title="Editar"
-          >
-            <Edit2 size={14} />
-          </button>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleDelete();
-            }}
-            className={actionButtonStyles}
-            title="Eliminar"
-          >
-            <Trash2 size={14} />
-          </button>
-        </div>
-      </div>
-
-      {showBar && (
         <div
-          ref={menuRef}
-          className="absolute z-10 top-full right-2 mt-2 w-48 text-xs rounded-md shadow-lg py-1 focus:outline-none border-gray-200 bg-white dark:bg-zinc-800 border dark:border-zinc-700"
+          className={itemStyles}
+          style={{ paddingLeft: `${level * 16 + 8}px` }}
+          onClick={handleClick}
+          onContextMenu={handleClickContextMenu}
         >
-          {menuActions.map((action, index) => (
+          {isFolder && (
             <button
-              key={index}
               onClick={(e) => {
                 e.stopPropagation();
-                if (action.action) action.action();
-                setShowBar(false);
+                handleClick();
               }}
-              className="w-full text-left px-4 py-2 text-gray-800 dark:text-zinc-200 hover:bg-gray-100 dark:hover:bg-zinc-700"
+              className="p-1 hover:bg-zinc-300 dark:hover:bg-zinc-800 rounded mr-1 flex items-center justify-center transition-colors"
             >
-              {action.name}
+              {collapsed ? (
+                <Icon icon={ICONS_PAGES.chevronright} />
+              ) : (
+                <Icon icon={ICONS_PAGES.chevrondown} />
+              )}
             </button>
-          ))}
-        </div>
-      )}
+          )}
 
-      {isFolder && !collapsed && item.item && (
-        <div className="pl-4 border-l dark:border-zinc-700 ml-2 border-gray-200">
-          {item.item.map((subItem) => (
-            <CollectionItemNode
-              key={subItem.id}
-              item={subItem}
-              collectionId={collectionId}
-              level={level + 1}
+          {isFolder ? (
+            collapsed ? (
+              <Icon
+                icon={ICONS_PAGES.folderopen}
+                className="text-green-500 mr-2"
+              />
+            ) : (
+              <Icon icon={ICONS_PAGES.folder} className="text-green-500 mr-2" />
+            )
+          ) : (
+            <Icon
+              icon="material-symbols:http"
+              width="22px"
+              height="22px"
+              className="text-green-500 mr-2"
             />
-          ))}
+          )}
+
+          {isEditing ? (
+            <input
+              type="text"
+              ref={inputRef}
+              value={editValue}
+              onChange={(e) => setEditValue(e.target.value)}
+              onBlur={saveEdit}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') saveEdit();
+                if (e.key === 'Escape') setIsEditing(false);
+              }}
+              className="flex-1 px-1 py-0 border-b border-green-500 bg-transparent text-sm outline-none"
+            />
+          ) : (
+            <span
+              className="flex-1 text-xs truncate  text-gray-700 dark:text-zinc-300 font-normal"
+              title={getDisplayName()}
+            >
+              {getDisplayName()}
+            </span>
+          )}
+
+          {!isFolder && nodeData.request && (
+            <span
+              className={`px-2 py-0.5 text-[11px] rounded-full font-bold ml-2 ${methodBadgeStyles(nodeData.request.method)}`}
+            >
+              {nodeData.request.method}
+            </span>
+          )}
+
+          <div className="flex items-center gap-2 ml-auto">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                useRequestStore
+                  .getState()
+                  .handleAddNewItem(
+                    collectionId,
+                    nodeData.id,
+                    'Nueva Petición',
+                  );
+              }}
+              className={actionButtonStyles}
+              title="Añadir Petición"
+            >
+              <Icon icon={ICONS_PAGES.plus} fontSize={14} />
+            </button>
+            <button
+              onClick={handleEditClick}
+              className={actionButtonStyles}
+              title="Editar"
+            >
+              <Icon icon={ICONS_PAGES.edit} fontSize={16} />
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDelete();
+              }}
+              className={actionButtonStyles}
+              title="Eliminar"
+            >
+              <Icon icon={ICONS_PAGES.trash} fontSize={16} />
+            </button>
+          </div>
         </div>
-      )}
-    </div>
+
+        {showBar && (
+          <div
+            ref={menuRef}
+            className="absolute z-10 top-full right-2 mt-2 w-48 text-xs rounded-md shadow-lg py-1 focus:outline-none border-gray-200 bg-white dark:bg-zinc-900 border dark:border-zinc-800"
+          >
+            {menuActions.map((action, index) => (
+              <button
+                key={index}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (action.action) action.action();
+                  setShowBar(false);
+                }}
+                className="w-full text-left px-4 py-2 text-gray-800 dark:text-zinc-200 hover:bg-gray-100 dark:hover:bg-zinc-700"
+              >
+                {action.name}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {isFolder && !collapsed && item.item && (
+          <div className="pl-4 border-l dark:border-zinc-700 ml-2 border-gray-200">
+            {item.item.map((subItem) => (
+              <CollectionItemNode
+                key={subItem.id}
+                item={subItem}
+                collectionId={collectionId}
+                level={level + 1}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    </LazyListPerform>
   );
 };
 
@@ -271,7 +270,9 @@ const PostmanCollectionsList = () => {
             className="p-3 rounded-xl shadow-lg transition-colors bg-white border border-gray-200 text-gray-800 dark:bg-zinc-800/10 dark:border-zinc-900 dark:text-zinc-200 flex flex-col"
           >
             <div className="flex items-center justify-between p-2">
-              <h2 className="text-sm font-bold truncate">{collection.name}</h2>
+              <h2 className="text-sm font-bold text-gray-700 dark:text-zinc-200 truncate">
+                {collection.name}
+              </h2>
               <div className="flex gap-2 text-gray-500 dark:text-zinc-400">
                 <button
                   onClick={() =>
@@ -289,14 +290,14 @@ const PostmanCollectionsList = () => {
                   className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
                   title="Nuevo Request"
                 >
-                  <Plus size={16} />
+                  <Icon icon={ICONS_PAGES.plus} fontSize={16} />
                 </button>
                 <button
                   onClick={() => exportCollections(collection.id)}
                   className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
                   title="Exportar"
                 >
-                  <Download size={16} />
+                  <Icon icon={ICONS_PAGES.download} fontSize={16} />
                 </button>
               </div>
             </div>

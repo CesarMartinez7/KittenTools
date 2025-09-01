@@ -144,7 +144,7 @@ export const JsonNode: React.FC<JsonNodeProps> = ({
                   >
                     <img
                       src={String(data)}
-                      alt={data?.valueOf()}
+                      alt={data?.valueOf() || 'Foto'}
                       className="w-34 h-34 object-cover"
                     />
                   </motion.div>

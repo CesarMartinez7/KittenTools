@@ -2,9 +2,9 @@ import { BaseModalLazy } from '../../ui/lazy-components';
 import { useModalStore } from './modals/store.modal';
 import DeleteModal from './modals/delete.modal';
 import ExportModal from './modals/export.modal';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { nanoid } from 'nanoid';
-import { useCallback, useEffect, useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import substack from '@iconify-icons/tabler/subtask';
 import { Icon } from '@iconify/react';
 import type { Collection } from './db';
@@ -40,10 +40,8 @@ export function AppModals() {
     };
     addCollection(newCollection);
   };
-  
-  const openModalExport = useModalStore(
-    (state) => state.openExportCollection,
-  );
+
+  const openModalExport = useModalStore((state) => state.openExportCollection);
 
   const NewMappers: MapperItem[] = useMemo(
     () => [
@@ -78,6 +76,12 @@ export function AppModals() {
     ],
     [importCollections],
   );
+
+  const { exportCollections } = useRequestStore();
+
+  const handleExportCollection = (collectionId: string) => {
+    exportCollections(collectionId);
+  };
 
   return (
     <>
@@ -156,8 +160,8 @@ export function AppModals() {
                 {/* Contenedor del ícono con animación */}
                 <motion.div
                   className="relative mb-3 p-3 rounded-xl bg-zinc-100/60 dark:bg-zinc-700/60 group-hover:bg-[#4ec9b0]/15 dark:group-hover:bg-[#4ec9b0]/20 transition-all duration-300"
-                  whileHover={{ rotate: [0, -10, 10, 0] }}
-                  transition={{ duration: 0.5 }}
+                  whileHover={{ rotate: [0, 0, 0, 0] }}
+                  transition={{ duration: 0.1 }}
                 >
                   <Icon
                     icon={ne.icon}
@@ -190,9 +194,14 @@ export function AppModals() {
           </div>
         </motion.div>
       </BaseModalLazy>
-      
-      <DeleteModal itemName='cesar' isOpen={isDeleteModalOpen} onClose={closeDeleteModal} />
+
+      <DeleteModal
+        itemName="cesar"
+        isOpen={isDeleteModalOpen}
+        onClose={closeDeleteModal}
+      />
       <ExportModal
+        onExport={handleExportCollection}
         onClose={closeModalExport}
         collections={collections}
         isOpen={isOpenModalExport}
