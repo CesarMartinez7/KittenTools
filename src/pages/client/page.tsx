@@ -344,10 +344,6 @@ export default function AppClient() {
             />
 
 
-            <div className="flex-grow overflow-y-auto">
-              <pre className="whitespace-pre-wrap break-words">{JSON.stringify(currentTab?.response?.data, null, 2)}</pre>
-            </div>
-
           </Panel>
         </PanelGroup>
 
