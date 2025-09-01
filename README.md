@@ -1,5 +1,5 @@
-# <p align="center">Elisa Client </p>
-![./src/assets/images/elisa-client-0.0.3.png](./src/assets/images/elisa-client-0.0.3.png)
+# <p align="center">Elisa Client 0.1.4 </p>
+![./src/assets/images/elisa-client-0.0.3.png](./0.1.4.png)
 <p align="center"><a href="https://elisaland.vercel.app/" >Pagina web de Elisa</a> </p>
 
 `Elisa` es una herramienta independiente de Jade, sencilla pero poderosa, diseñada para funcionar como un cliente API moderno. Inspirada por la filosofía de `Frontend`, Elisa permite consumir, formatear y trabajar con datos JSON directamente desde el navegador, sin necesidad de backends ni servicios externos.
