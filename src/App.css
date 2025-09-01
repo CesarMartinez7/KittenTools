@@ -26,6 +26,13 @@
   }
 }
 
+.dark {
+  scrollbar-color: #3a3a3a #2a2a2a;
+}
+
+:root {
+}
+
 .share-tech-mono-regular {
   font-family: "Share Tech Mono", monospace;
   font-weight: 400;

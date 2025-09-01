@@ -15,12 +15,13 @@ import trash from '@iconify-icons/tabler/trash';
 import x from '@iconify-icons/tabler/x';
 import download from '@iconify-icons/tabler/download';
 import edit from '@iconify-icons/tabler/bookmark-edit';
+import moon from '@iconify-icons/tabler/moon';
+import sun from '@iconify-icons/tabler/sun';
 
 const ICONS_PAGES = {
   chevronleft,
   replace,
   x,
-  trash,
   grip,
   folder,
   folderopen,
@@ -35,6 +36,8 @@ const ICONS_PAGES = {
   download,
   trash,
   edit,
+  moon,
+  sun,
 };
 
 export default ICONS_PAGES;

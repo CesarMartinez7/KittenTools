@@ -1,26 +1,36 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
 import arrowsMaximize from '@iconify-icons/tabler/arrows-maximize';
 import arrowsMinimize from '@iconify-icons/tabler/arrows-minimize';
+import deviceFloppy from '@iconify-icons/tabler/device-floppy';
 import {
   memo,
   useCallback,
   useMemo,
   useEffect,
   useState,
-  useDeferredValue,
   startTransition,
 } from 'react';
 import { type RequestData } from './stores/request.store';
 import { motion, AnimatePresence } from 'motion/react';
 import CodeEditor from '../../ui/code-editor/code-editor';
 import MethodFormater from './components/method-formatter/method-formatter';
-import ICONS_PAGES from './icons/ICONS_PAGE';
 import { type EventRequest } from './types/types';
 import { VariantsAnimation } from './mapper-ops';
 import AddQueryParam from './components/addqueryparams/addQueryParams';
 import { HeadersAddRequest } from './components/headers/Headers';
 import EnviromentComponent from './components/enviroment/enviroment.component';
 import ScriptComponent from './components/scripts/script-component';
+import { useRequestStore } from './stores/request.store';
+import x from '@iconify-icons/tabler/x';
+import moon from '@iconify-icons/tabler/moon';
+import sun from '@iconify-icons/tabler/sun';
+
+const ICONS_PAGES_LOCAL = {
+  moon: moon,
+  sun: sun,
+  x: x,
+  save: deviceFloppy,
+};
 
 interface ContentTypeProps {
   selectedIdx: number;
@@ -41,6 +51,10 @@ const Header = memo(
     toogleFullScreen: () => void;
     nombreEntorno: string | null;
   }) => {
+    const { listTabs, currentTabId, saveCurrentTabToCollection } =
+      useRequestStore();
+    const currentTab = listTabs.find((tab) => tab.id === currentTabId);
+
     const isRunningInTauri = useMemo(() => window.__TAURI__ !== undefined, []);
 
     const entornoStatus = useMemo(
@@ -55,22 +69,57 @@ const Header = memo(
       [nombreEntorno],
     );
 
-    // no recreescribir la función en cada render del componente Header
+    const [isDark, setIsDark] = useState<boolean>();
+
+    useEffect(() => {
+      localStorage.setItem('theme', String(isDark));
+    }, [isDark]);
+
     const toogleTheme = useCallback(() => {
-      document.body.classList.toggle('dark');
+      if (document.body.classList.contains('dark')) {
+        document.body.classList.remove('dark');
+        setIsDark(true);
+        localStorage.setItem();
+      } else {
+        document.body.classList.add('dark');
+        setIsDark(false);
+      }
     }, []);
 
+    const handleSaveClick = useCallback(() => {
+      saveCurrentTabToCollection();
+    }, [saveCurrentTabToCollection]);
+
+    const canSaveToCollection = useMemo(
+      () => !!currentTab?.collectionRef,
+      [currentTab],
+    );
+
     return (
-      <div className="flex dark items-center text-xs gap-2 justify-end px-4 border-gray-100 dark:border-zinc-800 backdrop-blur-sm py-0.5">
+      <div className="flex dark:text-zinc-200 text-gray-600 items-center text-xs gap-2 justify-end px-4 border-gray-100 dark:border-zinc-800 backdrop-blur-sm py-0.5">
+        <button
+          title="Guardar en colección"
+          onClick={handleSaveClick}
+          disabled={!canSaveToCollection}
+          className={`p-1 rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors
+            ${canSaveToCollection ? 'text-emerald-500' : 'opacity-50 text-red-400 cursor-not-allowed'}`}
+        >
+          <Icon icon={ICONS_PAGES_LOCAL.save} width="14" height="14" />
+        </button>
+
         <button
           title="Cambiar tema"
           className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
           onClick={toogleTheme}
         >
-          <Icon icon="tabler:moon" width="14" height="14" />
+          <Icon
+            icon={!isDark ? ICONS_PAGES_LOCAL.moon : ICONS_PAGES_LOCAL.sun}
+            width="14"
+            height="14"
+          />
         </button>
         <div
-          className={`font-medium text-zinc-800 dark:text-zinc-300 truncate max-w-[250px] px-3 rounded-full ${entornoStatus.className}`}
+          className={`font-medium dark:text-zinc-200 text-gray-600 truncate max-w-[250px] px-3 rounded-full ${entornoStatus.className}`}
         >
           {entornoStatus.text}
         </div>
@@ -78,14 +127,14 @@ const Header = memo(
         <button
           title="Pantalla completa | Salir de pantalla completa "
           onClick={toogleFullScreen}
-          className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
+          className="p-1 rounded-md dark:text-zinc-200 text-gray-600 hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
         >
           <Icon
             icon={isFullScreen ? arrowsMinimize : arrowsMaximize}
             width={14}
           />
         </button>
-        <p className="dark:text-zinc0 text-gray-600">
+        <p className="dark:text-zinc-200 text-gray-600">
           {!isRunningInTauri ? 'Version Web' : 'Version Tauri'}
         </p>
       </div>
@@ -131,7 +180,7 @@ const TabNavigation = memo(
                   layoutId="tab-background"
                   className="absolute inset-0"
                   initial={false}
-                  transition={{ type: "tween", stiffness: 200, damping: 10 }}
+                  transition={{ type: 'tween', stiffness: 200, damping: 10 }}
                 />
               )}
             </button>
@@ -196,6 +245,7 @@ const BodyEditor = memo(
       return body || '';
     });
 
+    // Sincroniza el estado local cuando cambia el tab actual
     useEffect(() => {
       const body = currentTab?.body;
       let newLocalCode = '';
@@ -208,19 +258,25 @@ const BodyEditor = memo(
       if (localCode !== newLocalCode) {
         setLocalCode(newLocalCode);
       }
-    }, [currentTab?.body]);
+    }, [currentTab?.body, currentTab?.id]); // Añadimos currentTab.id para detectar cambios de tab
 
-    const deferredLocalCode = useDeferredValue(localCode);
-
+    // Lógica de "debouncing" para evitar guardar con cada pulsación de tecla.
+    // La función de limpieza garantiza que el último cambio se guarde.
     useEffect(() => {
+      // No guardamos si el tab no existe
+      if (!currentTab) return;
+
       const timeoutId = setTimeout(() => {
-        if (deferredLocalCode !== localCode) {
-          onCodeChange(deferredLocalCode);
-        }
+        onCodeChange(localCode);
       }, 500);
 
-      return () => clearTimeout(timeoutId);
-    }, [deferredLocalCode, onCodeChange, localCode]);
+      // Función de limpieza que se ejecuta al desmontar el componente o al cambiar dependencias
+      return () => {
+        clearTimeout(timeoutId);
+        // Aseguramos que el último valor se guarda cuando el componente desaparece (cambio de tab)
+        // No es necesario llamar a onCodeChange aquí porque el useEffect principal se encargará de ello
+      };
+    }, [localCode, onCodeChange, currentTab]); // Dependencias para la ejecución del efecto
 
     const handleLocalChange = useCallback((value: string) => {
       setLocalCode(value);
@@ -237,7 +293,7 @@ const BodyEditor = memo(
     return (
       <>
         <CodeEditor
-          value={deferredLocalCode}
+          value={localCode}
           maxHeight="85vh"
           onChange={handleLocalChange}
           language={currentTab?.headers['Content-Type'] || 'json'}
@@ -272,7 +328,7 @@ const Tab = memo(
         key={tab.id}
         onClick={handleClick}
         className={`
-        relative px-4 py-2 cursor-pointer text-xs font-medium whitespace-nowrap transition-colors duration-200 flex-shrink-0 bg-white dark:bg-transparent border-gray-200
+        relative px-4 py-2 cursor-pointer text-xs font-medium whitespace-nowrap transition-colors duration-100 flex-shrink-0 bg-white dark:bg-transparent border-gray-200
         border-r dark:border-zinc-700 last:border-r-0
         ${
           isActive
@@ -282,7 +338,7 @@ const Tab = memo(
       `}
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0 }}
+        
         layout
       >
         <div className="relative z-10 flex items-center gap-2">
@@ -300,7 +356,7 @@ const Tab = memo(
               title={`Eliminar ${tab.name}`}
               onClick={handleRemove}
             >
-              <Icon icon={ICONS_PAGES.x} width="12" height="12" />
+              <Icon icon={ICONS_PAGES_LOCAL.x} width="12" height="12" />
             </button>
           </motion.div>
         </div>
@@ -309,7 +365,7 @@ const Tab = memo(
             layoutId="tab-underline"
             className="absolute bottom-0 left-0 right-0 h-0.5 bg-green-primary z-0"
             initial={false}
-            transition={{ type: 'spring', stiffness: 200, damping: 10 }}
+            transition={{ type: "keyframes", stiffness: 200, damping: 4 }}
           />
         )}
       </motion.div>
@@ -439,7 +495,7 @@ const ContentPanel = memo(
     return (
       <div className="h-full bg-white/90 dark:bg-zinc-900/80 p-4 border-gray-200 dark:border-zinc-800 relative flex flex-col shadow-lg overflow-hidden">
         <div className="relative w-full h-full">
-          <AnimatePresence mode="wait">{Object.values(panels)}</AnimatePresence>
+          <AnimatePresence >{Object.values(panels)}</AnimatePresence>
         </div>
       </div>
     );

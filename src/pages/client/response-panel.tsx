@@ -35,7 +35,7 @@ const ResponsePanel = ({
           icon={sendIcon}
           width="100"
           height="100"
-          className="text-gray-400 dark:text-zinc-700 mb-4 animate-bounce-slow"
+          className="text-gray-400 dark:text-zinc-500 mb-4 animate-bounce-slow"
         />
         <p className="text-lg font-medium text-gray-700 dark:text-zinc-300">
           ¡Todo listo para que hagas tu primera solicitud!

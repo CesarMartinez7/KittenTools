@@ -2,17 +2,23 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { BaseModalLazy } from '../../../../ui/lazy-components';
-import useEnviromentHook from './enviromentHook';
 import { useEnviromentStore } from './store.enviroment';
+import ICONS_PAGES from '../../icons/ICONS_PAGE';
+import { Icon } from '@iconify/react/dist/iconify.js';
 
 export default function EnviromentComponent() {
-  const createEntornoFunction = useEnviromentStore(
-    (state) => state.createAndSetNewEnviroment,
-  );
+  const {
+    entornoActual,
+    createAndSetNewEnviroment,
+    updateEntornoActualValues,
+    addEntornoVariable,
+    deleteEntornoVariable,
+    setListEntorno, // Añadido para la importación
+  } = useEnviromentStore();
 
-  // Estados para el modal de crear entorno
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [newEnvironmentName, setNewEnvironmentName] = useState('');
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
 
   const handleClickCrearEntorno = () => {
     setIsCreateModalOpen(true);
@@ -27,11 +33,10 @@ export default function EnviromentComponent() {
       return;
     }
 
-    createEntornoFunction(trimmedName);
+    createAndSetNewEnviroment(trimmedName);
     setIsCreateModalOpen(false);
     setNewEnvironmentName('');
     toast.success(`Entorno "${trimmedName}" creado exitosamente`);
-    toggleModal();
   };
 
   const handleCancelCreate = () => {
@@ -39,16 +44,49 @@ export default function EnviromentComponent() {
     setNewEnvironmentName('');
   };
 
-  const {
-    handleAddVariable,
-    handleDeleteVariable,
-    handleChange,
-    handleFileUpload,
-    isOpen,
-    entornoActual,
-    toggleModalOpen,
-    toggleModalClose,
-  } = useEnviromentHook();
+  const handleAddVariable = () => {
+    addEntornoVariable();
+  };
+
+  const handleDeleteVariable = (index) => {
+    deleteEntornoVariable(index);
+  };
+
+  const handleChange = (index, field, value) => {
+    const newValues = [...entornoActual];
+    newValues[index][field] = value;
+    updateEntornoActualValues(newValues);
+  };
+
+  const toggleImportModalOpen = () => setIsImportModalOpen(true);
+  const toggleImportModalClose = () => setIsImportModalOpen(false);
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const importedData = JSON.parse(event.target.result);
+        if (Array.isArray(importedData)) {
+          setListEntorno(importedData);
+          toast.success('Entornos importados con éxito!');
+        } else {
+          // Asume que es un único entorno y lo añade a la lista
+          setListEntorno([
+            ...useEnviromentStore.getState().listEntorno,
+            importedData,
+          ]);
+          toast.success(`Entorno "${importedData.name}" importado con éxito!`);
+        }
+        toggleImportModalClose();
+      } catch (error) {
+        toast.error('Archivo JSON inválido.');
+      }
+    };
+    reader.readAsText(file);
+  };
 
   const tableVariants = {
     initial: { opacity: 0, y: 20 },
@@ -63,9 +101,11 @@ export default function EnviromentComponent() {
   };
 
   return (
-    <div className=" h-full p-4">
-      {/* Modal para importar entornos */}
-      <BaseModalLazy isOpen={isOpen} onClose={toggleModalClose}>
+    <div className="h-full p-4">
+      <BaseModalLazy
+        isOpen={isImportModalOpen}
+        onClose={toggleImportModalClose}
+      >
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -117,7 +157,6 @@ export default function EnviromentComponent() {
         </motion.div>
       </BaseModalLazy>
 
-      {/* Modal para crear nuevo entorno */}
       <BaseModalLazy isOpen={isCreateModalOpen} onClose={handleCancelCreate}>
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
@@ -230,13 +269,14 @@ export default function EnviromentComponent() {
                 onClick={handleAddVariable}
                 className="base-btn"
               >
-                + Añadir Variable
+                <Icon icon={ICONS_PAGES.plus} className="size-4 mr-2" /> Añadir
+                Variable
               </motion.button>
               <div className="space-x-2.5 flex flex-row truncate">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={toggleModalOpen}
+                  onClick={toggleImportModalOpen}
                   className="px-3 py-1.5 bg-gray-300 dark:bg-zinc-800 hover:bg-sky-600 dark:hover:bg-sky-600 rounded-md text-zinc-800 dark:text-zinc-300 hover:text-white transition-colors text-xs font-semibold shadow-md"
                 >
                   Importar Entornos
@@ -252,9 +292,9 @@ export default function EnviromentComponent() {
               </div>
             </div>
 
-            <div className="overflow-x-auto dark:border-zinc-800 border-gray-400 overflow-y-scroll h-[80vh] custom-scrollbar">
-              <table className="min-w-full divide-y  dark:divide-zinc-800">
-                <thead className="dark:bg-zinc-900 bg-gray-200 dark:text-zinc-200 text-zinc-700 sticky top-0 z-10">
+            <div className="overflow-x-auto dark:border-zinc-800 border-gray-200 overflow-y-scroll h-[80vh] custom-scrollbar">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-200">
+                <thead className="dark:bg-zinc-900 bg-gray-200 dark:text-zinc-200 text-zinc-700 sticky top-0 z-10 font-black">
                   <tr>
                     <th className="px-2 py-1 text-left text-xs font-medium uppercase tracking-wider">
                       LLave
@@ -271,7 +311,7 @@ export default function EnviromentComponent() {
                   </tr>
                 </thead>
                 <motion.tbody
-                  className="dark:bg-zinc-900/60 bg-gray-200 text-zinc-800 divide-y divide-amber-600 dark:divide-zinc-900  "
+                  className="dark:bg-zinc-900/60 bg-gray-200 text-zinc-800 divide-y divide-amber-600 dark:divide-zinc-900 "
                   variants={tableVariants}
                 >
                   {entornoActual.map((v, i) => (
@@ -287,7 +327,7 @@ export default function EnviromentComponent() {
                           onChange={(e) =>
                             handleChange(i, 'key', e.target.value)
                           }
-                          className="w-full bg-transparent outline-none border-0 focus:ring-1 focus:ring-zinc-600 rounded"
+                          className="w-full dark:bg-transparent accent-green-600 border-0 outline-none focus:ring-1 focus:ring-zinc-600 dark:focus:bg-zinc-800 focus:bg-gray-200"
                         />
                       </td>
                       <td className="px-2 py-1 whitespace-nowrap">
@@ -372,7 +412,7 @@ export default function EnviromentComponent() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={toggleModalOpen}
+              onClick={toggleImportModalOpen}
               className="mt-4 px-4 py-2 bg-gray-300 text-shadow-2xs dark:text-zinc-300 text-zinc-800 dark:bg-zinc-800 hover:bg-zinc-700 rounded-md hover:text-white transition-colors"
             >
               Importar entornos

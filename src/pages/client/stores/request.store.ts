@@ -1,70 +1,11 @@
 import { open, save } from '@tauri-apps/plugin-dialog';
-
-import {
-  BaseDirectory,
-  exists,
-  readTextFile,
-  writeFile,
-} from '@tauri-apps/api/fs';
+import { writeFile, readTextFile } from '@tauri-apps/plugin-fs';
 import axios from 'axios';
 import { nanoid } from 'nanoid';
 import toast from 'react-hot-toast';
 import { create } from 'zustand';
 import { type Collection, db } from '../db';
-
-export interface RequestData {
-  id: string;
-  name: string;
-  method: string;
-  url: string;
-  headers: Record<string, string>;
-  body: any;
-  query?: Record<string, string>;
-  response?: {
-    data: any;
-    headers: Record<string, string>;
-    status: number;
-    time: number | string;
-    type: string;
-  };
-}
-
-interface RequestState {
-  listTabs: RequestData[];
-  currentTabId: string | null;
-  collections: Collection[];
-  addFromNode: (nodeData: any) => Promise<void>;
-  removeTab: (id: string) => void;
-  setCurrentTab: (id: string) => void;
-  updateTab: (id: string, changes: Partial<RequestData>) => void;
-  setResponse: (id: string, response: RequestData['response']) => void;
-  loadTabs: () => Promise<void>;
-  loadCollections: () => Promise<void>;
-  addCollection: (collection: Collection) => void;
-  updateCollection: (id: string, changes: Partial<Collection>) => void;
-  removeCollection: (id: string) => void;
-  importCollections: () => Promise<void>;
-  exportCollections: (collectionId: string) => Promise<void>;
-  executeRequest: (tabId: string) => Promise<void>;
-  handleUpdateItem: (
-    collectionId: string,
-    itemId: string,
-    changes: Partial<any>,
-  ) => void;
-  handleRemoveItem: (collectionId: string, itemId: string) => void;
-  handleDuplicateItem: (collectionId: string, itemId: string) => void;
-  handleAddNewItem: (
-    collectionId: string,
-    parentItemId: string | null,
-    name: string,
-  ) => void;
-  handleAddNewFolder: (
-    collectionId: string,
-    parentItemId: string | null,
-    name: string,
-  ) => void;
-  initTab: () => void;
-}
+import type { RequestState, RequestData } from './types';
 
 // Funciones auxiliares para la lógica de la store
 const findAndUpdateItem = (
@@ -163,7 +104,7 @@ export const useRequestStore = create<RequestState>((set, get) => ({
     set({ listTabs: [newTab], currentTabId: newTab.id });
   },
 
-  addFromNode: async (nodeData) => {
+  addFromNode: async (nodeData: any) => {
     if (!nodeData.request) return;
     const newTab: RequestData = {
       id: nanoid(),
@@ -185,6 +126,11 @@ export const useRequestStore = create<RequestState>((set, get) => ({
         },
         {},
       ),
+      // Añadimos una referencia a la colección y al ítem
+      collectionRef: {
+        collectionId: nodeData.collectionId,
+        itemId: nodeData.id,
+      },
     };
     await db.tabs.add(newTab);
     set((state) => ({
@@ -243,7 +189,8 @@ export const useRequestStore = create<RequestState>((set, get) => ({
       const remainingTabs = state.listTabs.filter((t) => t.id !== id);
       const newCurrentTabId =
         state.currentTabId === id
-          ? remainingTabs[0]?.id || null
+          ? remainingTabs[Number(localStorage.getItem('currentTab')) || 0]
+              ?.id || null
           : state.currentTabId;
       return {
         listTabs: remainingTabs,
@@ -272,6 +219,48 @@ export const useRequestStore = create<RequestState>((set, get) => ({
     }));
   },
 
+  // === NUEVA ACCION PARA GUARDAR CAMBIOS EN LA COLECCIÓN ===
+  saveCurrentTabToCollection: () => {
+    const state = get();
+    const currentTab = state.listTabs.find(
+      (tab) => tab.id === state.currentTabId,
+    );
+
+    if (!currentTab || !currentTab.collectionRef) {
+      toast.error(
+        'Este tab no está enlazado a una colección. No se puede guardar.',
+      );
+      return;
+    }
+
+    const { collectionId, itemId } = currentTab.collectionRef;
+
+    // Preparamos los cambios para actualizar el ítem en la colección
+    const changes = {
+      name: currentTab.name,
+      request: {
+        method: currentTab.method,
+        url: { raw: currentTab.url },
+        header: Object.keys(currentTab.headers).map((key) => ({
+          key,
+          value: currentTab.headers[key],
+        })),
+        body: { raw: currentTab.body },
+        url: {
+          query: Object.keys(currentTab.query).map((key) => ({
+            key,
+            value: currentTab.query[key],
+          })),
+        },
+      },
+    };
+
+    get().handleUpdateItem(collectionId, itemId, changes);
+    toast.success(
+      `Cambios guardados exitosamente en la colección "${state.collections.find((col) => col.id === collectionId)?.name}"`,
+    );
+  },
+
   loadTabs: async () => {
     try {
       const tabs = await db.tabs.toArray();
@@ -289,6 +278,7 @@ export const useRequestStore = create<RequestState>((set, get) => ({
         set({ listTabs: [newTab], currentTabId: newTab.id });
       } else {
         set({ listTabs: tabs, currentTabId: tabs[0]?.id || null });
+        (' ');
       }
     } catch (error) {
       console.error('Failed to load tabs from Dexie:', error);

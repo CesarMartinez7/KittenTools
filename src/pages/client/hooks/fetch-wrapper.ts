@@ -103,6 +103,7 @@ export async function httpRequest(config) {
     const startTime = performance.now();
     try {
       // Ahora llamamos al nuevo comando dinámico `http_request` y le pasamos los parámetros.
+      // La respuesta de Rust ahora contiene un objeto con status, headers y body.
       const apiResponse = await invoke('http_request', {
         url: processedConfig.url,
         method: processedConfig.method || 'GET',
@@ -110,33 +111,33 @@ export async function httpRequest(config) {
         headers: processedConfig.headers,
       });
 
-      console.log('Api response abajo');
-      console.log(apiResponse);
+      console.log('API response from Rust:', apiResponse);
 
       const endTime = performance.now();
 
-      // Procesamos la respuesta del backend
       let finalData;
+      // El cuerpo viene como una cadena de texto, intenta parsearla si es JSON
       try {
         if (
           typeof apiResponse.body === 'string' &&
-          apiResponse.body !== '' &&
-          apiResponse.body !== 'undefined'
+          apiResponse.body.trim() !== '' &&
+          (apiResponse.headers['content-type']?.includes('application/json') ||
+            apiResponse.body.trim().startsWith('{') ||
+            apiResponse.body.trim().startsWith('['))
         ) {
-          console.log(finalData);
           finalData = JSON.parse(apiResponse.body);
-          console.log(finalData);
         } else {
-          console.log(finalData);
           finalData = apiResponse.body;
         }
       } catch (e) {
+        // En caso de que el parseo falle, usa el cuerpo sin cambios
         finalData = apiResponse.body;
       }
       const headers = apiResponse.headers;
 
+      // Retornamos el objeto final con todos los datos
       return {
-        data: apiResponse,
+        data: finalData,
         status: apiResponse.status,
         headers: headers,
         timeResponse: ((endTime - startTime) / 1000).toFixed(3),

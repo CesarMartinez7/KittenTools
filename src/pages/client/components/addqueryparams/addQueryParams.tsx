@@ -176,7 +176,7 @@ const AddQueryParam: React.FC<AddQueryParamProps> = () => {
       </table>
 
       {formattedUrl.length > 0 && (
-        <div className="mt-4 px-2 py-1 text-xs bg-zinc-800 rounded-lg flex justify-between items-center text-zinc-400 fixed">
+        <div className="mt-4 px-2 bottom-0 py-1 text-xs b dark:bg-zinc-800 bg-gray-200 text-gray-600 rounded-lg flex justify-between items-center dark:text-zinc-200 fixed">
           <p className="font-mono text-inherit break-all">{formattedUrl}</p>
           <button
             onClick={handleCopy}

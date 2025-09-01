@@ -10,7 +10,7 @@ const Router =
 const root = document.getElementById('root')!;
 
 ReactDOM.createRoot(root).render(
-  <div className="dark:bg-zinc-900 bg-zinc-100 transition-all ">
+  <div className="dark:bg-zinc-900 bg-zinc-50 transition-all ">
     <Toaster
       toastOptions={{
         className: 'dark:bg-zinc-700! dark:text-white! text-gray-500',

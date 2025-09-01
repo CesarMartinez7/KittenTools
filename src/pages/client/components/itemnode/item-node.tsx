@@ -93,9 +93,8 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
 
 
   const Skeleton = () => (
-    <div className='flex h-[36px] items-center animate-pulse bg-gray-50 w-full py-1.5 px-2 cursor-pointer rounded-md transition-colors duration-200 group dark:hover:bg-zinc-700/50 hover:bg-gray-200/50'>
-      
-    </div>
+    <div className='flex h-[36px] items-center animate-pulse bg-gray-50 w-full py-1.5 px-2 cursor-pointer rounded-md transition-colors duration-200 group dark:hover:bg-zinc-700/50 hover:bg-gray-200/50'/>
+
   )
 
 
@@ -131,17 +130,17 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
             collapsed ? (
               <Icon
                 icon={ICONS_PAGES.folderopen}
-                className="text-green-500 mr-2"
+                className="text-green-primary mr-2"
               />
             ) : (
-              <Icon icon={ICONS_PAGES.folder} className="text-green-500 mr-2" />
+              <Icon icon={ICONS_PAGES.folder} className="text-green-primary mr-2" />
             )
           ) : (
             <Icon
               icon="material-symbols:http"
-              width="22px"
-              height="22px"
-              className="text-green-500 mr-2"
+              width="22"
+              height="22"
+              className="text-green-primary mr-2"
             />
           )}
 
@@ -290,7 +289,7 @@ const PostmanCollectionsList = () => {
                   className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
                   title="Nueva Carpeta"
                 >
-                  <Icon icon={ICONS_PAGES.folder} className="size-4" />
+                  <Icon icon={ICONS_PAGES.folder} className="size-4" fontSize={12} />
                 </button>
                 <button
                   onClick={() =>

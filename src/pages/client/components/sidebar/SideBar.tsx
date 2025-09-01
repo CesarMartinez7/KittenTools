@@ -124,7 +124,7 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
 
   return (
     <ResizableSidebar minWidth={100} maxWidth={800} initialWidth={470}>
-      <AnimatePresence key={'gokuuu'}>
+      <AnimatePresence key={'gokuuu'} mode="wait">
         {isOpen && (
           <motion.div
             className="
@@ -138,7 +138,7 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
             <div className="flex flex-row gap-2 mb-6 justify-between">
               <div>
                 <ToolTipButton
-                  ariaText="Opciones"
+                  ariaText="Opciones Disponibles"
                   tooltipText="Añadir coleccion, request, enviroment"
                   onClick={closeModalsNews}
                   className="base-btn truncate"

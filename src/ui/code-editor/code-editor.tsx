@@ -378,13 +378,13 @@ const CodeEditor = ({
   return (
     <>
       <main className="overflow-hidden relative">
-        <AnimatePresence mode="wait">
+        <AnimatePresence >
           {isOpenFindBar && (
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="absolute right-2 top-2 z-[778] p-2 bg-gray-100 border dark:border-zinc-800 border-gray-200 dark:bg-zinc-950/90 rounded-md shadow-lg flex items-center gap-2 flex-col"
+              className="absolute right-2 top-2 z-[778] p-2 bg-gray-50 border dark:border-zinc-800 border-gray-200 dark:bg-zinc-950/90 rounded-md shadow-lg flex items-center gap-2 flex-col"
             >
               <div className=" flex justify-center items-center gap-2">
                 <button
@@ -392,7 +392,11 @@ const CodeEditor = ({
                   className="p-1 rounded-md hover:bg-gray-300 dark:hover:bg-zinc-700 disabled:opacity-50 text-gray-800 dark:text-zinc-300 disabled:text-red-500"
                 >
                   <Icon
-                    icon={`tabler:chevron-${isOpenBar ? ICONS_PAGES.chevrondown : ICONS_PAGES.chevronleft}`}
+                    icon={
+                      isOpenBar
+                        ? ICONS_PAGES.chevrondown
+                        : ICONS_PAGES.chevronleft
+                    }
                     width={16}
                   />
                 </button>
@@ -605,8 +609,7 @@ const CodeEditor = ({
             </span>
 
             <span className="hidden sm:inline">
-              {language.toUpperCase()} | {code.length} Ch | {lineCount}{' '}
-              Ln
+              {language.toUpperCase()} | {code.length} Ch | {lineCount} Ln
             </span>
           </div>
         </div>

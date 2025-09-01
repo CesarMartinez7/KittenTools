@@ -16,7 +16,6 @@ import toast from 'react-hot-toast';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import { useEnviromentStore } from './components/enviroment/store.enviroment';
 import { SideBar } from './components/sidebar/SideBar';
-import type { Collection } from './db';
 import RequestHook from './hooks/request.client';
 import ICONS_PAGES from './icons/ICONS_PAGE';
 import COMPONENTS_PAGE from './Main';
@@ -47,12 +46,11 @@ export default function AppClient() {
   const nombreEntorno = useEnviromentStore((state) => state.nameEntornoActual);
   const refForm = useRef<HTMLFormElement>(null);
   const tabsContainerRef = useRef<HTMLDivElement>(null);
-  const { isDeleteModalOpen, closeDeleteModal } = useModalStore.getState();
+  const { isDeleteModalOpen} = useModalStore.getState();
 
   const [isOpenSiderBar, setIsOpenSiderbar] = useState(true);
   const [showMethods, setShowMethods] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [newShow, setNewShow] = useState(true);
   const [selectedIdx, setMimeSelected] = useState(
     () => Number(sessionStorage.getItem('selectedIdx')) || 0,
   );
@@ -169,7 +167,7 @@ export default function AppClient() {
         finalResponse = await handleRequest();
       } catch (error: any) {
         finalResponse = error;
-        toast.error('Error al realizar la petición');
+        toast.error('Error al realizar la petición, posiblemente CORS');
       } finally {
         if (finalResponse && currentTabId) {
           startTransition(() => {

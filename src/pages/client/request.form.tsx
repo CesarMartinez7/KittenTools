@@ -29,7 +29,7 @@ const RequestForm = ({
       case 'GET':
         return 'bg-green-800 text-green-100';
       case 'POST':
-        return 'bg-blue-500 text-blue-100';
+        return 'bg-blue-500 text-white';
       case 'PUT':
         return 'bg-yellow-800 text-yellow-100';
       case 'PATCH':
@@ -158,7 +158,7 @@ const RequestForm = ({
                     onClick={() =>
                       handleMethodChange(metodo.name.toUpperCase())
                     }
-                    className={`w-full text-left px-4 py-2 hover:bg-gray-800 dark:hover:bg-zinc-700 transition-colors duration-200
+                    className={`w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-zinc-800  transition-colors duration-200
                       ${metodo.name.toUpperCase() === selectedMethod ? 'bg-sky-500 text-white' : ''}`}
                   >
                     {metodo.name}
@@ -177,7 +177,7 @@ const RequestForm = ({
             dangerouslySetInnerHTML={{
               __html: formatterInputRequest(entornoActual, fullUrl),
             }}
-          ></div>
+          />
           {/* El input transparente se mantiene para la entrada de texto */}
           <input
             type="text"
