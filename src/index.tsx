@@ -1,20 +1,19 @@
-import ReactDOM from 'react-dom/client';
-import { BrowserRouter, HashRouter, Route, Routes } from 'react-router';
-import './App.css';
-import { Toaster } from 'react-hot-toast';
-import AppClient from './pages/client/Page.tsx';
-
+import ReactDOM from "react-dom/client";
+import { BrowserRouter, HashRouter, Route, Routes } from "react-router";
+import "./App.css";
+import { Toaster } from "react-hot-toast";
+import AppClient from "./pages/client/page";
 
 const Router =
-  process.env.NODE_ENV === 'production' ? HashRouter : BrowserRouter;
+  process.env.NODE_ENV === "production" ? HashRouter : BrowserRouter;
 
-const root = document.getElementById('root')!;
+const root = document.getElementById("root")!;
 
 ReactDOM.createRoot(root).render(
   <div className="dark:bg-zinc-900 bg-zinc-100 ">
     <Toaster
       toastOptions={{
-        className: 'dark:bg-zinc-700! dark:text-white! text-gray-500',
+        className: "dark:bg-zinc-700! dark:text-white! text-gray-500",
       }}
     />
 

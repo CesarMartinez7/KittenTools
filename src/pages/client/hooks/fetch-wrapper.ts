@@ -1,11 +1,11 @@
-// The 'Body' import is removed as it's not exported by the current plugin version.
-import { fetch as fetchTauri } from '@tauri-apps/plugin-http';
-import axios from 'axios';
-import toast from 'react-hot-toast';
-import { useEnviromentStore } from '../components/enviroment/store.enviroment';
+// La importación de 'fetch' se cambia por 'invoke' de @tauri-apps/api/core
+import axios from "axios";
+import { invoke } from "@tauri-apps/api/core";
+import toast from "react-hot-toast";
+import { useEnviromentStore } from "../components/enviroment/store.enviroment";
 
 const replaceEnvVariables = (text, variables) => {
-  if (typeof text !== 'string') return text;
+  if (typeof text !== "string") return text;
   return text.replace(/{{(.*?)}}/g, (_, key) => {
     const variable = variables.find(
       (v) => v.key.trim() === key.trim() && v.enabled,
@@ -15,13 +15,13 @@ const replaceEnvVariables = (text, variables) => {
 };
 
 const deepReplaceEnvVariables = (data, variables) => {
-  if (typeof data === 'string') {
+  if (typeof data === "string") {
     return replaceEnvVariables(data, variables);
   }
   if (Array.isArray(data)) {
     return data.map((item) => deepReplaceEnvVariables(item, variables));
   }
-  if (typeof data === 'object' && data !== null) {
+  if (typeof data === "object" && data !== null) {
     const newObject = {};
     for (const key in data) {
       if (Object.hasOwn(data, key)) {
@@ -34,16 +34,16 @@ const deepReplaceEnvVariables = (data, variables) => {
 };
 
 const detectResponseType = (headers) => {
-  const contentType = headers?.['content-type'] || '';
-  if (contentType.includes('application/json')) return 'json';
-  if (contentType.includes('text/html')) return 'html';
+  const contentType = headers?.["content-type"] || "";
+  if (contentType.includes("application/json")) return "json";
+  if (contentType.includes("text/html")) return "html";
   if (
-    contentType.includes('application/xml') ||
-    contentType.includes('text/xml')
+    contentType.includes("application/xml") ||
+    contentType.includes("text/xml")
   )
-    return 'xml';
-  if (contentType.includes('text/plain')) return 'text';
-  return 'unknown';
+    return "xml";
+  if (contentType.includes("text/plain")) return "text";
+  return "unknown";
 };
 
 const createRequestConfig = (config) => {
@@ -101,31 +101,27 @@ export async function httpRequest(config) {
   if (window.__TAURI__) {
     // --- Modo Tauri ---
     const startTime = performance.now();
-
-    const fetchConfig = {
-      method: processedConfig.method || 'GET',
-      headers: processedConfig.headers,
-      // Pass the data object directly as the body.
-      body: processedConfig.data,
-      query: processedConfig.params,
-    };
-
     try {
-      const response = await fetchTauri(processedConfig.url, fetchConfig);
+      // Ahora llamamos al nuevo comando dinámico `make_request` y le pasamos los parámetros.
+      const apiResponse = await invoke("http_request", {
+        url: processedConfig.url,
+        method: processedConfig.method || "GET",
+        body: JSON.stringify(processedConfig.data),
+        headers: processedConfig.headers,
+      });
       const endTime = performance.now();
-      const responseData = await response.text();
-      const finalData =
-        detectResponseType(response.headers) === 'json'
-          ? JSON.parse(responseData)
-          : responseData;
+
+      // Procesamos la respuesta del backend
+      const finalData = JSON.parse(apiResponse.body);
+      const headers = apiResponse.headers;
 
       return {
         data: finalData,
-        status: response.status,
-        headers: response.headers,
+        status: apiResponse.status,
+        headers: headers,
         timeResponse: ((endTime - startTime) / 1000).toFixed(3),
-        typeResponse: detectResponseType(response.headers),
-        isError: response.status >= 400,
+        typeResponse: detectResponseType(headers),
+        isError: apiResponse.status >= 400,
         config: processedConfig,
       };
     } catch (error) {
@@ -134,8 +130,8 @@ export async function httpRequest(config) {
         data: null,
         status: 0,
         headers: {},
-        timeResponse: '0.000',
-        typeResponse: 'unknown',
+        timeResponse: "0.000",
+        typeResponse: "unknown",
         isError: true,
         config: processedConfig,
       };
