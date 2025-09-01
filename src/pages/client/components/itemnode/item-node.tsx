@@ -90,8 +90,17 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
 
   const menuActions = isFolder ? mapperFolder : mapperRequest;
 
+
+
+  const Skeleton = () => (
+    <div className='flex h-[36px] items-center animate-pulse bg-gray-50 w-full py-1.5 px-2 cursor-pointer rounded-md transition-colors duration-200 group dark:hover:bg-zinc-700/50 hover:bg-gray-200/50'>
+      
+    </div>
+  )
+
+
   return (
-    <LazyListPerform>
+    <LazyListPerform skeleton={<Skeleton/>} >
       <div
         key={item.id || crypto.randomUUID()}
         className="relative text-gray-600 text-xs dark:text-zinc-200"

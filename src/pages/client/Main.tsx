@@ -114,13 +114,13 @@ const TabNavigation = memo(
               type="button"
               onClick={() => setMimeSelected(index)}
               className={`
-              relative btn btn-sm text-xs py-2 px-4 z-10 max-w-fit truncate transition-colors
-              ${
-                isSelected
-                  ? ' text-gray-800 dark:text-white dark:bg-zinc-950 bg-gray-200'
-                  : 'text-gray-500 dark:text-zinc-400 hover:text-gray-800 dark:hover:text-white'
-              }
-            `}
+                relative btn btn-sm text-xs py-2 px-4 z-10 max-w-fit truncate transition-colors
+                ${
+                  isSelected
+                    ? ' text-gray-800 dark:text-white dark:bg-zinc-950 bg-gray-200'
+                    : 'text-gray-500 dark:text-zinc-400 hover:text-gray-800 dark:hover:text-white'
+                }
+              `}
             >
               <span>{opcion.name}</span>
               {opcion.icon && (
@@ -131,7 +131,7 @@ const TabNavigation = memo(
                   layoutId="tab-background"
                   className="absolute inset-0"
                   initial={false}
-                  transition={{ type: 'spring', stiffness: 350, damping: 30 }}
+                  transition={{ type: "tween", stiffness: 200, damping: 10 }}
                 />
               )}
             </button>

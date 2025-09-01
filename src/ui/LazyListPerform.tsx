@@ -34,7 +34,7 @@ function LazyListItem({
   return (
     <div ref={ref}>
       {/* {isVisible ? children : skeleton ? skeleton : "Cargando"} */}
-      {isVisible ? children : 'Cargando'}
+      {isVisible ? children : skeleton}
     </div>
   );
 }
