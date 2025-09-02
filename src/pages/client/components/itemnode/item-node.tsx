@@ -121,7 +121,7 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
               {collapsed ? (
                 <Icon icon={ICONS_PAGES.chevronright} />
               ) : (
-                <Icon icon={ICONS_PAGES.chevrondown} />
+                <Icon icon={ICONS_PAGES.chevrondown}  />
               )}
             </button>
           )}
@@ -256,6 +256,7 @@ const PostmanCollectionsList = () => {
     exportCollections,
     handleAddNewItem,
     handleAddNewFolder,
+    removeCollection
   } = useRequestStore();
 
   if (collections.length === 0) {
@@ -277,7 +278,7 @@ const PostmanCollectionsList = () => {
             key={collection.id}
             className="p-3 rounded-xl shadow-lg transition-colors bg-white border border-gray-200 text-gray-800 dark:bg-zinc-800/10 dark:border-zinc-900 dark:text-zinc-200 flex flex-col"
           >
-            <div className="flex items-center justify-between p-2">
+            <div className="flex items-center justify-between p-2 ">
               <h2 className="text-sm font-bold text-gray-700 dark:text-zinc-200 truncate">
                 {collection.name}
               </h2>
@@ -300,6 +301,17 @@ const PostmanCollectionsList = () => {
                 >
                   <Icon icon={ICONS_PAGES.plus} fontSize={16} />
                 </button>
+
+                <button
+                  onClick={() =>
+                    removeCollection(collection.id)
+                  }
+                  className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
+                  title="Nuevo Request"
+                >
+                  <Icon icon={ICONS_PAGES.trash} fontSize={16} />
+                </button>
+
                 <button
                   onClick={() => exportCollections(collection.id)}
                   className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
