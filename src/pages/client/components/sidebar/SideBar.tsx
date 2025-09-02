@@ -137,6 +137,7 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
           >
             <div className="flex flex-row gap-2 mb-6 justify-end">
               <div>
+      
                 <ToolTipButton
                   ariaText="Herramientas"
                   tooltipText="Añadir coleccion, request, enviroment"

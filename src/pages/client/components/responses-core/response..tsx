@@ -79,7 +79,10 @@ export default function ResponsesTypesComponent({
   const currentTab = listTabs.find((tab) => tab.id === currentTabId);
 
   // Sincroniza el tipo de respuesta activo con el tipo de respuesta de la API
-  useEffect(() => {
+ // Sincroniza el tipo de respuesta activo con el tipo de respuesta de la API
+useEffect(() => {
+  // Asegúrate de que typeResponse sea una cadena de texto antes de usarlo.
+  if (typeof typeResponse === 'string') {
     if (typeResponse.includes('json')) {
       setActiveResponseType('JSON');
     } else if (typeResponse.includes('xml')) {
@@ -89,7 +92,8 @@ export default function ResponsesTypesComponent({
     } else {
       setActiveResponseType('Raw');
     }
-  }, [typeResponse]);
+  }
+}, [typeResponse]);
 
   const parsedData = useMemo(() => {
     try {

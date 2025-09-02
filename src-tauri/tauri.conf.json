@@ -16,7 +16,6 @@
         "title": "Elisa",
         "width": 1200,
         "height": 800,
-        "fullscreen": true,
         "resizable": true
       }
     ],
@@ -46,6 +45,8 @@
       "removeDir": true,
       "exists": true,
       "scope": ["$APPCONFIG/**"]
+    },
+    "dialog": {
+      "all": true
     }
-  }
-}
+  }}

@@ -8,118 +8,108 @@ interface TableDataProps {
 }
 
 export default function TableData({ data }: TableDataProps) {
-  const [dataClone, setDataClone] = useState<any>(null);
-  const [columnNames, setColumnNames] = useState<string[] | null>(null);
-  const [valuesColums, setValueColumns] = useState<any[] | null>(null);
+  const [tableData, setTableData] = useState<[string, any][] | null>(null);
   const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
     let parsedData: any;
+    setError(false);
+    setTableData(null);
+
+    if (data === null || data === undefined) {
+      toast.error('El dato es nulo o indefinido.');
+      setError(true);
+      return;
+    }
 
     try {
       parsedData = typeof data === 'string' ? JSON.parse(data) : data;
-      setError(false);
     } catch (err) {
       toast.error(`Error al parsear el JSON: ${err}`);
       setError(true);
       return;
     }
 
-    setDataClone(parsedData);
-
     if (Array.isArray(parsedData)) {
-      if (parsedData.length > 0 && typeof parsedData[0] === 'object') {
-        const columns = Object.keys(parsedData[0]);
-        const values: unknown[][] = parsedData.map((item) =>
-          Object.values(item),
-        );
-        setValueColumns(values);
-        setColumnNames(columns);
-      } else if (parsedData.length === 0) {
-        setColumnNames([]);
-        setValueColumns([]);
+      if (parsedData.length === 0) {
         toast('El array está vacío', { icon: 'ℹ️' });
+        setTableData([]);
       } else {
-        setColumnNames(['Valor']);
-        setValueColumns(parsedData.map((item) => [item]));
-        toast('Es un array de valores planos', { icon: 'ℹ️' });
+        // En un arreglo, mostramos cada elemento como una fila de tabla vertical
+        const processedData = parsedData.flatMap((item, index) => {
+          if (typeof item === 'object' && item !== null) {
+            return Object.entries(item).map(([key, value]) => [`[${index}].${key}`, value]);
+          }
+          return [[`[${index}]`, item]];
+        });
+        setTableData(processedData);
       }
     } else if (typeof parsedData === 'object' && parsedData !== null) {
-      const keyObject = Object.keys(parsedData);
-      const valuesObject = Object.values(parsedData);
-      setValueColumns([valuesObject]);
-      setColumnNames(keyObject);
-    } else if (
-      typeof parsedData === 'string' ||
-      typeof parsedData === 'number' ||
-      typeof parsedData === 'boolean'
-    ) {
-      setValueColumns([[parsedData]]);
-      setColumnNames(['Valor']);
-      toast.success('Es un valor plano');
+      // Para un objeto, mapeamos las claves y valores
+      setTableData(Object.entries(parsedData));
     } else {
-      setError(true);
-      toast.error('Tipo de dato no soportado para mostrar en tabla.');
+      // Para valores planos (string, number, boolean)
+      setTableData([['Valor', parsedData]]);
+      toast('Es un valor plano', { icon: 'ℹ️' });
     }
   }, [data]);
 
   return (
     <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className=" h-full overflow-auto bg-slate-50 dark:bg-zinc-900 transition-colors duration-300"
+      className="h-full overflow-auto bg-slate-50 dark:bg-zinc-900 transition-colors duration-300 p-4"
     >
-      {!error ? (
-        <div className="relative shadow-lg  overflow-hidden">
+      {error ? (
+        <div className="w-full h-full flex flex-col items-center justify-center text-center text-slate-500 dark:text-zinc-400">
+          <Icon icon="fxemoji:cat" width="128" height="128" />
+          <p className="mt-4 text-sm font-medium">
+            No puedo generar la tabla. Lo siento.
+          </p>
+        </div>
+      ) : tableData && tableData.length > 0 ? (
+        <div className="shadow-lg overflow-hidden rounded-md">
           <table className="w-full text-xs text-left text-slate-700 dark:text-zinc-300 table-auto">
-            <thead className="text-xs uppercase text-slate-600 dark:text-zinc-400 bg-slate-200 dark:bg-zinc-800 sticky py-2 top-0 shadow-sm z-10">
+            <thead className="sr-only">
               <tr>
-                {columnNames?.map((col, idx) => (
-                  <th scope="col" key={idx} className="px-6 py-3 font-semibold">
-                    {col}
-                  </th>
-                ))}
+                <th>Clave</th>
+                <th>Valor</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-zinc-700">
-              {valuesColums &&
-                valuesColums.map((row: any[], rowIndex: number) => (
-                  <tr
-                    key={rowIndex}
-                    className="bg-white dark:bg-zinc-900 hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors duration-200"
+              {tableData.map(([key, value], index) => (
+                <tr
+                  key={index}
+                  className="bg-white dark:bg-zinc-900 hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors duration-200"
+                >
+                  <th
+                    scope="row"
+                    className="px-6 py-2 font-semibold whitespace-nowrap text-slate-900 dark:text-white"
                   >
-                    {row.map((cell: any, cellIndex: number) => (
-                      <td
-                        key={`${rowIndex}-${cellIndex}`}
-                        className={`px-6 py-2 ${
-                          cellIndex === 0
-                            ? 'font-medium text-slate-900 whitespace-nowrap dark:text-white'
-                            : 'text-ellipsis'
-                        }`}
-                      >
-                        {typeof cell === 'object' && cell !== null ? (
-                          <pre className="whitespace-pre-wrap break-words text-xs">
-                            {JSON.stringify(cell, null, 1)}
-                          </pre>
-                        ) : (
-                          <span className="text-ellipsis">
-                            {cell !== null && cell !== undefined
-                              ? cell.toString()
-                              : 'null'}
-                          </span>
-                        )}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
+                    {key}
+                  </th>
+                  <td className="px-6 py-2">
+                    {typeof value === 'object' && value !== null ? (
+                      <pre className="whitespace-pre-wrap break-words text-xs">
+                        {JSON.stringify(value, null, 2)}
+                      </pre>
+                    ) : (
+                      <span className="break-words">
+                        {value !== null && value !== undefined
+                          ? value.toString()
+                          : 'null'}
+                      </span>
+                    )}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
       ) : (
         <div className="w-full h-full flex flex-col items-center justify-center text-center text-slate-500 dark:text-zinc-400">
-          <Icon icon="fxemoji:cat" width="128" height="128" />
-          <p className="mt-4 text-sm font-medium">
-            No puedo generar la tabla, lo siento.
-          </p>
+          <p className="mt-4 text-sm font-medium">No hay datos para mostrar.</p>
         </div>
       )}
     </motion.div>

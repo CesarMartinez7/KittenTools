@@ -1,4 +1,3 @@
-// La importación de 'fetch' se cambia por 'invoke' de @tauri-apps/api/core
 import axios from 'axios';
 import { invoke } from '@tauri-apps/api/core';
 import toast from 'react-hot-toast';
@@ -100,10 +99,8 @@ export async function httpRequest(config) {
 
   if (window.__TAURI__) {
     // --- Modo Tauri ---
-    const startTime = performance.now();
     try {
-      // Ahora llamamos al nuevo comando dinámico `http_request` y le pasamos los parámetros.
-      // La respuesta de Rust ahora contiene un objeto con status, headers y body.
+      // La respuesta de Rust ahora contiene un objeto con status, headers y data.
       const apiResponse = await invoke('http_request', {
         url: processedConfig.url,
         method: processedConfig.method || 'GET',
@@ -113,36 +110,36 @@ export async function httpRequest(config) {
 
       console.log('API response from Rust:', apiResponse);
 
-      const endTime = performance.now();
-
       let finalData;
-      // El cuerpo viene como una cadena de texto, intenta parsearla si es JSON
+      // El cuerpo viene como una cadena de texto en 'data', intentamos parsearla si es JSON
       try {
         if (
-          typeof apiResponse.body === 'string' &&
-          apiResponse.body.trim() !== '' &&
+          typeof apiResponse.data === 'string' &&
+          apiResponse.data.trim() !== '' &&
           (apiResponse.headers['content-type']?.includes('application/json') ||
-            apiResponse.body.trim().startsWith('{') ||
-            apiResponse.body.trim().startsWith('['))
+            apiResponse.data.trim().startsWith('{') ||
+            apiResponse.data.trim().startsWith('['))
         ) {
-          finalData = JSON.parse(apiResponse.body);
+          finalData = JSON.parse(apiResponse.data);
         } else {
-          finalData = apiResponse.body;
+          finalData = apiResponse.data;
         }
       } catch (e) {
-        // En caso de que el parseo falle, usa el cuerpo sin cambios
-        finalData = apiResponse.body;
+        // En caso de que el parseo falle, usa la cadena sin cambios
+        finalData = apiResponse.data;
       }
+      
       const headers = apiResponse.headers;
 
-      // Retornamos el objeto final con todos los datos
+      // Retornamos un objeto con todos los datos, formateado como la respuesta de Axios
       return {
-        data: finalData,
+        data: JSON.parse(apiResponse.data),
         status: apiResponse.status,
         headers: headers,
-        timeResponse: ((endTime - startTime) / 1000).toFixed(3),
+        // Usamos el tiempo de respuesta que ya calculó Rust
+        timeResponse: apiResponse.timeResponse, 
         typeResponse: detectResponseType(headers),
-        isError: apiResponse.status >= 400,
+        isError: apiResponse.isError, // Usamos el booleano que ya calculó Rust
         config: processedConfig,
       };
     } catch (error) {

@@ -1,5 +1,3 @@
-import { open, save } from '@tauri-apps/plugin-dialog';
-import { writeFile, readTextFile } from '@tauri-apps/plugin-fs';
 import axios from 'axios';
 import { nanoid } from 'nanoid';
 import toast from 'react-hot-toast';
@@ -338,103 +336,61 @@ export const useRequestStore = create<RequestState>((set, get) => ({
   },
 
   importCollections: async () => {
-    const isTauri = '__TAURI__' in window;
-    if (isTauri) {
-      try {
-        const selected = await open({
-          multiple: false,
-          filters: [{ name: 'JSON', extensions: ['json'] }],
-        });
-        if (Array.isArray(selected) || !selected) {
-          toast.error('No se seleccionó ningún archivo');
-          return;
-        }
-        const fileContent = await readTextFile(selected);
-        const parsedData = JSON.parse(fileContent);
-        if (
-          !parsedData ||
-          !parsedData.info ||
-          !parsedData.info.name ||
-          !Array.isArray(parsedData.item)
-        ) {
-          toast.error(
-            'La estructura del archivo no coincide con una colección válida',
-          );
-          return;
-        }
-        const itemsWithIds = assignIdsRecursively(parsedData.item);
-        const newCollection: Collection = {
-          id: nanoid(),
-          name: parsedData.info.name,
-          item: itemsWithIds,
+    try {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.json, .txt';
+      input.style.display = 'none';
+      const file = await new Promise<File | null>((resolve) => {
+        input.onchange = () => {
+          resolve(input.files?.[0] || null);
+          document.body.removeChild(input);
         };
-        await db.collections.add(newCollection);
-        set((state) => ({
-          collections: [...state.collections, newCollection],
-        }));
-        toast.success(`"${parsedData.info.name}" cargado exitosamente`);
-      } catch (error) {
-        toast.error('Error al cargar el archivo de colección.');
-        console.error('Error en la importación de Tauri:', error);
+        document.body.appendChild(input);
+        input.click();
+      });
+      if (!file) {
+        toast.error('No se seleccionó ningún archivo');
+        return;
       }
-    } else {
+      const fileContent = await file.text();
+      let parsedData;
       try {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = '.json, .txt';
-        input.style.display = 'none';
-        const file = await new Promise<File | null>((resolve) => {
-          input.onchange = () => {
-            resolve(input.files?.[0] || null);
-            document.body.removeChild(input);
-          };
-          document.body.appendChild(input);
-          input.click();
-        });
-        if (!file) {
-          toast.error('No se seleccionó ningún archivo');
-          return;
-        }
-        const fileContent = await file.text();
-        let parsedData;
-        try {
-          parsedData = JSON.parse(fileContent);
-        } catch (parseError) {
-          toast.error('El archivo no tiene un formato JSON válido');
-          console.error('Error de parsing:', parseError);
-          return;
-        }
-        if (
-          !parsedData ||
-          !parsedData.info ||
-          !parsedData.info.name ||
-          !Array.isArray(parsedData.item)
-        ) {
-          toast.error(
-            'La estructura del archivo no coincide con una colección válida',
-          );
-          return;
-        }
-        const itemsWithIds = assignIdsRecursively(parsedData.item);
-        const newCollection: Collection = {
-          id: nanoid(),
-          name: parsedData.info.name,
-          item: itemsWithIds,
-        };
-        await db.collections.add(newCollection);
-        set((state) => ({
-          collections: [...state.collections, newCollection],
-        }));
-        toast.success(`"${parsedData.info.name}" cargado exitosamente`);
-      } catch (error) {
-        toast.error('Error inesperado al cargar el archivo');
-        console.error('Error general:', error);
+        parsedData = JSON.parse(fileContent);
+      } catch (parseError) {
+        toast.error('El archivo no tiene un formato JSON válido');
+        console.error('Error de parsing:', parseError);
+        return;
       }
+      if (
+        !parsedData ||
+        !parsedData.info ||
+        !parsedData.info.name ||
+        !Array.isArray(parsedData.item)
+      ) {
+        toast.error(
+          'La estructura del archivo no coincide con una colección válida',
+        );
+        return;
+      }
+      const itemsWithIds = assignIdsRecursively(parsedData.item);
+      const newCollection: Collection = {
+        id: nanoid(),
+        name: parsedData.info.name,
+        item: itemsWithIds,
+      };
+      await db.collections.add(newCollection);
+      set((state) => ({
+        collections: [...state.collections, newCollection],
+      }));
+      toast.success(`"${parsedData.info.name}" cargado exitosamente`);
+    } catch (error) {
+      toast.error('Error inesperado al cargar el archivo');
+      console.error('Error general:', error);
     }
   },
 
   exportCollections: async (collectionId: string) => {
-    const isTauri = '__TAURI__' in window;
     const collectionToExport = get().collections.find(
       (col) => col.id === collectionId,
     );
@@ -455,39 +411,19 @@ export const useRequestStore = create<RequestState>((set, get) => ({
 
     const dataStr = JSON.stringify(exportData, null, 2);
 
-    if (isTauri) {
-      try {
-        const filePath = await save({
-          defaultPath: `${collectionToExport.name}_export.json`,
-          filters: [{ name: 'JSON', extensions: ['json'] }],
-        });
-
-        if (!filePath) {
-          toast.error('Guardado cancelado.');
-          return;
-        }
-
-        await writeFile(filePath, dataStr);
-        toast.success(`"${collectionToExport.name}" exportada exitosamente.`);
-      } catch (error) {
-        toast.error('Error al exportar la colección.');
-        console.error('Error en la exportación de Tauri:', error);
-      }
-    } else {
-      const downloadAnchorNode = document.createElement('a');
-      downloadAnchorNode.setAttribute(
-        'href',
-        'data:text/json;charset=utf-8,' + encodeURIComponent(dataStr),
-      );
-      downloadAnchorNode.setAttribute(
-        'download',
-        `${collectionToExport.name}_export.json`,
-      );
-      document.body.appendChild(downloadAnchorNode);
-      downloadAnchorNode.click();
-      downloadAnchorNode.remove();
-      toast.success(`"${collectionToExport.name}" exportada exitosamente.`);
-    }
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute(
+      'href',
+      'data:text/json;charset=utf-8,' + encodeURIComponent(dataStr),
+    );
+    downloadAnchorNode.setAttribute(
+      'download',
+      `${collectionToExport.name}_export.json`,
+    );
+    document.body.appendChild(downloadAnchorNode);
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+    toast.success(`"${collectionToExport.name}" exportada exitosamente.`);
   },
 
   handleUpdateItem: (collectionId, itemId, changes) => {
