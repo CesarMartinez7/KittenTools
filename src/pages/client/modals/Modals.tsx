@@ -23,7 +23,7 @@ interface MapperItem {
 
 // Este es el componente que agrupa todas las modales
 export function AppModals() {
-  const { isDeleteModalOpen, closeDeleteModal, openAutenticacionModal, closeAutenticacionModal, autenticacionModalOpen } = useModalStore.getState();
+  const { isDeleteModalOpen, closeDeleteModal, closeAutenticacionModal, autenticacionModalOpen } = useModalStore.getState();
   const isOpenModalExport = useModalStore((state) => state.isExportCollection);
   const closeModalExport = useModalStore(
     (state) => state.closeExportCollection,
@@ -133,7 +133,6 @@ export function AppModals() {
                 key={ne.name}
                 onClick={() => {
                   ne.method();
-                  setNewShow(false);
                 }}
                 initial={{ opacity: 0, y: 20, scale: 0.8 }}
                 animate={{

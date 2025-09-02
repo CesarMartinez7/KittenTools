@@ -185,8 +185,8 @@ const Header = memo(
           {!isRunningInTauri ? 'Version Web' : 'Version Tauri'}
         </span>
 
-        <button title="Autenticar" onClick={openAutenticacionModal}>
-          <Icon icon={ICONS_PAGES.github} />
+        <button title="Autenticar" onClick={openAutenticacionModal} className='bg-gray-200 rounded p-1'>
+          <Icon icon={ICONS_PAGES.github} width={15} height={15} />
         </button>
       </div>
     );
