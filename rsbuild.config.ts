@@ -14,7 +14,6 @@ export default defineConfig({
       root: 'dist',
     },
   },
-  // 👇 Añade esta configuración
   resolve: {
     alias: {
       // Ignora las importaciones de las APIs de Tauri durante la construcción
