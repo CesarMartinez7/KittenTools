@@ -2,60 +2,50 @@ import { useState, useEffect } from 'react';
 import { Octokit } from 'octokit';
 import useStoreGithub from './github.store';
 
-// Define las constantes fuera del hook
-// const OWNER = 'CesarMartinez7';
-// const REPO = 'TESTING-ELISA';
-
-
 export const useGithubApi = () => {
-
-
-  const REPO = useStoreGithub((state) => state.repo)
-  const OWNER = useStoreGithub((state) => state.owner)
+  const REPO = useStoreGithub((state) => state.repo);
+  const OWNER = useStoreGithub((state) => state.owner);
 
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [octokit, setOctokit] = useState(null);
+  const [octokit, setOctokit] = useState<Octokit | null>(null);
 
   // Lógica de autenticación y persistencia del token
   useEffect(() => {
     const authenticate = async () => {
       let token = localStorage.getItem('githubToken');
 
-      // Si no hay token en localStorage, se lo pedimos al usuario
-      if (!token) {
-        token = prompt('Por favor, ingresa tu Personal Access Token de GitHub:');
-        if (token) {
-          localStorage.setItem('githubToken', token);
-        } else {
-          setError(new Error('Token de GitHub no proporcionado.'));
-          return;
-        }
-      }
+      // Inicializar Octokit (si hay token, autenticado; si no, sin auth)
+      const newOctokit = token
+        ? new Octokit({ auth: token })
+        : new Octokit(); // <- público
 
-      // Inicializar Octokit con el token
-      try {
-        const newOctokit = new Octokit({ auth: token });
-        setOctokit(newOctokit);
-        // Verificar que el token es válido
-        const {
-          data: { login },
-        } = await newOctokit.rest.users.getAuthenticated();
-        console.log('✅ Autenticado como:', login);
-      } catch (err) {
-        console.error('❌ Error de autenticación:', err);
-        setError(new Error('Error de autenticación: El token proporcionado no es válido.'));
-        localStorage.removeItem('githubToken'); // Eliminar token inválido
+      setOctokit(newOctokit);
+
+      // Si hay token, probamos la autenticación
+      if (token) {
+        try {
+          const {
+            data: { login },
+          } = await newOctokit.rest.users.getAuthenticated();
+          console.log('✅ Autenticado como:', login);
+        } catch (err) {
+          console.error('❌ Token inválido:', err);
+          setError(new Error('El token proporcionado no es válido.'));
+          localStorage.removeItem('githubToken');
+        }
+      } else {
+        console.log('⚠️ Sin token: usando API pública (limitada)');
       }
     };
     authenticate();
   }, []);
 
   // Función para leer un archivo
-  const getData = async (filePath) => {
+  const getData = async (filePath: string) => {
     if (!octokit) {
-      setError(new Error('Octokit no está inicializado. Asegúrate de que el token se haya proporcionado correctamente.'));
+      setError(new Error('Octokit aún no está listo.'));
       return;
     }
     setLoading(true);
@@ -82,11 +72,19 @@ export const useGithubApi = () => {
   };
 
   // Función para guardar o actualizar un archivo
-  const saveCollection = async (collectionName, collection) => {
+  const saveCollection = async (collectionName: string, collection: any) => {
     if (!octokit) {
-      setError(new Error('Octokit no está inicializado. Asegúrate de que el token se haya proporcionado correctamente.'));
+      setError(new Error('Octokit no está listo.'));
       return;
     }
+
+    // 🚨 Guardar colecciones sí requiere token, porque la API pública no deja escribir
+    const token = localStorage.getItem('githubToken');
+    if (!token) {
+      setError(new Error('Necesitas un token para guardar colecciones.'));
+      return;
+    }
+
     setLoading(true);
     setError(null);
     const fileName = `${collectionName.replace(/\s/g, '-')}.json`;
@@ -127,10 +125,10 @@ export const useGithubApi = () => {
     }
   };
 
-  // Función auxiliar interna para obtener el SHA, no expuesta en el hook
-  const getDataGithubInternal = async (filePath) => {
+  // Auxiliar para obtener SHA
+  const getDataGithubInternal = async (filePath: string) => {
     try {
-      const { data } = await octokit.request(
+      const { data } = await octokit!.request(
         'GET /repos/{owner}/{repo}/contents/{path}',
         {
           owner: OWNER,
