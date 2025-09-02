@@ -26,8 +26,6 @@
   }
 }
 
-
-
 :root {
 }
 
@@ -567,7 +565,6 @@ button:disabled {
 * {
   scrollbar-width: thin;
 }
-
 
 /* Chrome, Edge, and Safari */
 *::-webkit-scrollbar {

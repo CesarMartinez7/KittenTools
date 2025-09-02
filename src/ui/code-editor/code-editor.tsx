@@ -363,11 +363,10 @@ const CodeEditor = ({
     );
   };
 
-
   return (
     <>
       <main className="overflow-hidden relative l">
-        <AnimatePresence >
+        <AnimatePresence>
           {isOpenFindBar && (
             <motion.div
               initial={{ opacity: 0, y: -10 }}

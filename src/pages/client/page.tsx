@@ -46,7 +46,7 @@ export default function AppClient() {
   const nombreEntorno = useEnviromentStore((state) => state.nameEntornoActual);
   const refForm = useRef<HTMLFormElement>(null);
   const tabsContainerRef = useRef<HTMLDivElement>(null);
-  const { isDeleteModalOpen} = useModalStore.getState();
+  const { isDeleteModalOpen } = useModalStore.getState();
 
   const [isOpenSiderBar, setIsOpenSiderbar] = useState(true);
   const [showMethods, setShowMethods] = useState(false);

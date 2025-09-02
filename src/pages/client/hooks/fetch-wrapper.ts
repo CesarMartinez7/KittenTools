@@ -128,7 +128,7 @@ export async function httpRequest(config) {
         // En caso de que el parseo falle, usa la cadena sin cambios
         finalData = apiResponse.data;
       }
-      
+
       const headers = apiResponse.headers;
 
       // Retornamos un objeto con todos los datos, formateado como la respuesta de Axios
@@ -137,7 +137,7 @@ export async function httpRequest(config) {
         status: apiResponse.status,
         headers: headers,
         // Usamos el tiempo de respuesta que ya calculó Rust
-        timeResponse: apiResponse.timeResponse, 
+        timeResponse: apiResponse.timeResponse,
         typeResponse: detectResponseType(headers),
         isError: apiResponse.isError, // Usamos el booleano que ya calculó Rust
         config: processedConfig,

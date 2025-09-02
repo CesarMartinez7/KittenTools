@@ -90,16 +90,12 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
 
   const menuActions = isFolder ? mapperFolder : mapperRequest;
 
-
-
   const Skeleton = () => (
-    <div className='flex h-[36px] items-center animate-pulse bg-gray-50 dark:bg-zinc-900 w-full py-1.5 px-2 cursor-pointer rounded-md transition-colors duration-200 group dark:hover:bg-zinc-700/50 hover:bg-gray-200/50'/>
-
-  )
-
+    <div className="flex h-[36px] items-center animate-pulse bg-gray-50 dark:bg-zinc-900 w-full py-1.5 px-2 cursor-pointer rounded-md transition-colors duration-200 group dark:hover:bg-zinc-700/50 hover:bg-gray-200/50" />
+  );
 
   return (
-    <LazyListPerform skeleton={<Skeleton/>} >
+    <LazyListPerform skeleton={<Skeleton />}>
       <div
         key={item.id || crypto.randomUUID()}
         className="relative text-gray-600 text-xs dark:text-zinc-200"
@@ -121,7 +117,7 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
               {collapsed ? (
                 <Icon icon={ICONS_PAGES.chevronright} />
               ) : (
-                <Icon icon={ICONS_PAGES.chevrondown}  />
+                <Icon icon={ICONS_PAGES.chevrondown} />
               )}
             </button>
           )}
@@ -133,7 +129,10 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
                 className="text-green-primary mr-2"
               />
             ) : (
-              <Icon icon={ICONS_PAGES.folder} className="text-green-primary mr-2" />
+              <Icon
+                icon={ICONS_PAGES.folder}
+                className="text-green-primary mr-2"
+              />
             )
           ) : (
             <Icon
@@ -256,7 +255,7 @@ const PostmanCollectionsList = () => {
     exportCollections,
     handleAddNewItem,
     handleAddNewFolder,
-    removeCollection
+    removeCollection,
   } = useRequestStore();
 
   if (collections.length === 0) {
@@ -290,7 +289,11 @@ const PostmanCollectionsList = () => {
                   className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
                   title="Nueva Carpeta"
                 >
-                  <Icon icon={ICONS_PAGES.folder} className="size-4" fontSize={12} />
+                  <Icon
+                    icon={ICONS_PAGES.folder}
+                    className="size-4"
+                    fontSize={12}
+                  />
                 </button>
                 <button
                   onClick={() =>
@@ -303,9 +306,7 @@ const PostmanCollectionsList = () => {
                 </button>
 
                 <button
-                  onClick={() =>
-                    removeCollection(collection.id)
-                  }
+                  onClick={() => removeCollection(collection.id)}
                   className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
                   title="Nuevo Request"
                 >

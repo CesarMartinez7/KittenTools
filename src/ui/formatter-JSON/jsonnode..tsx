@@ -34,7 +34,6 @@ export const JsonNode: React.FC<JsonNodeProps> = ({
   INDENT,
   depth = 2,
 }) => {
-
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const isObject = typeof data === 'object' && data !== null;

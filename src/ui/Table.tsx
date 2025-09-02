@@ -38,7 +38,10 @@ export default function TableData({ data }: TableDataProps) {
         // En un arreglo, mostramos cada elemento como una fila de tabla vertical
         const processedData = parsedData.flatMap((item, index) => {
           if (typeof item === 'object' && item !== null) {
-            return Object.entries(item).map(([key, value]) => [`[${index}].${key}`, value]);
+            return Object.entries(item).map(([key, value]) => [
+              `[${index}].${key}`,
+              value,
+            ]);
           }
           return [[`[${index}]`, item]];
         });

@@ -79,21 +79,21 @@ export default function ResponsesTypesComponent({
   const currentTab = listTabs.find((tab) => tab.id === currentTabId);
 
   // Sincroniza el tipo de respuesta activo con el tipo de respuesta de la API
- // Sincroniza el tipo de respuesta activo con el tipo de respuesta de la API
-useEffect(() => {
-  // Asegúrate de que typeResponse sea una cadena de texto antes de usarlo.
-  if (typeof typeResponse === 'string') {
-    if (typeResponse.includes('json')) {
-      setActiveResponseType('JSON');
-    } else if (typeResponse.includes('xml')) {
-      setActiveResponseType('XML');
-    } else if (typeResponse.includes('html')) {
-      setActiveResponseType('HTML');
-    } else {
-      setActiveResponseType('Raw');
+  // Sincroniza el tipo de respuesta activo con el tipo de respuesta de la API
+  useEffect(() => {
+    // Asegúrate de que typeResponse sea una cadena de texto antes de usarlo.
+    if (typeof typeResponse === 'string') {
+      if (typeResponse.includes('json')) {
+        setActiveResponseType('JSON');
+      } else if (typeResponse.includes('xml')) {
+        setActiveResponseType('XML');
+      } else if (typeResponse.includes('html')) {
+        setActiveResponseType('HTML');
+      } else {
+        setActiveResponseType('Raw');
+      }
     }
-  }
-}, [typeResponse]);
+  }, [typeResponse]);
 
   const parsedData = useMemo(() => {
     try {
