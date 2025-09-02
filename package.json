@@ -28,7 +28,6 @@
     "gsap": "^3.13.0",
     "jsondiffpatch": "^0.7.3",
     "jwt-decode": "^4.0.0",
-    "lucide-react": "^0.542.0",
     "motion": "^12.23.0",
     "nanoid": "^5.1.5",
     "ogl": "^1.0.11",

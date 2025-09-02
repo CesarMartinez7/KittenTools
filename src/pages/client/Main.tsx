@@ -25,6 +25,7 @@ import x from "@iconify-icons/tabler/x";
 import moon from "@iconify-icons/tabler/moon";
 import sun from "@iconify-icons/tabler/sun";
 import { useEnviromentStore } from "./components/enviroment/store.enviroment";
+import type { EnviromentLayout } from "./components/enviroment/types";
 
 const ICONS_PAGES_LOCAL = {
   moon: moon,
@@ -63,7 +64,7 @@ const Header = memo(
         isEmpty: nombreEntorno === null,
         className:
           nombreEntorno === null
-            ? "bg-red-200 bg-red-400 dark:bg-red-600 text-red-500"
+            ? "bg-red-200 bg-red-400 dark:bg-red-600 text-white"
             : "bg-green-200 dark:bg-green-700 text-green-600",
         text: nombreEntorno ?? "No hay entornos activos",
       }),
@@ -99,6 +100,21 @@ const Header = memo(
     const [isOpenEntornosList, setIsOpenEntornosList] =
       useState<boolean>(false);
     const listEntornos = useEnviromentStore((state) => state.listEntorno);
+    const setNameEntornoActual = useEnviromentStore(
+      (state) => state.setNameEntornoActual,
+    );
+    const setEntornoActual = useEnviromentStore(
+      (state) => state.setEntornoActual,
+    );
+
+
+    const handleClickSelectedEnviroment = (env: EnviromentLayout) => {
+      setNameEntornoActual(env.name);
+      setIsOpenEntornosList(false)
+      setEntornoActual(env.values);
+    }
+
+
 
     return (
       <div className="flex dark:text-zinc-200 text-gray-600 items-center text-xs gap-2 justify-end px-4 border-gray-100 dark:border-zinc-800 backdrop-blur-sm py-0.5">
@@ -127,13 +143,14 @@ const Header = memo(
           <AnimatePresence mode="wait">
             {isOpenEntornosList && (
               <motion.div  initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }} className="absolute bottom-full bg-white dark:bg-zinc-900 shadow w-44 max-h-30 overflow-y-scroll rounded-t-xl overflow-hidden ">
-                {listEntornos.map((e, i) => (
+              animate={{ opacity: 1, scale: 1 }} className="absolute bottom-full bg-white dark:bg-zinc-900 shadow w-44 max-h-30 overflow-y-scroll rounded-t-xl overflow-hidden scroll " style={{scrollbarWidth: "none"}}>
+                {listEntornos.map((env, i) => (
                   <div
+                    onClick={() => handleClickSelectedEnviroment(env)}
                     key={i.toLocaleString()}
                     className="p-2 hover:bg-gray-200 dark:hover:bg-zinc-800 transition-colors"
                   >
-                    {e.name}
+                    {env.name}
                   </div>
                 ))}
               </motion.div>
@@ -141,7 +158,7 @@ const Header = memo(
           </AnimatePresence>
           <motion.div
             onMouseEnter={() => setIsOpenEntornosList(true)}
-            onMouseLeave={() => setIsOpenEntornosList(false)}
+            
             onClick={() => setIsOpenEntornosList(true)}
             className={`font-medium dark:text-zinc-200 text-gray-600 truncate max-w-[250px] px-3 rounded-full ${entornoStatus.className}`}
           >

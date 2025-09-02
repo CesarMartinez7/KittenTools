@@ -1,4 +1,0 @@
-Archivo de El item nodo que aplica revusrividad constantes en las colleciones
-
-
-Lo escribo porque se me olvida despues, aqui debe ir los maper de folder o request

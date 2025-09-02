@@ -34,6 +34,7 @@ export const JsonNode: React.FC<JsonNodeProps> = ({
   INDENT,
   depth = 2,
 }) => {
+
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const isObject = typeof data === 'object' && data !== null;
@@ -136,7 +137,7 @@ export const JsonNode: React.FC<JsonNodeProps> = ({
               <AnimatePresence>
                 {isHovered && (
                   <motion.div
-                    className="absolute z-10 p-2 bg-gray-200 border-gray-300 backdrop-blur-md rounded-lg shadow-xl"
+                    className="absolute z-10 p-2 bg-gray-200 dark:bg-zinc-800/10 dark:shadow-2xl border-gray-300 backdrop-blur-md rounded-lg shadow-xl"
                     style={{ top: '1rem', left: '13rem' }}
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
