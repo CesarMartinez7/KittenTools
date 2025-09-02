@@ -96,7 +96,7 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
   return (
     <LazyListPerform skeleton={<Skeleton />}>
       <div
-        key={item.id || crypto.randomUUID()}
+        key={item.id}
         className="relative text-gray-600 text-xs dark:text-zinc-200"
       >
         <div
@@ -289,7 +289,7 @@ const PostmanCollectionsList = () => {
   }
 
   return (
-    <div className="w-full h-full text-gray-800 dark:text-zinc-200 flex flex-col dark:bg-zinc-900 bg-white">
+    <div className="w-full h-full text-gray-800 dark:text-zinc-200 flex flex-col dark:bg-zinc-900 ">
       <div className="flex-1 overflow-y-auto p-2 space-y-4">
         {collections.map((collection) => (
           <div

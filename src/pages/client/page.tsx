@@ -24,6 +24,7 @@ import ResponsePanel from './response-panel';
 import { type RequestData, useRequestStore } from './stores/request.store';
 import type { EventRequest } from './types/types';
 import { AppModals } from './modals/Modals';
+import TabsContainer from './components/tabs/tab';
 
 
 // IMPORTACION DE LOS COMPONENTES
@@ -254,51 +255,13 @@ export default function AppClient() {
         collections={collections}
       />
 
+
       <div className="w-full flex flex-col">
         {/* Panel de pestañas optimizado */}
-        <div className="flex relative border-b border-gray-200 dark:border-zinc-700 min-h-[37px]">
-          <button
-            onClick={() => scrollTabs('left')}
-            className="z-20 p-2 text-zinc-400 hover:text-zinc-600 bg-gradient-to-r bg-white dark:bg-zinc-900 border-r border-gray-200 dark:border-zinc-800 absolute left-0 h-full flex items-center shadow-[28px_6px_29px_11px_rgba(0,_0,_0,_0.1)]"
-          >
-            <Icon icon={ICONS_PAGES.chevronleft} width="20" height="20" />
-          </button>
 
-          <div
-            ref={tabsContainerRef}
-            className="flex overflow-x-scroll md:max-w-[75vw] max-w-full no-scrollbar scroll-smooth w-full px-10"
-            style={{ scrollbarWidth: 'none' }}
-          >
-            <AnimatePresence mode="sync">
-              {listTabs.length > 0 ? (
-                listTabs.map((tab) => (
-                  <Tab
-                    key={tab.id}
-                    tab={tab}
-                    isActive={tab.id === currentTabId}
-                    onTabClick={handleTabClick}
-                    onRemoveTab={handleRemoveTab}
-                  />
-                ))
-              ) : (
-                <motion.div
-                  className="w-full justify-center items-center flex text-zinc-300"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                >
-                  Añadir tab ⚛️
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-
-          <button
-            onClick={() => scrollTabs('right')}
-            className="z-20 p-2 text-zinc-400 hover:text-zinc-600 bg-white dark:bg-zinc-900 border-l border-gray-200 dark:border-zinc-800 absolute right-0 h-full flex items-center shadow-[-31px_-1px_23px_0px_rgba(0,_0,_0,_0.1)]"
-          >
-            <Icon icon={chevronRight} width="20" height="20" />
-          </button>
-        </div>
+        <TabsContainer currentTabId={currentTabId} tabsContainerRef={tabsContainerRef} listTabs={listTabs} handleTabClick={handleTabClick} handleRemoveTab={handleRemoveTab} scrollTabs={scrollTabs} handleAddTab={() => alert("hello")} />
+        
+        
 
         <RequestForm
           refForm={refForm}

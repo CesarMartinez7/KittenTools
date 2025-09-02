@@ -49,7 +49,6 @@ export function AppModals() {
 
   const NewMappers: MapperItem[] = useMemo(
     () => [
-      { name: 'HTTP', icon: substack, method: () => console.log('HTTP') },
       {
         name: 'Nueva coleccion',
         icon: substack,

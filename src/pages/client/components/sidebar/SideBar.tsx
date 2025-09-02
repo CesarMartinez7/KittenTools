@@ -132,23 +132,11 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
                 Elisa
               </h3>
             </div>
-            <div className="bg-gray-50 dark:bg-zinc-950/60 px-1 py-1 rounded flex w-full transition-all truncate">
-              <div
-                className={`p-2 cursor-pointer rounded transition-colors flex-2 dark:hover:bg-green-primary/30 rounded text-gray-600 dark:text-zinc-200 bg-green-500/10 dark:text-green-primary dark:bg-green-primary `}
-              >
-                <div className="flex items-center gap-2 text-xs font-bold">
-                  <span className="tabler--server"></span>
-                  <span className="text-xs">
-                    Colecciones ({collections.length})
-                  </span>
-                </div>
-              </div>
-            </div>
             <div className="flex w-full gap-4 flex-1 overflow-hidden">
               <div
                 className="
-              flex-1 rounded-lg overflow-hidden h-full flex flex-col no-scrollbar scroll-smooth
-              bg-gray-50 dark:bg-zinc-900
+              flex-1 rounded-lg h-full flex flex-col no-scrollbar scroll-smooth
+               
             "
                 style={{ scrollbarWidth: 'none' }}
               >

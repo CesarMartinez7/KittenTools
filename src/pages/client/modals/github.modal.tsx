@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import { BaseModalLazy } from "../../../ui/lazy-components";
 import useStoreGithub from "../services/github.store";
 import { useGithubApi } from "../services/github";
+import { Icon } from "@iconify/react/dist/iconify.js";
+import ICONS_PAGES from "../icons/ICONS_PAGE";
 
 const GithubModal = ({ isOpen, onClose }) => {
   const { token, setToken, owner, setOwner, setEmail, email, setRepo, repo } = useStoreGithub();
@@ -45,9 +47,16 @@ const GithubModal = ({ isOpen, onClose }) => {
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
             className="bg-white/95 dark:bg-zinc-900/95 rounded-2xl border border-zinc-300/50 dark:border-zinc-800/50 p-6 max-w-lg w-full mx-4 shadow-2xl"
           >
+
+            <div className="flex gap-2 items-center ">
+                <span className="">
+                    <Icon icon={ICONS_PAGES.github} width={25} height={25} />
+                </span>
             <h3 className="text-xl font-semibold mb-4 text-zinc-800 dark:text-zinc-100">
-              Gestión de Colecciones en GitHub
+              Integracion con Github
             </h3>
+
+            </div>
 
             {/* Campos de entrada */}
             <div className="space-y-4 mb-6">
