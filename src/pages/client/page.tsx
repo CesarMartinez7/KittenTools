@@ -1,7 +1,6 @@
 import { Icon } from '@iconify/react';
 import chevronRight from '@iconify-icons/tabler/chevron-right';
 import { AnimatePresence, motion } from 'framer-motion';
-import { nanoid } from 'nanoid';
 import type React from 'react';
 import {
   startTransition,
@@ -24,7 +23,8 @@ import RequestForm from './request.form';
 import ResponsePanel from './response-panel';
 import { type RequestData, useRequestStore } from './stores/request.store';
 import type { EventRequest } from './types/types';
-import { AppModals } from './Modals'; // Importamos el nuevo componente de modales
+import { AppModals } from './modals/Modals';
+
 
 // IMPORTACION DE LOS COMPONENTES
 const { Header, TabNavigation, Tab, ContentPanel } = COMPONENTS_PAGE;

@@ -17,8 +17,12 @@ import download from '@iconify-icons/tabler/download';
 import edit from '@iconify-icons/tabler/bookmark-edit';
 import moon from '@iconify-icons/tabler/moon';
 import sun from '@iconify-icons/tabler/sun';
+import upload from '@iconify-icons/tabler/upload';
+import github from '@iconify-icons/tabler/brand-github';
 
 const ICONS_PAGES = {
+  github,
+  upload,
   chevronleft,
   replace,
   x,

@@ -1,12 +1,14 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
-
 import React, { useEffect, useRef } from 'react';
-
 import ICONS_PAGES from '../../icons/ICONS_PAGE';
-
 import { useRequestStore } from '../../stores/request.store';
 import useItemNodeLogic from '../itemnode/item.hook';
 import LazyListPerform from '../../../../ui/LazyListPerform';
+import toast, { useToaster } from 'react-hot-toast';
+
+// --- Importa el custom hook que creamos ---
+
+import { useGithubApi } from '../../services/github';
 
 // --- Clases de estilo reutilizables ---
 const itemStyles =
@@ -28,19 +30,16 @@ const methodBadgeStyles = (method) => {
   }
 };
 
-// Componente recursivo para renderizar los items de la colección
 const CollectionItemNode = ({ item, collectionId, level }) => {
   if (!item) {
     return null;
   }
-
   const {
     nodeData,
     collapsed,
     showBar,
     isFolder,
     getDisplayName,
-    getMethodColor,
     mapperFolder,
     mapperRequest,
     setShowBar,
@@ -158,7 +157,7 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
             />
           ) : (
             <span
-              className="flex-1 text-xs truncate  text-gray-700 dark:text-zinc-300 font-normal"
+              className="flex-1 text-xs truncate  text-gray-700 dark:text-zinc-300 font-normal"
               title={getDisplayName()}
             >
               {getDisplayName()}
@@ -167,7 +166,9 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
 
           {!isFolder && nodeData.request && (
             <span
-              className={`px-2 py-0.5 text-[11px] rounded-full font-bold ml-2 ${methodBadgeStyles(nodeData.request.method)}`}
+              className={`px-2 py-0.5 text-[11px] rounded-full font-bold ml-2 ${methodBadgeStyles(
+                nodeData.request.method,
+              )}`}
             >
               {nodeData.request.method}
             </span>
@@ -248,8 +249,10 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
   );
 };
 
-// Componente principal que lista todas las colecciones
 const PostmanCollectionsList = () => {
+  // ✅ Usa el hook para obtener la función y el estado
+  const { saveCollection, loading } = useGithubApi();
+
   const {
     collections,
     exportCollections,
@@ -257,6 +260,22 @@ const PostmanCollectionsList = () => {
     handleAddNewFolder,
     removeCollection,
   } = useRequestStore();
+
+  // ✅ Función para guardar en GitHub
+  const handleSaveToGithub = async (collection) => {
+
+    console.log("hello wordsfd")
+    const toastId = toast.loading('Guardando en GitHub...');
+    try {
+      
+      const resposne =await saveCollection(collection.name, collection);
+
+      console.log(resposne)
+      toast.success('Colección guardada exitosamente!', { id: toastId });
+    } catch (err) {
+      toast.error('Error al guardar la colección.', { id: toastId });
+    }
+  };
 
   if (collections.length === 0) {
     return (
@@ -295,6 +314,17 @@ const PostmanCollectionsList = () => {
                     fontSize={12}
                   />
                 </button>
+
+                {/* ✅ Botón modificado para usar la función del hook */}
+                <button
+                  onClick={() => handleSaveToGithub(collection)}
+                  disabled={loading}
+                  className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors disabled:opacity-50"
+                  title="Subir cambios a github"
+                >
+                  <Icon icon={ICONS_PAGES.upload} fontSize={16} />
+                </button>
+
                 <button
                   onClick={() =>
                     handleAddNewItem(collection.id, null, 'Nueva Petición')
@@ -308,7 +338,7 @@ const PostmanCollectionsList = () => {
                 <button
                   onClick={() => removeCollection(collection.id)}
                   className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
-                  title="Nuevo Request"
+                  title="Eliminar Colección"
                 >
                   <Icon icon={ICONS_PAGES.trash} fontSize={16} />
                 </button>

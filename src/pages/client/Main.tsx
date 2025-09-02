@@ -26,6 +26,8 @@ import moon from '@iconify-icons/tabler/moon';
 import sun from '@iconify-icons/tabler/sun';
 import { useEnviromentStore } from './components/enviroment/store.enviroment';
 import type { EnviromentLayout } from './components/enviroment/types';
+import ICONS_PAGES from './icons/ICONS_PAGE';
+import { useModalStore } from './modals/store.modal';
 
 const ICONS_PAGES_LOCAL = {
   moon: moon,
@@ -53,6 +55,9 @@ const Header = memo(
     toogleFullScreen: () => void;
     nombreEntorno: string | null;
   }) => {
+
+
+    const {openAutenticacionModal} = useModalStore.getState()
     const { listTabs, currentTabId, saveCurrentTabToCollection } =
       useRequestStore();
     const currentTab = listTabs.find((tab) => tab.id === currentTabId);
@@ -176,9 +181,13 @@ const Header = memo(
             width={14}
           />
         </button>
-        <p className="dark:text-zinc-200 text-gray-600">
+        <span className="dark:text-zinc-200 text-gray-600">
           {!isRunningInTauri ? 'Version Web' : 'Version Tauri'}
-        </p>
+        </span>
+
+        <button title="Autenticar" onClick={openAutenticacionModal}>
+          <Icon icon={ICONS_PAGES.github} />
+        </button>
       </div>
     );
   },

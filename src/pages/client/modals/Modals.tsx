@@ -1,14 +1,18 @@
-import { BaseModalLazy } from '../../ui/lazy-components';
-import { useModalStore } from './modals/store.modal';
-import DeleteModal from './modals/delete.modal';
-import ExportModal from './modals/export.modal';
+import { BaseModalLazy } from '../../../ui/lazy-components';
+import { useModalStore } from './store.modal';
+import DeleteModal from './delete.modal';
+import ExportModal from './export.modal';
+
 import { motion } from 'framer-motion';
 import { nanoid } from 'nanoid';
-import { useState, useMemo } from 'react';
+import {  useMemo } from 'react';
 import substack from '@iconify-icons/tabler/subtask';
 import { Icon } from '@iconify/react';
-import type { Collection } from './db';
-import { useRequestStore } from './stores/request.store';
+
+import { type Collection } from '../db';
+
+import { useRequestStore } from '../stores/request.store';
+import GithubModal from './github.modal';
 
 // Define el tipo para los mappers si no está en otro lugar
 interface MapperItem {
@@ -19,7 +23,7 @@ interface MapperItem {
 
 // Este es el componente que agrupa todas las modales
 export function AppModals() {
-  const { isDeleteModalOpen, closeDeleteModal } = useModalStore.getState();
+  const { isDeleteModalOpen, closeDeleteModal, openAutenticacionModal, closeAutenticacionModal, autenticacionModalOpen } = useModalStore.getState();
   const isOpenModalExport = useModalStore((state) => state.isExportCollection);
   const closeModalExport = useModalStore(
     (state) => state.closeExportCollection,
@@ -30,7 +34,7 @@ export function AppModals() {
   );
 
   const { addCollection, importCollections, collections } = useRequestStore();
-  const [newShow, setNewShow] = useState(true);
+  // const [newShow, setNewShow] = useState(true);
 
   const handleAddCollection = () => {
     const newCollection: Collection = {
@@ -206,6 +210,9 @@ export function AppModals() {
         collections={collections}
         isOpen={isOpenModalExport}
       />
+
+
+      <GithubModal isOpen={autenticacionModalOpen} onClose={closeAutenticacionModal}/>
     </>
   );
 }

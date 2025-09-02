@@ -444,6 +444,10 @@ input[type="radio"]:checked {
   background-color: #0f1114;
 }
 
+.input-bs{
+    @apply w-full px-3 py-2.5 bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-300 dark:border-zinc-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4ec9b0]/50 focus:border-[#4ec9b0] transition-all text-zinc-800 dark:text-zinc-200 placeholder-zinc-500 dark:placeholder-zinc-400
+}
+
 .input-base {
   @apply bg-zinc-900 p-1 border border-zinc-600 rounded-md;
 }

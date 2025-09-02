@@ -2,17 +2,19 @@
 import { create } from 'zustand';
 
 interface ModalState {
+  autenticacionModalOpen: boolean;
   isRenameModalOpen: boolean;
   isDeleteModalOpen: boolean;
   isNewRequestModalOpen: boolean;
   isNewFolderModalOpen: boolean;
-
   isNewsShowModal: boolean;
-
   isExportCollection: boolean;
+
+  openAutenticacionModal: () => void;
+  closeAutenticacionModal: () => void;
+
   openExportCollection: () => void;
   closeExportCollection: () => void;
-
   openRenameModal: () => void;
   closeRenameModal: () => void;
   openDeleteModal: () => void;
@@ -31,8 +33,11 @@ export const useModalStore = create<ModalState>((set) => ({
   isNewRequestModalOpen: false,
   isNewFolderModalOpen: false,
   isNewsShowModal: false,
-
+  autenticacionModalOpen: false,
   isExportCollection: false,
+
+  openAutenticacionModal: () => set({ autenticacionModalOpen: true }),
+  closeAutenticacionModal: () => set({ autenticacionModalOpen: false }),
 
   openExportCollection: () => set({ isExportCollection: true }),
   closeExportCollection: () => set({ isExportCollection: false }),
