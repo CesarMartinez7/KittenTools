@@ -271,7 +271,6 @@ const CollectionItemNode = ({ item, collectionId, level }) => {
   );
 };
 
-
 import { useState } from 'react';
 
 const PostmanCollectionsList = () => {
@@ -291,7 +290,7 @@ const PostmanCollectionsList = () => {
 
   // ✅ Función para toggle del colapso
   const toggleCollapse = (collectionId) => {
-    setCollapsedCollections(prev => {
+    setCollapsedCollections((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(collectionId)) {
         newSet.delete(collectionId);
@@ -304,13 +303,12 @@ const PostmanCollectionsList = () => {
 
   // ✅ Función para guardar en GitHub
   const handleSaveToGithub = async (collection) => {
-    console.log("hello wordsfd")
+    console.log('hello wordsfd');
     const toastId = toast.loading('Guardando en GitHub...');
     try {
-      
       const resposne = await saveCollection(collection.name, collection);
 
-      console.log(resposne)
+      console.log(resposne);
       toast.success('Colección guardada exitosamente!', { id: toastId });
     } catch (err) {
       toast.error('Error al guardar la colección.', { id: toastId });
@@ -333,7 +331,7 @@ const PostmanCollectionsList = () => {
       <div className="flex-1 overflow-y-auto p-2 space-y-4">
         {collections.map((collection) => {
           const isCollapsed = collapsedCollections.has(collection.id);
-          
+
           return (
             <div
               key={collection.id}
@@ -345,20 +343,24 @@ const PostmanCollectionsList = () => {
                   <button
                     onClick={() => toggleCollapse(collection.id)}
                     className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
-                    title={isCollapsed ? "Expandir" : "Contraer"}
+                    title={isCollapsed ? 'Expandir' : 'Contraer'}
                   >
                     <Icon
-                      icon={isCollapsed ? ICONS_PAGES.chevronRight : ICONS_PAGES.chevronDown}
+                      icon={
+                        isCollapsed
+                          ? ICONS_PAGES.chevronRight
+                          : ICONS_PAGES.chevronDown
+                      }
                       className="size-4"
                       fontSize={12}
                     />
                   </button>
-                  
+
                   <h2 className="text-sm font-bold text-gray-700 dark:text-zinc-200 truncate">
                     {collection.name}
                   </h2>
                 </div>
-                
+
                 <div className="flex gap-2 text-gray-500 dark:text-zinc-400">
                   <button
                     onClick={() =>
@@ -411,7 +413,7 @@ const PostmanCollectionsList = () => {
                   </button>
                 </div>
               </div>
-              
+
               {/* ✅ Contenido colapsable con animación */}
               {!isCollapsed && (
                 <div className="transition-all duration-200 ease-in-out">

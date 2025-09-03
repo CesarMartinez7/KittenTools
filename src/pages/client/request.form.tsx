@@ -9,7 +9,6 @@ import { useRequestStore } from './stores/request.store';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import ICONS_PAGES from './icons/ICONS_PAGE';
 
-
 const RequestForm = ({
   refForm,
   onSubmit,
@@ -44,37 +43,36 @@ const RequestForm = ({
     }
   }, []);
 
-  const formatterInputRequest = useCallback(
-    (listBusqueda, fullUrl) => {
-      const regex = /{{(.*?)}}/g;
-      const safeListBusqueda = Array.isArray(listBusqueda) ? listBusqueda : [];
-      const [baseUrl, queryPart] = fullUrl.split('?');
-      let finalHtml = '';
-      const baseUrlHtml = baseUrl.replace(regex, (match, grupo) => {
-        const variable = safeListBusqueda.find((item) => item.key.trim() === grupo.trim());
-        const isDefinedAndEnabled = variable && variable.enabled === true;
-        const color = isDefinedAndEnabled ? '#00a6f4' : '#D2042D';
-        return `<span title="${grupo}" style="color: ${color};">{{${grupo}}}</span>`;
-      });
-      finalHtml += `<span style=" text-gray-700 dark:text-zinc-300">${baseUrlHtml}</span>`;
+  const formatterInputRequest = useCallback((listBusqueda, fullUrl) => {
+    const regex = /{{(.*?)}}/g;
+    const safeListBusqueda = Array.isArray(listBusqueda) ? listBusqueda : [];
+    const [baseUrl, queryPart] = fullUrl.split('?');
+    let finalHtml = '';
+    const baseUrlHtml = baseUrl.replace(regex, (match, grupo) => {
+      const variable = safeListBusqueda.find(
+        (item) => item.key.trim() === grupo.trim(),
+      );
+      const isDefinedAndEnabled = variable && variable.enabled === true;
+      const color = isDefinedAndEnabled ? '#00a6f4' : '#D2042D';
+      return `<span title="${grupo}" style="color: ${color};">{{${grupo}}}</span>`;
+    });
+    finalHtml += `<span style=" text-gray-700 dark:text-zinc-300">${baseUrlHtml}</span>`;
 
-      if (queryPart) {
-        finalHtml += `<span style="color: #a3a2a2; dark:text-zinc-400">?</span>`;
-        const paramsArray = queryPart.split('&');
-        paramsArray.forEach((param, index) => {
-          const [key, value] = param.split('=');
-          finalHtml += `<span style="color: #a673d4;">${key}</span>`;
-          finalHtml += `<span style="color: #a3a2a2; dark:text-zinc-400">=</span>`;
-          finalHtml += `<span style="color: #e5b567;">${value}</span>`;
-          if (index < paramsArray.length - 1) {
-            finalHtml += `<span style="color: #a3a2a2; dark:text-zinc-400">&</span>`;
-          }
-        });
-      }
-      return finalHtml;
-    },
-    [],
-  );
+    if (queryPart) {
+      finalHtml += `<span style="color: #a3a2a2; dark:text-zinc-400">?</span>`;
+      const paramsArray = queryPart.split('&');
+      paramsArray.forEach((param, index) => {
+        const [key, value] = param.split('=');
+        finalHtml += `<span style="color: #a673d4;">${key}</span>`;
+        finalHtml += `<span style="color: #a3a2a2; dark:text-zinc-400">=</span>`;
+        finalHtml += `<span style="color: #e5b567;">${value}</span>`;
+        if (index < paramsArray.length - 1) {
+          finalHtml += `<span style="color: #a3a2a2; dark:text-zinc-400">&</span>`;
+        }
+      });
+    }
+    return finalHtml;
+  }, []);
 
   const handleMethodChange = useCallback(
     (newMethod) => {
@@ -108,7 +106,11 @@ const RequestForm = ({
       });
       if (
         JSON.stringify(newQuery) !==
-        JSON.stringify(useRequestStore.getState().listTabs.find((tab) => tab.id === currentTabId)?.query)
+        JSON.stringify(
+          useRequestStore
+            .getState()
+            .listTabs.find((tab) => tab.id === currentTabId)?.query,
+        )
       ) {
         updateTab(currentTabId, { query: newQuery });
       }
@@ -141,9 +143,13 @@ const RequestForm = ({
                   <button
                     type="button"
                     key={idx}
-                    onClick={() => handleMethodChange(metodo.name.toUpperCase())}
+                    onClick={() =>
+                      handleMethodChange(metodo.name.toUpperCase())
+                    }
                     className={`w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors duration-200 ${
-                      metodo.name.toUpperCase() === selectedMethod ? 'bg-sky-500 text-white' : ''
+                      metodo.name.toUpperCase() === selectedMethod
+                        ? 'bg-sky-500 text-white'
+                        : ''
                     }`}
                   >
                     {metodo.name}
@@ -178,7 +184,11 @@ const RequestForm = ({
             className="px-6 py-2 bg-sky-500 text-white transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isLoading}
           >
-            {isLoading ? <span className="flex items-center gap-2">Enviando ...</span> : 'Enviar'}
+            {isLoading ? (
+              <span className="flex items-center gap-2">Enviando ...</span>
+            ) : (
+              'Enviar'
+            )}
           </button>
           <div className="relative">
             <button
@@ -188,7 +198,7 @@ const RequestForm = ({
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               disabled={isLoading}
             >
-              <Icon icon={ICONS_PAGES.chevrondown}/>
+              <Icon icon={ICONS_PAGES.chevrondown} />
             </button>
             <AnimatePresence>
               {isDropdownOpen && (

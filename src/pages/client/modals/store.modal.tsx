@@ -48,8 +48,10 @@ export const useModalStore = create<ModalState>((set) => ({
 
   openRenameModal: () => set({ isRenameModalOpen: true }),
   closeRenameModal: () => set({ isRenameModalOpen: false }),
-  openDeleteModal: (itemName, onConfirm) => set({ isDeleteModalOpen: true, deleteModalProps: { itemName, onConfirm } }),
-  closeDeleteModal: () => set({ isDeleteModalOpen: false, deleteModalProps: null }),
+  openDeleteModal: (itemName, onConfirm) =>
+    set({ isDeleteModalOpen: true, deleteModalProps: { itemName, onConfirm } }),
+  closeDeleteModal: () =>
+    set({ isDeleteModalOpen: false, deleteModalProps: null }),
   openNewRequestModal: () => set({ isNewRequestModalOpen: true }),
   closeNewRequestModal: () => set({ isNewRequestModalOpen: false }),
   openNewFolderModal: () => set({ isNewFolderModalOpen: true }),

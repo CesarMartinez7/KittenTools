@@ -9,7 +9,7 @@ export default function ToolTipButton({
   tooltipText,
   className = '',
   onClick,
-  IconName
+  IconName,
 }: {
   ariaText: string;
   tooltipText: string;
@@ -31,9 +31,7 @@ export default function ToolTipButton({
           text-sm rounded-md transition-colors duration-200
           // 0`}
       >
-        {IconName && (
-          <Icon icon={IconName} />
-        )}
+        {IconName && <Icon icon={IconName} />}
         {ariaText}
       </motion.button>
 
@@ -49,7 +47,6 @@ export default function ToolTipButton({
               bg-gray-200 text-gray-700
               dark:bg-zinc-950 dark:text-gray-200"
           >
-            
             {tooltipText}
           </motion.span>
         )}

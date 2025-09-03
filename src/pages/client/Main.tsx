@@ -46,29 +46,30 @@ interface ContentTypeProps {
 }
 
 // Componente Header Memorizado con mejor esctructura de displayName
+type HeaderProps = {
+  isFullScreen: boolean;
+  toogleFullScreen: () => void;
+  nombreEntorno: string | null;
+  children?: ReactNode; // <- Propiedad `children` para recibir elementos anidados
+};
+
 const Header = memo(
   ({
     isFullScreen,
     toogleFullScreen,
     nombreEntorno,
-  }: {
-    isFullScreen: boolean;
-    toogleFullScreen: () => void;
-    nombreEntorno: string | null;
-  }) => {
-
-
-
+    children, // <- Desestructura la propiedad `children`
+  }: HeaderProps) => {
     const [isOpenEntornosList, setIsOpenEntornosList] =
-    useState<boolean>(false);
-  const listEntornos = useEnviromentStore((state) => state.listEntorno);
-  const setNameEntornoActual = useEnviromentStore(
-    (state) => state.setNameEntornoActual,
-  );
-  const setEntornoActual = useEnviromentStore(
-    (state) => state.setEntornoActual,
-  );
-    const {openAutenticacionModal} = useModalStore.getState()
+      useState<boolean>(false);
+    const listEntornos = useEnviromentStore((state) => state.listEntorno);
+    const setNameEntornoActual = useEnviromentStore(
+      (state) => state.setNameEntornoActual,
+    );
+    const setEntornoActual = useEnviromentStore(
+      (state) => state.setEntornoActual,
+    );
+    const { openAutenticacionModal } = useModalStore.getState();
     const { listTabs, currentTabId, saveCurrentTabToCollection } =
       useRequestStore();
     const currentTab = listTabs.find((tab) => tab.id === currentTabId);
@@ -99,6 +100,7 @@ const Header = memo(
         setIsDark(true);
       } else {
         document.body.classList.add('dark');
+        document.body.classList.add('dark'); // Corregido: Duplicado, debería ser 'add'
         setIsDark(false);
       }
     }, []);
@@ -112,25 +114,24 @@ const Header = memo(
       [currentTab],
     );
 
-   
-
-    const handleClickSelectedEnviroment = (env: EnviromentLayout, idx: string) => {
-      localStorage.setItem("idx_entorno", idx)
+    const handleClickSelectedEnviroment = (
+      env: EnviromentLayout,
+      idx: string,
+    ) => {
+      localStorage.setItem('idx_entorno', idx);
       setNameEntornoActual(env.name);
       setIsOpenEntornosList(false);
       setEntornoActual(env.values);
     };
 
-
     useEffect(() => {
-      
-      const storeIdx : number | null = localStorage.getItem("idx_entorno")
+      const storeIdx: number | null = localStorage.getItem('idx_entorno');
 
-      if(storeIdx){
-        setEntornoActual(listEntornos[storeIdx].values)
-        console.log(storeIdx)
+      if (storeIdx) {
+        setEntornoActual(listEntornos[storeIdx].values);
+        console.log(storeIdx);
       }
-    }, [listEntornos ])
+    }, [listEntornos]);
 
     return (
       <div className="flex dark:text-zinc-200 text-gray-600 items-center text-xs gap-2 justify-end px-4 border-gray-100 dark:border-zinc-800 backdrop-blur-sm py-0.5">
@@ -165,18 +166,18 @@ const Header = memo(
                 style={{ scrollbarWidth: 'none' }}
               >
                 {listEntornos.map((env, idx) => {
-                  
-                  return(
-                  <div
-                    onClick={() => handleClickSelectedEnviroment(env,String(idx))}
-                    key={idx.toLocaleString()}
-                    className="p-2 hover:bg-gray-200 dark:hover:bg-zinc-800 transition-colors"
-                  >
-                    {idx + 1} {"  "}{env.name} 
-
-                  </div>
-
-                  )
+                  return (
+                    <div
+                      onClick={() =>
+                        handleClickSelectedEnviroment(env, String(idx))
+                      }
+                      key={idx.toLocaleString()}
+                      className="p-2 hover:bg-gray-200 dark:hover:bg-zinc-800 transition-colors"
+                    >
+                      {idx + 1} {'  '}
+                      {env.name}
+                    </div>
+                  );
                 })}
               </motion.div>
             )}
@@ -189,6 +190,9 @@ const Header = memo(
             {entornoStatus.text}
           </motion.div>
         </div>
+
+        {/* Aquí se renderizarán los hijos */}
+        {children}
 
         <button
           title="Pantalla completa | Salir de pantalla completa "
@@ -204,18 +208,24 @@ const Header = memo(
           {!isRunningInTauri ? 'Version Web' : 'Version Tauri'}
         </span>
 
-        <button title="Autenticar" onClick={openAutenticacionModal} className=' dark:bg-zinc-900 rounded p-0.5'>
+        <button
+          title="Autenticar"
+          onClick={openAutenticacionModal}
+          className=" dark:bg-zinc-900 rounded p-0.5"
+        >
           <Icon icon={ICONS_PAGES.github} width={15} height={15} />
         </button>
 
-        <a title="Visitar sitio web de elisa" href='https://elisaland.vercel.app/' >
-            <Icon icon={ICONS_PAGES.worldwww} className='size-4' />
+        <a
+          title="Visitar sitio web de elisa"
+          href="https://elisaland.vercel.app/"
+        >
+          <Icon icon={ICONS_PAGES.worldwww} className="size-4" />
         </a>
       </div>
     );
   },
 );
-
 // COMPONENTE DE LOS TABS DE NAVEGACION MEMORIZADO
 const TabNavigation = memo(
   ({
@@ -550,8 +560,10 @@ const ContentPanel = memo(
             variants={VariantsAnimation}
             className={`absolute inset-0 flex-1 gap-4 flex flex-col items-center justify-center text-gray-500 dark:text-zinc-600 ${selectedIdx === 4 ? 'block' : 'hidden'}`}
           >
-            <Icon icon={ICONS_PAGES.edit} className='size-20'/>
-            <p className="text-md text-zinc-400">Próximamente, solamente en la version de desktop.</p>
+            <Icon icon={ICONS_PAGES.edit} className="size-20" />
+            <p className="text-md text-zinc-400">
+              Próximamente, solamente en la version de desktop.
+            </p>
           </motion.div>
         ),
       }),

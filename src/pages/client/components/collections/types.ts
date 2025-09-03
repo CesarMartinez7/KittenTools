@@ -10,11 +10,10 @@ export interface LoadRequestProps {
   reqEvent: EventRequest;
 }
 
-
 export interface CollectionItemNodeProps {
-  item: any
-  collectionId: string
-  level: string
+  item: any;
+  collectionId: string;
+  level: string;
 }
 
 export interface ItemNodeProps {

@@ -6,7 +6,7 @@ const useGlobalHook = () => {
 
   const handleFileUpload = () => {
     // 1. Crea un input de tipo "file" de forma programática
-    console.log("PONRITOO")
+    console.log('PONRITOO');
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = '.json'; // Acepta solo archivos JSON
@@ -29,7 +29,9 @@ const useGlobalHook = () => {
               ...useEnviromentStore.getState().listEntorno,
               importedData,
             ]);
-            toast.success(`Entorno "${importedData.name}" importado con éxito!`);
+            toast.success(
+              `Entorno "${importedData.name}" importado con éxito!`,
+            );
           }
         } catch (error) {
           toast.error('Archivo JSON inválido.');

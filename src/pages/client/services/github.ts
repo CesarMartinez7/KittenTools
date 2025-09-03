@@ -11,9 +11,8 @@ export const useGithubApi = () => {
   const [error, setError] = useState(null);
   const [octokit, setOctokit] = useState<Octokit | null>(null);
 
-  const [estaAutenticado, setAutenticado] = useState<boolean>(false)
+  const [estaAutenticado, setAutenticado] = useState<boolean>(false);
 
-  
   // const autrnt
 
   // Inicializar Octokit
@@ -55,7 +54,7 @@ export const useGithubApi = () => {
           repo: REPO,
           path: filePath,
           headers: { 'X-GitHub-Api-Version': '2022-11-28' },
-        }
+        },
       );
       const decodedContent = atob(data.content);
       setData({ sha: data.sha, content: decodedContent });
@@ -75,7 +74,7 @@ export const useGithubApi = () => {
     const token = localStorage.getItem('githubToken');
     if (!token) {
       setError(
-        new Error('Necesitas un token para guardar colecciones en GitHub.')
+        new Error('Necesitas un token para guardar colecciones en GitHub.'),
       );
       return;
     }
@@ -108,7 +107,7 @@ export const useGithubApi = () => {
           content: base64Content,
           sha,
           headers: { 'X-GitHub-Api-Version': '2022-11-28' },
-        }
+        },
       );
       setData(response.data);
       console.log('✅ Colección guardada:', response.data.content?.path);
@@ -130,7 +129,7 @@ export const useGithubApi = () => {
           repo: REPO,
           path: filePath,
           headers: { 'X-GitHub-Api-Version': '2022-11-28' },
-        }
+        },
       );
       return { sha: data.sha, content: atob(data.content) };
     } catch (err) {

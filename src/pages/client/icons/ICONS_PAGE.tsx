@@ -19,12 +19,15 @@ import moon from '@iconify-icons/tabler/moon';
 import sun from '@iconify-icons/tabler/sun';
 import upload from '@iconify-icons/tabler/upload';
 import github from '@iconify-icons/tabler/brand-github';
-import clipboard from "@iconify-icons/tabler/clipboard-list"
-import tool from "@iconify-icons/tabler/tool"
-import worldwww from "@iconify-icons/tabler/world-www"
-
+import clipboard from '@iconify-icons/tabler/clipboard-list';
+import tool from '@iconify-icons/tabler/tool';
+import worldwww from '@iconify-icons/tabler/world-www';
+import layoutcolumns from '@iconify-icons/tabler/layout-columns';
+import layoutrows from '@iconify-icons/tabler/layout-rows';
 
 const ICONS_PAGES = {
+  layoutcolumns,
+  layoutrows,
   worldwww,
   tool,
   clipboard,

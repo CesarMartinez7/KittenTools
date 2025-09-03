@@ -389,7 +389,6 @@ export default function ResponsesTypesComponent({
 
       <div className="flex justify-between items-center text-[8px] text-gray-500 dark:text-zinc-400 backdrop-blur-3xl bg-gray-100 dark:bg-zinc-950/50 border-t border-gray-300 dark:border-zinc-800 px-2 py-1.5 shadow-sm sticky bottom-0">
         <div className="flex gap-2">
-          
           <button
             className="p-1.5 rounded-md hover:bg-zinc-800 transition-colors text-zinc-400 hover:text-zinc-200"
             aria-label="Copiar contenido"

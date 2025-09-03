@@ -20,9 +20,34 @@ import { type RequestData, useRequestStore } from './stores/request.store';
 import { AppModals } from './modals/Modals';
 import TabsContainer from './components/tabs/tab';
 
+// Importación de íconos de Heroicons
+
+import { Icon } from '@iconify/react/dist/iconify.js';
+import ICONS_PAGES from './icons/ICONS_PAGE';
 
 // IMPORTACION DE LOS COMPONENTES
 const { Header, TabNavigation, ContentPanel } = COMPONENTS_PAGE;
+
+// Nuevo componente de botón para el header
+const OrientationToggle = ({
+  currentDirection,
+  togglePanelDirection,
+}: {
+  currentDirection: 'horizontal' | 'vertical';
+  togglePanelDirection: () => void;
+}) => (
+  <button
+    onClick={togglePanelDirection}
+    className="flex items-center space-x-2 text-gray-500 hover:text-gray-700 dark:text-zinc-400 dark:hover:text-zinc-200"
+    title="Cambiar orientación de paneles"
+  >
+    {currentDirection === 'horizontal' ? (
+      <Icon icon={ICONS_PAGES.layoutrows} className="h-4 w-4" />
+    ) : (
+      <Icon icon={ICONS_PAGES.layoutcolumns} className="h-4 w-4" />
+    )}
+  </button>
+);
 
 // Componente principal optimizado
 export default function AppClient() {
@@ -41,7 +66,6 @@ export default function AppClient() {
   const nombreEntorno = useEnviromentStore((state) => state.nameEntornoActual);
   const refForm = useRef<HTMLFormElement>(null);
   const tabsContainerRef = useRef<HTMLDivElement>(null);
-  // const { isDeleteModalOpen } = useModalStore.getState();
 
   const [isOpenSiderBar, setIsOpenSiderbar] = useState(true);
   const [showMethods, setShowMethods] = useState(false);
@@ -50,17 +74,18 @@ export default function AppClient() {
     () => Number(sessionStorage.getItem('selectedIdx')) || 0,
   );
   const [isFullScreen, setIsFullScreen] = useState(false);
+  // Nuevo estado para la dirección del PanelGroup
+  const [direction, setDirection] = useState<'horizontal' | 'vertical'>(
+    'horizontal',
+  );
 
-  // Usar useDeferredValue para diferir actualizaciones no críticas
   const deferredSelectedIdx = useDeferredValue(selectedIdx);
 
-  // Memoizar tab actual
   const currentTab = useMemo(
     () => listTabs.find((tab) => tab.id === currentTabId),
     [listTabs, currentTabId],
   );
 
-  // Memoizar configuración del hook de request
   const requestConfig = useMemo(
     () => ({
       selectedMethod: currentTab?.method,
@@ -77,7 +102,6 @@ export default function AppClient() {
 
   const { handleRequest } = RequestHook(requestConfig);
 
-  // Memoizar opciones de navegación
   const Opciones = useMemo(
     () => [
       { name: 'Cuerpo de Petición', icon: !!currentTab?.body },
@@ -96,7 +120,6 @@ export default function AppClient() {
     [currentTab, listEntornos],
   );
 
-  // Callbacks optimizados
   const handleUrlChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       if (currentTabId) {
@@ -196,7 +219,6 @@ export default function AppClient() {
     }
   }, []);
 
-  // Memoizar función de cambio de índice seleccionado
   const handleMimeSelectedChange = useCallback((index: number) => {
     startTransition(() => {
       setMimeSelected(index);
@@ -204,7 +226,13 @@ export default function AppClient() {
     });
   }, []);
 
-  // Effects optimizados
+  // Nuevo callback para alternar la dirección de los paneles
+  const togglePanelDirection = useCallback(() => {
+    setDirection((prevDirection) =>
+      prevDirection === 'horizontal' ? 'vertical' : 'horizontal',
+    );
+  }, []);
+
   useEffect(() => {
     const handlerSendWindows = (e: KeyboardEvent) => {
       if (e.key === 'Enter' && e.ctrlKey) {
@@ -228,16 +256,20 @@ export default function AppClient() {
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row overflow-hidden h-screen text-xs relative text-gray-600 dark:text-zinc-200">
-      {/* Las modales ahora se renderizan en un componente aparte */}
       <AppModals />
 
-      {/* Header fijo en la parte superior */}
       <div className="dark:bg-zinc-900 border-t dark:border-zinc-800 border-gray-200 bg-white text-gray-600 w-screen bottom-0 fixed z-50">
         <Header
           isFullScreen={isFullScreen}
           nombreEntorno={nombreEntorno}
           toogleFullScreen={toogleFullScreen}
-        />
+        >
+          {/* Aquí se coloca el botón que controlará la orientación */}
+          <OrientationToggle
+            currentDirection={direction}
+            togglePanelDirection={togglePanelDirection}
+          />
+        </Header>
       </div>
 
       <SideBar
@@ -249,13 +281,16 @@ export default function AppClient() {
         collections={collections}
       />
 
-
       <div className="w-full flex flex-col">
-        {/* Panel de pestañas optimizado */}
-
-        <TabsContainer currentTabId={currentTabId} tabsContainerRef={tabsContainerRef} listTabs={listTabs} handleTabClick={handleTabClick} handleRemoveTab={handleRemoveTab} scrollTabs={scrollTabs} handleAddTab={() => alert("hello")} />
-        
-        
+        <TabsContainer
+          currentTabId={currentTabId}
+          tabsContainerRef={tabsContainerRef}
+          listTabs={listTabs}
+          handleTabClick={handleTabClick}
+          handleRemoveTab={handleRemoveTab}
+          scrollTabs={scrollTabs}
+          handleAddTab={() => alert('hello')}
+        />
 
         <RequestForm
           refForm={refForm}
@@ -270,29 +305,41 @@ export default function AppClient() {
           isLoading={isLoading}
         />
 
-        <PanelGroup direction="horizontal" className="flex-grow">
-        <Panel defaultSize={50} minSize={20} className="h-full">
-  <div className="flex flex-col h-full w-full">
-    <TabNavigation
-      Opciones={Opciones}
-      selectedIdx={deferredSelectedIdx}
-      setMimeSelected={handleMimeSelectedChange}
-    />
+        {/* Usa la variable de estado 'direction' para el prop direction */}
+        <PanelGroup
+          direction={direction}
+          className={`flex-grow ${
+            direction === 'vertical' ? 'flex-col' : 'flex-row'
+          }`}
+        >
+          <Panel defaultSize={50} minSize={20} className="h-full">
+            <div className="flex flex-col h-full w-full">
+              <TabNavigation
+                Opciones={Opciones}
+                selectedIdx={deferredSelectedIdx}
+                setMimeSelected={handleMimeSelectedChange}
+              />
 
-    <ContentPanel
-      selectedIdx={deferredSelectedIdx}
-      currentTab={currentTab}
-      updateTab={updateTab}
-      
-    />
-  </div>
-</Panel>
+              <ContentPanel
+                selectedIdx={deferredSelectedIdx}
+                currentTab={currentTab}
+                updateTab={updateTab}
+              />
+            </div>
+          </Panel>
 
-          <PanelResizeHandle className="w-1 bg-gray-300 dark:bg-zinc-700 cursor-col-resize" />
+          {/* El resizer debe tener una clase que se adapte a la dirección */}
+          <PanelResizeHandle
+            className={`
+              ${
+                direction === 'horizontal'
+                  ? 'w-1 bg-gray-300 dark:bg-zinc-700 cursor-col-resize'
+                  : 'h-1 bg-gray-300 dark:bg-zinc-700 cursor-row-resize'
+              }
+            `}
+          />
 
           <Panel defaultSize={50} minSize={20} className="h-full">
-
-            
             <ResponsePanel
               isLoading={isLoading}
               headersResponse={currentTab?.response?.headers}
@@ -302,10 +349,6 @@ export default function AppClient() {
             />
           </Panel>
         </PanelGroup>
-
-        {/* <p className="absolute inset-0 pointer-events-none ">
-          {String(isDeleteModalOpen)}
-        </p> */}
       </div>
     </div>
   );

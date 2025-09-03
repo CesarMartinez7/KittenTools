@@ -6,12 +6,11 @@ import ToolTipButton from '../../../../ui/tooltip/TooltipButton';
 import { useModalStore } from '../../modals/store.modal';
 import { useRequestStore } from '../../stores/request.store';
 import type { SavedRequestsSidebarProps } from '../../types/types';
-import PostmanCollectionsList from "../collections/CollectionList"
+import PostmanCollectionsList from '../collections/CollectionList';
 import ResizableSidebar from '../../resizablesidebar';
 import ICONS_PAGES from '../../icons/ICONS_PAGE';
 
 // Componente ResizableSidebar (sin cambios)
-
 
 // Componente SideBar
 export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
@@ -46,12 +45,13 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
             </div>
             <div className="flex justify-start items-center my-4 space-x-3 relative bg">
               <span className="pixelarticons--coffee-alt text-gray-700 dark:text-gray-200"></span>
-              <div className=''>
-
-              <h3 className="text-4xl bg-gradient-to-t from-gray-700 to-gray-600 dark:text-zinc-200 dark:bg-none dark:bg-clip-text bg-clip-text text-transparent share-tech-mono-regular ">
-                Elisa
-              </h3>
-              <p className='text-gray-600 dark:text-zinc-400'>¡Tu próxima gran creación te espera!</p>
+              <div className="">
+                <h3 className="text-4xl bg-gradient-to-t from-gray-700 to-gray-600 dark:text-zinc-200 dark:bg-none dark:bg-clip-text bg-clip-text text-transparent share-tech-mono-regular ">
+                  Elisa
+                </h3>
+                <p className="text-gray-600 dark:text-zinc-400">
+                  ¡Tu próxima gran creación te espera!
+                </p>
               </div>
             </div>
             <div className="flex w-full gap-4 flex-1 overflow-hidden">

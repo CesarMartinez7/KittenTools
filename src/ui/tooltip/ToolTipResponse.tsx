@@ -2,7 +2,6 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useState } from 'react';
 import './tooltip.css';
 
-
 export default function CodeTooltip({
   ariaText,
   statusCode,
@@ -36,7 +35,8 @@ export default function CodeTooltip({
   const tooltipStyles = {
     info: 'bg-blue-500 text-white shadow-md shadow-blue-500/50',
     success: 'bg-emerald-500/90 text-white shadow-md shadow-emerald-500/50',
-    error: 'bg-red-500 text-white shadow-md shadow-red-500/50 dark:bg-red-500/80',
+    error:
+      'bg-red-500 text-white shadow-md shadow-red-500/50 dark:bg-red-500/80',
   };
 
   return (

@@ -43,22 +43,21 @@ export function AppModals() {
 
   const { addCollection, importCollections, collections } = useRequestStore();
 
-  const {handleFileUpload} = useGlobalHook()
-
+  const { handleFileUpload } = useGlobalHook();
 
   const closeModalsNews = useModalStore((state) => state.closeNewsShowModal);
   const handleAddCollection = () => {
-    try{
+    try {
       const newCollection: Collection = {
         id: nanoid(),
         name: 'Nueva Colección',
         item: [],
       };
       addCollection(newCollection);
-      closeModalsNews()
-      toast.success("Coleccion creado con exito")
-    }catch {
-      toast.error("Ocurrio un error al crear la coleccion")
+      closeModalsNews();
+      toast.success('Coleccion creado con exito');
+    } catch {
+      toast.error('Ocurrio un error al crear la coleccion');
     }
   };
 
@@ -204,7 +203,7 @@ export function AppModals() {
           {/* Footer opcional con información adicional */}
           <div className="mt-6 pt-4 border-t border-zinc-200/60 dark:border-zinc-700/60">
             <p className="text-xs text-zinc-500 dark:text-zinc-400 text-center">
-               Selecciona una opción para comenzar o presiona{' '}
+              Selecciona una opción para comenzar o presiona{' '}
               <kbd className="px-1.5 py-0.5 bg-zinc-200 dark:bg-zinc-700 rounded text-xs font-mono">
                 Esc
               </kbd>{' '}

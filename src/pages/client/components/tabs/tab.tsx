@@ -1,13 +1,13 @@
-import { AnimatePresence, motion } from "framer-motion";
-import { Icon } from "@iconify/react/dist/iconify.js";
-import ICONS_PAGES from "../../icons/ICONS_PAGE";
-import { useRequestStore } from "../../stores/request.store";
-import COMPONENTS_PAGE from "../../Main";
+import { AnimatePresence, motion } from 'framer-motion';
+import { Icon } from '@iconify/react/dist/iconify.js';
+import ICONS_PAGES from '../../icons/ICONS_PAGE';
+import { useRequestStore } from '../../stores/request.store';
+import COMPONENTS_PAGE from '../../Main';
 
 // Constantes de estilo para la reusabilidad
-const TAB_MAX_WIDTH = "200px";
-const TAB_MIN_WIDTH = "120px";
-const TAB_PADDING_X = "12px";
+const TAB_MAX_WIDTH = '200px';
+const TAB_MIN_WIDTH = '120px';
+const TAB_PADDING_X = '12px';
 
 const TabsContainer = ({
   tabsContainerRef,
@@ -43,7 +43,7 @@ const TabsContainer = ({
       {/* Botón de scroll izquierdo */}
       <ScrollButton
         direction="left"
-        onClick={() => scrollTabs("left")}
+        onClick={() => scrollTabs('left')}
         className={scrollButtonLeftClass}
         icon={ICONS_PAGES.chevronleft}
       />
@@ -52,7 +52,7 @@ const TabsContainer = ({
       <div
         ref={tabsContainerRef}
         className="flex overflow-x-scroll md:max-w-[75vw] max-w-full no-scrollbar scroll-smooth w-full px-10"
-        style={{ scrollbarWidth: "none" }}
+        style={{ scrollbarWidth: 'none' }}
       >
         <TabsList
           tabs={listTabs}
@@ -68,7 +68,7 @@ const TabsContainer = ({
       {/* Botón de scroll derecho */}
       <ScrollButton
         direction="right"
-        onClick={() => scrollTabs("right")}
+        onClick={() => scrollTabs('right')}
         className={scrollButtonRightClass}
         icon={ICONS_PAGES.chevronright}
       />
@@ -110,7 +110,7 @@ const AddTabButton = () => {
 const TabsList = ({ tabs, currentTabId, onTabClick, onRemoveTab }) => (
   <AnimatePresence mode="wait">
     {tabs.length > 0 ? (
-      <div className="flex" style={{ width: "fit-content", minWidth: "100%" }}>
+      <div className="flex" style={{ width: 'fit-content', minWidth: '100%' }}>
         {tabs.map((tab) => (
           <COMPONENTS_PAGE.Tab
             key={tab.id}
@@ -124,9 +124,9 @@ const TabsList = ({ tabs, currentTabId, onTabClick, onRemoveTab }) => (
               minWidth: TAB_MIN_WIDTH,
               paddingLeft: TAB_PADDING_X,
               paddingRight: TAB_PADDING_X,
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
             }}
           />
         ))}

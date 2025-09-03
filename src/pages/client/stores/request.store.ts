@@ -7,640 +7,641 @@ import type { RequestState, RequestData } from './types';
 
 // Funciones auxiliares para la lógica de la store
 const findAndUpdateItem = (
-    items: any[],
-    targetId: string,
-    updateFn: (item: any) => any,
+  items: any[],
+  targetId: string,
+  updateFn: (item: any) => any,
 ): any[] => {
-    return items.map((item) => {
-        if (item.id === targetId) {
-            return updateFn(item);
-        }
-        if (item.item) {
-            const updatedSubItems = findAndUpdateItem(item.item, targetId, updateFn);
-            return { ...item, item: updatedSubItems };
-        }
-        return item;
-    });
+  return items.map((item) => {
+    if (item.id === targetId) {
+      return updateFn(item);
+    }
+    if (item.item) {
+      const updatedSubItems = findAndUpdateItem(item.item, targetId, updateFn);
+      return { ...item, item: updatedSubItems };
+    }
+    return item;
+  });
 };
 
 const findAndRemoveItem = (items: any[], targetId: string): any[] => {
-    return items
-        .filter((item) => item.id !== targetId)
-        .map((item) => {
-            if (item.item) {
-                return {
-                    ...item,
-                    item: findAndRemoveItem(item.item, targetId),
-                };
-            }
-            return item;
-        });
-};
-
-const findItemById = (items: any[], targetId: string): any | null => {
-    for (const item of items) {
-        if (item.id === targetId) {
-            return item;
-        }
-        if (item.item) {
-            const found = findItemById(item.item, targetId);
-            if (found) {
-                return found;
-            }
-        }
-    }
-    return null;
-};
-
-const findItemParent = (items, targetId) => {
-    for (const item of items) {
-        if (item.item && item.item.some((child) => child.id === targetId)) {
-            return item;
-        }
-        if (item.item) {
-            const parent = findItemParent(item.item, targetId);
-            if (parent) return parent;
-        }
-    }
-    return null;
-};
-
-const assignIdsRecursively = (items: any[]): any[] => {
-    if (!Array.isArray(items)) {
-        return items;
-    }
-    return items.map((item) => {
-        const newItem = {
-            ...item,
-            id: item.id || nanoid(),
+  return items
+    .filter((item) => item.id !== targetId)
+    .map((item) => {
+      if (item.item) {
+        return {
+          ...item,
+          item: findAndRemoveItem(item.item, targetId),
         };
-        if (newItem.item && Array.isArray(newItem.item)) {
-            newItem.item = assignIdsRecursively(newItem.item);
-        }
-        return newItem;
+      }
+      return item;
     });
 };
 
-export const useRequestStore = create<RequestState>((set, get) => ({
-    listTabs: [],
-    currentTabId: null,
-    collections: [],
+const findItemById = (items: any[], targetId: string): any | null => {
+  for (const item of items) {
+    if (item.id === targetId) {
+      return item;
+    }
+    if (item.item) {
+      const found = findItemById(item.item, targetId);
+      if (found) {
+        return found;
+      }
+    }
+  }
+  return null;
+};
 
-    initTab: async () => {
+const findItemParent = (items, targetId) => {
+  for (const item of items) {
+    if (item.item && item.item.some((child) => child.id === targetId)) {
+      return item;
+    }
+    if (item.item) {
+      const parent = findItemParent(item.item, targetId);
+      if (parent) return parent;
+    }
+  }
+  return null;
+};
+
+const assignIdsRecursively = (items: any[]): any[] => {
+  if (!Array.isArray(items)) {
+    return items;
+  }
+  return items.map((item) => {
+    const newItem = {
+      ...item,
+      id: item.id || nanoid(),
+    };
+    if (newItem.item && Array.isArray(newItem.item)) {
+      newItem.item = assignIdsRecursively(newItem.item);
+    }
+    return newItem;
+  });
+};
+
+export const useRequestStore = create<RequestState>((set, get) => ({
+  listTabs: [],
+  currentTabId: null,
+  collections: [],
+
+  initTab: async () => {
+    const newTab: RequestData = {
+      id: nanoid(),
+      name: 'Nueva Peticion',
+      method: 'POST',
+      url: 'https://dsfsdf',
+      headers: {},
+      body: {
+        cesar: 'martinez',
+      },
+      query: {},
+    };
+    await db.tabs.add(newTab);
+    set({ listTabs: [newTab], currentTabId: newTab.id });
+  },
+
+  addFromNode: async (nodeData: any) => {
+    // 1. Validar que el objeto nodeData tenga una solicitud (request)
+    if (!nodeData.request) return;
+
+    // 2. Obtener el estado actual de la store
+    const { listTabs, currentTabId } = get();
+
+    // 3. Buscar si ya existe una pestaña para este item de colección
+    const existingTab = listTabs.find(
+      (tab) =>
+        tab.collectionRef?.collectionId === nodeData.collectionId &&
+        tab.collectionRef?.itemId === nodeData.id,
+    );
+
+    // 4. Si la pestaña ya existe, simplemente la activamos
+    if (existingTab) {
+      if (existingTab.id !== currentTabId) {
+        set({ currentTabId: existingTab.id });
+      }
+      return;
+    }
+
+    // 5. Si la pestaña no existe, creamos una nueva
+    let requestBody: any = nodeData.request?.body?.raw || {};
+
+    // Manejo de errores de JSON: intenta parsear, si falla, usa el string sin cambios
+    if (typeof requestBody === 'string') {
+      try {
+        requestBody = JSON.parse(requestBody);
+      } catch (e) {
+        console.error('JSON.parse: expected double-quoted property name');
+        console.error('Error al parsear el cuerpo de la request:', e);
+        // El body queda como el string original
+      }
+    }
+
+    const newTab: RequestData = {
+      id: nanoid(),
+      name: nodeData.name || 'Nueva Request',
+      method: nodeData.request?.method || 'GET',
+      url: nodeData.request?.url?.raw || '',
+      headers: (nodeData.request?.header || []).reduce(
+        (acc: Record<string, string>, h: any) => {
+          acc[h.key] = h.value;
+          return acc;
+        },
+        {},
+      ),
+      // CORRECCIÓN CLAVE: Usar la variable `requestBody` que ya ha sido parseada (o no)
+      body: requestBody,
+      query: (nodeData.request?.url?.query || []).reduce(
+        (acc: Record<string, string>, q: any) => {
+          acc[q.key] = q.value;
+          return acc;
+        },
+        {},
+      ),
+      collectionRef: {
+        collectionId: nodeData.collectionId,
+        itemId: nodeData.id,
+      },
+    };
+
+    // 6. Persistimos el nuevo tab en la base de datos
+    await db.tabs.add(newTab);
+
+    // 7. Actualizamos el estado de la store
+    set((state) => ({
+      listTabs: [...state.listTabs, newTab],
+      currentTabId: newTab.id,
+    }));
+  },
+
+  executeRequest: async (tabId) => {
+    const state = get();
+    const currentTab = state.listTabs.find((tab) => tab.id === tabId);
+    if (!currentTab) {
+      toast.error('Pestaña no encontrada para ejecutar la petición.');
+      return;
+    }
+    const { method, url, headers, body } = currentTab;
+    const startTime = Date.now();
+    try {
+      const response = await axios({
+        method: method,
+        url: url,
+        headers: headers,
+        data: body,
+      });
+      const endTime = Date.now();
+      const responseTime = endTime - startTime;
+      const newResponse = {
+        data: response.data,
+        headers: response.headers as Record<string, string>,
+        status: response.status,
+        time: `${responseTime}ms`,
+        type: response.headers['content-type'] || 'unknown',
+      };
+      get().setResponse(tabId, newResponse);
+      toast.success(`Petición ${method} a ${url} exitosa!`);
+    } catch (error: any) {
+      const endTime = Date.now();
+      const responseTime = endTime - startTime;
+      const errorResponse = {
+        data: error.response?.data || {
+          message: 'Error de red o del servidor',
+        },
+        headers: error.response?.headers || {},
+        status: error.response?.status || 0,
+        time: `${responseTime}ms`,
+        type: error.response?.headers['content-type'] || 'unknown',
+      };
+      get().setResponse(tabId, errorResponse);
+      toast.error(`Petición ${method} a ${url} fallida.`);
+    }
+  },
+
+  removeTab: (id) => {
+    db.tabs.delete(id);
+    set((state) => {
+      const remainingTabs = state.listTabs.filter((t) => t.id !== id);
+      const newCurrentTabId =
+        state.currentTabId === id
+          ? remainingTabs[Number(localStorage.getItem('currentTab')) || 0]
+              ?.id || null
+          : state.currentTabId;
+      return {
+        listTabs: remainingTabs,
+        currentTabId: newCurrentTabId,
+      };
+    });
+  },
+
+  setCurrentTab: (id) => set({ currentTabId: id }),
+
+  updateTab: (id, changes) => {
+    db.tabs.update(id, changes);
+    set((state) => ({
+      listTabs: state.listTabs.map((tab) =>
+        tab.id === id ? { ...tab, ...changes } : tab,
+      ),
+    }));
+  },
+
+  setResponse: (id, response) => {
+    db.tabs.update(id, { response });
+    set((state) => ({
+      listTabs: state.listTabs.map((tab) =>
+        tab.id === id ? { ...tab, response } : tab,
+      ),
+    }));
+  },
+
+  // === NUEVA ACCION PARA GUARDAR CAMBIOS EN LA COLECCIÓN ===
+  saveCurrentTabToCollection: () => {
+    const state = get();
+    const currentTab = state.listTabs.find(
+      (tab) => tab.id === state.currentTabId,
+    );
+
+    if (!currentTab || !currentTab.collectionRef) {
+      toast.error(
+        'Este tab no está enlazado a una colección. No se puede guardar.',
+      );
+      return;
+    }
+
+    const { collectionId, itemId } = currentTab.collectionRef;
+
+    // Preparamos los cambios para actualizar el ítem en la colección
+    const changes = {
+      name: currentTab.name,
+      request: {
+        method: currentTab.method,
+        url: {
+          raw: currentTab.url,
+          query: Object.keys(currentTab.query).map((key) => ({
+            key,
+            value: currentTab.query[key],
+          })),
+        },
+        header: Object.keys(currentTab.headers).map((key) => ({
+          key,
+          value: currentTab.headers[key],
+        })),
+        body: { raw: currentTab.body },
+      },
+    };
+
+    get().handleUpdateItem(collectionId, itemId, changes);
+    toast.success(
+      `Cambios guardados exitosamente en la colección "${state.collections.find((col) => col.id === collectionId)?.name}"`,
+    );
+  },
+
+  loadTabs: async () => {
+    try {
+      const tabs = await db.tabs.toArray();
+      if (tabs.length === 0) {
         const newTab: RequestData = {
-            id: nanoid(),
-            name: 'Nueva Peticion',
-            method: 'POST',
-            url: 'https://dsfsdf',
-            headers: {},
-            body: {
-                cesar: 'martinez',
-            },
-            query: {},
+          id: nanoid(),
+          name: 'Nueva Petición',
+          method: 'GET',
+          url: 'https://api.github.com/users/CesarMartinez7',
+          headers: {},
+          body: {},
+          query: {},
         };
         await db.tabs.add(newTab);
         set({ listTabs: [newTab], currentTabId: newTab.id });
-    },
-
-    addFromNode: async (nodeData: any) => {
-      // 1. Validar que el objeto nodeData tenga una solicitud (request)
-      if (!nodeData.request) return;
-  
-      // 2. Obtener el estado actual de la store
-      const { listTabs, currentTabId } = get();
-  
-      // 3. Buscar si ya existe una pestaña para este item de colección
-      const existingTab = listTabs.find(tab =>
-          tab.collectionRef?.collectionId === nodeData.collectionId &&
-          tab.collectionRef?.itemId === nodeData.id
-      );
-  
-      // 4. Si la pestaña ya existe, simplemente la activamos
-      if (existingTab) {
-          if (existingTab.id !== currentTabId) {
-              set({ currentTabId: existingTab.id });
-          }
-          return;
+      } else {
+        set({ listTabs: tabs, currentTabId: tabs[0]?.id || null });
+        (' ');
       }
-  
-      // 5. Si la pestaña no existe, creamos una nueva
-      let requestBody: any = nodeData.request?.body?.raw || {};
-  
-      // Manejo de errores de JSON: intenta parsear, si falla, usa el string sin cambios
-      if (typeof requestBody === 'string') {
-          try {
-              requestBody = JSON.parse(requestBody);
-          } catch (e) {
-              console.error('JSON.parse: expected double-quoted property name');
-              console.error('Error al parsear el cuerpo de la request:', e);
-              // El body queda como el string original
-          }
-      }
-  
-      const newTab: RequestData = {
-          id: nanoid(),
-          name: nodeData.name || 'Nueva Request',
-          method: nodeData.request?.method || 'GET',
-          url: nodeData.request?.url?.raw || '',
-          headers: (nodeData.request?.header || []).reduce(
-              (acc: Record<string, string>, h: any) => {
-                  acc[h.key] = h.value;
-                  return acc;
-              },
-              {},
-          ),
-          // CORRECCIÓN CLAVE: Usar la variable `requestBody` que ya ha sido parseada (o no)
-          body: requestBody,
-          query: (nodeData.request?.url?.query || []).reduce(
-              (acc: Record<string, string>, q: any) => {
-                  acc[q.key] = q.value;
-                  return acc;
-              },
-              {},
-          ),
-          collectionRef: {
-              collectionId: nodeData.collectionId,
-              itemId: nodeData.id,
-          },
-      };
-  
-      // 6. Persistimos el nuevo tab en la base de datos
-      await db.tabs.add(newTab);
-  
-      // 7. Actualizamos el estado de la store
-      set((state) => ({
-          listTabs: [...state.listTabs, newTab],
-          currentTabId: newTab.id,
-      }));
+    } catch (error) {
+      console.error('Failed to load tabs from Dexie:', error);
+    }
   },
 
-    executeRequest: async (tabId) => {
-        const state = get();
-        const currentTab = state.listTabs.find((tab) => tab.id === tabId);
-        if (!currentTab) {
-            toast.error('Pestaña no encontrada para ejecutar la petición.');
-            return;
-        }
-        const { method, url, headers, body } = currentTab;
-        const startTime = Date.now();
-        try {
-            const response = await axios({
-                method: method,
-                url: url,
-                headers: headers,
-                data: body,
-            });
-            const endTime = Date.now();
-            const responseTime = endTime - startTime;
-            const newResponse = {
-                data: response.data,
-                headers: response.headers as Record<string, string>,
-                status: response.status,
-                time: `${responseTime}ms`,
-                type: response.headers['content-type'] || 'unknown',
-            };
-            get().setResponse(tabId, newResponse);
-            toast.success(`Petición ${method} a ${url} exitosa!`);
-        } catch (error: any) {
-            const endTime = Date.now();
-            const responseTime = endTime - startTime;
-            const errorResponse = {
-                data: error.response?.data || {
-                    message: 'Error de red o del servidor',
-                },
-                headers: error.response?.headers || {},
-                status: error.response?.status || 0,
-                time: `${responseTime}ms`,
-                type: error.response?.headers['content-type'] || 'unknown',
-            };
-            get().setResponse(tabId, errorResponse);
-            toast.error(`Petición ${method} a ${url} fallida.`);
-        }
-    },
-
-    removeTab: (id) => {
-        db.tabs.delete(id);
-        set((state) => {
-            const remainingTabs = state.listTabs.filter((t) => t.id !== id);
-            const newCurrentTabId =
-                state.currentTabId === id
-                    ? remainingTabs[Number(localStorage.getItem('currentTab')) || 0]
-                        ?.id || null
-                    : state.currentTabId;
-            return {
-                listTabs: remainingTabs,
-                currentTabId: newCurrentTabId,
-            };
-        });
-    },
-
-    setCurrentTab: (id) => set({ currentTabId: id }),
-
-    updateTab: (id, changes) => {
-        db.tabs.update(id, changes);
-        set((state) => ({
-            listTabs: state.listTabs.map((tab) =>
-                tab.id === id ? { ...tab, ...changes } : tab,
-            ),
-        }));
-    },
-
-    setResponse: (id, response) => {
-        db.tabs.update(id, { response });
-        set((state) => ({
-            listTabs: state.listTabs.map((tab) =>
-                tab.id === id ? { ...tab, response } : tab,
-            ),
-        }));
-    },
-
-    // === NUEVA ACCION PARA GUARDAR CAMBIOS EN LA COLECCIÓN ===
-    saveCurrentTabToCollection: () => {
-        const state = get();
-        const currentTab = state.listTabs.find(
-            (tab) => tab.id === state.currentTabId,
-        );
-
-        if (!currentTab || !currentTab.collectionRef) {
-            toast.error(
-                'Este tab no está enlazado a una colección. No se puede guardar.',
-            );
-            return;
-        }
-
-        const { collectionId, itemId } = currentTab.collectionRef;
-
-        // Preparamos los cambios para actualizar el ítem en la colección
-        const changes = {
-            name: currentTab.name,
-            request: {
-                method: currentTab.method,
-                url: {
-                    raw: currentTab.url,
-                    query: Object.keys(currentTab.query).map((key) => ({
-                        key,
-                        value: currentTab.query[key],
-                    })),
-                },
-                header: Object.keys(currentTab.headers).map((key) => ({
-                    key,
-                    value: currentTab.headers[key],
-                })),
-                body: { raw: currentTab.body },
-            },
+  loadCollections: async () => {
+    try {
+      const collections = await db.collections.toArray();
+      if (collections.length === 0) {
+        const defaultCollection: Collection = {
+          id: nanoid(),
+          name: 'My Collection',
+          item: [],
         };
+        await db.collections.add(defaultCollection);
+        set({ collections: [defaultCollection] });
+      } else {
+        set({ collections });
+      }
+    } catch (error) {
+      console.error('Failed to load collections:', error);
+    }
+  },
 
-        get().handleUpdateItem(collectionId, itemId, changes);
-        toast.success(
-            `Cambios guardados exitosamente en la colección "${state.collections.find((col) => col.id === collectionId)?.name}"`,
-        );
-    },
+  addCollection: async (newCollection) => {
+    try {
+      await db.collections.add(newCollection);
+      set((state) => ({ collections: [...state.collections, newCollection] }));
+    } catch (error) {
+      console.error('Failed to add collection:', error);
+    }
+  },
 
-    loadTabs: async () => {
-        try {
-            const tabs = await db.tabs.toArray();
-            if (tabs.length === 0) {
-                const newTab: RequestData = {
-                    id: nanoid(),
-                    name: 'Nueva Petición',
-                    method: 'GET',
-                    url: 'https://api.github.com/users/CesarMartinez7',
-                    headers: {},
-                    body: {},
-                    query: {},
-                };
-                await db.tabs.add(newTab);
-                set({ listTabs: [newTab], currentTabId: newTab.id });
-            } else {
-                set({ listTabs: tabs, currentTabId: tabs[0]?.id || null });
-                (' ');
-            }
-        } catch (error) {
-            console.error('Failed to load tabs from Dexie:', error);
-        }
-    },
+  updateCollection: async (id, changes) => {
+    try {
+      await db.collections.update(id, changes);
+      set((state) => ({
+        collections: state.collections.map((col) =>
+          col.id === id ? { ...col, ...changes } : col,
+        ),
+      }));
+    } catch (error) {
+      console.error('Failed to update collection:', error);
+    }
+  },
 
-    loadCollections: async () => {
-        try {
-            const collections = await db.collections.toArray();
-            if (collections.length === 0) {
-                const defaultCollection: Collection = {
-                    id: nanoid(),
-                    name: 'My Collection',
-                    item: [],
-                };
-                await db.collections.add(defaultCollection);
-                set({ collections: [defaultCollection] });
-            } else {
-                set({ collections });
-            }
-        } catch (error) {
-            console.error('Failed to load collections:', error);
-        }
-    },
+  removeCollection: async (id) => {
+    try {
+      await db.collections.delete(id);
+      set((state) => ({
+        collections: state.collections.filter((col) => col.id !== id),
+      }));
+    } catch (error) {
+      console.error('Failed to remove collection:', error);
+    }
+  },
 
-    addCollection: async (newCollection) => {
-        try {
-            await db.collections.add(newCollection);
-            set((state) => ({ collections: [...state.collections, newCollection] }));
-        } catch (error) {
-            console.error('Failed to add collection:', error);
-        }
-    },
-
-    updateCollection: async (id, changes) => {
-        try {
-            await db.collections.update(id, changes);
-            set((state) => ({
-                collections: state.collections.map((col) =>
-                    col.id === id ? { ...col, ...changes } : col,
-                ),
-            }));
-        } catch (error) {
-            console.error('Failed to update collection:', error);
-        }
-    },
-
-    removeCollection: async (id) => {
-        try {
-            await db.collections.delete(id);
-            set((state) => ({
-                collections: state.collections.filter((col) => col.id !== id),
-            }));
-        } catch (error) {
-            console.error('Failed to remove collection:', error);
-        }
-    },
-
-    importCollections: async () => {
-        try {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.json, .txt';
-            input.style.display = 'none';
-            const file = await new Promise<File | null>((resolve) => {
-                input.onchange = () => {
-                    resolve(input.files?.[0] || null);
-                    document.body.removeChild(input);
-                };
-                document.body.appendChild(input);
-                input.click();
-            });
-            if (!file) {
-                toast.error('No se seleccionó ningún archivo');
-                return;
-            }
-            const fileContent = await file.text();
-            let parsedData;
-            try {
-                parsedData = JSON.parse(fileContent);
-            } catch (parseError) {
-                toast.error('El archivo no tiene un formato JSON válido');
-                console.error('Error de parsing:', parseError);
-                return;
-            }
-            if (
-                !parsedData ||
-                !parsedData.info ||
-                !parsedData.info.name ||
-                !Array.isArray(parsedData.item)
-            ) {
-                toast.error(
-                    'La estructura del archivo no coincide con una colección válida',
-                );
-                return;
-            }
-            const itemsWithIds = assignIdsRecursively(parsedData.item);
-            const newCollection: Collection = {
-                id: nanoid(),
-                name: parsedData.info.name,
-                item: itemsWithIds,
-            };
-            await db.collections.add(newCollection);
-            set((state) => ({
-                collections: [...state.collections, newCollection],
-            }));
-            toast.success(`"${parsedData.info.name}" cargado exitosamente`);
-        } catch (error) {
-            toast.error('Error inesperado al cargar el archivo');
-            console.error('Error general:', error);
-        }
-    },
-
-    exportCollections: async (collectionId: string) => {
-        const collectionToExport = get().collections.find(
-            (col) => col.id === collectionId,
-        );
-        if (!collectionToExport) {
-            toast.error('Colección no encontrada para exportar.');
-            return;
-        }
-
-        const exportData = {
-            info: {
-                _postman_id: collectionToExport.id,
-                name: collectionToExport.name,
-                schema:
-                    'https://schema.getpostman.com/json/collection/v2.1.0/collection.json',
-            },
-            item: collectionToExport.item,
+  importCollections: async () => {
+    try {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.json, .txt';
+      input.style.display = 'none';
+      const file = await new Promise<File | null>((resolve) => {
+        input.onchange = () => {
+          resolve(input.files?.[0] || null);
+          document.body.removeChild(input);
         };
-
-        const dataStr = JSON.stringify(exportData, null, 2);
-
-        const downloadAnchorNode = document.createElement('a');
-        downloadAnchorNode.setAttribute(
-            'href',
-            'data:text/json;charset=utf-8,' + encodeURIComponent(dataStr),
+        document.body.appendChild(input);
+        input.click();
+      });
+      if (!file) {
+        toast.error('No se seleccionó ningún archivo');
+        return;
+      }
+      const fileContent = await file.text();
+      let parsedData;
+      try {
+        parsedData = JSON.parse(fileContent);
+      } catch (parseError) {
+        toast.error('El archivo no tiene un formato JSON válido');
+        console.error('Error de parsing:', parseError);
+        return;
+      }
+      if (
+        !parsedData ||
+        !parsedData.info ||
+        !parsedData.info.name ||
+        !Array.isArray(parsedData.item)
+      ) {
+        toast.error(
+          'La estructura del archivo no coincide con una colección válida',
         );
-        downloadAnchorNode.setAttribute(
-            'download',
-            `${collectionToExport.name}_export.json`,
+        return;
+      }
+      const itemsWithIds = assignIdsRecursively(parsedData.item);
+      const newCollection: Collection = {
+        id: nanoid(),
+        name: parsedData.info.name,
+        item: itemsWithIds,
+      };
+      await db.collections.add(newCollection);
+      set((state) => ({
+        collections: [...state.collections, newCollection],
+      }));
+      toast.success(`"${parsedData.info.name}" cargado exitosamente`);
+    } catch (error) {
+      toast.error('Error inesperado al cargar el archivo');
+      console.error('Error general:', error);
+    }
+  },
+
+  exportCollections: async (collectionId: string) => {
+    const collectionToExport = get().collections.find(
+      (col) => col.id === collectionId,
+    );
+    if (!collectionToExport) {
+      toast.error('Colección no encontrada para exportar.');
+      return;
+    }
+
+    const exportData = {
+      info: {
+        _postman_id: collectionToExport.id,
+        name: collectionToExport.name,
+        schema:
+          'https://schema.getpostman.com/json/collection/v2.1.0/collection.json',
+      },
+      item: collectionToExport.item,
+    };
+
+    const dataStr = JSON.stringify(exportData, null, 2);
+
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute(
+      'href',
+      'data:text/json;charset=utf-8,' + encodeURIComponent(dataStr),
+    );
+    downloadAnchorNode.setAttribute(
+      'download',
+      `${collectionToExport.name}_export.json`,
+    );
+    document.body.appendChild(downloadAnchorNode);
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+    toast.success(`"${collectionToExport.name}" exportada exitosamente.`);
+  },
+
+  handleUpdateItem: (collectionId, itemId, changes) => {
+    set((state) => {
+      const collectionToUpdate = state.collections.find(
+        (col) => col.id === collectionId,
+      );
+      if (!collectionToUpdate) return state;
+
+      const updatedItems = findAndUpdateItem(
+        collectionToUpdate.item,
+        itemId,
+        (item) => ({ ...item, ...changes }),
+      );
+
+      db.collections.update(collectionId, { item: updatedItems });
+
+      return {
+        collections: state.collections.map((col) =>
+          col.id === collectionId ? { ...col, item: updatedItems } : col,
+        ),
+      };
+    });
+  },
+
+  handleRemoveItem: (collectionId, itemId) => {
+    set((state) => {
+      const collectionToUpdate = state.collections.find(
+        (col) => col.id === collectionId,
+      );
+      if (!collectionToUpdate) return state;
+
+      const updatedItems = findAndRemoveItem(collectionToUpdate.item, itemId);
+
+      db.collections.update(collectionId, { item: updatedItems });
+
+      return {
+        collections: state.collections.map((col) =>
+          col.id === collectionId ? { ...col, item: updatedItems } : col,
+        ),
+      };
+    });
+  },
+
+  handleDuplicateItem: (collectionId, itemId) => {
+    set((state) => {
+      const collectionToUpdate = state.collections.find(
+        (col) => col.id === collectionId,
+      );
+      if (!collectionToUpdate) return state;
+
+      const itemToDuplicate = findItemById(collectionToUpdate.item, itemId);
+      if (!itemToDuplicate) return state;
+
+      const parentItem = findItemParent(collectionToUpdate.item, itemId);
+      const duplicatedItem = {
+        ...JSON.parse(JSON.stringify(itemToDuplicate)),
+        id: nanoid(),
+        name: `${itemToDuplicate.name} (Copia)`,
+      };
+
+      let updatedItems;
+      if (parentItem) {
+        updatedItems = findAndUpdateItem(
+          collectionToUpdate.item,
+          parentItem.id,
+          (item) => {
+            const index = item.item.findIndex((i) => i.id === itemId);
+            item.item.splice(index + 1, 0, duplicatedItem);
+            return item;
+          },
         );
-        document.body.appendChild(downloadAnchorNode);
-        downloadAnchorNode.click();
-        downloadAnchorNode.remove();
-        toast.success(`"${collectionToExport.name}" exportada exitosamente.`);
-    },
+      } else {
+        const index = collectionToUpdate.item.findIndex((i) => i.id === itemId);
+        updatedItems = [...collectionToUpdate.item];
+        updatedItems.splice(index + 1, 0, duplicatedItem);
+      }
 
-    handleUpdateItem: (collectionId, itemId, changes) => {
-        set((state) => {
-            const collectionToUpdate = state.collections.find(
-                (col) => col.id === collectionId,
-            );
-            if (!collectionToUpdate) return state;
+      db.collections.update(collectionId, { item: updatedItems });
 
-            const updatedItems = findAndUpdateItem(
-                collectionToUpdate.item,
-                itemId,
-                (item) => ({ ...item, ...changes }),
-            );
+      return {
+        collections: state.collections.map((col) =>
+          col.id === collectionId ? { ...col, item: updatedItems } : col,
+        ),
+      };
+    });
+  },
 
-            db.collections.update(collectionId, { item: updatedItems });
+  handleAddNewItem: (collectionId, parentItemId, name) => {
+    set((state) => {
+      const collectionToUpdate = state.collections.find(
+        (col) => col.id === collectionId,
+      );
+      if (!collectionToUpdate) return state;
 
-            return {
-                collections: state.collections.map((col) =>
-                    col.id === collectionId ? { ...col, item: updatedItems } : col,
-                ),
-            };
-        });
-    },
+      const newRequest = {
+        id: nanoid(),
+        name: name,
+        request: { method: 'GET', url: 'new-endpoint', body: {} },
+      };
 
-    handleRemoveItem: (collectionId, itemId) => {
-        set((state) => {
-            const collectionToUpdate = state.collections.find(
-                (col) => col.id === collectionId,
-            );
-            if (!collectionToUpdate) return state;
+      let updatedItems;
+      if (parentItemId) {
+        updatedItems = findAndUpdateItem(
+          collectionToUpdate.item,
+          parentItemId,
+          (item) => ({ ...item, item: [...(item.item || []), newRequest] }),
+        );
+      } else {
+        updatedItems = [...collectionToUpdate.item, newRequest];
+      }
 
-            const updatedItems = findAndRemoveItem(collectionToUpdate.item, itemId);
+      db.collections.update(collectionId, { item: updatedItems });
 
-            db.collections.update(collectionId, { item: updatedItems });
+      return {
+        collections: state.collections.map((col) =>
+          col.id === collectionId ? { ...col, item: updatedItems } : col,
+        ),
+      };
+    });
+  },
 
-            return {
-                collections: state.collections.map((col) =>
-                    col.id === collectionId ? { ...col, item: updatedItems } : col,
-                ),
-            };
-        });
-    },
+  handleAddNewFolder: (collectionId, parentItemId, name) => {
+    set((state) => {
+      const collectionToUpdate = state.collections.find(
+        (col) => col.id === collectionId,
+      );
+      if (!collectionToUpdate) return state;
 
-    handleDuplicateItem: (collectionId, itemId) => {
-        set((state) => {
-            const collectionToUpdate = state.collections.find(
-                (col) => col.id === collectionId,
-            );
-            if (!collectionToUpdate) return state;
+      const newFolder = {
+        id: nanoid(),
+        name: name,
+        item: [],
+      };
 
-            const itemToDuplicate = findItemById(collectionToUpdate.item, itemId);
-            if (!itemToDuplicate) return state;
+      let updatedItems;
+      if (parentItemId) {
+        updatedItems = findAndUpdateItem(
+          collectionToUpdate.item,
+          parentItemId,
+          (item) => ({ ...item, item: [...(item.item || []), newFolder] }),
+        );
+      } else {
+        updatedItems = [...collectionToUpdate.item, newFolder];
+      }
 
-            const parentItem = findItemParent(collectionToUpdate.item, itemId);
-            const duplicatedItem = {
-                ...JSON.parse(JSON.stringify(itemToDuplicate)),
-                id: nanoid(),
-                name: `${itemToDuplicate.name} (Copia)`,
-            };
+      db.collections.update(collectionId, { item: updatedItems });
 
-            let updatedItems;
-            if (parentItem) {
-                updatedItems = findAndUpdateItem(
-                    collectionToUpdate.item,
-                    parentItem.id,
-                    (item) => {
-                        const index = item.item.findIndex((i) => i.id === itemId);
-                        item.item.splice(index + 1, 0, duplicatedItem);
-                        return item;
-                    },
-                );
-            } else {
-                const index = collectionToUpdate.item.findIndex((i) => i.id === itemId);
-                updatedItems = [...collectionToUpdate.item];
-                updatedItems.splice(index + 1, 0, duplicatedItem);
-            }
+      return {
+        collections: state.collections.map((col) =>
+          col.id === collectionId ? { ...col, item: updatedItems } : col,
+        ),
+      };
+    });
+  },
 
-            db.collections.update(collectionId, { item: updatedItems });
+  // Nueva acción para agregar ejemplos
+  addExample: (collectionId, requestId, newExample) => {
+    set((state) => {
+      const collectionToUpdate = state.collections.find(
+        (col) => col.id === collectionId,
+      );
+      if (!collectionToUpdate) return state;
 
-            return {
-                collections: state.collections.map((col) =>
-                    col.id === collectionId ? { ...col, item: updatedItems } : col,
-                ),
-            };
-        });
-    },
+      const updatedItems = findAndUpdateItem(
+        collectionToUpdate.item,
+        requestId,
+        (item) => ({
+          ...item,
+          response: [...(item.response || []), { ...newExample, id: nanoid() }],
+        }),
+      );
 
-    handleAddNewItem: (collectionId, parentItemId, name) => {
-        set((state) => {
-            const collectionToUpdate = state.collections.find(
-                (col) => col.id === collectionId,
-            );
-            if (!collectionToUpdate) return state;
+      db.collections.update(collectionId, { item: updatedItems });
 
-            const newRequest = {
-                id: nanoid(),
-                name: name,
-                request: { method: 'GET', url: 'new-endpoint', body: {} },
-            };
-
-            let updatedItems;
-            if (parentItemId) {
-                updatedItems = findAndUpdateItem(
-                    collectionToUpdate.item,
-                    parentItemId,
-                    (item) => ({ ...item, item: [...(item.item || []), newRequest] }),
-                );
-            } else {
-                updatedItems = [...collectionToUpdate.item, newRequest];
-            }
-
-            db.collections.update(collectionId, { item: updatedItems });
-
-            return {
-                collections: state.collections.map((col) =>
-                    col.id === collectionId ? { ...col, item: updatedItems } : col,
-                ),
-            };
-        });
-    },
-
-    handleAddNewFolder: (collectionId, parentItemId, name) => {
-        set((state) => {
-            const collectionToUpdate = state.collections.find(
-                (col) => col.id === collectionId,
-            );
-            if (!collectionToUpdate) return state;
-
-            const newFolder = {
-                id: nanoid(),
-                name: name,
-                item: [],
-            };
-
-            let updatedItems;
-            if (parentItemId) {
-                updatedItems = findAndUpdateItem(
-                    collectionToUpdate.item,
-                    parentItemId,
-                    (item) => ({ ...item, item: [...(item.item || []), newFolder] }),
-                );
-            } else {
-                updatedItems = [...collectionToUpdate.item, newFolder];
-            }
-
-            db.collections.update(collectionId, { item: updatedItems });
-
-            return {
-                collections: state.collections.map((col) =>
-                    col.id === collectionId ? { ...col, item: updatedItems } : col,
-                ),
-            };
-        });
-    },
-
-    // Nueva acción para agregar ejemplos
-    addExample: (collectionId, requestId, newExample) => {
-        set((state) => {
-            const collectionToUpdate = state.collections.find(
-                (col) => col.id === collectionId,
-            );
-            if (!collectionToUpdate) return state;
-
-            const updatedItems = findAndUpdateItem(
-                collectionToUpdate.item,
-                requestId,
-                (item) => ({
-                    ...item,
-                    response: [...(item.response || []), { ...newExample, id: nanoid() }],
-                }),
-            );
-
-            db.collections.update(collectionId, { item: updatedItems });
-
-            return {
-                collections: state.collections.map((col) =>
-                    col.id === collectionId ? { ...col, item: updatedItems } : col,
-                ),
-            };
-        });
-    },
-}))
+      return {
+        collections: state.collections.map((col) =>
+          col.id === collectionId ? { ...col, item: updatedItems } : col,
+        ),
+      };
+    });
+  },
+}));

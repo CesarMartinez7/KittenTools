@@ -266,7 +266,6 @@ const CodeEditor = ({
       lineNumbersRef.current!.scrollTop = scrollTop;
       highlightRef.current!.scrollTop = scrollTop;
       highlightRef.current!.scrollLeft = scrollLeft;
-      
     });
   };
 

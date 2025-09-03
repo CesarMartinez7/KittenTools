@@ -134,7 +134,7 @@ tr::nth-child(odd) {
 
 
 kbd {
-  @apply text-[9px] border border-zinc-400 p-0.5 rounded px-1.5 border-b-3 bg-gray-200 text-gray-700 dark:bg-zinc-900 dark:border-zinc-700 text-center cursor-pointer dark:text-white;
+  @apply text-[9px] border border-gray-300 p-0.5 rounded px-1.5 border-b-3 bg-gray-100 text-gray-700 dark:bg-zinc-900 dark:border-zinc-700 text-center cursor-pointer dark:text-white;
 }
 
 .animate-loading {

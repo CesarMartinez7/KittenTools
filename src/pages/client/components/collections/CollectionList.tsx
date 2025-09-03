@@ -7,9 +7,6 @@ import { useGithubApi } from '../../services/github';
 import { useState } from 'react';
 import type { Collection } from '../../db';
 
-
-
-
 // --- Clases de estilo reutilizables ---
 const itemStyles =
   'flex items-center w-full py-1.5 px-2 cursor-pointer rounded-md transition-colors duration-200 group dark:hover:bg-zinc-700/50 hover:bg-gray-200/50';
@@ -30,12 +27,6 @@ const methodBadgeStyles = (method) => {
   }
 };
 
-
-
-
-
-
-
 const PostmanCollectionsList = () => {
   // ✅ Usa el hook para obtener la función y el estado
   const { saveCollection, loading } = useGithubApi();
@@ -52,8 +43,8 @@ const PostmanCollectionsList = () => {
   const [collapsedCollections, setCollapsedCollections] = useState(new Set());
 
   // ✅ Función para toggle del colapso
-  const toggleCollapse = (collectionId : string) => {
-    setCollapsedCollections(prev => {
+  const toggleCollapse = (collectionId: string) => {
+    setCollapsedCollections((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(collectionId)) {
         newSet.delete(collectionId);
@@ -65,14 +56,11 @@ const PostmanCollectionsList = () => {
   };
 
   // ✅ Función para guardar en GitHub
-  const handleSaveToGithub = async (collection : Collection) => {
-    
+  const handleSaveToGithub = async (collection: Collection) => {
     const toastId = toast.loading('Guardando en GitHub...');
     try {
-      
       const resposne = await saveCollection(collection.name, collection);
 
-      
       toast.success('Colección guardada exitosamente!', { id: toastId });
     } catch (err) {
       toast.error('Error al guardar la colección.', { id: toastId });
@@ -92,10 +80,13 @@ const PostmanCollectionsList = () => {
 
   return (
     <div className="w-full h-full text-gray-800 dark:text-zinc-200 flex flex-col dark:bg-zinc-900 ">
-      <div className="flex-1 overflow-scroll p-2 space-y-4" style={{scrollbarWidth: "none"}}>
+      <div
+        className="flex-1 overflow-scroll p-2 space-y-4"
+        style={{ scrollbarWidth: 'none' }}
+      >
         {collections.map((collection) => {
           const isCollapsed = collapsedCollections.has(collection.id);
-          
+
           return (
             <div
               key={collection.id}
@@ -107,20 +98,24 @@ const PostmanCollectionsList = () => {
                   <button
                     onClick={() => toggleCollapse(collection.id)}
                     className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
-                    title={isCollapsed ? "Expandir" : "Contraer"}
+                    title={isCollapsed ? 'Expandir' : 'Contraer'}
                   >
                     <Icon
-                      icon={isCollapsed ? ICONS_PAGES.chevronright : ICONS_PAGES.chevrondown}
+                      icon={
+                        isCollapsed
+                          ? ICONS_PAGES.chevronright
+                          : ICONS_PAGES.chevrondown
+                      }
                       className="size-4 text-gray-500"
                       fontSize={12}
                     />
                   </button>
-                  
+
                   <h2 className="text-sm font-bold text-gray-700 dark:text-zinc-200 truncate">
                     {collection.name}
                   </h2>
                 </div>
-                
+
                 <div className="flex gap-2 text-gray-500 dark:text-zinc-400">
                   <button
                     onClick={() =>
@@ -173,7 +168,7 @@ const PostmanCollectionsList = () => {
                   </button>
                 </div>
               </div>
-              
+
               {/* ✅ Contenido colapsable con animación */}
               {!isCollapsed && (
                 <div className="transition-all duration-200 ease-in-out">
