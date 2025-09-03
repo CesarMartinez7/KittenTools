@@ -19,8 +19,10 @@ import moon from '@iconify-icons/tabler/moon';
 import sun from '@iconify-icons/tabler/sun';
 import upload from '@iconify-icons/tabler/upload';
 import github from '@iconify-icons/tabler/brand-github';
+import clipboard from "@iconify-icons/tabler/clipboard-list"
 
 const ICONS_PAGES = {
+  clipboard,
   github,
   upload,
   chevronleft,

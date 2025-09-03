@@ -47,7 +47,7 @@ export default function AppClient() {
   const nombreEntorno = useEnviromentStore((state) => state.nameEntornoActual);
   const refForm = useRef<HTMLFormElement>(null);
   const tabsContainerRef = useRef<HTMLDivElement>(null);
-  const { isDeleteModalOpen } = useModalStore.getState();
+  // const { isDeleteModalOpen } = useModalStore.getState();
 
   const [isOpenSiderBar, setIsOpenSiderbar] = useState(true);
   const [showMethods, setShowMethods] = useState(false);
@@ -277,26 +277,28 @@ export default function AppClient() {
         />
 
         <PanelGroup direction="horizontal" className="flex-grow">
-          <Panel defaultSize={50} minSize={20} className="h-full">
-            <div className="flex flex-col h-full w-full">
-              <TabNavigation
-                Opciones={Opciones}
-                selectedIdx={deferredSelectedIdx}
-                setMimeSelected={handleMimeSelectedChange}
-              />
-              <ContentPanel
-                selectedIdx={deferredSelectedIdx}
-                currentTab={currentTab}
-                updateTab={updateTab}
-                scriptsValues={{} as EventRequest}
-                setScriptsValues={() => {}}
-              />
-            </div>
-          </Panel>
+        <Panel defaultSize={50} minSize={20} className="h-full">
+  <div className="flex flex-col h-full w-full">
+    <TabNavigation
+      Opciones={Opciones}
+      selectedIdx={deferredSelectedIdx}
+      setMimeSelected={handleMimeSelectedChange}
+    />
+
+    <ContentPanel
+      selectedIdx={deferredSelectedIdx}
+      currentTab={currentTab}
+      updateTab={updateTab}
+      
+    />
+  </div>
+</Panel>
 
           <PanelResizeHandle className="w-1 bg-gray-300 dark:bg-zinc-700 cursor-col-resize" />
 
           <Panel defaultSize={50} minSize={20} className="h-full">
+
+            
             <ResponsePanel
               isLoading={isLoading}
               headersResponse={currentTab?.response?.headers}
@@ -307,9 +309,9 @@ export default function AppClient() {
           </Panel>
         </PanelGroup>
 
-        <p className="absolute inset-0 pointer-events-none ">
+        {/* <p className="absolute inset-0 pointer-events-none ">
           {String(isDeleteModalOpen)}
-        </p>
+        </p> */}
       </div>
     </div>
   );
