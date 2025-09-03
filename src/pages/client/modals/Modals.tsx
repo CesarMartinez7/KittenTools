@@ -5,7 +5,7 @@ import ExportModal from './export.modal';
 
 import { motion } from 'framer-motion';
 import { nanoid } from 'nanoid';
-import {  useMemo } from 'react';
+import { useMemo } from 'react';
 import substack from '@iconify-icons/tabler/subtask';
 import { Icon } from '@iconify/react';
 
@@ -23,7 +23,13 @@ interface MapperItem {
 
 // Este es el componente que agrupa todas las modales
 export function AppModals() {
-  const { isDeleteModalOpen, closeDeleteModal, closeAutenticacionModal, autenticacionModalOpen } = useModalStore.getState();
+  const {
+    isDeleteModalOpen,
+    closeDeleteModal,
+    closeAutenticacionModal,
+    autenticacionModalOpen,
+    deleteModalProps,
+  } = useModalStore();
   const isOpenModalExport = useModalStore((state) => state.isExportCollection);
   const closeModalExport = useModalStore(
     (state) => state.closeExportCollection,
@@ -34,7 +40,6 @@ export function AppModals() {
   );
 
   const { addCollection, importCollections, collections } = useRequestStore();
-  // const [newShow, setNewShow] = useState(true);
 
   const handleAddCollection = () => {
     const newCollection: Collection = {
@@ -198,9 +203,10 @@ export function AppModals() {
       </BaseModalLazy>
 
       <DeleteModal
-        itemName="cesar"
+        itemName={deleteModalProps?.itemName}
         isOpen={isDeleteModalOpen}
         onClose={closeDeleteModal}
+        onConfirm={deleteModalProps?.onConfirm}
       />
       <ExportModal
         onExport={handleExportCollection}
@@ -209,8 +215,10 @@ export function AppModals() {
         isOpen={isOpenModalExport}
       />
 
-
-      <GithubModal isOpen={autenticacionModalOpen} onClose={closeAutenticacionModal}/>
+      <GithubModal
+        isOpen={autenticacionModalOpen}
+        onClose={closeAutenticacionModal}
+      />
     </>
   );
 }

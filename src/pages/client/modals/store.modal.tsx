@@ -1,4 +1,3 @@
-// src/stores/modal.store.ts
 import { create } from 'zustand';
 
 interface ModalState {
@@ -9,6 +8,10 @@ interface ModalState {
   isNewFolderModalOpen: boolean;
   isNewsShowModal: boolean;
   isExportCollection: boolean;
+  deleteModalProps: {
+    itemName: string;
+    onConfirm: () => void;
+  } | null;
 
   openAutenticacionModal: () => void;
   closeAutenticacionModal: () => void;
@@ -17,7 +20,7 @@ interface ModalState {
   closeExportCollection: () => void;
   openRenameModal: () => void;
   closeRenameModal: () => void;
-  openDeleteModal: () => void;
+  openDeleteModal: (itemName: string, onConfirm: () => void) => void;
   closeDeleteModal: () => void;
   openNewRequestModal: () => void;
   closeNewRequestModal: () => void;
@@ -35,6 +38,7 @@ export const useModalStore = create<ModalState>((set) => ({
   isNewsShowModal: false,
   autenticacionModalOpen: false,
   isExportCollection: false,
+  deleteModalProps: null,
 
   openAutenticacionModal: () => set({ autenticacionModalOpen: true }),
   closeAutenticacionModal: () => set({ autenticacionModalOpen: false }),
@@ -44,8 +48,8 @@ export const useModalStore = create<ModalState>((set) => ({
 
   openRenameModal: () => set({ isRenameModalOpen: true }),
   closeRenameModal: () => set({ isRenameModalOpen: false }),
-  openDeleteModal: () => set({ isDeleteModalOpen: true }),
-  closeDeleteModal: () => set({ isDeleteModalOpen: false }),
+  openDeleteModal: (itemName, onConfirm) => set({ isDeleteModalOpen: true, deleteModalProps: { itemName, onConfirm } }),
+  closeDeleteModal: () => set({ isDeleteModalOpen: false, deleteModalProps: null }),
   openNewRequestModal: () => set({ isNewRequestModalOpen: true }),
   closeNewRequestModal: () => set({ isNewRequestModalOpen: false }),
   openNewFolderModal: () => set({ isNewFolderModalOpen: true }),
