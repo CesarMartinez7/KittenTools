@@ -133,9 +133,10 @@ const PostmanCollectionsList = () => {
 
                   {/* ✅ Botón modificado para usar la función del hook */}
                   <button
+                    
                     onClick={() => handleSaveToGithub(collection)}
-                    disabled={loading}
-                    className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors disabled:opacity-50"
+                    disabled={true}
+                    className="p-1 rounded-md disabled:cursor-not-allowed hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors disabled:opacity-50"
                     title="Subir cambios a github"
                   >
                     <Icon icon={ICONS_PAGES.upload} fontSize={16} />
