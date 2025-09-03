@@ -1,6 +1,3 @@
-import { Icon } from '@iconify/react';
-import chevronRight from '@iconify-icons/tabler/chevron-right';
-import { AnimatePresence, motion } from 'framer-motion';
 import type React from 'react';
 import {
   startTransition,
@@ -16,19 +13,16 @@ import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import { useEnviromentStore } from './components/enviroment/store.enviroment';
 import { SideBar } from './components/sidebar/SideBar';
 import RequestHook from './hooks/request.client';
-import ICONS_PAGES from './icons/ICONS_PAGE';
 import COMPONENTS_PAGE from './Main';
-import { useModalStore } from './modals/store.modal';
 import RequestForm from './request.form';
 import ResponsePanel from './response-panel';
 import { type RequestData, useRequestStore } from './stores/request.store';
-import type { EventRequest } from './types/types';
 import { AppModals } from './modals/Modals';
 import TabsContainer from './components/tabs/tab';
 
 
 // IMPORTACION DE LOS COMPONENTES
-const { Header, TabNavigation, Tab, ContentPanel } = COMPONENTS_PAGE;
+const { Header, TabNavigation, ContentPanel } = COMPONENTS_PAGE;
 
 // Componente principal optimizado
 export default function AppClient() {

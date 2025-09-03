@@ -13,6 +13,7 @@ import { type Collection } from '../db';
 
 import { useRequestStore } from '../stores/request.store';
 import GithubModal from './github.modal';
+import useGlobalHook from '../../../core/method';
 
 // Define el tipo para los mappers si no está en otro lugar
 interface MapperItem {
@@ -40,6 +41,8 @@ export function AppModals() {
   );
 
   const { addCollection, importCollections, collections } = useRequestStore();
+
+  const {handleFileUpload} = useGlobalHook()
 
   const handleAddCollection = () => {
     const newCollection: Collection = {
@@ -74,7 +77,7 @@ export function AppModals() {
       {
         name: 'Importar Entorno',
         icon: substack,
-        method: () => console.log('HTTP'),
+        method: handleFileUpload,
       },
       {
         name: 'Exportar Entorno (en dev)',
@@ -120,7 +123,7 @@ export function AppModals() {
                 </svg>
               </div>
               <div>
-                <h3 className="text-xl font-semibold text-zinc-800 dark:text-zinc-100">
+                <h3 className="text-xl font-semibold text-gray-600 dark:text-zinc-200">
                   Opciones Disponibles
                 </h3>
                 <p className="text-sm text-zinc-600 dark:text-zinc-400">
@@ -192,7 +195,7 @@ export function AppModals() {
           {/* Footer opcional con información adicional */}
           <div className="mt-6 pt-4 border-t border-zinc-200/60 dark:border-zinc-700/60">
             <p className="text-xs text-zinc-500 dark:text-zinc-400 text-center">
-              💡 Selecciona una opción para comenzar o presiona{' '}
+               Selecciona una opción para comenzar o presiona{' '}
               <kbd className="px-1.5 py-0.5 bg-zinc-200 dark:bg-zinc-700 rounded text-xs font-mono">
                 Esc
               </kbd>{' '}

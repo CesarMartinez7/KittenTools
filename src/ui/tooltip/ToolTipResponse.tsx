@@ -35,8 +35,8 @@ export default function CodeTooltip({
 
   const tooltipStyles = {
     info: 'bg-blue-500 text-white shadow-md shadow-blue-500/50',
-    success: 'bg-emerald-500 text-white shadow-md shadow-emerald-500/50',
-    error: 'bg-red-500 text-white shadow-md shadow-red-500/50',
+    success: 'bg-emerald-500/90 text-white shadow-md shadow-emerald-500/50',
+    error: 'bg-red-500 text-white shadow-md shadow-red-500/50 dark:bg-red-500/80',
   };
 
   return (
@@ -61,7 +61,7 @@ export default function CodeTooltip({
             exit={{ opacity: 0, y: -5, scale: 0.95 }}
             transition={{ duration: 0.1, ease: 'easeInOut' }}
             className={`absolute top-full left-1/2 -translate-x-1/2 mt-1 z-10 whitespace-nowrap
-              rounded-md px-3 py-2 text-xs border border-gray-100 bg-white dark:bg-zinc-800 shadow-2xl text-gray-700 dark:text-zinc-200
+              rounded-md px-3 py-2 text-xs h-[50px] border border-gray-100 bg-white dark:bg-zinc-800 shadow-2xl text-gray-700 dark:text-zinc-200
              `}
           >
             {statusCode} - {tooltipText}

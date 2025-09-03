@@ -2,7 +2,7 @@
 ![./src/assets/images/elisa-client-0.0.3.png](./0.1.4.png)
 <p align="center"><a href="https://elisaland.vercel.app/" >Pagina web de Elisa</a> </p>
 
-`Elisa` es una herramienta independiente de Jade, sencilla pero poderosa, diseñada para funcionar como un cliente API moderno. Inspirada por la filosofía de `Frontend`, Elisa permite consumir, formatear y trabajar con datos JSON directamente desde el navegador, sin necesidad de backends ni servicios externos.
+`Elisa` es un cliente API construido sobre react y, sencilla pero poderosa, diseñada para funcionar como un cliente API moderno. Inspirada por la filosofía de `Frontend`, Elisa permite consumir, formatear y trabajar con datos JSON directamente desde el navegador, sin necesidad de backends ni servicios externos.
 
 El objetivo de Elisa es claro: ser una alternativa libre, rápida y potente a herramientas postman, con enfoque en la experiencia del desarrollador y sin sacrificar rendimiento ni simplicidad.
 
