@@ -11,6 +11,11 @@ export const useGithubApi = () => {
   const [error, setError] = useState(null);
   const [octokit, setOctokit] = useState<Octokit | null>(null);
 
+  const [estaAutenticado, setAutenticado] = useState<boolean>(false)
+
+  
+  // const autrnt
+
   // Inicializar Octokit
   useEffect(() => {
     const token = localStorage.getItem('githubToken');

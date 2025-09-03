@@ -28,6 +28,7 @@ import { useEnviromentStore } from './components/enviroment/store.enviroment';
 import type { EnviromentLayout } from './components/enviroment/types';
 import ICONS_PAGES from './icons/ICONS_PAGE';
 import { useModalStore } from './modals/store.modal';
+import toast from 'react-hot-toast';
 
 const ICONS_PAGES_LOCAL = {
   moon: moon,
@@ -57,6 +58,16 @@ const Header = memo(
   }) => {
 
 
+
+    const [isOpenEntornosList, setIsOpenEntornosList] =
+    useState<boolean>(false);
+  const listEntornos = useEnviromentStore((state) => state.listEntorno);
+  const setNameEntornoActual = useEnviromentStore(
+    (state) => state.setNameEntornoActual,
+  );
+  const setEntornoActual = useEnviromentStore(
+    (state) => state.setEntornoActual,
+  );
     const {openAutenticacionModal} = useModalStore.getState()
     const { listTabs, currentTabId, saveCurrentTabToCollection } =
       useRequestStore();
@@ -73,7 +84,7 @@ const Header = memo(
             : 'bg-green-200 dark:bg-green-700 text-green-600',
         text: nombreEntorno ?? 'No hay entornos activos',
       }),
-      [nombreEntorno],
+      [nombreEntorno, listEntornos],
     );
 
     const [isDark, setIsDark] = useState<boolean>();
@@ -86,7 +97,6 @@ const Header = memo(
       if (document.body.classList.contains('dark')) {
         document.body.classList.remove('dark');
         setIsDark(true);
-        // localStorage.setItem();
       } else {
         document.body.classList.add('dark');
         setIsDark(false);
@@ -102,21 +112,25 @@ const Header = memo(
       [currentTab],
     );
 
-    const [isOpenEntornosList, setIsOpenEntornosList] =
-      useState<boolean>(false);
-    const listEntornos = useEnviromentStore((state) => state.listEntorno);
-    const setNameEntornoActual = useEnviromentStore(
-      (state) => state.setNameEntornoActual,
-    );
-    const setEntornoActual = useEnviromentStore(
-      (state) => state.setEntornoActual,
-    );
+   
 
-    const handleClickSelectedEnviroment = (env: EnviromentLayout) => {
+    const handleClickSelectedEnviroment = (env: EnviromentLayout, idx: string) => {
+      localStorage.setItem("idx_entorno", idx)
       setNameEntornoActual(env.name);
       setIsOpenEntornosList(false);
       setEntornoActual(env.values);
     };
+
+
+    useEffect(() => {
+      
+      const storeIdx : number | null = localStorage.getItem("idx_entorno")
+
+      if(storeIdx){
+        setEntornoActual(listEntornos[storeIdx].values)
+        console.log(storeIdx)
+      }
+    }, [listEntornos ])
 
     return (
       <div className="flex dark:text-zinc-200 text-gray-600 items-center text-xs gap-2 justify-end px-4 border-gray-100 dark:border-zinc-800 backdrop-blur-sm py-0.5">
@@ -150,15 +164,19 @@ const Header = memo(
                 className="absolute bottom-full bg-white dark:bg-zinc-900 shadow w-44 max-h-30 overflow-y-scroll rounded-t-xl overflow-hidden scroll "
                 style={{ scrollbarWidth: 'none' }}
               >
-                {listEntornos.map((env, i) => (
+                {listEntornos.map((env, idx) => {
+                  
+                  return(
                   <div
-                    onClick={() => handleClickSelectedEnviroment(env)}
-                    key={i.toLocaleString()}
+                    onClick={() => handleClickSelectedEnviroment(env,String(idx))}
+                    key={idx.toLocaleString()}
                     className="p-2 hover:bg-gray-200 dark:hover:bg-zinc-800 transition-colors"
                   >
-                    {env.name}
+                    {env.name} 
                   </div>
-                ))}
+
+                  )
+                })}
               </motion.div>
             )}
           </AnimatePresence>
@@ -185,7 +203,7 @@ const Header = memo(
           {!isRunningInTauri ? 'Version Web' : 'Version Tauri'}
         </span>
 
-        <button title="Autenticar" onClick={openAutenticacionModal} className='bg-gray-200 rounded p-1'>
+        <button title="Autenticar" onClick={openAutenticacionModal} className='bg-gray-200 dark:bg-zinc-900 rounded p-1'>
           <Icon icon={ICONS_PAGES.github} width={15} height={15} />
         </button>
       </div>

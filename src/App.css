@@ -1,6 +1,25 @@
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
 
+@theme {
+  --color-green-primary: #4ec9b0;
+  --color-kanagawa-bg: #1f1f28;
+  --color-kanagawa-surface: #2a2a37;
+  --color-kanagawa-overlay: #3a3a4a;
+  --color-kanagawa-red: #e46876;
+  --color-kanagawa-orange: #ffa066;
+  --color-kanagawa-yellow: #dca561;
+  --color-kanagawa-green: #98bb6c;
+  --color-kanagawa-cyan: #7fb4ca;
+  --color-kanagawa-blue: #7e9cd8;
+  --color-kanagawa-purple: #957fb8;
+  --color-kanagawa-pink: #d27e99;
+  --color-kanagawa-accent: #c34043;
+  --color-kanagawa-muted: #727169;
+  --color-kanagawa-comment: #727169;
+}
+
+
 /* Create a custom animation */
 @keyframes move-out {
   from {
@@ -26,8 +45,7 @@
   }
 }
 
-:root {
-}
+
 
 .share-tech-mono-regular {
   font-family: "Share Tech Mono", monospace;
@@ -112,16 +130,9 @@ tr::nth-child(odd) {
   animation: 0.4s ease-in both move-in;
 }
 
-@import "tailwindcss";
 
-@layer base {
-  :root {
-    color-scheme: light;
-  }
-  .dark {
-    color-scheme: dark;
-  }
-}
+
+
 kbd {
   @apply text-[9px] border border-zinc-400 p-0.5 rounded px-1.5 border-b-3 bg-gray-200 text-gray-700 dark:bg-zinc-900 dark:border-zinc-700 text-center cursor-pointer dark:text-white;
 }
@@ -572,7 +583,7 @@ button:disabled {
 
 /* Chrome, Edge, and Safari */
 *::-webkit-scrollbar {
-  width: 30px;
+  width: 300000000000000000px;
 }
 
 *::-webkit-scrollbar-track {
@@ -585,20 +596,3 @@ button:disabled {
   border: 5px inset #212121;
 }
 
-@theme {
-  --color-green-primary: #4ec9b0;
-  --color-kanagawa-bg: #1f1f28;
-  --color-kanagawa-surface: #2a2a37;
-  --color-kanagawa-overlay: #3a3a4a;
-  --color-kanagawa-red: #e46876;
-  --color-kanagawa-orange: #ffa066;
-  --color-kanagawa-yellow: #dca561;
-  --color-kanagawa-green: #98bb6c;
-  --color-kanagawa-cyan: #7fb4ca;
-  --color-kanagawa-blue: #7e9cd8;
-  --color-kanagawa-purple: #957fb8;
-  --color-kanagawa-pink: #d27e99;
-  --color-kanagawa-accent: #c34043;
-  --color-kanagawa-muted: #727169;
-  --color-kanagawa-comment: #727169;
-}

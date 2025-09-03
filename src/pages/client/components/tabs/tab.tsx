@@ -98,7 +98,7 @@ const AddTabButton = () => {
   return (
     <button
       onClick={handleAddTab}
-      className="flex items-center justify-center p-2 text-zinc-400 hover:text-zinc-600 border-l border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 transition-colors duration-200 min-w-[40px]"
+      className="flex items-center justify-center p-2 text-zinc-400 hover:text-zinc-600 border-l border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 transition-colors duration-200 min-w-[40px] hidden"
       aria-label="Agregar nueva tab"
     >
       <Icon icon={ICONS_PAGES.plus} width="20" height="20" />

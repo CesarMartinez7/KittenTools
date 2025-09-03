@@ -124,9 +124,9 @@ const CollectionItemNode = ({ item, collectionId, level } : CollectionItemNodePr
     const methodBadgeStyles = (method) => {
         switch (method.toLowerCase()) {
             case 'get':
-                return 'bg-blue-200 text-blue-800 dark:bg-blue-800 dark:text-blue-200';
-            case 'post':
                 return 'bg-green-200 text-green-800 dark:bg-green-800 dark:text-green-200';
+            case 'post':
+                return 'bg-blue-200 text-blue-800 dark:bg-blue-800 dark:text-blue-200';
             case 'put':
                 return 'bg-yellow-200 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-200';
             case 'delete':
@@ -150,7 +150,7 @@ const CollectionItemNode = ({ item, collectionId, level } : CollectionItemNodePr
             >
                 <div
                     className="flex items-center h-[36px] py-1.5 px-2 cursor-pointer rounded-md transition-colors duration-200 group dark:hover:bg-zinc-700/50 hover:bg-gray-200/50"
-                    style={{ paddingLeft: `${level * 16 + 8}px` }}
+                    style={{ paddingLeft: `${level * 10 + 8}px` }}
                     onClick={handleNodeClick}
                     onContextMenu={handleClickContextMenu}
                 >
@@ -268,7 +268,7 @@ const CollectionItemNode = ({ item, collectionId, level } : CollectionItemNodePr
                 {showBar && (
                     <div
                         ref={menuRef}
-                        className="absolute z-10 top-full right-2 mt-2 w-38 text-xs rounded-md shadow-lg py-1 focus:outline-none border-gray-200 bg-white dark:bg-zinc-900 border dark:border-zinc-800"
+                        className="absolute z-10 top-full right-0 mt-2 w-38 text-xs rounded-md shadow-lg py-1 focus:outline-none border-gray-200 bg-white dark:bg-zinc-900 border dark:border-zinc-800"
                     >
                         {menuActions.map((action, index) => (
                             <button

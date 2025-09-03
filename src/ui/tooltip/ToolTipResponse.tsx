@@ -2,15 +2,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useState } from 'react';
 import './tooltip.css';
 
-/**
- * A tooltip component that activates on hover/focus and displays a
- * message based on an API status code.
- *
- * @param {string} ariaText - The text displayed on the button.
- * @param {number} statusCode - The HTTP status code from the API response.
- * @param {string} [className] - Optional CSS classes for the button.
- * @param {() => void} [onClick] - The click handler for the button.
- */
+
 export default function CodeTooltip({
   ariaText,
   statusCode,
@@ -19,7 +11,6 @@ export default function CodeTooltip({
 }) {
   const [show, setShow] = useState(false);
 
-  // Logic to determine the tooltip's text and style based on the status code
   const getTooltipContent = (code) => {
     switch (code) {
       case 200:

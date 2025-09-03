@@ -99,9 +99,9 @@ const PostmanCollectionsList = () => {
           return (
             <div
               key={collection.id}
-              className="p-3 rounded-xl shadow-lg transition-colors bg-white border-gray-200 text-gray-800 dark:bg-zinc-800/10 dark:border-zinc-900 dark:text-zinc-200 flex flex-col overflow-scroll    "
+              className="p-3 rounded-lg bg-gray-50 transition-colors  border-gray-200 text-gray-800 dark:bg-zinc-800/10 dark:border-zinc-900 dark:text-zinc-200 flex flex-col"
             >
-              <div className="flex items-center justify-between p-2">
+              <div className="flex items-center justify-between ">
                 <div className="flex items-center gap-2 flex-1">
                   {/* ✅ Botón de colapso */}
                   <button
@@ -111,7 +111,7 @@ const PostmanCollectionsList = () => {
                   >
                     <Icon
                       icon={isCollapsed ? ICONS_PAGES.chevronright : ICONS_PAGES.chevrondown}
-                      className="size-4"
+                      className="size-4 text-gray-500"
                       fontSize={12}
                     />
                   </button>
