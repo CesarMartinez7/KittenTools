@@ -14,6 +14,7 @@ import { type Collection } from '../db';
 import { useRequestStore } from '../stores/request.store';
 import GithubModal from './github.modal';
 import useGlobalHook from '../../../core/method';
+import toast from 'react-hot-toast';
 
 // Define el tipo para los mappers si no está en otro lugar
 interface MapperItem {
@@ -44,13 +45,21 @@ export function AppModals() {
 
   const {handleFileUpload} = useGlobalHook()
 
+
+  const closeModalsNews = useModalStore((state) => state.closeNewsShowModal);
   const handleAddCollection = () => {
-    const newCollection: Collection = {
-      id: nanoid(),
-      name: 'Nueva Colección',
-      item: [],
-    };
-    addCollection(newCollection);
+    try{
+      const newCollection: Collection = {
+        id: nanoid(),
+        name: 'Nueva Colección',
+        item: [],
+      };
+      addCollection(newCollection);
+      closeModalsNews()
+      toast.success("Coleccion creado con exito")
+    }catch {
+      toast.error("Ocurrio un error al crear la coleccion")
+    }
   };
 
   const openModalExport = useModalStore((state) => state.openExportCollection);

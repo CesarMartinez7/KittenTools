@@ -150,7 +150,7 @@ const Header = memo(
           onClick={toogleTheme}
         >
           <Icon
-            icon={!isDark ? ICONS_PAGES_LOCAL.moon : ICONS_PAGES_LOCAL.sun}
+            icon={isDark ? ICONS_PAGES_LOCAL.moon : ICONS_PAGES_LOCAL.sun}
             width="14"
             height="14"
           />
@@ -161,7 +161,7 @@ const Header = memo(
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="absolute bottom-full bg-white dark:bg-zinc-900 shadow w-44 max-h-30 overflow-y-scroll rounded-t-xl overflow-hidden scroll "
+                className="absolute bottom-full bg-white dark:bg-zinc-900 shadow w-44 max-h-36 overflow-y-scroll rounded-t-xl overflow-hidden scroll "
                 style={{ scrollbarWidth: 'none' }}
               >
                 {listEntornos.map((env, idx) => {
@@ -172,7 +172,8 @@ const Header = memo(
                     key={idx.toLocaleString()}
                     className="p-2 hover:bg-gray-200 dark:hover:bg-zinc-800 transition-colors"
                   >
-                    {env.name} 
+                    {idx + 1} {"  "}{env.name} 
+
                   </div>
 
                   )
@@ -543,9 +544,10 @@ const ContentPanel = memo(
           <motion.div
             key="auth-section"
             variants={VariantsAnimation}
-            className={`absolute inset-0 flex-1 flex items-center justify-center text-gray-500 dark:text-zinc-600 ${selectedIdx === 4 ? 'block' : 'hidden'}`}
+            className={`absolute inset-0 flex-1 gap-4 flex flex-col items-center justify-center text-gray-500 dark:text-zinc-600 ${selectedIdx === 4 ? 'block' : 'hidden'}`}
           >
-            <p className="text-md">Próximamente, en desarollo</p>
+            <Icon icon={ICONS_PAGES.edit} className='size-20'/>
+            <p className="text-md text-zinc-400">Próximamente, solamente en la version de desktop.</p>
           </motion.div>
         ),
       }),

@@ -40,10 +40,10 @@ const ResponsePanel = ({
         <p className="text-lg font-medium text-gray-700 dark:text-zinc-300">
           ¡Todo listo para que hagas tu primera solicitud!
         </p>
-        <p className="text-md text-gray-500 dark:text-zinc-400">
+        <p className="text-md my-5 text-gray-500 dark:text-zinc-400">
           Puedes comenzar con tu primera solicitud.
         </p>
-        <div className="my-6 flex flex-col space-y-3">
+        <div className=" flex flex-col space-y-1">
           <div className="flex gap-2">
             <p>Enviar solicitud</p> <kbd>Ctrl</kbd> + <kbd>Enter</kbd>
           </div>

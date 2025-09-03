@@ -8,6 +8,7 @@ import { useRequestStore } from '../../stores/request.store';
 import type { SavedRequestsSidebarProps } from '../../types/types';
 import PostmanCollectionsList from "../collections/CollectionList"
 import ResizableSidebar from '../../resizablesidebar';
+import ICONS_PAGES from '../../icons/ICONS_PAGE';
 
 // Componente ResizableSidebar (sin cambios)
 
@@ -35,6 +36,7 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
             <div className="flex flex-row gap-2 mb-6 justify-end">
               <div>
                 <ToolTipButton
+                  IconName={ICONS_PAGES.tool}
                   ariaText="Herramientas"
                   tooltipText="Añadir coleccion, request, enviroment"
                   onClick={closeModalsNews}
@@ -43,7 +45,7 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
               </div>
             </div>
             <div className="flex justify-start items-center my-4 space-x-3 relative bg">
-              <span className="pixelarticons--coffee-alt text-gray-900 dark:text-zinc-200"></span>
+              <span className="pixelarticons--coffee-alt text-gray-700 dark:text-gray-200"></span>
               <div className=''>
 
               <h3 className="text-4xl bg-gradient-to-t from-gray-700 to-gray-600 dark:text-zinc-200 dark:bg-none dark:bg-clip-text bg-clip-text text-transparent share-tech-mono-regular ">

@@ -1,16 +1,20 @@
 import { AnimatePresence, motion } from 'motion/react';
 import { useState } from 'react';
 import './tooltip.css';
+import { Icon } from '@iconify/react/dist/iconify.js';
+import ICONS_PAGES from '../../pages/client/icons/ICONS_PAGE';
 
 export default function ToolTipButton({
   ariaText = 'Default text',
   tooltipText,
   className = '',
   onClick,
+  IconName
 }: {
   ariaText: string;
   tooltipText: string;
   className?: string;
+  IconName: any;
   onClick?: () => void;
 }) {
   const [show, setShow] = useState(false);
@@ -23,10 +27,13 @@ export default function ToolTipButton({
         onFocus={() => setShow(true)} // accesible con teclado
         onBlur={() => setShow(false)} // accesible con teclado
         onClick={onClick}
-        className={`tooltip ${className} flex font-bold items-center gap-2 px-3 py-0.5 
+        className={` ${className} flex flex-row font-bold items-center gap-2 px-3 py-0.5 
           text-sm rounded-md transition-colors duration-200
           // 0`}
       >
+        {IconName && (
+          <Icon icon={IconName} />
+        )}
         {ariaText}
       </motion.button>
 
@@ -42,6 +49,7 @@ export default function ToolTipButton({
               bg-gray-200 text-gray-700
               dark:bg-zinc-950 dark:text-gray-200"
           >
+            
             {tooltipText}
           </motion.span>
         )}
