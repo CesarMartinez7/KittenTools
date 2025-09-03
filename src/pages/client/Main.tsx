@@ -204,9 +204,13 @@ const Header = memo(
           {!isRunningInTauri ? 'Version Web' : 'Version Tauri'}
         </span>
 
-        <button title="Autenticar" onClick={openAutenticacionModal} className='bg-gray-200 dark:bg-zinc-900 rounded p-1'>
+        <button title="Autenticar" onClick={openAutenticacionModal} className=' dark:bg-zinc-900 rounded p-0.5'>
           <Icon icon={ICONS_PAGES.github} width={15} height={15} />
         </button>
+
+        <a title="Visitar sitio web de elisa" href='https://elisaland.vercel.app/' >
+            <Icon icon={ICONS_PAGES.worldwww} className='size-4' />
+        </a>
       </div>
     );
   },

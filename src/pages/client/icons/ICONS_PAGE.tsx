@@ -21,8 +21,11 @@ import upload from '@iconify-icons/tabler/upload';
 import github from '@iconify-icons/tabler/brand-github';
 import clipboard from "@iconify-icons/tabler/clipboard-list"
 import tool from "@iconify-icons/tabler/tool"
+import worldwww from "@iconify-icons/tabler/world-www"
+
 
 const ICONS_PAGES = {
+  worldwww,
   tool,
   clipboard,
   github,
