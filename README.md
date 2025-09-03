@@ -9,19 +9,18 @@ El objetivo de Elisa es claro: ser una alternativa libre, rápida y potente a he
 
 ## 🚀 ¿Qué ofrece Elisa?
 
-- ✨ Formateo de JSON claro, legible y con estilos modernos.
-- ⚙️ Generación automática de interfaces TypeScript desde JSON.
+- ✨ Formateo de JSON, XML, HTML contruidos por nodos.
+- ⚙️ Editor de codigo contruido desde cero.
 - 🧠 UI intuitiva centrada en la experiencia del desarrollador.
-- 📂 Soporte para carga de archivos JSON (en desarrollo).
+- 📂 Soporte para cargar, modificar y manipular colleciones de postman.
 - ⚡ Extremadamente rápida y ligera.
-- ⭐ Características principales
-- ✅ Formateo y minificación de JSON sin necesidad de backend.
-- 🔍 Expansión/plegado del visualizador de JSON.
-- 🔁 Comparación de JSONs lado a lado.
-- 📁 Carga de archivos JSON mediante FileReader.
-- 🌐 Compartir JSON a través de parámetros en la URL (en desarrollo).
+- ⭐ Carga y modificacion enviroment de `Postm`
+- 🦀 Version de Desktop super ligera hecha con Tauri y Cors con `ADIOS CORS`.
+- 🔁 Integracion con herramientas JADE.
+- 📁 Modo oscuro y Modo claro.
+- 🌐 Integracion con github - `Estado: desarollo`.
 - 🖥️ Todo en una sola vista, sin cambios de contexto.
-- ⚡ Rápido, sencillo y portable.
+
 
 # 📦 Tecnologías utilizadas
 
@@ -32,6 +31,8 @@ React
      Zustand
        Tauri (versión de escritorio)
           Vite
+            Tauri
+              Rust
 ```
 
 # 🧪 Instalación y uso
