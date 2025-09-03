@@ -304,13 +304,13 @@ const PostmanCollectionsList = () => {
 
   // ✅ Función para guardar en GitHub
   const handleSaveToGithub = async (collection) => {
-    console.log("hello wordsfd")
+    
     const toastId = toast.loading('Guardando en GitHub...');
     try {
       
       const resposne = await saveCollection(collection.name, collection);
 
-      console.log(resposne)
+      
       toast.success('Colección guardada exitosamente!', { id: toastId });
     } catch (err) {
       toast.error('Error al guardar la colección.', { id: toastId });

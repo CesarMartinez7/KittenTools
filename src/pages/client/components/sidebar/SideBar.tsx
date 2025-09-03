@@ -49,7 +49,7 @@ export function SideBar({ isOpen }: SavedRequestsSidebarProps) {
               <h3 className="text-4xl bg-gradient-to-t from-gray-700 to-gray-600 dark:text-zinc-200 dark:bg-none dark:bg-clip-text bg-clip-text text-transparent share-tech-mono-regular ">
                 Elisa
               </h3>
-              <p className='text-gray-600'>¡Tu próxima gran creación te espera!</p>
+              <p className='text-gray-600 dark:text-zinc-400'>¡Tu próxima gran creación te espera!</p>
               </div>
             </div>
             <div className="flex w-full gap-4 flex-1 overflow-hidden">

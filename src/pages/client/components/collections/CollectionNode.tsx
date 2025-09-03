@@ -41,10 +41,10 @@ const CollectionItemNode = ({ item, collectionId, level } : CollectionItemNodePr
         
         e.stopPropagation();
         if (isFolder) {
-            console.log(nodeData)
+            
             handleClick(); // Lógica para colapsar/expandir la carpeta
         } else {
-            console.log(nodeData)
+            
             // Llama a la función de la store para abrir el tab
             addFromNode({
                 ...nodeData,

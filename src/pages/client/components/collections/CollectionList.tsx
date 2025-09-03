@@ -66,13 +66,13 @@ const PostmanCollectionsList = () => {
 
   // ✅ Función para guardar en GitHub
   const handleSaveToGithub = async (collection : Collection) => {
-    console.log("hello wordsfd")
+    
     const toastId = toast.loading('Guardando en GitHub...');
     try {
       
       const resposne = await saveCollection(collection.name, collection);
 
-      console.log(resposne)
+      
       toast.success('Colección guardada exitosamente!', { id: toastId });
     } catch (err) {
       toast.error('Error al guardar la colección.', { id: toastId });
@@ -92,14 +92,14 @@ const PostmanCollectionsList = () => {
 
   return (
     <div className="w-full h-full text-gray-800 dark:text-zinc-200 flex flex-col dark:bg-zinc-900 ">
-      <div className="flex-1 overflow-scroll p-2 space-y-4">
+      <div className="flex-1 overflow-scroll p-2 space-y-4" style={{scrollbarWidth: "none"}}>
         {collections.map((collection) => {
           const isCollapsed = collapsedCollections.has(collection.id);
           
           return (
             <div
               key={collection.id}
-              className="p-3 rounded-xl shadow-lg transition-colors bg-white border border-gray-200 text-gray-800 dark:bg-zinc-800/10 dark:border-zinc-900 dark:text-zinc-200 flex flex-col overflow-x-scroll"
+              className="p-3 rounded-xl shadow-lg transition-colors bg-white border-gray-200 text-gray-800 dark:bg-zinc-800/10 dark:border-zinc-900 dark:text-zinc-200 flex flex-col overflow-scroll    "
             >
               <div className="flex items-center justify-between p-2">
                 <div className="flex items-center gap-2 flex-1">
@@ -110,7 +110,7 @@ const PostmanCollectionsList = () => {
                     title={isCollapsed ? "Expandir" : "Contraer"}
                   >
                     <Icon
-                      icon={isCollapsed ? ICONS_PAGES.chevronRight : ICONS_PAGES.chevronDown}
+                      icon={isCollapsed ? ICONS_PAGES.chevronright : ICONS_PAGES.chevrondown}
                       className="size-4"
                       fontSize={12}
                     />
