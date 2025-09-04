@@ -423,7 +423,7 @@ export default function EnviromentComponent() {
               onClick={handleClickCrearEntorno}
               className="mt-4 px-4 py-2 bg-gray-300 text-shadow-2xs dark:text-zinc-300 text-zinc-800 dark:bg-zinc-800 hover:bg-zinc-700 rounded-md hover:text-white transition-colors"
             >
-              Crear entorno 2
+              Crear entorno
             </motion.button>
           </motion.div>
         )}

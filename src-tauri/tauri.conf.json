@@ -27,11 +27,11 @@
     "active": true,
     "targets": "all",
     "icon": [
-      "icons/32x32.png",
-      "icons/bolt-128x128.png",
-      "icons/bol-256x256.png",
+      "icons/coffe-32x32.png",
+      "icons/coffe-128x128.png",
+      "icons/coffe-128x128.png",
       "icons/icon.icns",
-      "icons/icon.ico"
+      "icons/coffe.ico"
     ]
   },
   "plugins": {

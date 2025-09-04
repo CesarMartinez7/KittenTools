@@ -58,52 +58,52 @@ const Header = memo(
     isFullScreen,
     toogleFullScreen,
     nombreEntorno,
-    children, // <- Desestructura la propiedad `children`
+    children,
   }: HeaderProps) => {
-    const [isOpenEntornosList, setIsOpenEntornosList] =
-      useState<boolean>(false);
+    const [isOpenEntornosList, setIsOpenEntornosList] = useState<boolean>(false);
+    const [isDark, setIsDark] = useState<boolean>(false);
+    
     const listEntornos = useEnviromentStore((state) => state.listEntorno);
-    const setNameEntornoActual = useEnviromentStore(
-      (state) => state.setNameEntornoActual,
-    );
-    const setEntornoActual = useEnviromentStore(
-      (state) => state.setEntornoActual,
-    );
+    const setNameEntornoActual = useEnviromentStore((state) => state.setNameEntornoActual);
+    const setEntornoActual = useEnviromentStore((state) => state.setEntornoActual);
     const { openAutenticacionModal } = useModalStore.getState();
-    const { listTabs, currentTabId, saveCurrentTabToCollection } =
-      useRequestStore();
+    const { listTabs, currentTabId, saveCurrentTabToCollection } = useRequestStore();
+    
     const currentTab = listTabs.find((tab) => tab.id === currentTabId);
-
     const isRunningInTauri = useMemo(() => window.__TAURI__ !== undefined, []);
 
-    const entornoStatus = useMemo(
-      () => ({
-        isEmpty: nombreEntorno === null,
-        className:
-          nombreEntorno === null
-            ? 'bg-red-200 bg-red-400 dark:bg-red-600 text-white'
-            : 'bg-green-200 dark:bg-green-700 text-green-600',
+    // Estado del entorno mejorado pero compacto
+    const entornoStatus = useMemo(() => {
+      const isEmpty = nombreEntorno === null;
+      return {
+        isEmpty,
+        className: isEmpty
+          ? 'bg-red-200 dark:bg-red-600 text-red-600 dark:text-red-300'
+          : 'bg-green-200 dark:bg-green-700 text-green-600 dark:text-green-300',
         text: nombreEntorno ?? 'No hay entornos activos',
-      }),
-      [nombreEntorno, listEntornos],
-    );
+        icon: isEmpty ? '' : '',
+      };
+    }, [nombreEntorno, listEntornos]);
 
-    const [isDark, setIsDark] = useState<boolean>();
+    // Tema mejorado
+    useEffect(() => {
+      const savedTheme = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const shouldBeDark = savedTheme ? savedTheme === 'true' : prefersDark;
+      
+      setIsDark(shouldBeDark);
+      document.body.classList.toggle('dark', shouldBeDark);
+    }, []);
 
     useEffect(() => {
       localStorage.setItem('theme', String(isDark));
     }, [isDark]);
 
-    const toogleTheme = useCallback(() => {
-      if (document.body.classList.contains('dark')) {
-        document.body.classList.remove('dark');
-        setIsDark(true);
-      } else {
-        document.body.classList.add('dark');
-        document.body.classList.add('dark'); // Corregido: Duplicado, debería ser 'add'
-        setIsDark(false);
-      }
-    }, []);
+    const toggleTheme = useCallback(() => {
+      const newIsDark = !isDark;
+      setIsDark(newIsDark);
+      document.body.classList.toggle('dark', newIsDark);
+    }, [isDark]);
 
     const handleSaveClick = useCallback(() => {
       saveCurrentTabToCollection();
@@ -114,27 +114,37 @@ const Header = memo(
       [currentTab],
     );
 
-    const handleClickSelectedEnviroment = (
-      env: EnviromentLayout,
-      idx: string,
-    ) => {
-      localStorage.setItem('idx_entorno', idx);
+    const handleClickSelectedEnviroment = useCallback((env: EnviromentLayout, idx: number) => {
+      localStorage.setItem('idx_entorno', String(idx));
       setNameEntornoActual(env.name);
       setIsOpenEntornosList(false);
       setEntornoActual(env.values);
-    };
+    }, [setNameEntornoActual, setEntornoActual]);
 
+    // Carga inicial mejorada
     useEffect(() => {
-      const storeIdx: number | null = localStorage.getItem('idx_entorno');
-
-      if (storeIdx) {
-        setEntornoActual(listEntornos[storeIdx].values);
-        console.log(storeIdx);
+      const storedIdx = localStorage.getItem('idx_entorno');
+      if (storedIdx && listEntornos.length > 0) {
+        const idx = parseInt(storedIdx, 10);
+        if (idx >= 0 && idx < listEntornos.length) {
+          setEntornoActual(listEntornos[idx].values);
+          setNameEntornoActual(listEntornos[idx].name);
+        }
       }
-    }, [listEntornos]);
+    }, [listEntornos, setEntornoActual, setNameEntornoActual]);
+
+    // Cerrar al hacer clic fuera
+    useEffect(() => {
+      if (isOpenEntornosList) {
+        const handleClickOutside = () => setIsOpenEntornosList(false);
+        document.addEventListener('click', handleClickOutside);
+        return () => document.removeEventListener('click', handleClickOutside);
+      }
+    }, [isOpenEntornosList]);
 
     return (
       <div className="flex dark:text-zinc-200 text-gray-600 items-center text-xs gap-2 justify-end px-4 border-gray-100 dark:border-zinc-800 backdrop-blur-sm py-0.5">
+        {/* Botón Guardar */}
         <button
           title="Guardar en colección"
           onClick={handleSaveClick}
@@ -145,10 +155,11 @@ const Header = memo(
           <Icon icon={ICONS_PAGES_LOCAL.save} width="14" height="14" />
         </button>
 
+        {/* Botón Tema */}
         <button
           title="Cambiar tema"
           className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
-          onClick={toogleTheme}
+          onClick={toggleTheme}
         >
           <Icon
             icon={isDark ? ICONS_PAGES_LOCAL.moon : ICONS_PAGES_LOCAL.sun}
@@ -156,66 +167,114 @@ const Header = memo(
             height="14"
           />
         </button>
-        <div>
+
+        {/* Selector de Entornos Mejorado pero Pequeño */}
+        <div className="relative" onClick={(e) => e.stopPropagation()}>
           <AnimatePresence mode="wait">
             {isOpenEntornosList && (
               <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="absolute bottom-full bg-white dark:bg-zinc-900 shadow w-44 max-h-36 overflow-y-scroll rounded-t-xl overflow-hidden scroll "
-                style={{ scrollbarWidth: 'none' }}
+                initial={{ opacity: 0, scale: 0.95, y: 5 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 5 }}
+                transition={{ duration: 0.15 }}
+                className="absolute bottom-full right-0 mb-1 bg-white dark:bg-zinc-900 shadow-lg border border-gray-200 dark:border-zinc-700 w-60 max-h-48 overflow-hidden rounded-lg z-50"
               >
-                {listEntornos.map((env, idx) => {
-                  return (
-                    <div
-                      onClick={() =>
-                        handleClickSelectedEnviroment(env, String(idx))
-                      }
-                      key={idx.toLocaleString()}
-                      className="p-2 hover:bg-gray-200 dark:hover:bg-zinc-800 transition-colors"
-                    >
-                      {idx + 1} {'  '}
-                      {env.name}
+                {/* Header compacto */}
+                <div className="px-3 py-2 border-b border-gray-200 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-medium text-gray-700 dark:text-zinc-200">
+                      Entornos ({listEntornos.length})
+                    </span>
+                  </div>
+                </div>
+                
+                {/* Lista compacta */}
+                <div className="overflow-y-auto max-h-40">
+                  {listEntornos.length === 0 ? (
+                    <div className="p-3 text-center text-gray-500 dark:text-zinc-400 text-xs">
+                      📭 No hay entornos
                     </div>
-                  );
-                })}
+                  ) : (
+                    listEntornos.map((env, idx) => {
+                      const isActive = env.name === nombreEntorno;
+                      return (
+                        <div
+                          key={`${env.name}-${idx}`}
+                          onClick={() => handleClickSelectedEnviroment(env, idx)}
+                          className={`group p-2 cursor-pointer transition-colors text-xs border-l-2 hover:bg-gray-50 dark:hover:bg-zinc-800
+                            ${isActive 
+                              ? 'bg-emerald-50 dark:bg-emerald-900/20 border-l-emerald-500' 
+                              : 'border-l-transparent hover:border-l-gray-300'}`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2 flex-1 min-w-0">
+                              <span className="flex-shrink-0 w-5 h-5 bg-blue-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
+                                {idx + 1}
+                              </span>
+                              <span className={`font-medium truncate
+                                ${isActive ? 'text-emerald-700 dark:text-emerald-300' : 'text-gray-700 dark:text-zinc-200'}`}>
+                                {env.name}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              {isActive && <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div>}
+                              <span className="text-gray-400 text-xs">›</span>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
+          
+          {/* Botón principal compacto */}
           <motion.div
             onMouseEnter={() => setIsOpenEntornosList(true)}
-            onClick={() => setIsOpenEntornosList(true)}
-            className={`font-medium dark:text-zinc-200 text-gray-600 truncate max-w-[250px] px-3 rounded-full ${entornoStatus.className}`}
+            onClick={() => setIsOpenEntornosList(!isOpenEntornosList)}
+            className={`font-medium truncate max-w-[250px] px-3 py-1 rounded-full cursor-pointer transition-colors flex items-center gap-1 ${entornoStatus.className}`}
           >
-            {entornoStatus.text}
+            <span className="text-xs">{entornoStatus.icon}</span>
+            <span className="text-xs truncate">{entornoStatus.text}</span>
+            <span className={`text-xs transition-transform duration-200 ${isOpenEntornosList ? 'rotate-180' : ''}`}>
+              <Icon icon={ICONS_PAGES.chevrondown} width="12" height="12" />
+            </span>
           </motion.div>
         </div>
 
-        {/* Aquí se renderizarán los hijos */}
+        {/* Children */}
         {children}
 
+        {/* Botón Pantalla Completa */}
         <button
-          title="Pantalla completa | Salir de pantalla completa "
+          title="Pantalla completa | Salir de pantalla completa"
           onClick={toogleFullScreen}
-          className="p-1 rounded-md dark:text-zinc-200 text-gray-600 hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
+          className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
         >
           <Icon
             icon={isFullScreen ? arrowsMinimize : arrowsMaximize}
             width={14}
+            height={14}
           />
         </button>
-        <span className="dark:text-zinc-200 text-gray-600">
+
+        {/* Versión */}
+        <span className="dark:text-zinc-200 text-gray-600 text-xs">
           {!isRunningInTauri ? 'Version Web' : 'Version Tauri'}
         </span>
 
+        {/* Autenticar */}
         <button
           title="Autenticar"
           onClick={openAutenticacionModal}
-          className=" dark:bg-zinc-900 rounded p-0.5"
+          className="dark:bg-zinc-900 rounded p-0.5"
         >
           <Icon icon={ICONS_PAGES.github} width={15} height={15} />
         </button>
 
+        {/* Link externo */}
         <a
           title="Visitar sitio web de elisa"
           href="https://elisaland.vercel.app/"

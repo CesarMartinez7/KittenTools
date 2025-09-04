@@ -46,7 +46,7 @@ async fn http_request(
         .as_ref()
         .map_or(true, |h| !h.contains_key("User-Agent"))
     {
-        request = request.header("User-Agent", "ELisa-App/0.1.0");
+        request = request.header("User-Agent", "Elisa-App/0.1.0");
     }
 
     if let Some(b) = body {
