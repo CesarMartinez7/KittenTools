@@ -6,18 +6,16 @@ import toast from 'react-hot-toast';
 import { JsonNode } from '../../../../ui/formatter-JSON/jsonnode.';
 import HtmlNode from '../../../../ui/html-node/html';
 import TableData from '../../../../ui/Table';
+import ToolTipButton from '../../../../ui/tooltip/TooltipButton';
 import XmlNode from '../../../../ui/xml-node/xmlnode';
 import { useRequestStore } from '../../stores/request.store';
+import ApiResponseTooltip from '../../../../ui/tooltip/ToolTipResponse';
 import CodeTooltip from '../../../../ui/tooltip/ToolTipResponse';
 
-// Función auxiliar para analizar una cadena HTML de forma segura y robusta
 const parseHtmlString = (htmlString: string): Node | null => {
   try {
     const parser = new DOMParser();
     const doc = parser.parseFromString(htmlString, 'text/html');
-    if (doc.documentElement.querySelector('parsererror')) {
-      throw new Error('HTML inválido');
-    }
     return doc.documentElement;
   } catch (error) {
     console.error('Failed to parse HTML string:', error);
@@ -25,40 +23,7 @@ const parseHtmlString = (htmlString: string): Node | null => {
   }
 };
 
-// Función de conversión segura de JSON a XML
-const convertJsonToXml = (jsonData: any): string | null => {
-  if (typeof jsonData !== 'object' || jsonData === null) {
-    return null;
-  }
-
-  const toXml = (obj: any, rootName: string = 'root'): string => {
-    let xml = `<${rootName}>`;
-    for (const key in obj) {
-      if (Object.prototype.hasOwnProperty.call(obj, key)) {
-        const value = obj[key];
-        if (Array.isArray(value)) {
-          value.forEach((item) => {
-            xml += toXml(item, key);
-          });
-        } else if (typeof value === 'object' && value !== null) {
-          xml += toXml(value, key);
-        } else {
-          xml += `<${key}>${value}</${key}>`;
-        }
-      }
-    }
-    xml += `</${rootName}>`;
-    return xml;
-  };
-
-  try {
-    return `<?xml version="1.0" encoding="UTF-8"?>` + toXml(jsonData);
-  } catch (e) {
-    console.error('Error al convertir JSON a XML:', e);
-    return null;
-  }
-};
-
+// Define los tipos de respuesta del dropdown
 const responseViewTypes = ['Raw', 'Preview', 'JSON', 'XML', 'HTML', 'Base64'];
 const tabs = ['Respuesta', 'Cabeceras', 'Cookies', 'Timeline'];
 
@@ -103,7 +68,7 @@ export default function ResponsesTypesComponent({
   timeResponse,
   data,
   typeResponse,
-  setTypeResponse
+  setTypeResponse,
 }: ResponseTypes) {
   const { listTabs, currentTabId } = useRequestStore();
 
@@ -113,49 +78,45 @@ export default function ResponsesTypesComponent({
 
   const currentTab = listTabs.find((tab) => tab.id === currentTabId);
 
+  // Sincroniza el tipo de respuesta activo con el tipo de respuesta de la API
+  // Sincroniza el tipo de respuesta activo con el tipo de respuesta de la API
   useEffect(() => {
+    // Asegúrate de que typeResponse sea una cadena de texto antes de usarlo.
     if (typeof typeResponse === 'string') {
-      const responseType = currentTab.response.typeResponse.toLowerCase();
-      if (responseType.includes('json')) {
+      if (typeResponse.includes('json')) {
         setActiveResponseType('JSON');
-      } else if (responseType.includes('xml')) {
+      } else if (typeResponse.includes('xml')) {
         setActiveResponseType('XML');
-      } else if (responseType.includes('html')) {
+      } else if (typeResponse.includes('html')) {
         setActiveResponseType('HTML');
       } else {
         setActiveResponseType('Raw');
       }
     }
-  }, [currentTab?.response?.typeResponse]);
+  }, [typeResponse]);
 
   const parsedData = useMemo(() => {
-    if (typeof data !== 'string') {
-      return data;
-    }
     try {
       if (
-        activeResponseType === 'JSON' ||
-        (currentTab?.response?.typeResponse?.toLowerCase()?.includes('json'))
+        typeof data === 'string' &&
+        (typeResponse.toLowerCase().includes('json') ||
+          activeResponseType === 'JSON')
       ) {
         return JSON.parse(data);
       }
       return data;
     } catch (e) {
-      console.error('Error al parsear el contenido de la respuesta:', e);
       return data;
     }
-  }, [data, currentTab?.response?.typeResponse, activeResponseType]);
+  }, [data, typeResponse, activeResponseType]);
 
   const size = useMemo(() => {
     try {
-      if (!data) return '0.00 KB';
-      const dataToEncode = typeof data === 'string' ? data : JSON.stringify(data);
-      const sizeInBytes = new TextEncoder().encode(dataToEncode).length;
-      const sizeInKB = sizeInBytes / 1024;
+      const sizeInKB =
+        new TextEncoder().encode(JSON.stringify(data)).length / 1024;
       return sizeInKB.toFixed(2) + ' KB';
     } catch (e) {
-      console.error('Error al calcular el tamaño de la respuesta:', e);
-      return '0.00 KB';
+      return '0.00 kb';
     }
   }, [data]);
 
@@ -166,8 +127,8 @@ export default function ResponsesTypesComponent({
         : String(parsedData);
     navigator.clipboard
       .writeText(contentToCopy)
-      .then(() => toast.success('Copiado con éxito 🚀'))
-      .catch(() => toast.error('Ocurrió un error al copiar 😞'));
+      .then(() => toast.success('Copiado con éxito'))
+      .catch(() => toast.error('Ocurrió un error al copiar'));
   };
 
   const getStatusCodeClass = (status: number) => {
@@ -182,21 +143,28 @@ export default function ResponsesTypesComponent({
     return 'bg-gray-500';
   };
 
+  const getStatusCodeText = (status: number): string => {
+    if (status >= 200 && status < 300) {
+      return 'Petición procesada correctamente';
+    }
+    if (status >= 300 && status < 400) {
+      return 'Redirección necesaria';
+    }
+    if (status >= 400 && status < 500) {
+      return 'Petición con error de cliente';
+    }
+    if (status >= 500 && status < 600) {
+      return 'Error interno del servidor';
+    }
+    return 'Respuesta informativa del servidor';
+  };
+
   const renderResponseContent = () => {
     const finalType = activeResponseType.toLowerCase();
 
-    if (!data) {
-      return (
-        <div className="text-center text-zinc-500 mt-20">
-          <Icon icon="tabler:database-off" width="64" className="mx-auto" />
-          <p className="mt-2">No hay datos de respuesta para mostrar.</p>
-        </div>
-      );
-    }
-
     switch (finalType) {
       case 'preview':
-        if (typeof data === 'string' && (currentTab?.response?.typeResponse?.includes('html') || currentTab?.response?.typeResponse?.includes('xml'))) {
+        if (typeResponse.includes('html') || typeResponse.includes('xml')) {
           return (
             <iframe
               srcDoc={data}
@@ -205,11 +173,8 @@ export default function ResponsesTypesComponent({
             />
           );
         }
-        return <pre className="text-zinc-400">Preview no disponible para este tipo de contenido.</pre>;
+        return <pre>Preview no disponible para este tipo de contenido.</pre>;
       case 'json':
-        if (typeof parsedData !== 'object') {
-           return <pre className="text-xs text-red-400 whitespace-pre-wrap break-all">Error: Datos JSON inválidos. Mostrando contenido RAW.</pre>;
-        }
         return (
           <JsonNode
             open={true}
@@ -221,27 +186,19 @@ export default function ResponsesTypesComponent({
         );
       case 'xml':
         try {
-          // Intenta parsear los datos originales si ya son XML
-          if (typeof data === 'string' && currentTab?.response?.typeResponse?.includes('xml')) {
-            const parser = new DOMParser();
-            const xmlDoc = parser.parseFromString(data, 'application/xml');
-            if (xmlDoc.getElementsByTagName('parsererror').length > 0) {
-              throw new Error('XML inválido');
-            }
-            return <XmlNode node={xmlDoc.documentElement} />;
+          const parser = new DOMParser();
+          const xmlDoc = parser.parseFromString(
+            data || currentTab?.response?.data,
+            'application/xml',
+          );
+          if (xmlDoc.getElementsByTagName('parsererror').length > 0) {
+            throw new Error('XML inválido');
           }
-
-          // Si el contenido es JSON, se convierte a XML antes de renderizar
-          const convertedXml = convertJsonToXml(parsedData);
-          if (convertedXml) {
-             const parser = new DOMParser();
-             const xmlDoc = parser.parseFromString(convertedXml, 'application/xml');
-             if (xmlDoc.getElementsByTagName('parsererror').length > 0) {
-               throw new Error('Conversión fallida o XML inválido');
-             }
-             return <XmlNode node={xmlDoc.documentElement} />;
-          }
-           throw new Error('No se pudo convertir a XML');
+          return (
+            <div>
+              <XmlNode node={xmlDoc.documentEldement} />
+            </div>
+          );
         } catch (e) {
           return (
             <div className="text-red-400 absolute inset-0 backdrop-blur-3xl text-center grid place-content-center gap-2 overflow-y-scroll rounded-xl text-xs max-h-44">
@@ -252,7 +209,7 @@ export default function ResponsesTypesComponent({
                 height="54"
               />
               <span className="block text-center text-zinc-400 font-medium mt-2">
-                {e instanceof Error ? e.message : 'Error al mostrar el contenido como XML'}
+                XML inválido o no reconocido
               </span>
               <a
                 href="https://www.w3schools.com/xml/xml_syntax.asp"
@@ -269,44 +226,24 @@ export default function ResponsesTypesComponent({
         return <HtmlNode node={parseHtmlString(data)} />;
       case 'base64':
         try {
-          const contentAsString = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
-          const encoder = new TextEncoder();
-          const dataBytes = encoder.encode(contentAsString);
-          
-          let base64Content = '';
-          const chunkSize = 16384; // Chunk size to prevent large string issues
-          for (let i = 0; i < dataBytes.length; i += chunkSize) {
-            const chunk = dataBytes.subarray(i, i + chunkSize);
-            base64Content += btoa(String.fromCharCode(...chunk));
-          }
-          
+          const base64Content = btoa(JSON.stringify(data, null, 2));
           return (
-            <pre className="text-xs break-all text-gray-600 dark:text-zinc-200 whitespace-pre-wrap">
+            <pre className="text-xs break-all text-gray-700 dark:text-gray-200">
               {base64Content}
             </pre>
           );
         } catch (e) {
-          console.error('Error al codificar a Base64:', e);
           return (
-            <div className="text-red-400 absolute inset-0 backdrop-blur-3xl text-center grid place-content-center gap-2 overflow-y-scroll rounded-xl text-xs max-h-44">
-              <Icon
-                className="mx-auto text-zinc-500"
-                icon={alien}
-                width="54"
-                height="54"
-              />
-              <span className="block text-center text-zinc-400 font-medium mt-2">
-                Error al codificar a Base64. Es posible que el contenido contenga caracteres inválidos.
-              </span>
-            </div>
+            <p className="text-red-400">
+              Error al codificar a Base64. {JSON.stringify(e)}
+            </p>
           );
         }
       case 'raw':
       default:
-        const rawContent = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
         return (
           <pre className="text-xs text-green-primary whitespace-pre-wrap break-all">
-            {rawContent}
+            {JSON.stringify(data, null, 2)}
           </pre>
         );
     }
@@ -332,12 +269,18 @@ export default function ResponsesTypesComponent({
           </div>
 
           <div className="flex items-center gap-2 mr-4 text-zinc-300 text-xs">
+            {/* <ApiResponseTooltip
+              className={`text-xs font-bold px-1 rounded ${getStatusCodeClass(statusCode)}`}
+              ariaText={String(statusCode)}
+              show={true}
+              tooltipText={getStatusCodeText(statusCode)}
+            /> */}
             <CodeTooltip
               className={`text-xs ${getStatusCodeClass(statusCode)} `}
               statusCode={statusCode}
               ariaText={statusCode}
             />
-            <span className="text-xs dark:bg-zinc-900/90 bg-gray-200 text-gray-600 dark:text-zinc-400 py-0.5 px-2 rounded text-r whitespace-nowrap ">
+            <span className="text-xs dark:bg-zinc-900/90 bg-gray-200 text-gray-600  dark:text-zinc-400 py-0.5 px-2 rounded text-r whitespace-nowrap ">
               {currentTab?.response?.time || timeResponse} ms
             </span>
             <span className="text-gray-600 dark:text-zinc-400 truncate ">
@@ -349,9 +292,7 @@ export default function ResponsesTypesComponent({
                 <button
                   type="button"
                   onClick={() => setShowResponseMenu(!showResponseMenu)}
-                  className="inline-flex justify-center w-full rounded-md border border-gray-200 dark:border-zinc-700 px-4 py-1 bg-white dark:bg-zinc-900 text-sm font-medium text-gray-700 dark:text-zinc-200 hover:bg-gray-50 dark:hover:bg-zinc-700"
-                  aria-expanded={showResponseMenu}
-                  aria-haspopup="true"
+                  className="inline-flex justify-center w-full rounded-md border border-gray-200 dark:border-zinc-700  px-4 py-1 bg-white dark:bg-zinc-900 text-sm font-medium text-gray-700 dark:text-zinc-200 hover:bg-gray-50 dark:hover:bg-zinc-700  "
                 >
                   {activeResponseType}
                   <Icon
@@ -362,15 +303,17 @@ export default function ResponsesTypesComponent({
                 <AnimatePresence>
                   {showResponseMenu && (
                     <motion.div
-                      className="origin-top-right absolute right-0 mt-2 w-32 rounded-md shadow-lg bg-white dark:bg-zinc-900 focus:outline-none z-10"
+                      className="origin-top-right absolute right-0 mt-2 w-32 rounded-md shadow-lg bg-white dark:bg-zinc-900  focus:outline-none z-10"
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
                       transition={{ duration: 0.2 }}
-                      role="menu"
-                      aria-orientation="vertical"
                     >
-                      <div className="py-1">
+                      <div
+                        className="py-1"
+                        role="menu"
+                        aria-orientation="vertical"
+                      >
                         {responseViewTypes.map((type) => (
                           <button
                             key={type}
@@ -418,7 +361,7 @@ export default function ResponsesTypesComponent({
               <div className="p-4">
                 <TableData
                   data={
-                    headersResponse?.['Set-Cookie']
+                    headersResponse['Set-Cookie']
                       ? headersResponse['Set-Cookie']
                           .split(';')
                           .reduce((acc: any, current: string) => {
