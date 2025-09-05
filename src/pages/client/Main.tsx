@@ -180,7 +180,7 @@ const Header = memo(
                 className="absolute bottom-full right-0 mb-1 bg-white dark:bg-zinc-900 shadow-lg border border-gray-200 dark:border-zinc-700 w-60 max-h-48 overflow-hidden rounded-lg z-50"
               >
                 {/* Header compacto */}
-                <div className="px-3 py-2 border-b border-gray-200 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800">
+                <div className="px-3 py-2 border-b border-gray-200 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-900">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-medium text-gray-700 dark:text-zinc-200">
                       Entornos ({listEntornos.length})
