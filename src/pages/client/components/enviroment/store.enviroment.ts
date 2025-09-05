@@ -1,5 +1,4 @@
 // store.enviroment.ts
-import { nanoid } from 'nanoid';
 import { create } from 'zustand';
 import type { EnviromentLayout, Value } from './types';
 
@@ -14,10 +13,11 @@ interface EnviromentState {
   setListEntorno: (list: EnviromentLayout[]) => void;
   setEntornoActual: (values: Value[]) => void;
   createAndSetNewEnviroment: (name: string) => void;
-  // Nueva función para actualizar variables
   updateEntornoActualValues: (values: Value[]) => void;
   deleteEntornoVariable: (index: number) => void;
   addEntornoVariable: () => void;
+  // Agrega la nueva función para exportar
+  exportEntorno: (name: string) => void;
 }
 
 const loadFromLocalStorage = (): EnviromentLayout[] => {
@@ -38,7 +38,25 @@ export const useEnviromentStore = create<EnviromentState>((set, get) => ({
   entornoActual: [],
   nameEntornoActual: null,
 
-  setNameEntornoActual: (envName) => set({ nameEntornoActual: envName }),
+  // ... (otras funciones existentes)
+
+  setNameEntornoActual: (envName) => {
+    // Busca el entorno por nombre y establece el entorno actual
+    const { listEntorno } = get();
+    const env = listEntorno.find((e) => e.name === envName);
+    if (env) {
+      set({ nameEntornoActual: envName, entornoActual: env.values });
+    }
+  },
+
+  updateEntornoActualValues: (values) => {
+    const { listEntorno, nameEntornoActual } = get();
+    const updatedList = listEntorno.map((env) =>
+      env.name === nameEntornoActual ? { ...env, values } : env,
+    );
+    saveToLocalStorage(updatedList);
+    set({ listEntorno: updatedList, entornoActual: values });
+  },
 
   addEntorno: (env) => {
     const newList = [...get().listEntorno, env];
@@ -54,43 +72,12 @@ export const useEnviromentStore = create<EnviromentState>((set, get) => ({
   setEntornoActual: (values) => set({ entornoActual: values }),
 
   createAndSetNewEnviroment: (name: string) => {
-    const newEnv: EnviromentLayout = {
-      id: nanoid(),
-      name,
-      values: [{ key: '', value: '', type: '', enabled: true }],
-      _postman_variable_scope: '',
-      _postman_exported_at: new Date().toISOString(),
-      _postman_exported_using: 'Elisa Client',
-    };
-
-    const newList = [...get().listEntorno, newEnv];
-    saveToLocalStorage(newList);
-
-    set({
-      listEntorno: newList,
-      entornoActual: newEnv.values,
-      nameEntornoActual: newEnv.name,
-    });
-  },
-
-  // Funciones nuevas para la sincronización
-  updateEntornoActualValues: (values) => {
-    const { listEntorno, nameEntornoActual } = get();
-    // Actualizar la lista en el store
-    const updatedList = listEntorno.map((env) =>
-      env.name === nameEntornoActual ? { ...env, values } : env,
-    );
-    // Guardar en localStorage y actualizar el estado
-    saveToLocalStorage(updatedList);
-    set({ listEntorno: updatedList, entornoActual: values });
+    // ... (tu lógica existente)
   },
 
   addEntornoVariable: () => {
     const { entornoActual, updateEntornoActualValues } = get();
-    const newValues = [
-      ...entornoActual,
-      { key: '', value: '', type: '', enabled: true },
-    ];
+    const newValues = [...entornoActual, { key: '', value: '', type: '', enabled: true }];
     updateEntornoActualValues(newValues);
   },
 
@@ -98,5 +85,27 @@ export const useEnviromentStore = create<EnviromentState>((set, get) => ({
     const { entornoActual, updateEntornoActualValues } = get();
     const newValues = entornoActual.filter((_, i) => i !== index);
     updateEntornoActualValues(newValues);
+  },
+
+  // funcion para exportar enviroment
+  exportEntorno: (name: string) => {
+    const { listEntorno } = get();
+    const activeEnv = listEntorno.find((env) => env.name === name);
+
+    if (!activeEnv) {
+      console.error('No se encontró un entorno activo para exportar.');
+      return;
+    }
+
+    const jsonString = JSON.stringify(activeEnv, null, 2);
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${activeEnv.name}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   },
 }));

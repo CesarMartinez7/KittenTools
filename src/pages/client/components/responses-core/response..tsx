@@ -102,6 +102,8 @@ export default function ResponsesTypesComponent({
   statusCode,
   timeResponse,
   data,
+  typeResponse,
+  setTypeResponse
 }: ResponseTypes) {
   const { listTabs, currentTabId } = useRequestStore();
 
@@ -112,7 +114,7 @@ export default function ResponsesTypesComponent({
   const currentTab = listTabs.find((tab) => tab.id === currentTabId);
 
   useEffect(() => {
-    if (typeof currentTab?.response?.typeResponse === 'string') {
+    if (typeof typeResponse === 'string') {
       const responseType = currentTab.response.typeResponse.toLowerCase();
       if (responseType.includes('json')) {
         setActiveResponseType('JSON');

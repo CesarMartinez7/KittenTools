@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useState } from 'react';
 import './tooltip.css';
 import { Icon } from '@iconify/react/dist/iconify.js';
-import ICONS_PAGES from '../../pages/client/icons/ICONS_PAGE';
+
 
 export default function ToolTipButton({
   ariaText = 'Default text',
@@ -42,7 +42,7 @@ export default function ToolTipButton({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -5, scale: 0.95 }}
             transition={{ duration: 0.2, ease: 'easeInOut' }}
-            className="absolute top-full mt-1 z-10  whitespace-nowrap
+            className="absolute top-full mt-1 z-10  whitespace-wrap
               rounded-md px-2 py-1 text-xs shadow-md
               bg-gray-200 text-gray-700
               dark:bg-zinc-950 dark:text-gray-200"

@@ -16,7 +16,11 @@ import GithubModal from './github.modal';
 import useGlobalHook from '../../../core/method';
 import toast from 'react-hot-toast';
 
-// Define el tipo para los mappers si no está en otro lugar
+
+import { useEnviromentStore } from '../components/enviroment/store.enviroment';
+import ICONS_PAGES from '../icons/ICONS_PAGE';
+
+
 interface MapperItem {
   name: string;
   icon: any; // O el tipo de Iconify
@@ -32,6 +36,10 @@ export function AppModals() {
     autenticacionModalOpen,
     deleteModalProps,
   } = useModalStore();
+
+
+  // importacion del entorno
+  const exportEntorno = useEnviromentStore((state) => state.exportEntorno)
   const isOpenModalExport = useModalStore((state) => state.isExportCollection);
   const closeModalExport = useModalStore(
     (state) => state.closeExportCollection,
@@ -67,12 +75,12 @@ export function AppModals() {
     () => [
       {
         name: 'Nueva coleccion',
-        icon: substack,
+        icon: ICONS_PAGES.packages,
         method: handleAddCollection,
       },
       {
         name: 'Importar coleccion',
-        icon: substack,
+        icon: ICONS_PAGES.importe,
         method: importCollections,
       },
       {
@@ -87,11 +95,7 @@ export function AppModals() {
         icon: substack,
         method: handleFileUpload,
       },
-      {
-        name: 'Exportar Entorno (en dev)',
-        icon: substack,
-        method: () => console.log('HTTP'),
-      },
+     
     ],
     [importCollections],
   );
@@ -170,7 +174,7 @@ export function AppModals() {
                     damping: 20,
                   },
                 }}
-                className="group relative p-5 bg-white/60 dark:bg-zinc-800/60 hover:bg-gradient-to-br hover:from-white hover:to-zinc-50 dark:hover:from-zinc-800 dark:hover:to-zinc-900 backdrop-blur-sm border border-zinc-200/60 dark:border-zinc-700/60 hover:border-[#4ec9b0]/40 dark:hover:border-[#4ec9b0]/50 rounded-2xl flex justify-center items-center flex-col transition-all duration-300 shadow-sm hover:shadow-xl hover:shadow-[#4ec9b0]/10 dark:hover:shadow-[#4ec9b0]/5 min-h-[120px] overflow-hidden"
+                className="group relative p-2 bg-white/60 dark:bg-zinc-800/60 hover:bg-gradient-to-br hover:from-white hover:to-zinc-50 dark:hover:from-zinc-800 dark:hover:to-zinc-900 backdrop-blur-sm border border-zinc-200/60 dark:border-zinc-700/60 hover:border-[#4ec9b0]/40 dark:hover:border-[#4ec9b0]/50 rounded-2xl flex justify-center items-center flex-col transition-all duration-300 shadow-sm hover:shadow-xl hover:shadow-[#4ec9b0]/10 dark:hover:shadow-[#4ec9b0]/5 min-h-[120px] overflow-hidden"
                 title={ne.name}
               >
                 {/* Efecto de brillo animado */}
