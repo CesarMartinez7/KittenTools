@@ -7,25 +7,6 @@ import { useGithubApi } from '../../services/github';
 import { useState } from 'react';
 import type { Collection } from '../../db';
 
-// --- Clases de estilo reutilizables ---
-const itemStyles =
-  'flex items-center w-full py-1.5 px-2 cursor-pointer rounded-md transition-colors duration-200 group dark:hover:bg-zinc-700/50 hover:bg-gray-200/50';
-const actionButtonStyles =
-  'p-1 rounded transition-opacity text-gray-400 hover:text-gray-700 dark:hover:text-white dark:text-zinc-500 opacity-0 group-hover:opacity-100';
-const methodBadgeStyles = (method) => {
-  switch (method) {
-    case 'GET':
-      return 'bg-emerald-600/20 text-emerald-600 dark:bg-emerald-400/20 dark:text-green-400';
-    case 'POST':
-      return 'bg-blue-600/20 text-blue-600 dark:bg-blue-400/20 dark:text-blue-400';
-    case 'PUT':
-      return 'bg-yellow-600/20 text-yellow-600 dark:bg-yellow-400/20 dark:text-yellow-400';
-    case 'DELETE':
-      return 'bg-red-600/20 text-red-600 dark:bg-red-400/20 dark:text-red-400';
-    default:
-      return 'bg-gray-500/20 text-gray-500 dark:bg-zinc-500/20 dark:text-zinc-400';
-  }
-};
 
 const PostmanCollectionsList = () => {
   // ✅ Usa el hook para obtener la función y el estado
@@ -59,8 +40,7 @@ const PostmanCollectionsList = () => {
   const handleSaveToGithub = async (collection: Collection) => {
     const toastId = toast.loading('Guardando en GitHub...');
     try {
-      const resposne = await saveCollection(collection.name, collection);
-
+      await saveCollection(collection.name, collection);
       toast.success('Colección guardada exitosamente!', { id: toastId });
     } catch (err) {
       toast.error('Error al guardar la colección.', { id: toastId });
@@ -81,16 +61,18 @@ const PostmanCollectionsList = () => {
   return (
     <div className="w-full h-full text-gray-800 dark:text-zinc-200 flex flex-col dark:bg-zinc-900 ">
       <div
-        className="flex-1 overflow-scroll p-2 space-y-4"
+        className="flex-1 overflow-scroll p-2 space-y-2"
         style={{ scrollbarWidth: 'none' }}
       >
         {collections.map((collection) => {
+
+          
           const isCollapsed = collapsedCollections.has(collection.id);
 
           return (
             <div
               key={collection.id}
-              className="p-3 rounded-lg bg-gray-50 transition-colors  border-gray-200 text-gray-800 dark:bg-zinc-800/10 dark:border-zinc-900 dark:text-zinc-200 flex flex-col"
+              className="p-2 rounded-lg bg-gray-50 transition-colors  border-gray-200 text-gray-800 dark:bg-zinc-800/30 dark:border-zinc-900 dark:text-zinc-200 flex flex-col"
             >
               <div className="flex items-center justify-between ">
                 <div className="flex items-center gap-2 flex-1">
@@ -133,7 +115,6 @@ const PostmanCollectionsList = () => {
 
                   {/* ✅ Botón modificado para usar la función del hook */}
                   <button
-                    
                     onClick={() => handleSaveToGithub(collection)}
                     disabled={true}
                     className="p-1 rounded-md disabled:cursor-not-allowed hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors disabled:opacity-50"

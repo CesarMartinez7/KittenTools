@@ -16,10 +16,8 @@ import GithubModal from './github.modal';
 import useGlobalHook from '../../../core/method';
 import toast from 'react-hot-toast';
 
-
 import { useEnviromentStore } from '../components/enviroment/store.enviroment';
 import ICONS_PAGES from '../icons/ICONS_PAGE';
-
 
 interface MapperItem {
   name: string;
@@ -37,9 +35,8 @@ export function AppModals() {
     deleteModalProps,
   } = useModalStore();
 
-
   // importacion del entorno
-  const exportEntorno = useEnviromentStore((state) => state.exportEntorno)
+  const exportEntorno = useEnviromentStore((state) => state.exportEntorno);
   const isOpenModalExport = useModalStore((state) => state.isExportCollection);
   const closeModalExport = useModalStore(
     (state) => state.closeExportCollection,
@@ -95,7 +92,6 @@ export function AppModals() {
         icon: substack,
         method: handleFileUpload,
       },
-     
     ],
     [importCollections],
   );
@@ -110,9 +106,7 @@ export function AppModals() {
     <>
       <BaseModalLazy isOpen={newsShowModal} onClose={toogleNewsShowModal}>
         <motion.div
-          initial={{ scale: 0.9, opacity: 0, y: 20 }}
-          animate={{ scale: 1, opacity: 1, y: 0 }}
-          exit={{ scale: 0.9, opacity: 0, y: -20 }}
+          
           transition={{ type: 'spring', stiffness: 300, damping: 30 }}
           className="bg-white/95 dark:bg-zinc-900/95 backdrop-blur-sm rounded-2xl border border-zinc-300/50 dark:border-zinc-800/50 p-6 max-w-2xl w-full mx-4 shadow-2xl"
         >
@@ -145,18 +139,18 @@ export function AppModals() {
             </div>
           </div>
 
-          {/* Grid de Opciones Mejorado */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
+          
+          <div className={`grid grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4`}>
             {NewMappers.map((ne, index) => (
               <motion.button
                 key={ne.name}
                 onClick={() => {
                   ne.method();
                 }}
-                initial={{ opacity: 0, y: 20, scale: 0.8 }}
+                initial={{ opacity: 0, y: 10, scale: 0.8 }}
                 animate={{
                   opacity: 1,
-                  y: 0,
+                  y: 0, 
                   scale: 1,
                   transition: {
                     delay: index * 0.1,

@@ -25,12 +25,13 @@ import worldwww from '@iconify-icons/tabler/world-www';
 import layoutcolumns from '@iconify-icons/tabler/layout-columns';
 import layoutrows from '@iconify-icons/tabler/layout-rows';
 import packages from '@iconify-icons/tabler/packages';
-import importe from '@iconify-icons/tabler/database-import'
-import file_export from '@iconify-icons/tabler/file-export'
+import importe from '@iconify-icons/tabler/database-import';
+import file_export from '@iconify-icons/tabler/file-export';
 
 const ICONS_PAGES = {
   file_export,
-  packages, importe,
+  packages,
+  importe,
   layoutcolumns,
   layoutrows,
   worldwww,

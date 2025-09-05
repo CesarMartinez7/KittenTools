@@ -3,7 +3,6 @@ import { useState } from 'react';
 import './tooltip.css';
 import { Icon } from '@iconify/react/dist/iconify.js';
 
-
 export default function ToolTipButton({
   ariaText = 'Default text',
   tooltipText,

@@ -555,7 +555,7 @@ const CodeEditor = ({
         </div>
 
         {/* Footer */}
-        <div className="relative flex justify-between items-center text-[8px] text-gray-500 dark:text-zinc-400 bg-gray-200/70 dark:bg-zinc-950/50 border-t border-gray-300 dark:border-zinc-800 px-2 py-1.5 shadow-sm">
+        <div className="flex justify-between items-center text-[8px] text-gray-500 dark:text-zinc-400 backdrop-blur-3xl bg-gray-100 dark:bg-zinc-950/50 border-t border-gray-300 dark:border-zinc-800 px-2 py-1.5 shadow-sm sticky bottom-0">
           <div className="flex items-center gap-1">
             <button className="button-code-tools" onClick={HandlersIdentarBody}>
               <Icon icon={ICONS_PAGES.braces} width={14} />

@@ -1,7 +1,7 @@
-import { Icon } from "@iconify/react/dist/iconify.js";
-import arrowsMaximize from "@iconify-icons/tabler/arrows-maximize";
-import arrowsMinimize from "@iconify-icons/tabler/arrows-minimize";
-import deviceFloppy from "@iconify-icons/tabler/device-floppy";
+import { Icon } from '@iconify/react/dist/iconify.js';
+import arrowsMaximize from '@iconify-icons/tabler/arrows-maximize';
+import arrowsMinimize from '@iconify-icons/tabler/arrows-minimize';
+import deviceFloppy from '@iconify-icons/tabler/device-floppy';
 import {
   memo,
   useCallback,
@@ -9,27 +9,27 @@ import {
   useEffect,
   useState,
   startTransition,
-} from "react";
-import { type RequestData } from "./stores/request.store";
-import { motion, AnimatePresence } from "motion/react";
-import CodeEditor from "../../ui/code-editor/code-editor";
-import MethodFormater from "./components/method-formatter/method-formatter";
-import { type EventRequest } from "./types/types";
-import { VariantsAnimation } from "./mapper-ops";
-import AddQueryParam from "./components/addqueryparams/addQueryParams";
-import { HeadersAddRequest } from "./components/headers/Headers";
-import EnviromentComponent from "./components/enviroment/enviroment.component";
-import ScriptComponent from "./components/scripts/script-component";
-import { useRequestStore } from "./stores/request.store";
-import x from "@iconify-icons/tabler/x";
-import moon from "@iconify-icons/tabler/moon";
-import sun from "@iconify-icons/tabler/sun";
-import { useEnviromentStore } from "./components/enviroment/store.enviroment";
-import type { EnviromentLayout } from "./components/enviroment/types";
-import ICONS_PAGES from "./icons/ICONS_PAGE";
-import { useModalStore } from "./modals/store.modal";
-import toast from "react-hot-toast";
-import ToolTipButton from "../../ui/tooltip/TooltipButton";
+} from 'react';
+import { type RequestData } from './stores/request.store';
+import { motion, AnimatePresence } from 'motion/react';
+import CodeEditor from '../../ui/code-editor/code-editor';
+import MethodFormater from './components/method-formatter/method-formatter';
+import { type EventRequest } from './types/types';
+import { VariantsAnimation } from './mapper-ops';
+import AddQueryParam from './components/addqueryparams/addQueryParams';
+import { HeadersAddRequest } from './components/headers/Headers';
+import EnviromentComponent from './components/enviroment/enviroment.component';
+import ScriptComponent from './components/scripts/script-component';
+import { useRequestStore } from './stores/request.store';
+import x from '@iconify-icons/tabler/x';
+import moon from '@iconify-icons/tabler/moon';
+import sun from '@iconify-icons/tabler/sun';
+import { useEnviromentStore } from './components/enviroment/store.enviroment';
+import type { EnviromentLayout } from './components/enviroment/types';
+import ICONS_PAGES from './icons/ICONS_PAGE';
+import { useModalStore } from './modals/store.modal';
+import toast from 'react-hot-toast';
+import ToolTipButton from '../../ui/tooltip/TooltipButton';
 
 const ICONS_PAGES_LOCAL = {
   moon: moon,
@@ -65,7 +65,7 @@ const Header = memo(
       useState<boolean>(false);
     const [isDark, setIsDark] = useState<boolean>(false);
 
-    const exportEntorno = useEnviromentStore((state) => state.exportEntorno)
+    const exportEntorno = useEnviromentStore((state) => state.exportEntorno);
 
     const listEntornos = useEnviromentStore((state) => state.listEntorno);
     const setNameEntornoActual = useEnviromentStore(
@@ -87,33 +87,33 @@ const Header = memo(
       return {
         isEmpty,
         className: isEmpty
-          ? "bg-red-200 dark:bg-red-600 text-red-600 dark:text-red-300"
-          : "bg-green-200 dark:bg-green-700 text-green-600 dark:text-green-300",
-        text: nombreEntorno ?? "No hay entornos activos",
-        icon: isEmpty ? "" : "",
+          ? 'bg-red-200 dark:bg-red-600 text-red-600 dark:text-red-300'
+          : 'bg-green-200 dark:bg-green-700 text-green-600 dark:text-green-300',
+        text: nombreEntorno ?? 'No hay entornos activos',
+        icon: isEmpty ? '' : '',
       };
     }, [nombreEntorno, listEntornos]);
 
     // Tema mejorado
     useEffect(() => {
-      const savedTheme = localStorage.getItem("theme");
+      const savedTheme = localStorage.getItem('theme');
       const prefersDark = window.matchMedia(
-        "(prefers-color-scheme: dark)",
+        '(prefers-color-scheme: dark)',
       ).matches;
-      const shouldBeDark = savedTheme ? savedTheme === "true" : prefersDark;
+      const shouldBeDark = savedTheme ? savedTheme === 'true' : prefersDark;
 
       setIsDark(shouldBeDark);
-      document.body.classList.toggle("dark", shouldBeDark);
+      document.body.classList.toggle('dark', shouldBeDark);
     }, []);
 
     useEffect(() => {
-      localStorage.setItem("theme", String(isDark));
+      localStorage.setItem('theme', String(isDark));
     }, [isDark]);
 
     const toggleTheme = useCallback(() => {
       const newIsDark = !isDark;
       setIsDark(newIsDark);
-      document.body.classList.toggle("dark", newIsDark);
+      document.body.classList.toggle('dark', newIsDark);
     }, [isDark]);
 
     const handleSaveClick = useCallback(() => {
@@ -127,7 +127,7 @@ const Header = memo(
 
     const handleClickSelectedEnviroment = useCallback(
       (env: EnviromentLayout, idx: number) => {
-        localStorage.setItem("idx_entorno", String(idx));
+        localStorage.setItem('idx_entorno', String(idx));
         setNameEntornoActual(env.name);
         setIsOpenEntornosList(false);
         setEntornoActual(env.values);
@@ -137,7 +137,7 @@ const Header = memo(
 
     // Carga inicial mejorada
     useEffect(() => {
-      const storedIdx = localStorage.getItem("idx_entorno");
+      const storedIdx = localStorage.getItem('idx_entorno');
       if (storedIdx && listEntornos.length > 0) {
         const idx = parseInt(storedIdx, 10);
         if (idx >= 0 && idx < listEntornos.length) {
@@ -151,20 +151,20 @@ const Header = memo(
     useEffect(() => {
       if (isOpenEntornosList) {
         const handleClickOutside = () => setIsOpenEntornosList(false);
-        document.addEventListener("click", handleClickOutside);
-        return () => document.removeEventListener("click", handleClickOutside);
+        document.addEventListener('click', handleClickOutside);
+        return () => document.removeEventListener('click', handleClickOutside);
       }
     }, [isOpenEntornosList]);
 
     return (
-      <div className="flex dark:text-zinc-200 text-gray-600 items-center text-xs gap-2 justify-end px-4 border-gray-100 dark:border-zinc-800 backdrop-blur-sm py-0.5">
+      <div className="flex dark:text-zinc-300 text-gray-600 items-center text-xs gap-2 justify-end px-4 border-gray-100 dark:border-zinc-800 backdrop-blur-sm py-0.5 ">
         {/* Botón Guardar */}
         <button
           title="Guardar en colección"
           onClick={handleSaveClick}
           disabled={!canSaveToCollection}
           className={`p-1 rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors
-            ${canSaveToCollection ? "text-emerald-500" : "opacity-50 text-red-400 cursor-not-allowed"}`}
+            ${canSaveToCollection ? 'text-emerald-500' : 'opacity-50 text-red-400 cursor-not-allowed'}`}
         >
           <Icon icon={ICONS_PAGES_LOCAL.save} width="14" height="14" />
         </button>
@@ -220,15 +220,15 @@ const Header = memo(
                           className={`group p-2 cursor-pointer transition-colors text-xs border-l-2 hover:bg-gray-50 dark:hover:bg-zinc-800
                             ${
                               isActive
-                                ? "bg-emerald-50 dark:bg-emerald-900/20 border-l-emerald-500"
-                                : "border-l-transparent hover:border-l-gray-300"
+                                ? 'bg-emerald-50 dark:bg-emerald-900/20 border-l-emerald-500'
+                                : 'border-l-transparent hover:border-l-gray-300'
                             }`}
                         >
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2 flex-1 min-w-0">
                               <span
                                 className={`font-medium truncate
-                                ${isActive ? "text-emerald-700 dark:text-emerald-300" : "text-gray-700 dark:text-zinc-200"}`}
+                                ${isActive ? 'text-emerald-700 dark:text-emerald-300' : 'text-gray-700 dark:text-zinc-200'}`}
                               >
                                 {env.name}
                               </span>
@@ -238,8 +238,13 @@ const Header = memo(
                                 <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div>
                               )}
                               <span className="text-gray-400 text-xs">›</span>
-                              <ToolTipButton ariaText=" " tooltipText={`Exportar ${env.name}`} IconName={ICONS_PAGES.file_export}  className="bg-sky-200 p-0.5 rounded-2xl px-2" onClick={ () => exportEntorno(env.name)}>                                
-                              </ToolTipButton>
+                              <ToolTipButton
+                                ariaText=" "
+                                tooltipText={`Exportar ${env.name}`}
+                                IconName={ICONS_PAGES.file_export}
+                                className="bg-sky-200 p-0.5 rounded-2xl px-1 dark:bg-sky-300/10"
+                                onClick={() => exportEntorno(env.name)}
+                              ></ToolTipButton>
                             </div>
                           </div>
                         </div>
@@ -260,7 +265,7 @@ const Header = memo(
             <span className="text-xs">{entornoStatus.icon}</span>
             <span className="text-xs truncate">{entornoStatus.text}</span>
             <span
-              className={`text-xs transition-transform duration-200 ${isOpenEntornosList ? "rotate-180" : ""}`}
+              className={`text-xs transition-transform duration-200 ${isOpenEntornosList ? 'rotate-180' : ''}`}
             >
               <Icon icon={ICONS_PAGES.chevrondown} width="12" height="12" />
             </span>
@@ -285,7 +290,7 @@ const Header = memo(
 
         {/* Versión */}
         <span className="dark:text-zinc-200 text-gray-600 text-xs">
-          {!isRunningInTauri ? "Version Web" : "Version Tauri"}
+          {!isRunningInTauri ? 'Version Web' : 'Version Tauri'}
         </span>
 
         {/* Autenticar */}
@@ -332,8 +337,8 @@ const TabNavigation = memo(
                 relative btn btn-sm text-xs py-2 px-4 z-10 max-w-fit truncate transition-colors
                 ${
                   isSelected
-                    ? " text-gray-800 dark:text-white dark:bg-zinc-950 bg-gray-200"
-                    : "text-gray-500 dark:text-zinc-400 hover:text-gray-800 dark:hover:text-white"
+                    ? ' text-gray-800 dark:text-white dark:bg-zinc-950 bg-gray-200'
+                    : 'text-gray-500 dark:text-zinc-400 hover:text-gray-800 dark:hover:text-white'
                 }
               `}
             >
@@ -346,7 +351,7 @@ const TabNavigation = memo(
                   layoutId="tab-background"
                   className="absolute inset-0"
                   initial={false}
-                  transition={{ type: "tween", stiffness: 200, damping: 10 }}
+                  transition={{ type: 'tween', stiffness: 200, damping: 10 }}
                 />
               )}
             </button>
@@ -367,7 +372,7 @@ const ContentTypeSelection = memo(
     currentContentType: string | undefined;
     onContentTypeChange: (type: string) => void;
   }) => {
-    const contentTypes = useMemo(() => ["json", "form", "xml", "none"], []);
+    const contentTypes = useMemo(() => ['json', 'form', 'xml', 'none'], []);
 
     return (
       <div className="flex gap-4 mb-3 flex-wrap">
@@ -401,24 +406,24 @@ const BodyEditor = memo(
     currentTab: RequestData | undefined;
     onCodeChange: (value: string) => void;
   }) => {
-    const isNoneContent = currentTab?.headers["Content-Type"] === "none";
+    const isNoneContent = currentTab?.headers['Content-Type'] === 'none';
 
     const [localCode, setLocalCode] = useState(() => {
       const body = currentTab?.body;
-      if (typeof body === "object" && body !== null) {
+      if (typeof body === 'object' && body !== null) {
         return JSON.stringify(body, null, 2);
       }
-      return body || "";
+      return body || '';
     });
 
     // Sincroniza el estado local cuando cambia el tab actual
     useEffect(() => {
       const body = currentTab?.body;
-      let newLocalCode = "";
-      if (typeof body === "object" && body !== null) {
+      let newLocalCode = '';
+      if (typeof body === 'object' && body !== null) {
         newLocalCode = JSON.stringify(body, null, 2);
       } else {
-        newLocalCode = body || "";
+        newLocalCode = body || '';
       }
       if (localCode !== newLocalCode) {
         setLocalCode(newLocalCode);
@@ -461,7 +466,7 @@ const BodyEditor = memo(
           value={localCode}
           maxHeight="85vh"
           onChange={handleLocalChange}
-          language={currentTab?.headers["Content-Type"] || "json"}
+          language={currentTab?.headers['Content-Type'] || 'json'}
           height="73vh"
           minHeight="65vh"
         />
@@ -496,8 +501,8 @@ const Tab = memo(
         border-r dark:border-zinc-700 last:border-r-0
         ${
           isActive
-            ? "dark:text-green-primary bg-amber-300"
-            : "dark:text-zinc-200 dark:hover:text-zinc-900 text-gray-200"
+            ? 'dark:text-green-primary bg-amber-300'
+            : 'dark:text-zinc-200 dark:hover:text-zinc-900 text-gray-200'
         }
       `}
         initial={{ opacity: 0, scale: 0.8 }}
@@ -528,7 +533,7 @@ const Tab = memo(
             layoutId="tab-underline"
             className="absolute bottom-0 left-0 right-0 h-0.5 bg-green-primary z-0"
             initial={false}
-            transition={{ type: "keyframes", stiffness: 200, damping: 4 }}
+            transition={{ type: 'keyframes', stiffness: 200, damping: 4 }}
           />
         )}
       </motion.div>
@@ -561,8 +566,8 @@ const ContentPanel = memo(
         if (currentTab?.id) {
           startTransition(() => {
             updateTab(currentTab.id, {
-              headers: { ...currentTab.headers, "Content-Type": type },
-              body: type === "none" ? null : currentTab.body,
+              headers: { ...currentTab.headers, 'Content-Type': type },
+              body: type === 'none' ? null : currentTab.body,
             });
           });
         }
@@ -572,8 +577,8 @@ const ContentPanel = memo(
 
     const currentContentType = useMemo(
       () =>
-        currentTab?.headers["Content-Type"] ||
-        currentTab?.headers["content-type"],
+        currentTab?.headers['Content-Type'] ||
+        currentTab?.headers['content-type'],
       [currentTab?.headers],
     );
 
@@ -584,7 +589,7 @@ const ContentPanel = memo(
           <motion.div
             key="body-section-body"
             variants={VariantsAnimation}
-            className={`absolute inset-0 flex flex-col flex-1 min-h-0 ${selectedIdx === 0 ? "block" : "hidden"}`}
+            className={`absolute inset-0 flex flex-col flex-1 min-h-0 ${selectedIdx === 0 ? 'block' : 'hidden'}`}
           >
             <ContentTypeSelection
               currentContentType={currentContentType}
@@ -599,7 +604,7 @@ const ContentPanel = memo(
           <motion.div
             key="query-params-section"
             variants={VariantsAnimation}
-            className={`absolute inset-0 flex-1 overflow-auto ${selectedIdx === 1 ? "block" : "hidden"}`}
+            className={`absolute inset-0 flex-1 overflow-auto ${selectedIdx === 1 ? 'block' : 'hidden'}`}
           >
             <AddQueryParam />
           </motion.div>
@@ -608,7 +613,7 @@ const ContentPanel = memo(
           <motion.div
             key="headers-section"
             variants={VariantsAnimation}
-            className={`absolute inset-0 flex-1 overflow-auto ${selectedIdx === 2 ? "block" : "hidden"}`}
+            className={`absolute inset-0 flex-1 overflow-auto ${selectedIdx === 2 ? 'block' : 'hidden'}`}
           >
             <HeadersAddRequest />
           </motion.div>
@@ -617,7 +622,7 @@ const ContentPanel = memo(
           <motion.div
             key="env-section"
             variants={VariantsAnimation}
-            className={`absolute inset-0 h-full ${selectedIdx === 3 ? "block" : "hidden"}`}
+            className={`absolute inset-0 h-full ${selectedIdx === 3 ? 'block' : 'hidden'}`}
           >
             <EnviromentComponent />
           </motion.div>
@@ -626,7 +631,7 @@ const ContentPanel = memo(
           <motion.div
             key="scripts-section"
             variants={VariantsAnimation}
-            className={`absolute inset-0 ${selectedIdx === 5 ? "block" : "hidden"}`}
+            className={`absolute inset-0 ${selectedIdx === 5 ? 'block' : 'hidden'}`}
           >
             <ScriptComponent
               value={scriptsValues}
@@ -638,7 +643,7 @@ const ContentPanel = memo(
           <motion.div
             key="auth-section"
             variants={VariantsAnimation}
-            className={`absolute inset-0 flex-1 gap-4 flex flex-col items-center justify-center text-gray-500 dark:text-zinc-600 ${selectedIdx === 4 ? "block" : "hidden"}`}
+            className={`absolute inset-0 flex-1 gap-4 flex flex-col items-center justify-center text-gray-500 dark:text-zinc-600 ${selectedIdx === 4 ? 'block' : 'hidden'}`}
           >
             <Icon icon={ICONS_PAGES.edit} className="size-20" />
             <p className="text-md text-zinc-400">
@@ -669,12 +674,12 @@ const ContentPanel = memo(
 );
 
 // DISPLAY NAMES
-Header.displayName = "Header";
-TabNavigation.displayName = "TabNavigation";
-ContentTypeSelection.displayName = "ContentTypeSelection";
-BodyEditor.displayName = "BodyEditor";
-Tab.displayName = "Tab";
-ContentPanel.displayName = "ContentPanel";
+Header.displayName = 'Header';
+TabNavigation.displayName = 'TabNavigation';
+ContentTypeSelection.displayName = 'ContentTypeSelection';
+BodyEditor.displayName = 'BodyEditor';
+Tab.displayName = 'Tab';
+ContentPanel.displayName = 'ContentPanel';
 
 // IMPORTACION PRINCIPAL EN FORMA DE OBJECTO PARA MEJOR IMPORTACION
 const COMPONENTS_PAGE = {

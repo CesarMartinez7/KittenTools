@@ -228,7 +228,7 @@ export default function ResponsesTypesComponent({
         try {
           const base64Content = btoa(JSON.stringify(data, null, 2));
           return (
-            <pre className="text-xs break-all text-gray-700 dark:text-gray-200">
+            <pre className="text-xs whitespace-pre-wrap text-gray-700 dark:text-gray-200">
               {base64Content}
             </pre>
           );

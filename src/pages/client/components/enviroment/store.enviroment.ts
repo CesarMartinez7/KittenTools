@@ -77,7 +77,10 @@ export const useEnviromentStore = create<EnviromentState>((set, get) => ({
 
   addEntornoVariable: () => {
     const { entornoActual, updateEntornoActualValues } = get();
-    const newValues = [...entornoActual, { key: '', value: '', type: '', enabled: true }];
+    const newValues = [
+      ...entornoActual,
+      { key: '', value: '', type: '', enabled: true },
+    ];
     updateEntornoActualValues(newValues);
   },
 

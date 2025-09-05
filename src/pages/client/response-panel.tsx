@@ -19,7 +19,6 @@ const ResponsePanel = ({
           </div>
         ) : (
           <div className="flex-1 overflow-hidden  ">
-            
             <ResponsesTypesComponent
               setTypeResponse={setTypeResponse}
               typeResponse={typeResponse}
